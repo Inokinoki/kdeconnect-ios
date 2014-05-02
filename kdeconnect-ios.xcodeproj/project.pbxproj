@@ -22,6 +22,25 @@
 		4E08A20C1913CF850056EEF8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E08A1EB1913CF850056EEF8 /* UIKit.framework */; };
 		4E08A2141913CF860056EEF8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4E08A2121913CF860056EEF8 /* InfoPlist.strings */; };
 		4E08A2161913CF860056EEF8 /* kdeconnect_iosTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2151913CF860056EEF8 /* kdeconnect_iosTests.m */; };
+		4E08A2271913D1550056EEF8 /* BaseLink.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2241913D1550056EEF8 /* BaseLink.m */; };
+		4E08A2281913D1550056EEF8 /* BaseLinkProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2261913D1550056EEF8 /* BaseLinkProvider.m */; };
+		4E08A22D1913D1650056EEF8 /* LanLink.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A22A1913D1650056EEF8 /* LanLink.m */; };
+		4E08A22E1913D1650056EEF8 /* LanLinkProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A22C1913D1650056EEF8 /* LanLinkProvider.m */; };
+		4E08A2351913D1780056EEF8 /* BackgroundService.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2301913D1780056EEF8 /* BackgroundService.m */; };
+		4E08A2361913D1780056EEF8 /* Device.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2321913D1780056EEF8 /* Device.m */; };
+		4E08A2371913D1780056EEF8 /* NetworkPackage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2341913D1780056EEF8 /* NetworkPackage.m */; };
+		4E08A2451913D23E0056EEF8 /* DDContextFilterLogFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A23F1913D23E0056EEF8 /* DDContextFilterLogFormatter.m */; };
+		4E08A2461913D23E0056EEF8 /* DDDispatchQueueLogFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2411913D23E0056EEF8 /* DDDispatchQueueLogFormatter.m */; };
+		4E08A2471913D23E0056EEF8 /* DDMultiFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2431913D23E0056EEF8 /* DDMultiFormatter.m */; };
+		4E08A2541913D26B0056EEF8 /* DDAbstractDatabaseLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A24A1913D26B0056EEF8 /* DDAbstractDatabaseLogger.m */; };
+		4E08A2551913D26B0056EEF8 /* DDASLLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A24C1913D26B0056EEF8 /* DDASLLogger.m */; };
+		4E08A2561913D26B0056EEF8 /* DDFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A24E1913D26B0056EEF8 /* DDFileLogger.m */; };
+		4E08A2571913D26B0056EEF8 /* DDLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2501913D26B0056EEF8 /* DDLog.m */; };
+		4E08A2581913D26B0056EEF8 /* DDTTYLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2531913D26B0056EEF8 /* DDTTYLogger.m */; };
+		4E08A25D1913D2900056EEF8 /* AsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A25A1913D2900056EEF8 /* AsyncSocket.m */; };
+		4E08A25E1913D2900056EEF8 /* AsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A25C1913D2900056EEF8 /* AsyncUdpSocket.m */; };
+		4E08A2631913D29D0056EEF8 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2601913D29D0056EEF8 /* GCDAsyncSocket.m */; };
+		4E08A2641913D29D0056EEF8 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2621913D29D0056EEF8 /* GCDAsyncUdpSocket.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +74,45 @@
 		4E08A2111913CF860056EEF8 /* kdeconnect-iosTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "kdeconnect-iosTests-Info.plist"; sourceTree = "<group>"; };
 		4E08A2131913CF860056EEF8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		4E08A2151913CF860056EEF8 /* kdeconnect_iosTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = kdeconnect_iosTests.m; sourceTree = "<group>"; };
+		4E08A2231913D1550056EEF8 /* BaseLink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BaseLink.h; path = backend/BaseLink.h; sourceTree = "<group>"; };
+		4E08A2241913D1550056EEF8 /* BaseLink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BaseLink.m; path = backend/BaseLink.m; sourceTree = "<group>"; };
+		4E08A2251913D1550056EEF8 /* BaseLinkProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BaseLinkProvider.h; path = backend/BaseLinkProvider.h; sourceTree = "<group>"; };
+		4E08A2261913D1550056EEF8 /* BaseLinkProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BaseLinkProvider.m; path = backend/BaseLinkProvider.m; sourceTree = "<group>"; };
+		4E08A2291913D1650056EEF8 /* LanLink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LanLink.h; path = backend/lanBackend/LanLink.h; sourceTree = "<group>"; };
+		4E08A22A1913D1650056EEF8 /* LanLink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LanLink.m; path = backend/lanBackend/LanLink.m; sourceTree = "<group>"; };
+		4E08A22B1913D1650056EEF8 /* LanLinkProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LanLinkProvider.h; path = backend/lanBackend/LanLinkProvider.h; sourceTree = "<group>"; };
+		4E08A22C1913D1650056EEF8 /* LanLinkProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LanLinkProvider.m; path = backend/lanBackend/LanLinkProvider.m; sourceTree = "<group>"; };
+		4E08A22F1913D1780056EEF8 /* BackgroundService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BackgroundService.h; path = lib/BackgroundService.h; sourceTree = "<group>"; };
+		4E08A2301913D1780056EEF8 /* BackgroundService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BackgroundService.m; path = lib/BackgroundService.m; sourceTree = "<group>"; };
+		4E08A2311913D1780056EEF8 /* Device.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Device.h; path = lib/Device.h; sourceTree = "<group>"; };
+		4E08A2321913D1780056EEF8 /* Device.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Device.m; path = lib/Device.m; sourceTree = "<group>"; };
+		4E08A2331913D1780056EEF8 /* NetworkPackage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NetworkPackage.h; path = lib/NetworkPackage.h; sourceTree = "<group>"; };
+		4E08A2341913D1780056EEF8 /* NetworkPackage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NetworkPackage.m; path = lib/NetworkPackage.m; sourceTree = "<group>"; };
+		4E08A23E1913D23E0056EEF8 /* DDContextFilterLogFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DDContextFilterLogFormatter.h; path = lib/CocoaAsyncSocket/Vendor/CocoaLumberjack/Extensions/DDContextFilterLogFormatter.h; sourceTree = "<group>"; };
+		4E08A23F1913D23E0056EEF8 /* DDContextFilterLogFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DDContextFilterLogFormatter.m; path = lib/CocoaAsyncSocket/Vendor/CocoaLumberjack/Extensions/DDContextFilterLogFormatter.m; sourceTree = "<group>"; };
+		4E08A2401913D23E0056EEF8 /* DDDispatchQueueLogFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DDDispatchQueueLogFormatter.h; path = lib/CocoaAsyncSocket/Vendor/CocoaLumberjack/Extensions/DDDispatchQueueLogFormatter.h; sourceTree = "<group>"; };
+		4E08A2411913D23E0056EEF8 /* DDDispatchQueueLogFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DDDispatchQueueLogFormatter.m; path = lib/CocoaAsyncSocket/Vendor/CocoaLumberjack/Extensions/DDDispatchQueueLogFormatter.m; sourceTree = "<group>"; };
+		4E08A2421913D23E0056EEF8 /* DDMultiFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DDMultiFormatter.h; path = lib/CocoaAsyncSocket/Vendor/CocoaLumberjack/Extensions/DDMultiFormatter.h; sourceTree = "<group>"; };
+		4E08A2431913D23E0056EEF8 /* DDMultiFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DDMultiFormatter.m; path = lib/CocoaAsyncSocket/Vendor/CocoaLumberjack/Extensions/DDMultiFormatter.m; sourceTree = "<group>"; };
+		4E08A2491913D26B0056EEF8 /* DDAbstractDatabaseLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DDAbstractDatabaseLogger.h; path = lib/CocoaAsyncSocket/Vendor/CocoaLumberjack/DDAbstractDatabaseLogger.h; sourceTree = "<group>"; };
+		4E08A24A1913D26B0056EEF8 /* DDAbstractDatabaseLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DDAbstractDatabaseLogger.m; path = lib/CocoaAsyncSocket/Vendor/CocoaLumberjack/DDAbstractDatabaseLogger.m; sourceTree = "<group>"; };
+		4E08A24B1913D26B0056EEF8 /* DDASLLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DDASLLogger.h; path = lib/CocoaAsyncSocket/Vendor/CocoaLumberjack/DDASLLogger.h; sourceTree = "<group>"; };
+		4E08A24C1913D26B0056EEF8 /* DDASLLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DDASLLogger.m; path = lib/CocoaAsyncSocket/Vendor/CocoaLumberjack/DDASLLogger.m; sourceTree = "<group>"; };
+		4E08A24D1913D26B0056EEF8 /* DDFileLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DDFileLogger.h; path = lib/CocoaAsyncSocket/Vendor/CocoaLumberjack/DDFileLogger.h; sourceTree = "<group>"; };
+		4E08A24E1913D26B0056EEF8 /* DDFileLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DDFileLogger.m; path = lib/CocoaAsyncSocket/Vendor/CocoaLumberjack/DDFileLogger.m; sourceTree = "<group>"; };
+		4E08A24F1913D26B0056EEF8 /* DDLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DDLog.h; path = lib/CocoaAsyncSocket/Vendor/CocoaLumberjack/DDLog.h; sourceTree = "<group>"; };
+		4E08A2501913D26B0056EEF8 /* DDLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DDLog.m; path = lib/CocoaAsyncSocket/Vendor/CocoaLumberjack/DDLog.m; sourceTree = "<group>"; };
+		4E08A2511913D26B0056EEF8 /* DDLog+LOGV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "DDLog+LOGV.h"; path = "lib/CocoaAsyncSocket/Vendor/CocoaLumberjack/DDLog+LOGV.h"; sourceTree = "<group>"; };
+		4E08A2521913D26B0056EEF8 /* DDTTYLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DDTTYLogger.h; path = lib/CocoaAsyncSocket/Vendor/CocoaLumberjack/DDTTYLogger.h; sourceTree = "<group>"; };
+		4E08A2531913D26B0056EEF8 /* DDTTYLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DDTTYLogger.m; path = lib/CocoaAsyncSocket/Vendor/CocoaLumberjack/DDTTYLogger.m; sourceTree = "<group>"; };
+		4E08A2591913D2900056EEF8 /* AsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AsyncSocket.h; path = lib/CocoaAsyncSocket/RunLoop/AsyncSocket.h; sourceTree = "<group>"; };
+		4E08A25A1913D2900056EEF8 /* AsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AsyncSocket.m; path = lib/CocoaAsyncSocket/RunLoop/AsyncSocket.m; sourceTree = "<group>"; };
+		4E08A25B1913D2900056EEF8 /* AsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AsyncUdpSocket.h; path = lib/CocoaAsyncSocket/RunLoop/AsyncUdpSocket.h; sourceTree = "<group>"; };
+		4E08A25C1913D2900056EEF8 /* AsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AsyncUdpSocket.m; path = lib/CocoaAsyncSocket/RunLoop/AsyncUdpSocket.m; sourceTree = "<group>"; };
+		4E08A25F1913D29D0056EEF8 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCDAsyncSocket.h; path = lib/CocoaAsyncSocket/GCD/GCDAsyncSocket.h; sourceTree = "<group>"; };
+		4E08A2601913D29D0056EEF8 /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCDAsyncSocket.m; path = lib/CocoaAsyncSocket/GCD/GCDAsyncSocket.m; sourceTree = "<group>"; };
+		4E08A2611913D29D0056EEF8 /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCDAsyncUdpSocket.h; path = lib/CocoaAsyncSocket/GCD/GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
+		4E08A2621913D29D0056EEF8 /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCDAsyncUdpSocket.m; path = lib/CocoaAsyncSocket/GCD/GCDAsyncUdpSocket.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +142,8 @@
 		4E08A1DB1913CF850056EEF8 = {
 			isa = PBXGroup;
 			children = (
+				4E08A2211913D12B0056EEF8 /* backend */,
+				4E08A21F1913D0CF0056EEF8 /* lib */,
 				4E08A1ED1913CF850056EEF8 /* kdeconnect-ios */,
 				4E08A20F1913CF850056EEF8 /* kdeconnect-iosTests */,
 				4E08A1E61913CF850056EEF8 /* Frameworks */,
@@ -153,6 +213,115 @@
 				4E08A2121913CF860056EEF8 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		4E08A21F1913D0CF0056EEF8 /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				4E08A2381913D17F0056EEF8 /* CocoaAsyncSocket */,
+				4E08A22F1913D1780056EEF8 /* BackgroundService.h */,
+				4E08A2301913D1780056EEF8 /* BackgroundService.m */,
+				4E08A2311913D1780056EEF8 /* Device.h */,
+				4E08A2321913D1780056EEF8 /* Device.m */,
+				4E08A2331913D1780056EEF8 /* NetworkPackage.h */,
+				4E08A2341913D1780056EEF8 /* NetworkPackage.m */,
+			);
+			name = lib;
+			sourceTree = "<group>";
+		};
+		4E08A2201913D0D50056EEF8 /* lanBackend */ = {
+			isa = PBXGroup;
+			children = (
+				4E08A2291913D1650056EEF8 /* LanLink.h */,
+				4E08A22A1913D1650056EEF8 /* LanLink.m */,
+				4E08A22B1913D1650056EEF8 /* LanLinkProvider.h */,
+				4E08A22C1913D1650056EEF8 /* LanLinkProvider.m */,
+			);
+			name = lanBackend;
+			sourceTree = "<group>";
+		};
+		4E08A2211913D12B0056EEF8 /* backend */ = {
+			isa = PBXGroup;
+			children = (
+				4E08A2231913D1550056EEF8 /* BaseLink.h */,
+				4E08A2241913D1550056EEF8 /* BaseLink.m */,
+				4E08A2251913D1550056EEF8 /* BaseLinkProvider.h */,
+				4E08A2261913D1550056EEF8 /* BaseLinkProvider.m */,
+				4E08A2201913D0D50056EEF8 /* lanBackend */,
+			);
+			name = backend;
+			sourceTree = "<group>";
+		};
+		4E08A2381913D17F0056EEF8 /* CocoaAsyncSocket */ = {
+			isa = PBXGroup;
+			children = (
+				4E08A23B1913D1D30056EEF8 /* Vendor */,
+				4E08A23A1913D1CA0056EEF8 /* RunLoop */,
+				4E08A2391913D1C40056EEF8 /* GCD */,
+			);
+			name = CocoaAsyncSocket;
+			sourceTree = "<group>";
+		};
+		4E08A2391913D1C40056EEF8 /* GCD */ = {
+			isa = PBXGroup;
+			children = (
+				4E08A25F1913D29D0056EEF8 /* GCDAsyncSocket.h */,
+				4E08A2601913D29D0056EEF8 /* GCDAsyncSocket.m */,
+				4E08A2611913D29D0056EEF8 /* GCDAsyncUdpSocket.h */,
+				4E08A2621913D29D0056EEF8 /* GCDAsyncUdpSocket.m */,
+			);
+			name = GCD;
+			sourceTree = "<group>";
+		};
+		4E08A23A1913D1CA0056EEF8 /* RunLoop */ = {
+			isa = PBXGroup;
+			children = (
+				4E08A2591913D2900056EEF8 /* AsyncSocket.h */,
+				4E08A25A1913D2900056EEF8 /* AsyncSocket.m */,
+				4E08A25B1913D2900056EEF8 /* AsyncUdpSocket.h */,
+				4E08A25C1913D2900056EEF8 /* AsyncUdpSocket.m */,
+			);
+			name = RunLoop;
+			sourceTree = "<group>";
+		};
+		4E08A23B1913D1D30056EEF8 /* Vendor */ = {
+			isa = PBXGroup;
+			children = (
+				4E08A23C1913D2100056EEF8 /* CocoaLumberjack */,
+			);
+			name = Vendor;
+			sourceTree = "<group>";
+		};
+		4E08A23C1913D2100056EEF8 /* CocoaLumberjack */ = {
+			isa = PBXGroup;
+			children = (
+				4E08A2491913D26B0056EEF8 /* DDAbstractDatabaseLogger.h */,
+				4E08A24A1913D26B0056EEF8 /* DDAbstractDatabaseLogger.m */,
+				4E08A24B1913D26B0056EEF8 /* DDASLLogger.h */,
+				4E08A24C1913D26B0056EEF8 /* DDASLLogger.m */,
+				4E08A24D1913D26B0056EEF8 /* DDFileLogger.h */,
+				4E08A24E1913D26B0056EEF8 /* DDFileLogger.m */,
+				4E08A24F1913D26B0056EEF8 /* DDLog.h */,
+				4E08A2501913D26B0056EEF8 /* DDLog.m */,
+				4E08A2511913D26B0056EEF8 /* DDLog+LOGV.h */,
+				4E08A2521913D26B0056EEF8 /* DDTTYLogger.h */,
+				4E08A2531913D26B0056EEF8 /* DDTTYLogger.m */,
+				4E08A23D1913D21B0056EEF8 /* Extensions */,
+			);
+			name = CocoaLumberjack;
+			sourceTree = "<group>";
+		};
+		4E08A23D1913D21B0056EEF8 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				4E08A23E1913D23E0056EEF8 /* DDContextFilterLogFormatter.h */,
+				4E08A23F1913D23E0056EEF8 /* DDContextFilterLogFormatter.m */,
+				4E08A2401913D23E0056EEF8 /* DDDispatchQueueLogFormatter.h */,
+				4E08A2411913D23E0056EEF8 /* DDDispatchQueueLogFormatter.m */,
+				4E08A2421913D23E0056EEF8 /* DDMultiFormatter.h */,
+				4E08A2431913D23E0056EEF8 /* DDMultiFormatter.m */,
+			);
+			name = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -254,8 +423,27 @@
 			buildActionMask = 2147483647;
 			files = (
 				4E08A2011913CF850056EEF8 /* ViewController.m in Sources */,
+				4E08A2561913D26B0056EEF8 /* DDFileLogger.m in Sources */,
 				4E08A1F81913CF850056EEF8 /* AppDelegate.m in Sources */,
+				4E08A2581913D26B0056EEF8 /* DDTTYLogger.m in Sources */,
+				4E08A25D1913D2900056EEF8 /* AsyncSocket.m in Sources */,
+				4E08A2271913D1550056EEF8 /* BaseLink.m in Sources */,
+				4E08A2451913D23E0056EEF8 /* DDContextFilterLogFormatter.m in Sources */,
+				4E08A2541913D26B0056EEF8 /* DDAbstractDatabaseLogger.m in Sources */,
+				4E08A2571913D26B0056EEF8 /* DDLog.m in Sources */,
+				4E08A2371913D1780056EEF8 /* NetworkPackage.m in Sources */,
+				4E08A2361913D1780056EEF8 /* Device.m in Sources */,
+				4E08A25E1913D2900056EEF8 /* AsyncUdpSocket.m in Sources */,
+				4E08A2641913D29D0056EEF8 /* GCDAsyncUdpSocket.m in Sources */,
+				4E08A2631913D29D0056EEF8 /* GCDAsyncSocket.m in Sources */,
+				4E08A22D1913D1650056EEF8 /* LanLink.m in Sources */,
+				4E08A2471913D23E0056EEF8 /* DDMultiFormatter.m in Sources */,
+				4E08A2281913D1550056EEF8 /* BaseLinkProvider.m in Sources */,
+				4E08A22E1913D1650056EEF8 /* LanLinkProvider.m in Sources */,
 				4E08A1F41913CF850056EEF8 /* main.m in Sources */,
+				4E08A2351913D1780056EEF8 /* BackgroundService.m in Sources */,
+				4E08A2461913D23E0056EEF8 /* DDDispatchQueueLogFormatter.m in Sources */,
+				4E08A2551913D26B0056EEF8 /* DDASLLogger.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
