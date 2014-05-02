@@ -1,0 +1,485 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		4E08A1E81913CF850056EEF8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E08A1E71913CF850056EEF8 /* Foundation.framework */; };
+		4E08A1EA1913CF850056EEF8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E08A1E91913CF850056EEF8 /* CoreGraphics.framework */; };
+		4E08A1EC1913CF850056EEF8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E08A1EB1913CF850056EEF8 /* UIKit.framework */; };
+		4E08A1F21913CF850056EEF8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4E08A1F01913CF850056EEF8 /* InfoPlist.strings */; };
+		4E08A1F41913CF850056EEF8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A1F31913CF850056EEF8 /* main.m */; };
+		4E08A1F81913CF850056EEF8 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A1F71913CF850056EEF8 /* AppDelegate.m */; };
+		4E08A1FB1913CF850056EEF8 /* Main_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4E08A1F91913CF850056EEF8 /* Main_iPhone.storyboard */; };
+		4E08A1FE1913CF850056EEF8 /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4E08A1FC1913CF850056EEF8 /* Main_iPad.storyboard */; };
+		4E08A2011913CF850056EEF8 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2001913CF850056EEF8 /* ViewController.m */; };
+		4E08A2031913CF850056EEF8 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4E08A2021913CF850056EEF8 /* Images.xcassets */; };
+		4E08A20A1913CF850056EEF8 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E08A2091913CF850056EEF8 /* XCTest.framework */; };
+		4E08A20B1913CF850056EEF8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E08A1E71913CF850056EEF8 /* Foundation.framework */; };
+		4E08A20C1913CF850056EEF8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E08A1EB1913CF850056EEF8 /* UIKit.framework */; };
+		4E08A2141913CF860056EEF8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4E08A2121913CF860056EEF8 /* InfoPlist.strings */; };
+		4E08A2161913CF860056EEF8 /* kdeconnect_iosTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2151913CF860056EEF8 /* kdeconnect_iosTests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		4E08A20D1913CF850056EEF8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4E08A1DC1913CF850056EEF8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4E08A1E31913CF850056EEF8;
+			remoteInfo = "kdeconnect-ios";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		4E08A1E41913CF850056EEF8 /* kdeconnect-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "kdeconnect-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4E08A1E71913CF850056EEF8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		4E08A1E91913CF850056EEF8 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		4E08A1EB1913CF850056EEF8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		4E08A1EF1913CF850056EEF8 /* kdeconnect-ios-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "kdeconnect-ios-Info.plist"; sourceTree = "<group>"; };
+		4E08A1F11913CF850056EEF8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		4E08A1F31913CF850056EEF8 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		4E08A1F51913CF850056EEF8 /* kdeconnect-ios-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "kdeconnect-ios-Prefix.pch"; sourceTree = "<group>"; };
+		4E08A1F61913CF850056EEF8 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		4E08A1F71913CF850056EEF8 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		4E08A1FA1913CF850056EEF8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPhone.storyboard; sourceTree = "<group>"; };
+		4E08A1FD1913CF850056EEF8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPad.storyboard; sourceTree = "<group>"; };
+		4E08A1FF1913CF850056EEF8 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		4E08A2001913CF850056EEF8 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		4E08A2021913CF850056EEF8 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		4E08A2081913CF850056EEF8 /* kdeconnect-iosTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "kdeconnect-iosTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4E08A2091913CF850056EEF8 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		4E08A2111913CF860056EEF8 /* kdeconnect-iosTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "kdeconnect-iosTests-Info.plist"; sourceTree = "<group>"; };
+		4E08A2131913CF860056EEF8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		4E08A2151913CF860056EEF8 /* kdeconnect_iosTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = kdeconnect_iosTests.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		4E08A1E11913CF850056EEF8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4E08A1EA1913CF850056EEF8 /* CoreGraphics.framework in Frameworks */,
+				4E08A1EC1913CF850056EEF8 /* UIKit.framework in Frameworks */,
+				4E08A1E81913CF850056EEF8 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4E08A2051913CF850056EEF8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4E08A20A1913CF850056EEF8 /* XCTest.framework in Frameworks */,
+				4E08A20C1913CF850056EEF8 /* UIKit.framework in Frameworks */,
+				4E08A20B1913CF850056EEF8 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		4E08A1DB1913CF850056EEF8 = {
+			isa = PBXGroup;
+			children = (
+				4E08A1ED1913CF850056EEF8 /* kdeconnect-ios */,
+				4E08A20F1913CF850056EEF8 /* kdeconnect-iosTests */,
+				4E08A1E61913CF850056EEF8 /* Frameworks */,
+				4E08A1E51913CF850056EEF8 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		4E08A1E51913CF850056EEF8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4E08A1E41913CF850056EEF8 /* kdeconnect-ios.app */,
+				4E08A2081913CF850056EEF8 /* kdeconnect-iosTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		4E08A1E61913CF850056EEF8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4E08A1E71913CF850056EEF8 /* Foundation.framework */,
+				4E08A1E91913CF850056EEF8 /* CoreGraphics.framework */,
+				4E08A1EB1913CF850056EEF8 /* UIKit.framework */,
+				4E08A2091913CF850056EEF8 /* XCTest.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		4E08A1ED1913CF850056EEF8 /* kdeconnect-ios */ = {
+			isa = PBXGroup;
+			children = (
+				4E08A1F61913CF850056EEF8 /* AppDelegate.h */,
+				4E08A1F71913CF850056EEF8 /* AppDelegate.m */,
+				4E08A1F91913CF850056EEF8 /* Main_iPhone.storyboard */,
+				4E08A1FC1913CF850056EEF8 /* Main_iPad.storyboard */,
+				4E08A1FF1913CF850056EEF8 /* ViewController.h */,
+				4E08A2001913CF850056EEF8 /* ViewController.m */,
+				4E08A2021913CF850056EEF8 /* Images.xcassets */,
+				4E08A1EE1913CF850056EEF8 /* Supporting Files */,
+			);
+			path = "kdeconnect-ios";
+			sourceTree = "<group>";
+		};
+		4E08A1EE1913CF850056EEF8 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				4E08A1EF1913CF850056EEF8 /* kdeconnect-ios-Info.plist */,
+				4E08A1F01913CF850056EEF8 /* InfoPlist.strings */,
+				4E08A1F31913CF850056EEF8 /* main.m */,
+				4E08A1F51913CF850056EEF8 /* kdeconnect-ios-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		4E08A20F1913CF850056EEF8 /* kdeconnect-iosTests */ = {
+			isa = PBXGroup;
+			children = (
+				4E08A2151913CF860056EEF8 /* kdeconnect_iosTests.m */,
+				4E08A2101913CF860056EEF8 /* Supporting Files */,
+			);
+			path = "kdeconnect-iosTests";
+			sourceTree = "<group>";
+		};
+		4E08A2101913CF860056EEF8 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				4E08A2111913CF860056EEF8 /* kdeconnect-iosTests-Info.plist */,
+				4E08A2121913CF860056EEF8 /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		4E08A1E31913CF850056EEF8 /* kdeconnect-ios */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4E08A2191913CF860056EEF8 /* Build configuration list for PBXNativeTarget "kdeconnect-ios" */;
+			buildPhases = (
+				4E08A1E01913CF850056EEF8 /* Sources */,
+				4E08A1E11913CF850056EEF8 /* Frameworks */,
+				4E08A1E21913CF850056EEF8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "kdeconnect-ios";
+			productName = "kdeconnect-ios";
+			productReference = 4E08A1E41913CF850056EEF8 /* kdeconnect-ios.app */;
+			productType = "com.apple.product-type.application";
+		};
+		4E08A2071913CF850056EEF8 /* kdeconnect-iosTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4E08A21C1913CF860056EEF8 /* Build configuration list for PBXNativeTarget "kdeconnect-iosTests" */;
+			buildPhases = (
+				4E08A2041913CF850056EEF8 /* Sources */,
+				4E08A2051913CF850056EEF8 /* Frameworks */,
+				4E08A2061913CF850056EEF8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4E08A20E1913CF850056EEF8 /* PBXTargetDependency */,
+			);
+			name = "kdeconnect-iosTests";
+			productName = "kdeconnect-iosTests";
+			productReference = 4E08A2081913CF850056EEF8 /* kdeconnect-iosTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		4E08A1DC1913CF850056EEF8 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = yangqiao;
+				TargetAttributes = {
+					4E08A2071913CF850056EEF8 = {
+						TestTargetID = 4E08A1E31913CF850056EEF8;
+					};
+				};
+			};
+			buildConfigurationList = 4E08A1DF1913CF850056EEF8 /* Build configuration list for PBXProject "kdeconnect-ios" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 4E08A1DB1913CF850056EEF8;
+			productRefGroup = 4E08A1E51913CF850056EEF8 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4E08A1E31913CF850056EEF8 /* kdeconnect-ios */,
+				4E08A2071913CF850056EEF8 /* kdeconnect-iosTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		4E08A1E21913CF850056EEF8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4E08A1FE1913CF850056EEF8 /* Main_iPad.storyboard in Resources */,
+				4E08A2031913CF850056EEF8 /* Images.xcassets in Resources */,
+				4E08A1FB1913CF850056EEF8 /* Main_iPhone.storyboard in Resources */,
+				4E08A1F21913CF850056EEF8 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4E08A2061913CF850056EEF8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4E08A2141913CF860056EEF8 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4E08A1E01913CF850056EEF8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4E08A2011913CF850056EEF8 /* ViewController.m in Sources */,
+				4E08A1F81913CF850056EEF8 /* AppDelegate.m in Sources */,
+				4E08A1F41913CF850056EEF8 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4E08A2041913CF850056EEF8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4E08A2161913CF860056EEF8 /* kdeconnect_iosTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4E08A20E1913CF850056EEF8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4E08A1E31913CF850056EEF8 /* kdeconnect-ios */;
+			targetProxy = 4E08A20D1913CF850056EEF8 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		4E08A1F01913CF850056EEF8 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4E08A1F11913CF850056EEF8 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		4E08A1F91913CF850056EEF8 /* Main_iPhone.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4E08A1FA1913CF850056EEF8 /* Base */,
+			);
+			name = Main_iPhone.storyboard;
+			sourceTree = "<group>";
+		};
+		4E08A1FC1913CF850056EEF8 /* Main_iPad.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4E08A1FD1913CF850056EEF8 /* Base */,
+			);
+			name = Main_iPad.storyboard;
+			sourceTree = "<group>";
+		};
+		4E08A2121913CF860056EEF8 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4E08A2131913CF860056EEF8 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		4E08A2171913CF860056EEF8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		4E08A2181913CF860056EEF8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		4E08A21A1913CF860056EEF8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "kdeconnect-ios/kdeconnect-ios-Prefix.pch";
+				INFOPLIST_FILE = "kdeconnect-ios/kdeconnect-ios-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		4E08A21B1913CF860056EEF8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "kdeconnect-ios/kdeconnect-ios-Prefix.pch";
+				INFOPLIST_FILE = "kdeconnect-ios/kdeconnect-ios-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		4E08A21D1913CF860056EEF8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/kdeconnect-ios.app/kdeconnect-ios";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "kdeconnect-ios/kdeconnect-ios-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "kdeconnect-iosTests/kdeconnect-iosTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		4E08A21E1913CF860056EEF8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/kdeconnect-ios.app/kdeconnect-ios";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "kdeconnect-ios/kdeconnect-ios-Prefix.pch";
+				INFOPLIST_FILE = "kdeconnect-iosTests/kdeconnect-iosTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4E08A1DF1913CF850056EEF8 /* Build configuration list for PBXProject "kdeconnect-ios" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4E08A2171913CF860056EEF8 /* Debug */,
+				4E08A2181913CF860056EEF8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4E08A2191913CF860056EEF8 /* Build configuration list for PBXNativeTarget "kdeconnect-ios" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4E08A21A1913CF860056EEF8 /* Debug */,
+				4E08A21B1913CF860056EEF8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		4E08A21C1913CF860056EEF8 /* Build configuration list for PBXNativeTarget "kdeconnect-iosTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4E08A21D1913CF860056EEF8 /* Debug */,
+				4E08A21E1913CF860056EEF8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 4E08A1DC1913CF850056EEF8 /* Project object */;
+}
