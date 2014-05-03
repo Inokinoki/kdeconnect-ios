@@ -13,6 +13,7 @@
 static NSInteger ProtocolVersion=5;
 static NSString* PACKAGE_TYPE_IDENTITY = @"kdeconnect.identity";
 static NSString* PACKAGE_TYPE_PAIR = @"kdeconnect.pair";
+static NSString* PACKAGE_TYPE_PING = @"kdeconnect.ping";
 #pragma mark -
 @interface NetworkPackage : NSObject
 {

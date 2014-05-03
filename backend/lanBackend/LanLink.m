@@ -13,12 +13,14 @@
 @synthesize _linkProvider;
 //@synthesize _socketLinkReader;
 
-- (LanLink*) init:(NSString *)deviceId provider:(BaseLinkProvider *)provider
+- (LanLink*) init:(GCDAsyncSocket*)socket deviceId:(NSString*) deviceid provider:(BaseLinkProvider *)provider;
 {
-    if ([super init:deviceId provider:provider])
+    if ([super init:deviceid provider:provider])
     {
-        
+        __socket=socket;
     }
+    
+    NSLog(@"LanLink:lanlink created");
     return self;
 }
 

@@ -15,8 +15,8 @@
 @class Device;
 
 @interface BackgroundService : NSObject
-@property(weak,nonatomic)NSMutableArray*_linkProviders;
-@property(weak,nonatomic)NSMutableDictionary* _devices;
+@property(strong,nonatomic)NSMutableArray*_linkProviders;
+@property(strong,nonatomic)NSMutableDictionary* _devices;
 
 
 - (BackgroundService*) init;

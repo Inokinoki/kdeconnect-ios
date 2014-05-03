@@ -8,16 +8,17 @@
 
 #import "ViewController.h"
 #import "GCDAsyncUdpSocket.h"
+#import "GCDAsyncSocket.h"
 #import <ifaddrs.h>
 #import <CFNetwork/CFNetwork.h>
 #import <arpa/inet.h>
 #import "NetworkPackage.h"
 #import "../lib/BackgroundService.h"
 #define FORMAT(format, ...) [NSString stringWithFormat:(format), ##__VA_ARGS__]
-
 @interface ViewController ()
 {
     NSMutableString *log;
+    BackgroundService* bg;
 }
 
 @end
@@ -40,6 +41,7 @@
 	                                             name:UIKeyboardWillHideNotification
 	                                           object:nil];
     [self logInfo:FORMAT(@"Ready")];
+    NSLog(@"hello");
     
 }
 
@@ -132,7 +134,6 @@
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
 {
-    //	DDLogError(@"webView:didFailLoadWithError: %@", error);
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)sender
@@ -164,14 +165,6 @@
 	[webView loadHTMLString:html baseURL:nil];
 }
 
-- (IBAction)send:(id)sender
-{
-    BackgroundService* bg=[[BackgroundService alloc] init];
-    [bg registerLinkProviders];
-    [bg onNetworkChange];
-    
-}
-
 - (void)logMessage:(NSString *)msg
 {
 	NSString *prefix = @"<font color=\"#000000\">";
@@ -183,5 +176,11 @@
 	[webView loadHTMLString:html baseURL:nil];
 }
 
-
+- (IBAction)send:(id)sender
+{
+    if(bg==nil) bg=[[BackgroundService alloc] init];
+    [bg registerLinkProviders];
+    [bg onNetworkChange];
+    
+}
 @end

@@ -5,24 +5,23 @@
 //  Created by yangqiao on 4/27/14.
 //  Copyright (c) 2014 yangqiao. All rights reserved.
 //
-
 #import <Foundation/Foundation.h>
 #import "GCDAsyncUdpSocket.h"
+#import "GCDAsyncSocket.h"
 #import "NetworkPackage.h"
 #import <CFNetwork/CFNetwork.h>
 #import "BaseLinkProvider.h"
-
+#import "LanLink.h"
+@class GCDAsyncSocket;
 @class GCDAsyncUdpSocket;
 @class BackgroundService;
 @class LanLink;
-static NSInteger port=1714;
+static int PORT=1714;
 
 @interface LanLinkProvider : BaseLinkProvider
 
-@property(weak,nonatomic)NSMutableDictionary* visibleComputers;
-@property(weak,nonatomic)NSMutableArray* deviceLinks;
-@property(strong,readonly,nonatomic)BackgroundService* _parent;
-+ (LanLinkProvider*) alloc;
+@property(weak,nonatomic)NSMutableDictionary* _visibleComputers;
+@property(strong,nonatomic)BackgroundService* _parent;
 - (LanLinkProvider*) init:(BackgroundService*)parent;
 - (void) onNetworkChange;
 - (void) onStart;
@@ -34,6 +33,5 @@ static NSInteger port=1714;
 - (void) baseLinkDestroyed;
 
 - (void) addLink:(NetworkPackage*)np lanLink:(LanLink*)lanLink;
-
 
 @end

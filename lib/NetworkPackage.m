@@ -39,7 +39,7 @@
     [[np _Body] setValue:@"yangqiao-iphone-device-id" forKey:@"deviceId"];
     [[np _Body] setValue:[UIDevice currentDevice].name forKey:@"deviceName"];
     [[np _Body] setValue:[NSNumber numberWithInteger:ProtocolVersion] forKey:@"protocolVersion"];
-    [[np _Body] setValue:[UIDevice currentDevice].model forKey:@"deviceType"];
+    [[np _Body] setValue:@"Phone" forKey:@"deviceType"];
     [[np _Body] setValue:[NSNumber numberWithInteger:1714]  forKey:@"tcpPort"];
     
     return np;
@@ -68,6 +68,8 @@
     NSDictionary* info=[NSDictionary dictionaryWithObjects:values forKeys:keys];
     NSError* err=nil;
     NSData* jsonData=[NSJSONSerialization dataWithJSONObject:info options:0 error:&err];
+    NSString* jsonStr=[[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    
     return jsonData;
 }
 

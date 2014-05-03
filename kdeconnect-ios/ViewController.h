@@ -12,7 +12,6 @@
 {
 	IBOutlet UIWebView *webView;
 }
-//- (IBAction)send:(id)sender;
 
 - (IBAction)send:(id)sender;
 - (void)logMessage:(NSString *)msg;
