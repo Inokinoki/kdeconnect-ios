@@ -10,6 +10,7 @@
 
 @implementation LanLinkProvider
 {
+    BackgroundService* _parent;
     GCDAsyncUdpSocket* _udpSocket;
     GCDAsyncSocket* _tcpSocket;
     long tag;
@@ -22,7 +23,8 @@
         
     }
     _tcpPort=PORT;
-    __visibleComputers=[[NSDictionary alloc] init];
+    __pendingConnections=[NSMutableDictionary dictionaryWithCapacity:1];
+    __visibleComputers=[NSMutableDictionary dictionaryWithCapacity:1];
     return self;
 }
 
@@ -50,13 +52,14 @@
     while (![_tcpSocket acceptOnPort:_tcpPort error:&err]) {
         _tcpPort++;
     }
-    NSLog(@"LanLinkProvider:setup tcp socket on port%d",_tcpPort);
+    NSLog(@"LanLinkProvider:setup tcp socket on port %d",_tcpPort);
     
     //Introduce myself , UDP broadcasting my id package
     NetworkPackage* np=[NetworkPackage createIdentityPackage];
-    [[np _Body] setObject:[[NSNumber alloc ] initWithUnsignedInt:_tcpPort] forKey:@"tcpPort"];
+    [[np _Body] setValue:[[NSNumber alloc ] initWithUnsignedInt:_tcpPort] forKey:@"tcpPort"];
     NSData* data=[np serialize];
-	[_udpSocket sendData:data toHost:@"255.255.255.255" port:PORT withTimeout:-1 tag:tag];
+    NSLog([[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+//	[_udpSocket sendData:data toHost:@"255.255.255.255" port:PORT withTimeout:-1 tag:tag];
 	tag++;
 }
 
@@ -71,20 +74,6 @@
     [self onStop];
     [self onStart];
 }
-
-- (void) addLink:(NetworkPackage *)np lanLink:(LanLink *)lanLink
-{
-    NSString* deviceId=[[np _Body] valueForKey:@"deviceId"];
-    NSLog(@"LanLinkProvider：addlink to %@",deviceId);
-    LanLink* oldLink=__visibleComputers[deviceId];
-    [__visibleComputers setObject:lanLink forKey:deviceId];
-    if (oldLink==nil) {
-        NSLog(@"LanLinkProvider:Removing old connection to same device");
-        [oldLink disconnect];
-        [self._parent onConnectionLost:oldLink];
-    }
-}
-
 #pragma mark UDP Socket Delegate
 
 /**
@@ -117,14 +106,15 @@
     uint16_t tcpPort=[[[np _Body] valueForKey:@"tcpPort"] intValue];
     NSString* host=[[np _Body] valueForKey:@"deviceName"];
     NSError* error=nil;
-    if (![socket connectToHost:host onPort:tcpPort error:&error]) {
+    bool success=[socket connectToHost:host onPort:tcpPort error:&error];
+    if (!success) {
         NSLog(@"LanLinkProvider:tcp connection error");
         return;
-    };
-    NSLog(@"LanLinkProvider:Connection state:%d",[socket isConnected]);
-
-//    LanLink* link=[[LanLink alloc] init:socket deviceId:[[np _Body] valueForKey:@"deviceId"] provider:self];
-    
+    }
+    else
+    {
+        NSLog(@"connecting");
+    }
     
 //    [self addLink:np lanLink:link];
     
@@ -143,21 +133,6 @@
 
 #pragma mark TCP Socket Delegate
 
-- (void)socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket
-{
-	// This method is executed on the socketQueue (not the main thread)
-	NSLog(@"TCP server: didAcceptNewSocket");
-	NSString *host = [newSocket connectedHost];
-	UInt16 port = [newSocket connectedPort];
-//	NSString *welcomeMsg = @"Welcome to the AsyncSocket Echo Server\r\n";
-//	NSData *welcomeData = [welcomeMsg dataUsingEncoding:NSUTF8StringEncoding];
-//	
-//	[newSocket writeData:welcomeData withTimeout:-1 tag:WELCOME_MSG];
-//	
-//	[newSocket readDataToData:[GCDAsyncSocket CRLFData] withTimeout:READ_TIMEOUT tag:0];
-}
-
-
 /**
  * Called when a socket accepts a connection.
  * Another socket is automatically spawned to handle it.
@@ -168,10 +143,60 @@
  * By default the new socket will have the same delegate and delegateQueue.
  * You may, of course, change this at any time.
  **/
+- (void)socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket
+{
+	// This method is executed on the socketQueue (not the main thread)
+	NSLog(@"TCP server: didAcceptNewSocket");
+	NSString *host = [newSocket connectedHost];
+    NSMutableDictionary *connection=[NSMutableDictionary dictionaryWithObjects:[NSMutableArray arrayWithObjects:sock, nil] forKeys:[NSArray arrayWithObjects:@"socket", nil]];
+    [__pendingConnections setValue:connection forKey:host];
+//	NSString *welcomeMsg = @"Welcome to the AsyncSocket Echo Server\r\n";
+//	NSData *welcomeData = [welcomeMsg dataUsingEncoding:NSUTF8StringEncoding];
+//	
+//	[newSocket writeData:welcomeData withTimeout:-1 tag:WELCOME_MSG];
+//
+    
+    [newSocket readDataWithTimeout:-1 tag:0];
+    NSData* data;
+    NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PAIR];
+    [[np _Body] setValue:[NSNumber numberWithBool:true] forKey:@"pair"];
+    [[np _Body] setValue:@"qwefsdv1241234asvqwefbgwerf1345" forKey:@"publickey"];
+    data=[np serialize];
+    NSLog(@"%@\n",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+
+    [newSocket writeData:data withTimeout:-1 tag:0];
+    [newSocket readDataWithTimeout:-1 tag:0];
+
+}
+
+
+/**
+ * Called when a socket connects and is ready for reading and writing.
+ * The host parameter will be an IP address, not a DNS name.
+ **/
 
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port
 {
     NSLog(@"tcp socket didConnectToHost");
+    [sock setDelegate:self];
+    
+    NSMutableDictionary* connection=[__pendingConnections valueForKey:host];
+    if (connection) {
+        NSLog(@"it's a pending connection");
+        [__pendingConnections removeObjectForKey:host];
+    }
+    connection=[__visibleComputers objectForKey:host];
+    if (connection) {
+        NSLog(@"it's a visibleComputer connection");
+        [__visibleComputers removeObjectForKey:host];
+    }
+    connection=[NSMutableDictionary dictionaryWithObjects:[NSArray arrayWithObjects:sock, nil] forKeys:[NSArray arrayWithObjects:@"socket", nil]];
+
+    [__visibleComputers setValue:connection forKey:host];
+    NetworkPackage* np=[NetworkPackage createIdentityPackage];
+    NSData* data=[np serialize];
+    [sock writeData:data withTimeout:-1 tag:0];
+    
 }
 
 /**
@@ -181,6 +206,29 @@
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
     NSLog(@"tcp socket didReadData");
+    NSLog([[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+    NSString *host = [sock connectedHost];
+	UInt16 port = [sock connectedPort];
+    NetworkPackage* np=[NetworkPackage unserialize:data];
+    
+    if (![[np _Type] isEqualToString:PACKAGE_TYPE_IDENTITY]) {
+        NSLog(@"expecting an id package");
+        return;
+    }
+    
+    NSMutableDictionary* connection=[__pendingConnections valueForKey:host];
+    //if it's a pendingConnection
+    if ( !connection ) {
+        NSLog(@"receive something from a connection not pending");
+    }
+    [connection setValue:np forKey:@"np"];
+    [__visibleComputers setValue:connection forKey:host];
+    [__pendingConnections removeObjectForKey:host];
+    //clear delegate
+//    [sock setDelegate:nil];
+    LanLink* link=[[LanLink alloc] init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] provider:self];
+    [_parent onConnectionReceived:np link:link];
+    
 }
 
 /**
@@ -207,7 +255,7 @@
  **/
 - (void)socket:(GCDAsyncSocket *)sock didWritePartialDataOfLength:(NSUInteger)partialLength tag:(long)tag
 {
-    
+    NSLog(@"tcp socket didWritePartialData");
 }
 
 /**
@@ -246,6 +294,7 @@
                  elapsed:(NSTimeInterval)elapsed
                bytesDone:(NSUInteger)length
 {
+    NSLog(@"writetimeout");
     return 0;
 }
 
@@ -284,20 +333,15 @@
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err
 {
     NSLog(@"tcp socket did Disconnect");
-}
+    if ([sock localPort]==_tcpPort) {
+        NSLog(@"tcp server disconnected");
+    }
+    else
+    {
 
-/**
- * Called after the socket has successfully completed SSL/TLS negotiation.
- * This method is not called unless you use the provided startTLS method.
- *
- * If a SSL/TLS negotiation fails (invalid certificate, etc) then the socket will immediately close,
- * and the socketDidDisconnect:withError: delegate method will be called with the specific SSL error code.
- **/
-- (void)socketDidSecure:(GCDAsyncSocket *)sock
-{
-    
+        NSLog(@"tcp socket disconnected,remaining %d connection",[__pendingConnections count]);
+    }
 }
-
 @end
 
 

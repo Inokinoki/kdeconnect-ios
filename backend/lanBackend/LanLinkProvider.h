@@ -19,19 +19,11 @@
 static int PORT=1714;
 
 @interface LanLinkProvider : BaseLinkProvider
-
-@property(weak,nonatomic)NSMutableDictionary* _visibleComputers;
-@property(strong,nonatomic)BackgroundService* _parent;
+@property(strong,nonatomic) NSMutableDictionary* _visibleComputers;
+@property(strong,nonatomic) NSMutableDictionary* _pendingConnections;
 - (LanLinkProvider*) init:(BackgroundService*)parent;
 - (void) onNetworkChange;
 - (void) onStart;
 - (void) onStop;
-- (void) connected;
-
-- (void) newConnection;
-- (void) packageRecieved;
-- (void) baseLinkDestroyed;
-
-- (void) addLink:(NetworkPackage*)np lanLink:(LanLink*)lanLink;
 
 @end

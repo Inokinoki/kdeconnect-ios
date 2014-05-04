@@ -70,6 +70,13 @@
     NSData* jsonData=[NSJSONSerialization dataWithJSONObject:info options:0 error:&err];
     NSString* jsonStr=[[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
     
+    unichar lineSperatorChar;
+    NSString* lineSperatorString;
+    lineSperatorChar=0x2028;
+    lineSperatorString=[NSString stringWithCharacters:&lineSperatorChar length:1];
+    
+    [jsonStr stringByAppendingString:lineSperatorString];
+    jsonData=[jsonStr dataUsingEncoding:NSUTF8StringEncoding];
     return jsonData;
 }
 
@@ -118,13 +125,13 @@
 {
     
 }
-- (void) hasPayload
+- (BOOL) hasPayload
 {
-    
+    return false;
 }
-- (void) hasPayloadTransferInfo
+- (BOOL) hasPayloadTransferInfo
 {
-    
+    return false;
 }
 - (void) getPayload
 {

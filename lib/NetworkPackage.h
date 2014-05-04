@@ -19,8 +19,8 @@ static NSString* PACKAGE_TYPE_PING = @"kdeconnect.ping";
 {
 }
 
-@property(strong,nonatomic) NSString* _Id;
-@property(strong,nonatomic) NSString *_Type;
+@property(weak,nonatomic) NSString* _Id;
+@property(weak,nonatomic) NSString *_Type;
 @property(strong,nonatomic) NSMutableDictionary *_Body;
 //@property(weak,nonatomic) NSInputStream *_Payload;
 //@property(weak,nonatomic) NSDictionay *_PayloadTransferInfo;

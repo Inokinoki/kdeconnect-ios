@@ -13,7 +13,7 @@
 - (BackgroundService*) init
 {
     self._linkProviders=[NSMutableArray array];
-    self._devices=[NSMutableDictionary dictionary];
+    self._devices=[NSMutableDictionary dictionaryWithCapacity:1];
     return self;
 }
 
@@ -30,6 +30,7 @@
         [link onNetworkChange];
     }
 }
+
 
 
 @end

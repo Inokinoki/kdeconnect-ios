@@ -13,6 +13,7 @@
 #import <CFNetwork/CFNetwork.h>
 #import <arpa/inet.h>
 #import "NetworkPackage.h"
+#import "../backend/lanBackend/LanLinkProvider.h"
 #import "../lib/BackgroundService.h"
 #define FORMAT(format, ...) [NSString stringWithFormat:(format), ##__VA_ARGS__]
 @interface ViewController ()
@@ -180,7 +181,10 @@
 {
     if(bg==nil) bg=[[BackgroundService alloc] init];
     [bg registerLinkProviders];
-    [bg onNetworkChange];
+    for ( LanLinkProvider* lp in [bg _linkProviders]) {
+        [lp onStart];
+    }
+//    [bg onNetworkChange];
     
 }
 @end
