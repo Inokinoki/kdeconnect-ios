@@ -9,8 +9,7 @@
 #import "BaseLinkProvider.h"
 
 @implementation BaseLinkProvider
-@synthesize _priority;
-@dynamic _name;
+
 - (BaseLinkProvider*) init:(BackgroundService*)parent
 {
     self._parent=parent;
@@ -27,11 +26,6 @@
 }
 
 - (void) onNetworkChange
-{
-    
-}
-
-- (void) onConnectionReceived:(NetworkPackage *)idp baselink:(BaseLink *)baselink
 {
     
 }

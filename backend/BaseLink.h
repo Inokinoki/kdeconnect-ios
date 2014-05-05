@@ -12,12 +12,11 @@
 @class BaseLinkProvider;
 @class NetworkPackage;
 @interface BaseLink : NSObject
-@property(weak,nonatomic) NSString* _deviceId;
-@property(weak,nonatomic) BaseLinkProvider* _linkProvider;
+@property(strong,nonatomic) NSString* _deviceId;
+@property(strong,nonatomic) BaseLinkProvider* _linkProvider;
 //@property(strong,nonatomic) _privatekey;
 - (BaseLink*) init:(NSString*)deviceId provider:(BaseLinkProvider*)provider;
 - (BOOL) sendPackage:(NetworkPackage*)np;
 - (BOOL) sendPackageEncypted:(NetworkPackage*)np;
-- (void) onPackageReceived:(NetworkPackage*)np;
 
 @end;

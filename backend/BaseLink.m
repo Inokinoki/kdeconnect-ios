@@ -15,8 +15,8 @@
 {
     if ([super init])
     {
-        [self set_deviceId:deviceId];
-        [self set_linkProvider:provider];
+        _deviceId=deviceId;
+        _linkProvider=provider;
     };
     return self;
 }

@@ -13,14 +13,12 @@
 @class BackgroundService;
 @class BaseLink;
 @class NetworkPackage;
+
 @interface BaseLinkProvider : NSObject
-@property(weak,readonly,nonatomic)NSString* _name;
-@property(readonly,nonatomic)NSInteger _priority;
-@property(nonatomic)BackgroundService* _parent;
+@property(strong,nonatomic)BackgroundService* _parent;
 - (BaseLinkProvider*) init:(BackgroundService*)parent;
 - (void) onStart;
 - (void) onStop;
 - (void) onNetworkChange;
-- (void) onConnectionReceived:(NetworkPackage*)idp baselink:(BaseLink*)baselink;
 
 @end

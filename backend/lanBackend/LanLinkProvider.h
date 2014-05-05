@@ -16,13 +16,12 @@
 @class GCDAsyncUdpSocket;
 @class BackgroundService;
 @class LanLink;
-static int PORT=1714;
 
 @interface LanLinkProvider : BaseLinkProvider
 @property(strong,nonatomic) NSMutableDictionary* _visibleComputers;
 - (LanLinkProvider*) init:(BackgroundService*)parent;
-- (void) onNetworkChange;
 - (void) onStart;
 - (void) onStop;
+- (void) onNetworkChange;
 
 @end

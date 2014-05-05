@@ -7,7 +7,7 @@
 //
 
 #import "LanLinkProvider.h"
-
+static int PORT=1714;
 @implementation LanLinkProvider
 {
     __strong BackgroundService* _parent;
