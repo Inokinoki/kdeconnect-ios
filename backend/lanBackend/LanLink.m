@@ -10,12 +10,12 @@
 
 @implementation LanLink
 {
-    __strong AsyncSocket* _socket;
+    __strong GCDAsyncSocket* _socket;
 }
 @synthesize _deviceId;
 @synthesize _linkProvider;
 
-- (LanLink*) init:(AsyncSocket*)socket deviceId:(NSString*) deviceid provider:(BaseLinkProvider *)provider;
+- (LanLink*) init:(GCDAsyncSocket*)socket deviceId:(NSString*) deviceid provider:(BaseLinkProvider *)provider;
 {
     if ([super init:deviceid provider:provider])
     {
@@ -52,67 +52,50 @@
 
 #pragma mark TCP delegate
 /**
- * In the event of an error, the socket is closed.
- * You may call "unreadData" during this call-back to get the last bit of data off the socket.
- * When connecting, this delegate method may be called
- * before"onSocket:didAcceptNewSocket:" or "onSocket:didConnectToHost:".
+ * This method is called immediately prior to socket:didAcceptNewSocket:.
+ * It optionally allows a listening socket to specify the socketQueue for a new accepted socket.
+ * If this method is not implemented, or returns NULL, the new accepted socket will create its own default queue.
+ *
+ * Since you cannot autorelease a dispatch_queue,
+ * this method uses the "new" prefix in its name to specify that the returned queue has been retained.
+ *
+ * Thus you could do something like this in the implementation:
+ * return dispatch_queue_create("MyQueue", NULL);
+ *
+ * If you are placing multiple sockets on the same queue,
+ * then care should be taken to increment the retain count each time this method is invoked.
+ *
+ * For example, your implementation might look something like this:
+ * dispatch_retain(myExistingQueue);
+ * return myExistingQueue;
  **/
-- (void)onSocket:(AsyncSocket *)sock willDisconnectWithError:(NSError *)err
+/*
+- (dispatch_queue_t)newSocketQueueForConnectionFromAddress:(NSData *)address onSocket:(GCDAsyncSocket *)sock
 {
     
 }
+*/
 
 /**
- * Called when a socket disconnects with or without error.  If you want to release a socket after it disconnects,
- * do so here. It is not safe to do that during "onSocket:willDisconnectWithError:".
+ * Called when a socket accepts a connection.
+ * Another socket is automatically spawned to handle it.
  *
- * If you call the disconnect method, and the socket wasn't already disconnected,
- * this delegate method will be called before the disconnect method returns.
+ * You must retain the newSocket if you wish to handle the connection.
+ * Otherwise the newSocket instance will be released and the spawned connection will be closed.
+ *
+ * By default the new socket will have the same delegate and delegateQueue.
+ * You may, of course, change this at any time.
  **/
-- (void)onSocketDidDisconnect:(AsyncSocket *)sock
+- (void)socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket
 {
     
-}
-
-/**
- * Called when a socket accepts a connection.  Another socket is spawned to handle it. The new socket will have
- * the same delegate and will call "onSocket:didConnectToHost:port:".
- **/
-- (void)onSocket:(AsyncSocket *)sock didAcceptNewSocket:(AsyncSocket *)newSocket
-{
-    
-}
-
-/**
- * Called when a new socket is spawned to handle a connection.  This method should return the run-loop of the
- * thread on which the new socket and its delegate should operate. If omitted, [NSRunLoop currentRunLoop] is used.
- **/
-- (NSRunLoop *)onSocket:(AsyncSocket *)sock wantsRunLoopForNewSocket:(AsyncSocket *)newSocket
-{
-    return [[NSRunLoop alloc] init];
-}
-
-/**
- * Called when a socket is about to connect. This method should return YES to continue, or NO to abort.
- * If aborted, will result in AsyncSocketCanceledError.
- *
- * If the connectToHost:onPort:error: method was called, the delegate will be able to access and configure the
- * CFReadStream and CFWriteStream as desired prior to connection.
- *
- * If the connectToAddress:error: method was called, the delegate will be able to access and configure the
- * CFSocket and CFSocketNativeHandle (BSD socket) as desired prior to connection. You will be able to access and
- * configure the CFReadStream and CFWriteStream in the onSocket:didConnectToHost:port: method.
- **/
-- (BOOL)onSocketWillConnect:(AsyncSocket *)sock
-{
-    return true;
 }
 
 /**
  * Called when a socket connects and is ready for reading and writing.
  * The host parameter will be an IP address, not a DNS name.
  **/
-- (void)onSocket:(AsyncSocket *)sock didConnectToHost:(NSString *)host port:(UInt16)port
+- (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port
 {
     
 }
@@ -121,7 +104,7 @@
  * Called when a socket has completed reading the requested data into memory.
  * Not called if there is an error.
  **/
-- (void)onSocket:(AsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
+- (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
     
 }
@@ -131,7 +114,7 @@
  * This would occur if using readToData: or readToLength: methods.
  * It may be used to for things such as updating progress bars.
  **/
-- (void)onSocket:(AsyncSocket *)sock didReadPartialDataOfLength:(NSUInteger)partialLength tag:(long)tag
+- (void)socket:(GCDAsyncSocket *)sock didReadPartialDataOfLength:(NSUInteger)partialLength tag:(long)tag
 {
     
 }
@@ -139,7 +122,7 @@
 /**
  * Called when a socket has completed writing the requested data. Not called if there is an error.
  **/
-- (void)onSocket:(AsyncSocket *)sock didWriteDataWithTag:(long)tag
+- (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag
 {
     
 }
@@ -148,7 +131,7 @@
  * Called when a socket has written some data, but has not yet completed the entire write.
  * It may be used to for things such as updating progress bars.
  **/
-- (void)onSocket:(AsyncSocket *)sock didWritePartialDataOfLength:(NSUInteger)partialLength tag:(long)tag
+- (void)socket:(GCDAsyncSocket *)sock didWritePartialDataOfLength:(NSUInteger)partialLength tag:(long)tag
 {
     
 }
@@ -164,10 +147,9 @@
  *
  * Note that this method may be called multiple times for a single read if you return positive numbers.
  **/
-- (NSTimeInterval)onSocket:(AsyncSocket *)sock
-  shouldTimeoutReadWithTag:(long)tag
-                   elapsed:(NSTimeInterval)elapsed
-                 bytesDone:(NSUInteger)length
+- (NSTimeInterval)socket:(GCDAsyncSocket *)sock shouldTimeoutReadWithTag:(long)tag
+                 elapsed:(NSTimeInterval)elapsed
+               bytesDone:(NSUInteger)length
 {
     return 0;
 }
@@ -183,14 +165,49 @@
  *
  * Note that this method may be called multiple times for a single write if you return positive numbers.
  **/
-- (NSTimeInterval)onSocket:(AsyncSocket *)sock
- shouldTimeoutWriteWithTag:(long)tag
-                   elapsed:(NSTimeInterval)elapsed
-                 bytesDone:(NSUInteger)length
+- (NSTimeInterval)socket:(GCDAsyncSocket *)sock shouldTimeoutWriteWithTag:(long)tag
+                 elapsed:(NSTimeInterval)elapsed
+               bytesDone:(NSUInteger)length
 {
     return 0;
 }
 
+/**
+ * Conditionally called if the read stream closes, but the write stream may still be writeable.
+ *
+ * This delegate method is only called if autoDisconnectOnClosedReadStream has been set to NO.
+ * See the discussion on the autoDisconnectOnClosedReadStream method for more information.
+ **/
+- (void)socketDidCloseReadStream:(GCDAsyncSocket *)sock
+{
+    
+}
+
+/**
+ * Called when a socket disconnects with or without error.
+ *
+ * If you call the disconnect method, and the socket wasn't already disconnected,
+ * then an invocation of this delegate method will be enqueued on the delegateQueue
+ * before the disconnect method returns.
+ *
+ * Note: If the GCDAsyncSocket instance is deallocated while it is still connected,
+ * and the delegate is not also deallocated, then this method will be invoked,
+ * but the sock parameter will be nil. (It must necessarily be nil since it is no longer available.)
+ * This is a generally rare, but is possible if one writes code like this:
+ *
+ * asyncSocket = nil; // I'm implicitly disconnecting the socket
+ *
+ * In this case it may preferrable to nil the delegate beforehand, like this:
+ *
+ * asyncSocket.delegate = nil; // Don't invoke my delegate method
+ * asyncSocket = nil; // I'm implicitly disconnecting the socket
+ *
+ * Of course, this depends on how your state machine is configured.
+ **/
+- (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err
+{
+    
+}
 
 
 @end
