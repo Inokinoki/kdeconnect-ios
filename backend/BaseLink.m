@@ -32,14 +32,8 @@
     return true;
 }
 
-- (BOOL) sendPayload:(NetworkPackage *)np
+- (void) onPackageReceived:(NetworkPackage *)np
 {
-    return true;
+    return;
 }
-
-- (void) injectNetworkPackage:(NetworkPackage *)np
-{
-    
-}
-
 @end
