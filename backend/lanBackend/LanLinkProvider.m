@@ -14,7 +14,7 @@ static int PORT=1714;
     __strong GCDAsyncUdpSocket* _udpSocket;
     __strong GCDAsyncSocket* _tcpSocket;
     __strong NSMutableDictionary* _pendingConnections;
-    long tag;
+    long _index;
     uint16_t _tcpPort;
 }
 - (LanLinkProvider*) init:(BackgroundService *)parent
@@ -27,7 +27,7 @@ static int PORT=1714;
     _pendingConnections=[NSMutableDictionary dictionaryWithCapacity:1];
     __visibleComputers=[NSMutableDictionary dictionaryWithCapacity:1];
     return self;
-}
+    }
 
 - (void)setupSocket
 {
@@ -36,14 +36,15 @@ static int PORT=1714;
     }
     if (_udpSocket==nil) {
         _udpSocket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+        NSError* err;
+        if (![_udpSocket bindToPort:PORT error:&err]) {
+            NSLog(@"udp bind error");
+        }
+        
+        [_udpSocket enableBroadcast:true error:&err];
     }
-    NSError* err;
-    if (![_udpSocket bindToPort:PORT error:&err]) {
-        NSLog(@"udp bind error");
+    
     }
-
-    [_udpSocket enableBroadcast:true error:&err];
-}
 
 - (void)onStart
 {
@@ -64,9 +65,8 @@ static int PORT=1714;
     NetworkPackage* np=[NetworkPackage createIdentityPackage];
     [[np _Body] setValue:[[NSNumber alloc ] initWithUnsignedInt:_tcpPort] forKey:@"tcpPort"];
     NSData* data=[np serialize];
-    NSLog([[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
-	[_udpSocket sendData:data toHost:@"255.255.255.255" port:PORT withTimeout:-1 tag:tag];
-	tag++;
+    NSLog(@"%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+	[_udpSocket sendData:data toHost:@"255.255.255.255" port:PORT withTimeout:-1 tag:0];
 }
 
 - (void)onStop
@@ -117,6 +117,11 @@ static int PORT=1714;
     bool success=[socket connectToHost:host onPort:tcpPort error:&error];
     if (!success) {
         NSLog(@"LanLinkProvider:tcp connection error");
+        NSLog(@"try reverse connection");
+        [[np2 _Body] setValue:[[NSNumber alloc ] initWithUnsignedInt:_tcpPort] forKey:@"tcpPort"];
+        NSData* data=[np serialize];
+        NSLog(@"%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+        [_udpSocket sendData:data toHost:@"255.255.255.255" port:PORT withTimeout:-1 tag:0];
         return;
     }
     NSLog(@"connecting");
@@ -125,6 +130,11 @@ static int PORT=1714;
     //add to pending connection list
     NSMutableDictionary *connection=[NSMutableDictionary dictionaryWithObjects:[NSMutableArray arrayWithObjects:np,nil] forKeys:[NSArray arrayWithObjects:@"np", nil]];
     [_pendingConnections setValue:connection forKey:host];
+    
+}
+
+- (void) onLinkDestroyed
+{
     
 }
 
@@ -152,11 +162,12 @@ static int PORT=1714;
     [newSocket readDataWithTimeout:-1 tag:0];
     
     // TODO  pair request, move to other places
-    NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PAIR];
+    NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PING];
     [[np _Body] setValue:[NSNumber numberWithBool:true] forKey:@"pair"];
     [[np _Body] setValue:@"qwefsdv1241234asvqwefbgwerf1345" forKey:@"publickey"];
-    NSData* data;
-    data=[np serialize];
+    NSMutableData* data;
+    data= [NSMutableData dataWithData:[np serialize]];
+    [data appendData:[GCDAsyncSocket LFData]];
     NSLog(@"%@\n",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
 
     [newSocket writeData:data withTimeout:-1 tag:0];
@@ -215,7 +226,7 @@ static int PORT=1714;
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
     NSLog(@"tcp socket didReadData");
-    NSLog([[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+    NSLog(@"%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
     NSString *host = [sock connectedHost];
     NetworkPackage* np=[NetworkPackage unserialize:data];
     
@@ -234,7 +245,7 @@ static int PORT=1714;
     [connection setValue:np forKey:@"np"];
     [__visibleComputers setValue:connection forKey:host];
     [_pendingConnections removeObjectForKey:host];
-    
+    [sock setDelegate:nil];
     //create LanLink and inform the background
     LanLink* link=[[LanLink alloc] init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] provider:self];
     [_parent onConnectionReceived:np link:link];

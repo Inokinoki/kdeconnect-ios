@@ -15,22 +15,13 @@
 @class Device;
 
 @interface BackgroundService : NSObject
-@property(strong,nonatomic)NSMutableArray*_linkProviders;
-@property(strong,nonatomic)NSMutableDictionary* _devices;
-
 
 - (BackgroundService*) init;
-- (void) loadRemenberedDevices;
-- (void) registerLinkProviders;
 - (void) startDiscovery;
 - (void) stopDiscovery;
-- (void) deviceAdded:(NSString*)id;
-- (void) deviceRemoved:(NSString*)id;
-- (void) initializeRsaKeys;
 - (void) onNetworkChange;
-- (void) onConnectionReceived:(NetworkPackage*)np link:(BaseLink*)link;
-- (void) onConnectionLost:(BaseLink*)link;
-- (void) onDestroy;
-- (void) onDeviceListChanged;
+- (void) onConnectionReceived:(NetworkPackage *)np link:(BaseLink *)link;
+- (NSDictionary*) visibleDevices;
+
 
 @end

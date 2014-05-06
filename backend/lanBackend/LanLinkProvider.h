@@ -23,5 +23,6 @@
 - (void) onStart;
 - (void) onStop;
 - (void) onNetworkChange;
+- (void) onLinkDestroyed;
 
 @end

@@ -180,11 +180,7 @@
 - (IBAction)send:(id)sender
 {
     if(bg==nil) bg=[[BackgroundService alloc] init];
-    [bg registerLinkProviders];
-    for ( LanLinkProvider* lp in [bg _linkProviders]) {
-        [lp onStart];
-    }
-//    [bg onNetworkChange];
+    [bg startDiscovery];
     
 }
 @end

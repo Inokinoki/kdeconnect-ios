@@ -11,7 +11,7 @@
 #import "BackgroundService.h"
 @class BackgroundService;
 @class BaseLink;
-@interface Device : NSObject
+@class NetworkPackage;
 
 typedef NS_ENUM(NSUInteger, PairStatus)
 {
@@ -20,37 +20,49 @@ typedef NS_ENUM(NSUInteger, PairStatus)
     RequestedByPeer,
     Paired
 };
+typedef NS_ENUM(NSUInteger, DeviceType)
+{
+    Unknown,
+    Desktop,
+    Laptop,
+    Phone,
+    Tablet
+};
 
-@property(readonly,nonatomic)BackgroundService* _parent;
-@property(weak,nonatomic)NSString* _deviceId;
-@property(weak,nonatomic)NSString* _name;
-@property(nonatomic)NSInteger _protocolVersion;
-@property(nonatomic)PairStatus* _pairStatus;
-@property(weak,nonatomic)NSMutableArray* _baseLinks;
-@property(weak,nonatomic)NSTimer* _pairingTimer;
-//@property(weak,nonatomic) id* _publicKey;
-//@property(weak,nonatomic) NSMutableDictionary* _plugins;
-//@property(weak,nonatomic) NSMutableDictionary* _failedPlugins;
+@interface Device : NSObject
+
+@property(weak,readonly,nonatomic)NSString* _id;
+@property(weak,readonly,nonatomic)NSString* _name;
+@property(readonly,nonatomic)DeviceType* _type;
+@property(readonly,nonatomic)NSInteger _protocolVersion;
+@property(readonly,nonatomic)PairStatus _pairStatus;
+
 
 - (Device*) init:(NSString*)deviceId parent:(id*)parent;
-- (Device*) init:(NetworkPackage*)np baselink:(BaseLink*)baseLink parent:(id*)parent;
+- (Device*) init:(NetworkPackage*)np baselink:(BaseLink*)link parent:(BackgroundService*)parent;
 - (NSInteger) compareProtocolVersion;
 
 #pragma mark Link-related Functions
-- (void) addLink:(NetworkPackage*)np baseLink:(BaseLink*)baseLink;
-- (void) removeLink:(BaseLink*)baseLink;
-- (void) onPackageReceived;
+- (void) addLink:(NetworkPackage*)np baseLink:(BaseLink*)link;
+- (void) linkDestroyed:(BaseLink*)link;
+- (void) removeLink:(BaseLink*)link;
+- (void) onPackageReceived:(NetworkPackage*)np;
 - (BOOL) sendPackage:(NetworkPackage*)np;
 - (BOOL) isReachable;
 
 #pragma mark Pairing-related Functions
 - (BOOL) isPaired;
 - (BOOL) isPaireRequested;
-- (BOOL) requestPairing;
-- (void) unpaire;
-- (void) pairingSuccusful;
-- (void) pairingFailed;
+- (void) requestPairing;
+- (void) unpair;
 - (void) acceptPairing;
 - (void) rejectPairing;
 
+#pragma mark Plugin-related Functions
+
+- (void) reloadPlugins;
+
 @end
+
+
+
