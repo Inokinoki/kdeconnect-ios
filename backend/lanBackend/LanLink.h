@@ -9,16 +9,15 @@
 #import <Foundation/Foundation.h>
 #import "BaseLink.h"
 #import "LanLinkProvider.h"
-#import "AsyncSocket.h"
+#import "GCDAsyncSocket.h"
 @class GCDAsyncSocket;
 @class LanLinkProvider;
 @class BaseLink;
 @class Device;
+
 @interface LanLink : BaseLink
-@property(nonatomic,assign) id _deviceDelegate;
-@property(nonatomic,assign) id _lanLinkProviderDelegate;
-- (LanLink*) init:(GCDAsyncSocket*)socket deviceId:(NSString*) deviceid providerDelegate:(id)providerDelegate;
-- (void) setDeviceDelegate:(id) deviceDelegate;
+
+- (LanLink*) init:(GCDAsyncSocket*)socket deviceId:(NSString*) deviceid setDelegate:(id)delegate;
 - (BOOL) sendPackage:(NetworkPackage *)np;
 - (BOOL) sendPackageEncypted:(NetworkPackage *)np;
 - (void) disconnect;

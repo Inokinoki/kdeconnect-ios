@@ -9,7 +9,6 @@
 #import "GCDAsyncUdpSocket.h"
 #import "GCDAsyncSocket.h"
 #import "NetworkPackage.h"
-#import <CFNetwork/CFNetwork.h>
 #import "BaseLinkProvider.h"
 #import "LanLink.h"
 @class GCDAsyncSocket;
@@ -21,9 +20,9 @@
 {
     dispatch_queue_t socketQueue;
 }
+
 @property(strong,nonatomic) NSMutableDictionary* _visibleComputers;
-@property(nonatomic,assign) id _backgroundDelegate;
-- (LanLinkProvider*) init:(id)backgroundDlegate;
+- (LanLinkProvider*) initWithDelegate:(id)linkProviderDelegate;
 - (void) onStart;
 - (void) onStop;
 - (void) onNetworkChange;

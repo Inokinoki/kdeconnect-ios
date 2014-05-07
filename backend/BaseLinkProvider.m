@@ -10,8 +10,11 @@
 
 @implementation BaseLinkProvider
 
-- (BaseLinkProvider*) init:(BackgroundService*)parent
+@synthesize _linkProviderDelegate;
+
+- (BaseLinkProvider*) initWithDelegate:(id)linkProviderDelegate
 {
+    _linkProviderDelegate=linkProviderDelegate;
     return self;
 }
 - (void) onStart

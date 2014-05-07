@@ -29,6 +29,12 @@ typedef NS_ENUM(NSUInteger, DeviceType)
     Tablet
 };
 
+@protocol deviceDelegate <NSObject>
+@optional
+
+
+@end
+
 @interface Device : NSObject
 
 @property(weak,readonly,nonatomic)NSString* _id;
@@ -36,10 +42,10 @@ typedef NS_ENUM(NSUInteger, DeviceType)
 @property(readonly,nonatomic)DeviceType* _type;
 @property(readonly,nonatomic)NSInteger _protocolVersion;
 @property(readonly,nonatomic)PairStatus _pairStatus;
-@property(nonatomic,assign) id _backgroundDelegate;
+@property(nonatomic,assign) id _deviceDelegate;
 
-- (Device*) init:(NSString*)deviceId backgroundDelegate:(id)backgroundDelegate;
-- (Device*) init:(NetworkPackage*)np baselink:(BaseLink*)link backgroundDelegate:(id)backgroundDelegate;
+- (Device*) init:(NSString*)deviceId setDelegate:(id)deviceDelegate;
+- (Device*) init:(NetworkPackage*)np baselink:(BaseLink*)link setDelegate:(id)deviceDelegate;
 - (NSInteger) compareProtocolVersion;
 
 #pragma mark Link-related Functions

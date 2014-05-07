@@ -9,14 +9,14 @@
 #import "BaseLink.h"
 
 @implementation BaseLink
+
 @synthesize _deviceId;
-@synthesize _linkProvider;
-- (BaseLink*) init:(NSString*) deviceId;
+@synthesize _linkDelegate;
+
+- (BaseLink*) init:(NSString*)deviceId setDelegate:(id)linkDelegate
 {
-    if ([super init])
-    {
-        _deviceId=deviceId;
-    };
+    _deviceId=deviceId;
+    _linkDelegate=linkDelegate;
     return self;
 }
 
@@ -29,11 +29,6 @@
 {
     
     return true;
-}
-
-- (void) onPackageReceived:(NetworkPackage *)np
-{
-    return;
 }
 
 - (void) disconnect

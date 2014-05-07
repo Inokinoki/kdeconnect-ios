@@ -14,7 +14,14 @@
 @class BaseLink;
 @class Device;
 
-@interface BackgroundService : NSObject
+@protocol backgroundServiceDelegate <NSObject>
+@optional
+
+@end
+
+@interface BackgroundService : NSObject<linkDelegate,linkProviderDelegate>
+
+@property(nonatomic,assign) id _backgroundServiceDelegate;
 
 - (BackgroundService*) init;
 - (void) startDiscovery;

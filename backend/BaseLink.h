@@ -9,16 +9,25 @@
 #import <Foundation/Foundation.h>
 #import "BaseLinkProvider.h"
 #import "NetworkPackage.h"
-#import "../lib/Device.h"
 @class BaseLinkProvider;
 @class NetworkPackage;
 @class Device;
+
+@protocol linkDelegate <NSObject>
+@optional
+- (void) onPackageReceived:(NetworkPackage*)np;
+- (void) onSendSuccess;
+- (void) onDisconnected;
+
+@end
+
+
 @interface BaseLink : NSObject
+
 @property(strong,nonatomic) NSString* _deviceId;
-@property(strong,nonatomic) BaseLinkProvider* _linkProvider;
-@property(strong,nonatomic)Device* _device;
+@property(nonatomic,assign)id _linkDelegate;
 //@property(strong,nonatomic) _privatekey;
-- (BaseLink*) init:(NSString*)deviceId;
+- (BaseLink*) init:(NSString*)deviceId setDelegate:(id)linkDelegate;
 - (BOOL) sendPackage:(NetworkPackage*)np;
 - (BOOL) sendPackageEncypted:(NetworkPackage*)np;
 - (void) disconnect;

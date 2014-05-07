@@ -17,21 +17,21 @@
 //    NSMutableDictionary* _failedPlugins;
 
 }
-@synthesize _backgroundDelegate;
 @synthesize _id;
 @synthesize _name;
 @synthesize _pairStatus;
 @synthesize _protocolVersion;
 @synthesize _type;
-- (Device*) init:(NSString*)deviceId backgroundDelegate:(id)backgroundDelegate
+@synthesize _deviceDelegate;
+- (Device*) init:(NSString*)deviceId setDelegate:(id)deviceDelegate
 {
     //TODO load config from setting
     _id=deviceId;
-    _backgroundDelegate=backgroundDelegate;
+    _deviceDelegate=deviceDelegate;
     return self;
 }
 
-- (Device*) init:(NetworkPackage*)np baselink:(BaseLink*)link backgroundDelegate:(id)backgroundDelegate
+- (Device*) init:(NetworkPackage*)np baselink:(BaseLink*)link setDelegate:(id)deviceDelegate
 {
     _id=[[np _Body] valueForKey:@"deviceId"];
     _name=[[np _Body] valueForKey:@"deviceName"];
@@ -39,7 +39,7 @@
     //TODO need a string to type? or a dictionary
 //    _type=[[[np _Body] valueForKey:@"deviceType"] ;
     _protocolVersion=[[[np _Body] valueForKey:@"protocolVersion"] integerValue];
-    _backgroundDelegate=backgroundDelegate;
+    _deviceDelegate=deviceDelegate;
 
     //TODO creat a private Key
     

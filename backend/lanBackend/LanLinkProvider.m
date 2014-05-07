@@ -16,9 +16,11 @@ static int PORT=1714;
     long _index;
     uint16_t _tcpPort;
 }
-@synthesize _backgroundDelegate;
+
 @synthesize _visibleComputers;
-- (LanLinkProvider*) init:(id)backgroundDlegate
+@synthesize _linkProviderDelegate;
+
+- (LanLinkProvider*) initWithDelegate:(id)linkProviderDelegate
 {
     if ([super init])
     {
@@ -26,7 +28,7 @@ static int PORT=1714;
         _tcpPort=PORT;
         _pendingConnections=[NSMutableDictionary dictionaryWithCapacity:1];
         _visibleComputers=[NSMutableDictionary dictionaryWithCapacity:1];
-        _backgroundDelegate=backgroundDlegate;
+        _linkProviderDelegate=linkProviderDelegate;
         socketQueue=dispatch_queue_create("socketQueue", NULL);
     
     }
@@ -223,10 +225,9 @@ static int PORT=1714;
     
     //create LanLink and inform the background
     NetworkPackage* np=[connection valueForKey:@"np"];
-    LanLink* link=[[LanLink alloc] init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] providerDelegate:self];
-    //Call backgroundDelegate
-//    [_parent onConnectionReceived:np link:link];
-    
+    LanLink* link=[[LanLink alloc]init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] setDelegate:nil];
+    [_linkProviderDelegate onConnectionReceived:np link:link];
+
     //send my id package
     np=[NetworkPackage createIdentityPackage];
     [link sendPackage:np];
@@ -260,7 +261,7 @@ static int PORT=1714;
     [_visibleComputers setValue:connection forKey:host];
     [_pendingConnections removeObjectForKey:host];
     //create LanLink and inform the background
-    LanLink* link=[[LanLink alloc] init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] providerDelegate:self];
+    LanLink* link=[[LanLink alloc] init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] setDelegate:nil];
     //call backegroundDelegate
 //    [_parent onConnectionReceived:np link:link];
     

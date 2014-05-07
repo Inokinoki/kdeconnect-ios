@@ -12,17 +12,15 @@
 {
     __strong GCDAsyncSocket* _socket;
 }
+
 @synthesize _deviceId;
-@synthesize _device;
-@synthesize _deviceDelegate;
-@synthesize _lanLinkProviderDelegate;
+@synthesize _linkDelegate;
+
 - (LanLink*) init:(GCDAsyncSocket*)socket deviceId:(NSString*) deviceid providerDelegate:(id)providerDelegate
 {
-    if ([super init:deviceid])
+    if ([super init:deviceid setDelegate:nil])
     {
         _socket=socket;
-        _lanLinkProviderDelegate=providerDelegate;
-        _deviceDelegate=nil;
         [_socket setDelegate:self];
     }
     
@@ -30,10 +28,7 @@
     [_socket readDataToData:[GCDAsyncSocket LFData] withTimeout:-1 tag:0];
     return self;
 }
-- (void) setDeviceDelegate:(id) deviceDelegate
-{
-    _deviceDelegate=deviceDelegate;
-}
+
 
 - (BOOL) sendPackage:(NetworkPackage *)np
 {
@@ -119,7 +114,9 @@
     //inform device that a package received
     NSLog(@"did read data%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
     NetworkPackage* np=[NetworkPackage unserialize:data];
-    [_device onPackageReceived:np];
+    if (_linkDelegate!=nil) {
+        [_linkDelegate onPackageReceived:np];
+    }
 }
 
 /**
@@ -138,6 +135,9 @@
 - (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag
 {
     NSLog(@"didWriteData");
+    if (_linkDelegate!=nil) {
+        [_linkDelegate onSendSuccess];
+    }
 }
 
 /**
@@ -219,7 +219,7 @@
  **/
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err
 {
-    
+    [_linkDelegate onDisconnected];
 }
 
 

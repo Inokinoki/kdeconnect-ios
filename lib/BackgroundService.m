@@ -10,17 +10,21 @@
 #import "../backend/lanBackend/LanLinkProvider.h"
 @implementation BackgroundService
 {
-    __strong NSMutableArray*_linkProviders;
+    __strong NSMutableArray* _linkProviders;
     __strong NSMutableDictionary* _devices;
 }
 
-- (BackgroundService*) init
+@synthesize _backgroundServiceDelegate;
+
+
+- (BackgroundService*) initWithDelegate:(id)backgroundServiceDelegate
 {
     
     _linkProviders=[NSMutableArray arrayWithCapacity:1];
     _devices=[NSMutableDictionary dictionaryWithCapacity:1];
     [self registerLinkProviders];
     [self loadRemenberedDevices];
+    _backgroundServiceDelegate=backgroundServiceDelegate;
     return self;
 }
 
@@ -31,7 +35,7 @@
 - (void) registerLinkProviders
 {
     // TODO  read setting for linkProvider registeration
-    LanLinkProvider* linkProvider=[[LanLinkProvider alloc] init:self];
+    LanLinkProvider* linkProvider=[[LanLinkProvider alloc] initWithDelegate:self];
     [_linkProviders addObject:linkProvider];
 }
 
@@ -81,7 +85,7 @@
     }
     else{
         NSLog(@"new device");
-        Device* device=[[Device alloc] init:np baselink:link backgroundDelegate:self];
+        Device* device=[[Device alloc] init:np baselink:link setDelegate:self];
         [_devices setObject:device forKey:id];
         //TODO device added
     }
