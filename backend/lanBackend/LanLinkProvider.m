@@ -26,16 +26,17 @@ static int PORT=1714;
     _tcpPort=PORT;
     _pendingConnections=[NSMutableDictionary dictionaryWithCapacity:1];
     __visibleComputers=[NSMutableDictionary dictionaryWithCapacity:1];
+    socketQueue=dispatch_queue_create("socketQueue", NULL);
     return self;
     }
 
 - (void)setupSocket
 {
     if (_tcpSocket==nil) {
-        _tcpSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+        _tcpSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:socketQueue];
     }
     if (_udpSocket==nil) {
-        _udpSocket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+        _udpSocket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:socketQueue];
         NSError* err;
         if (![_udpSocket bindToPort:PORT error:&err]) {
             NSLog(@"udp bind error");
@@ -73,6 +74,12 @@ static int PORT=1714;
 {
     [_udpSocket close];
     [_tcpSocket disconnect];
+    for (NSDictionary* connection in _pendingConnections) {
+        [[connection valueForKey:@"socket"] disconnect];
+    }
+    for (NSDictionary* connection in __visibleComputers) {
+        [[connection valueForKey:@"socket"] disconnect];
+    }
 }
 
 - (void)onNetworkChange
@@ -108,7 +115,7 @@ static int PORT=1714;
 
     //deal with id package
     NSLog(@"LanLinkProvider:id package received, creating link and a TCP connection socket");
-    GCDAsyncSocket* socket=[[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+    GCDAsyncSocket* socket=[[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:socketQueue];
     uint16_t tcpPort=[[[np _Body] valueForKey:@"tcpPort"] intValue];
     NSString* host;
     uint16_t udpPort;
@@ -155,6 +162,9 @@ static int PORT=1714;
 {
 	NSLog(@"TCP server: didAcceptNewSocket");
 	NSString *host = [newSocket connectedHost];
+    if ([host hasPrefix:@"::ffff:"]) {
+        return;
+    }
     NSMutableDictionary *connection=[NSMutableDictionary dictionaryWithObjects:[NSMutableArray arrayWithObjects:sock, nil] forKeys:[NSArray arrayWithObjects:@"socket", nil]];
     [_pendingConnections setValue:connection forKey:host];
     
@@ -245,7 +255,6 @@ static int PORT=1714;
     [connection setValue:np forKey:@"np"];
     [__visibleComputers setValue:connection forKey:host];
     [_pendingConnections removeObjectForKey:host];
-    [sock setDelegate:nil];
     //create LanLink and inform the background
     LanLink* link=[[LanLink alloc] init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] provider:self];
     [_parent onConnectionReceived:np link:link];

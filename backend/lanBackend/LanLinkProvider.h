@@ -18,6 +18,9 @@
 @class LanLink;
 
 @interface LanLinkProvider : BaseLinkProvider
+{
+    dispatch_queue_t socketQueue;
+}
 @property(strong,nonatomic) NSMutableDictionary* _visibleComputers;
 - (LanLinkProvider*) init:(BackgroundService*)parent;
 - (void) onStart;
