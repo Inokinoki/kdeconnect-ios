@@ -11,23 +11,28 @@
 @implementation LanLink
 {
     __strong GCDAsyncSocket* _socket;
-    __strong LanLinkProvider* _linkProvider;
-
 }
 @synthesize _deviceId;
 @synthesize _device;
-@synthesize _linkProvider;
-- (LanLink*) init:(GCDAsyncSocket*)socket deviceId:(NSString*) deviceid provider:(LanLinkProvider *)provider;
+@synthesize _deviceDelegate;
+@synthesize _lanLinkProviderDelegate;
+- (LanLink*) init:(GCDAsyncSocket*)socket deviceId:(NSString*) deviceid providerDelegate:(id)providerDelegate
 {
-    if ([super init:deviceid provider:provider])
+    if ([super init:deviceid])
     {
         _socket=socket;
+        _lanLinkProviderDelegate=providerDelegate;
+        _deviceDelegate=nil;
         [_socket setDelegate:self];
     }
     
     NSLog(@"LanLink:lanlink device:%@ created",_deviceId);
     [_socket readDataToData:[GCDAsyncSocket LFData] withTimeout:-1 tag:0];
     return self;
+}
+- (void) setDeviceDelegate:(id) deviceDelegate
+{
+    _deviceDelegate=deviceDelegate;
 }
 
 - (BOOL) sendPackage:(NetworkPackage *)np
@@ -49,7 +54,8 @@
     if ([_socket isConnected]) {
         [_socket disconnect];
     }
-    [_linkProvider onLinkDestroyed];
+    //call Delegate
+//    [LanLinkProvider onLinkDestroyed];
     NSLog(@"LanLink: Device:%@ disconnected",_deviceId);
 }
 

@@ -12,25 +12,26 @@
 {
     BackgroundService* _parent;
     NSMutableArray* _links;
-    NSTimer* _pairingTimer;
 //    id* _publicKey;
 //    NSMutableDictionary* _plugins;
 //    NSMutableDictionary* _failedPlugins;
 
 }
+@synthesize _backgroundDelegate;
 @synthesize _id;
 @synthesize _name;
 @synthesize _pairStatus;
 @synthesize _protocolVersion;
 @synthesize _type;
-- (Device*) init:(NSString*)deviceId parent:(id*)parent
+- (Device*) init:(NSString*)deviceId backgroundDelegate:(id)backgroundDelegate
 {
     //TODO load config from setting
-    
+    _id=deviceId;
+    _backgroundDelegate=backgroundDelegate;
     return self;
 }
 
-- (Device*) init:(NetworkPackage *)np baselink:(BaseLink *)link parent:(BackgroundService *)parent
+- (Device*) init:(NetworkPackage*)np baselink:(BaseLink*)link backgroundDelegate:(id)backgroundDelegate
 {
     _id=[[np _Body] valueForKey:@"deviceId"];
     _name=[[np _Body] valueForKey:@"deviceName"];
@@ -38,7 +39,8 @@
     //TODO need a string to type? or a dictionary
 //    _type=[[[np _Body] valueForKey:@"deviceType"] ;
     _protocolVersion=[[[np _Body] valueForKey:@"protocolVersion"] integerValue];
-    
+    _backgroundDelegate=backgroundDelegate;
+
     //TODO creat a private Key
     
     [self addLink:np baseLink:link];
@@ -70,7 +72,7 @@
 - (void) removeLink:(BaseLink *)link
 {
     [_links removeObject:link];
-    NSLog(@"remove link ; %d remaining", [_links count]);
+    NSLog(@"remove link ; %lu remaining", (unsigned long)[_links count]);
     
     if ([_links count]==0) {
         NSLog(@"no available link");

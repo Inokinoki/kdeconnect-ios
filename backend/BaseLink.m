@@ -11,12 +11,11 @@
 @implementation BaseLink
 @synthesize _deviceId;
 @synthesize _linkProvider;
-- (BaseLink*) init:(NSString*) deviceId provider:(BaseLinkProvider*) provider
+- (BaseLink*) init:(NSString*) deviceId;
 {
     if ([super init])
     {
         _deviceId=deviceId;
-        _linkProvider=provider;
     };
     return self;
 }

@@ -12,7 +12,6 @@
 
 - (BaseLinkProvider*) init:(BackgroundService*)parent
 {
-    self._parent=parent;
     return self;
 }
 - (void) onStart

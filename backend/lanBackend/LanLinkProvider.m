@@ -10,25 +10,28 @@
 static int PORT=1714;
 @implementation LanLinkProvider
 {
-    __strong BackgroundService* _parent;
     __strong GCDAsyncUdpSocket* _udpSocket;
     __strong GCDAsyncSocket* _tcpSocket;
     __strong NSMutableDictionary* _pendingConnections;
     long _index;
     uint16_t _tcpPort;
 }
-- (LanLinkProvider*) init:(BackgroundService *)parent
+@synthesize _backgroundDelegate;
+@synthesize _visibleComputers;
+- (LanLinkProvider*) init:(id)backgroundDlegate
 {
-    if ([super init:parent])
+    if ([super init])
     {
         
+        _tcpPort=PORT;
+        _pendingConnections=[NSMutableDictionary dictionaryWithCapacity:1];
+        _visibleComputers=[NSMutableDictionary dictionaryWithCapacity:1];
+        _backgroundDelegate=backgroundDlegate;
+        socketQueue=dispatch_queue_create("socketQueue", NULL);
+    
     }
-    _tcpPort=PORT;
-    _pendingConnections=[NSMutableDictionary dictionaryWithCapacity:1];
-    __visibleComputers=[NSMutableDictionary dictionaryWithCapacity:1];
-    socketQueue=dispatch_queue_create("socketQueue", NULL);
     return self;
-    }
+}
 
 - (void)setupSocket
 {
@@ -77,7 +80,7 @@ static int PORT=1714;
     for (NSDictionary* connection in _pendingConnections) {
         [[connection valueForKey:@"socket"] disconnect];
     }
-    for (NSDictionary* connection in __visibleComputers) {
+    for (NSDictionary* connection in _visibleComputers) {
         [[connection valueForKey:@"socket"] disconnect];
     }
 }
@@ -198,10 +201,10 @@ static int PORT=1714;
     
     NSMutableDictionary* connection;
     
-    connection=[__visibleComputers objectForKey:host];
+    connection=[_visibleComputers objectForKey:host];
     if (connection) {
         NSLog(@"it's a visibleComputer connection");
-        [__visibleComputers removeObjectForKey:host];
+        [_visibleComputers removeObjectForKey:host];
     }
     NSLog(@"it's a new computer connection");
     
@@ -216,12 +219,13 @@ static int PORT=1714;
     
     connection=[NSMutableDictionary dictionaryWithObjects:[NSArray arrayWithObjects:sock, nil] forKeys:[NSArray arrayWithObjects:@"socket", nil]];
 
-    [__visibleComputers setValue:connection forKey:host];
+    [_visibleComputers setValue:connection forKey:host];
     
     //create LanLink and inform the background
     NetworkPackage* np=[connection valueForKey:@"np"];
-    LanLink* link=[[LanLink alloc] init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] provider:self];
-    [_parent onConnectionReceived:np link:link];
+    LanLink* link=[[LanLink alloc] init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] providerDelegate:self];
+    //Call backgroundDelegate
+//    [_parent onConnectionReceived:np link:link];
     
     //send my id package
     np=[NetworkPackage createIdentityPackage];
@@ -253,11 +257,12 @@ static int PORT=1714;
     }
     [sock setDelegate:nil];
     [connection setValue:np forKey:@"np"];
-    [__visibleComputers setValue:connection forKey:host];
+    [_visibleComputers setValue:connection forKey:host];
     [_pendingConnections removeObjectForKey:host];
     //create LanLink and inform the background
-    LanLink* link=[[LanLink alloc] init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] provider:self];
-    [_parent onConnectionReceived:np link:link];
+    LanLink* link=[[LanLink alloc] init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] providerDelegate:self];
+    //call backegroundDelegate
+//    [_parent onConnectionReceived:np link:link];
     
 }
 

@@ -22,7 +22,8 @@
     dispatch_queue_t socketQueue;
 }
 @property(strong,nonatomic) NSMutableDictionary* _visibleComputers;
-- (LanLinkProvider*) init:(BackgroundService*)parent;
+@property(nonatomic,assign) id _backgroundDelegate;
+- (LanLinkProvider*) init:(id)backgroundDlegate;
 - (void) onStart;
 - (void) onStop;
 - (void) onNetworkChange;

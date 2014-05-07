@@ -18,7 +18,7 @@
 @property(strong,nonatomic) BaseLinkProvider* _linkProvider;
 @property(strong,nonatomic)Device* _device;
 //@property(strong,nonatomic) _privatekey;
-- (BaseLink*) init:(NSString*)deviceId provider:(BaseLinkProvider*)provider;
+- (BaseLink*) init:(NSString*)deviceId;
 - (BOOL) sendPackage:(NetworkPackage*)np;
 - (BOOL) sendPackageEncypted:(NetworkPackage*)np;
 - (void) disconnect;

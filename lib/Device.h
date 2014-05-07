@@ -36,10 +36,10 @@ typedef NS_ENUM(NSUInteger, DeviceType)
 @property(readonly,nonatomic)DeviceType* _type;
 @property(readonly,nonatomic)NSInteger _protocolVersion;
 @property(readonly,nonatomic)PairStatus _pairStatus;
+@property(nonatomic,assign) id _backgroundDelegate;
 
-
-- (Device*) init:(NSString*)deviceId parent:(id*)parent;
-- (Device*) init:(NetworkPackage*)np baselink:(BaseLink*)link parent:(BackgroundService*)parent;
+- (Device*) init:(NSString*)deviceId backgroundDelegate:(id)backgroundDelegate;
+- (Device*) init:(NetworkPackage*)np baselink:(BaseLink*)link backgroundDelegate:(id)backgroundDelegate;
 - (NSInteger) compareProtocolVersion;
 
 #pragma mark Link-related Functions

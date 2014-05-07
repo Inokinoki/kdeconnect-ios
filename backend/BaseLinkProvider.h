@@ -15,8 +15,7 @@
 @class NetworkPackage;
 
 @interface BaseLinkProvider : NSObject
-@property(strong,nonatomic)BackgroundService* _parent;
-- (BaseLinkProvider*) init:(BackgroundService*)parent;
+- (BaseLinkProvider*) init;
 - (void) onStart;
 - (void) onStop;
 - (void) onNetworkChange;

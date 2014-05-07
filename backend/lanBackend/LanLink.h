@@ -15,7 +15,10 @@
 @class BaseLink;
 @class Device;
 @interface LanLink : BaseLink
-- (LanLink*) init:(GCDAsyncSocket*)socket deviceId:(NSString*) deviceid provider:(LanLinkProvider *)provider;
+@property(nonatomic,assign) id _deviceDelegate;
+@property(nonatomic,assign) id _lanLinkProviderDelegate;
+- (LanLink*) init:(GCDAsyncSocket*)socket deviceId:(NSString*) deviceid providerDelegate:(id)providerDelegate;
+- (void) setDeviceDelegate:(id) deviceDelegate;
 - (BOOL) sendPackage:(NetworkPackage *)np;
 - (BOOL) sendPackageEncypted:(NetworkPackage *)np;
 - (void) disconnect;

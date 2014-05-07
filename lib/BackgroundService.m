@@ -81,7 +81,7 @@
     }
     else{
         NSLog(@"new device");
-        Device* device=[[Device alloc] init:np baselink:link parent:self];
+        Device* device=[[Device alloc] init:np baselink:link backgroundDelegate:self];
         [_devices setObject:device forKey:id];
         //TODO device added
     }
