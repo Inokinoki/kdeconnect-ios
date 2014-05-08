@@ -8,6 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
+#define KEEPALIVE_TAG 1
+
+#define KEEPALIVE_TIMEOUT 3
+
+#define PORT 1714
 
 #pragma mark static constant define
 static NSInteger ProtocolVersion=5;

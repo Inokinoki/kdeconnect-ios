@@ -9,13 +9,14 @@
 #import <Foundation/Foundation.h>
 #import "NetworkPackage.h"
 #import "BaseLink.h"
+
 @class BackgroundService;
 @class BaseLink;
 @class NetworkPackage;
 
 @protocol linkProviderDelegate <NSObject>
 @optional
-- (void) onConnectionReceived:np link:(BaseLink*)link;
+- (void) onConnectionReceived:(NetworkPackage*)np link:(BaseLink*)link;
 
 @end
 

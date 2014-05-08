@@ -10,7 +10,6 @@
 
 @implementation Device
 {
-    BackgroundService* _parent;
     NSMutableArray* _links;
 //    id* _publicKey;
 //    NSMutableDictionary* _plugins;
@@ -28,6 +27,7 @@
     //TODO load config from setting
     _id=deviceId;
     _deviceDelegate=deviceDelegate;
+    _links=[NSMutableArray arrayWithCapacity:1];
     return self;
 }
 
@@ -64,12 +64,7 @@
     //[Link set_privateKey:_privateKey];
 }
 
-- (void) linkDestroyed:(BaseLink *)link
-{
-    [_links removeObject:link];
-}
-
-- (void) removeLink:(BaseLink *)link
+- (void) onLinkDestroyed:(BaseLink *)link
 {
     [_links removeObject:link];
     NSLog(@"remove link ; %lu remaining", (unsigned long)[_links count]);
@@ -79,6 +74,7 @@
         
         //TODO reachable status changed
     }
+
 }
 
 - (BOOL) sendPackage:(NetworkPackage *)np

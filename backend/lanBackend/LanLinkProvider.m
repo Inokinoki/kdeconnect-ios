@@ -7,7 +7,7 @@
 //
 
 #import "LanLinkProvider.h"
-static int PORT=1714;
+
 @implementation LanLinkProvider
 {
     __strong GCDAsyncUdpSocket* _udpSocket;
@@ -49,8 +49,7 @@ static int PORT=1714;
         
         [_udpSocket enableBroadcast:true error:&err];
     }
-    
-    }
+}
 
 - (void)onStart
 {
@@ -117,14 +116,19 @@ static int PORT=1714;
         NSLog(@"Ignore my own id package");
         return;
     }
-
+    
     //deal with id package
-    NSLog(@"LanLinkProvider:id package received, creating link and a TCP connection socket");
-    GCDAsyncSocket* socket=[[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:socketQueue];
-    uint16_t tcpPort=[[[np _Body] valueForKey:@"tcpPort"] intValue];
     NSString* host;
     uint16_t udpPort;
     [GCDAsyncUdpSocket getHost:&host port:&udpPort fromAddress:address];
+    if ([host hasPrefix:@"::ffff:"]) {
+        return;
+    }
+    
+    NSLog(@"LanLinkProvider:id package received, creating link and a TCP connection socket");
+    GCDAsyncSocket* socket=[[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:socketQueue];
+    uint16_t tcpPort=[[[np _Body] valueForKey:@"tcpPort"] intValue];
+    
     NSError* error=nil;
     bool success=[socket connectToHost:host onPort:tcpPort error:&error];
     if (!success) {
@@ -145,7 +149,7 @@ static int PORT=1714;
     
 }
 
-- (void) onLinkDestroyed
+- (void) onLinkDestroyed:(BaseLink*)link
 {
     
 }
@@ -167,9 +171,6 @@ static int PORT=1714;
 {
 	NSLog(@"TCP server: didAcceptNewSocket");
 	NSString *host = [newSocket connectedHost];
-    if ([host hasPrefix:@"::ffff:"]) {
-        return;
-    }
     NSMutableDictionary *connection=[NSMutableDictionary dictionaryWithObjects:[NSMutableArray arrayWithObjects:sock, nil] forKeys:[NSArray arrayWithObjects:@"socket", nil]];
     [_pendingConnections setValue:connection forKey:host];
     
@@ -177,7 +178,7 @@ static int PORT=1714;
     [newSocket readDataWithTimeout:-1 tag:0];
     
     // TODO  pair request, move to other places
-    NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PING];
+    NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PAIR];
     [[np _Body] setValue:[NSNumber numberWithBool:true] forKey:@"pair"];
     [[np _Body] setValue:@"qwefsdv1241234asvqwefbgwerf1345" forKey:@"publickey"];
     NSMutableData* data;
@@ -186,6 +187,7 @@ static int PORT=1714;
     NSLog(@"%@\n",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
 
     [newSocket writeData:data withTimeout:-1 tag:0];
+    [newSocket writeData:[GCDAsyncSocket LFData] withTimeout:KEEPALIVE_TIMEOUT tag:KEEPALIVE_TAG];
     [newSocket readDataWithTimeout:-1 tag:0];
 
 }
@@ -198,9 +200,7 @@ static int PORT=1714;
 
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port
 {
-    NSLog(@"tcp socket didConnectToHost");
-    [sock setDelegate:self];
-    
+    NSLog(@"tcp socket didConnectToHost");    
     NSMutableDictionary* connection;
     
     connection=[_visibleComputers objectForKey:host];
@@ -263,8 +263,40 @@ static int PORT=1714;
     //create LanLink and inform the background
     LanLink* link=[[LanLink alloc] init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] setDelegate:nil];
     //call backegroundDelegate
-//    [_parent onConnectionReceived:np link:link];
-    
+    [_linkProviderDelegate onConnectionReceived:np link:link];
+}
+
+
+/**
+ * Called when a socket has completed writing the requested data. Not called if there is an error.
+ **/
+- (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag
+{
+    if (tag==KEEPALIVE_TAG) {
+        [sock writeData:[GCDAsyncSocket LFData] withTimeout:KEEPALIVE_TIMEOUT tag:KEEPALIVE_TAG];
+    }
+}
+
+/**
+ * Called if a write operation has reached its timeout without completing.
+ * This method allows you to optionally extend the timeout.
+ * If you return a positive time interval (> 0) the write's timeout will be extended by the given amount.
+ * If you don't implement this method, or return a non-positive time interval (<= 0) the write will timeout as usual.
+ *
+ * The elapsed parameter is the sum of the original timeout, plus any additions previously added via this method.
+ * The length parameter is the number of bytes that have been written so far for the write operation.
+ *
+ * Note that this method may be called multiple times for a single write if you return positive numbers.
+ **/
+- (NSTimeInterval)socket:(GCDAsyncSocket *)sock shouldTimeoutWriteWithTag:(long)tag
+                 elapsed:(NSTimeInterval)elapsed
+               bytesDone:(NSUInteger)length
+{
+    if (tag==KEEPALIVE_TAG) {
+        NSLog(@"connection down");
+        [sock disconnect];
+    }
+    return 0;
 }
 
 /**
@@ -296,10 +328,11 @@ static int PORT=1714;
     }
     else
     {
-
+        
         NSLog(@"tcp socket disconnected,remaining %lu connection",(unsigned long)[_pendingConnections count]);
     }
 }
+
 @end
 
 

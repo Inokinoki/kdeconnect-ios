@@ -9,7 +9,9 @@
 #import <Foundation/Foundation.h>
 #import "BaseLinkProvider.h"
 #import "NetworkPackage.h"
+
 @class BaseLinkProvider;
+@class BaseLink;
 @class NetworkPackage;
 @class Device;
 
@@ -18,6 +20,7 @@
 - (void) onPackageReceived:(NetworkPackage*)np;
 - (void) onSendSuccess;
 - (void) onDisconnected;
+- (void) onLinkDestroyed:(BaseLink*)link;
 
 @end
 

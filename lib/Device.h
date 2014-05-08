@@ -50,8 +50,7 @@ typedef NS_ENUM(NSUInteger, DeviceType)
 
 #pragma mark Link-related Functions
 - (void) addLink:(NetworkPackage*)np baseLink:(BaseLink*)link;
-- (void) linkDestroyed:(BaseLink*)link;
-- (void) removeLink:(BaseLink*)link;
+- (void) onLinkDestroyed:(BaseLink*)link;
 - (void) onPackageReceived:(NetworkPackage*)np;
 - (BOOL) sendPackage:(NetworkPackage*)np;
 - (BOOL) isReachable;

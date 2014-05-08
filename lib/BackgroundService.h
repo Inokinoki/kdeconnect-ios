@@ -23,7 +23,7 @@
 
 @property(nonatomic,assign) id _backgroundServiceDelegate;
 
-- (BackgroundService*) init;
+- (BackgroundService*) initWithDelegate:(id)backgroundServiceDelegate;
 - (void) startDiscovery;
 - (void) stopDiscovery;
 - (void) onNetworkChange;

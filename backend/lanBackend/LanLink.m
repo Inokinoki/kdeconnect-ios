@@ -16,16 +16,18 @@
 @synthesize _deviceId;
 @synthesize _linkDelegate;
 
-- (LanLink*) init:(GCDAsyncSocket*)socket deviceId:(NSString*) deviceid providerDelegate:(id)providerDelegate
+- (LanLink*) init:(GCDAsyncSocket*)socket deviceId:(NSString*) deviceid setDelegate:(id)linkdelegate
 {
     if ([super init:deviceid setDelegate:nil])
     {
         _socket=socket;
+        _linkDelegate=linkdelegate;
         [_socket setDelegate:self];
     }
     
     NSLog(@"LanLink:lanlink device:%@ created",_deviceId);
     [_socket readDataToData:[GCDAsyncSocket LFData] withTimeout:-1 tag:0];
+    [_socket writeData:[GCDAsyncSocket LFData] withTimeout:KEEPALIVE_TIMEOUT tag:KEEPALIVE_TAG];
     return self;
 }
 
@@ -50,7 +52,7 @@
         [_socket disconnect];
     }
     //call Delegate
-//    [LanLinkProvider onLinkDestroyed];
+    [_linkDelegate onLinkDestroyed:self];
     NSLog(@"LanLink: Device:%@ disconnected",_deviceId);
 }
 
@@ -138,6 +140,10 @@
     if (_linkDelegate!=nil) {
         [_linkDelegate onSendSuccess];
     }
+    
+    if (tag==KEEPALIVE_TAG) {
+        [sock writeData:[GCDAsyncSocket LFData] withTimeout:KEEPALIVE_TIMEOUT tag:KEEPALIVE_TAG];
+    }
 }
 
 /**
@@ -182,6 +188,10 @@
                  elapsed:(NSTimeInterval)elapsed
                bytesDone:(NSUInteger)length
 {
+    if (tag==1) {
+        NSLog(@"connection down");
+        [sock disconnect];
+    }
     return 0;
 }
 
@@ -220,6 +230,7 @@
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err
 {
     [_linkDelegate onDisconnected];
+    [_linkDelegate onLinkDestroyed:self];
 }
 
 

@@ -179,7 +179,7 @@
 
 - (IBAction)send:(id)sender
 {
-    if(bg==nil) bg=[[BackgroundService alloc] init];
+    if(bg==nil) bg=[[BackgroundService alloc] initWithDelegate:self];
     [bg startDiscovery];
     
 }

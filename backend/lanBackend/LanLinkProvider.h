@@ -16,7 +16,7 @@
 @class BackgroundService;
 @class LanLink;
 
-@interface LanLinkProvider : BaseLinkProvider
+@interface LanLinkProvider : BaseLinkProvider <linkDelegate>
 {
     dispatch_queue_t socketQueue;
 }
@@ -26,6 +26,6 @@
 - (void) onStart;
 - (void) onStop;
 - (void) onNetworkChange;
-- (void) onLinkDestroyed;
+- (void) onLinkDestroyed:(BaseLink*)link;
 
 @end
