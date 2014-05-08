@@ -173,7 +173,7 @@
         return;
     }
     NetworkPackage* np=[NetworkPackage createPublicKeyPackage];
-    //TODO send package
+    [self sendPackage:np];
 }
 
 - (void) unpair
@@ -194,7 +194,7 @@
 {
     NSLog(@"accepted pair request");
     NetworkPackage* np=[NetworkPackage createPublicKeyPackage];
-    //TODO send package
+    [self sendPackage:np];
 }
 
 - (void) rejectPairing
@@ -203,8 +203,7 @@
     _pairStatus=NotPaired;
     NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PAIR];
     [[np _Body] setValue:[NSNumber numberWithBool:false] forKey:@"pair"];
-    //TODO send package
-    
+    [self sendPackage:np];
 }
 
 @end

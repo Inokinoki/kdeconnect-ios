@@ -10,6 +10,7 @@
 #import "BaseLink.h"
 #import "LanLinkProvider.h"
 #import "GCDAsyncSocket.h"
+
 @class GCDAsyncSocket;
 @class LanLinkProvider;
 @class BaseLink;
@@ -21,4 +22,5 @@
 - (BOOL) sendPackage:(NetworkPackage *)np;
 - (BOOL) sendPackageEncypted:(NetworkPackage *)np;
 - (void) disconnect;
+
 @end

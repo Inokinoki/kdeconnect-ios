@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "BaseLink.h"
 #import "BackgroundService.h"
+
 @class BackgroundService;
 @class BaseLink;
 @class NetworkPackage;
@@ -20,6 +21,7 @@ typedef NS_ENUM(NSUInteger, PairStatus)
     RequestedByPeer,
     Paired
 };
+
 typedef NS_ENUM(NSUInteger, DeviceType)
 {
     Unknown,
@@ -31,8 +33,6 @@ typedef NS_ENUM(NSUInteger, DeviceType)
 
 @protocol deviceDelegate <NSObject>
 @optional
-
-
 @end
 
 @interface Device : NSObject
@@ -64,7 +64,6 @@ typedef NS_ENUM(NSUInteger, DeviceType)
 - (void) rejectPairing;
 
 #pragma mark Plugin-related Functions
-
 - (void) reloadPlugins;
 
 @end

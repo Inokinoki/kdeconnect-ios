@@ -11,6 +11,7 @@
 #import "NetworkPackage.h"
 #import "BaseLinkProvider.h"
 #import "LanLink.h"
+
 @class GCDAsyncSocket;
 @class GCDAsyncUdpSocket;
 @class BackgroundService;
@@ -21,10 +22,10 @@
     dispatch_queue_t socketQueue;
 }
 
-@property(strong,nonatomic) NSMutableDictionary* _visibleComputers;
 - (LanLinkProvider*) initWithDelegate:(id)linkProviderDelegate;
 - (void) onStart;
 - (void) onStop;
+- (void) onPause;
 - (void) onNetworkChange;
 - (void) onLinkDestroyed:(BaseLink*)link;
 

@@ -51,8 +51,17 @@
 {
     NSLog(@"start Discovery");
     for (BaseLinkProvider* lp in _linkProviders) {
-        [lp onStart];
+        [lp onPause];
     }
+}
+
+- (NSArray*) getVisibleComputers
+{
+    NSMutableArray* list=[NSMutableArray arrayWithCapacity:1];
+    for (BaseLinkProvider* lp in _linkProviders) {
+        [list addObjectsFromArray:[lp _connectedLinks]];
+    }
+    return list;
 }
 
 - (void) onNetworkChange

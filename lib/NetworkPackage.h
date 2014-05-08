@@ -8,21 +8,22 @@
 
 #import <Foundation/Foundation.h>
 
-#define KEEPALIVE_TAG 1
+#define TCPSERVER_TAG -2
+#define UDPBROADCAST_TAG -1
+#define KEEPALIVE_TAG -3
 
 #define KEEPALIVE_TIMEOUT 3
 
 #define PORT 1714
 
 #pragma mark static constant define
-static NSInteger ProtocolVersion=5;
-static NSString* PACKAGE_TYPE_IDENTITY = @"kdeconnect.identity";
-static NSString* PACKAGE_TYPE_PAIR = @"kdeconnect.pair";
-static NSString* PACKAGE_TYPE_PING = @"kdeconnect.ping";
+#define ProtocolVersion 5
+#define PACKAGE_TYPE_IDENTITY @"kdeconnect.identity"
+#define PACKAGE_TYPE_PAIR @"kdeconnect.pair"
+#define PACKAGE_TYPE_PING @"kdeconnect.ping"
 #pragma mark -
+
 @interface NetworkPackage : NSObject
-{
-}
 
 @property(weak,nonatomic) NSString* _Id;
 @property(weak,nonatomic) NSString *_Type;
@@ -30,7 +31,6 @@ static NSString* PACKAGE_TYPE_PING = @"kdeconnect.ping";
 //@property(weak,nonatomic) NSInputStream *_Payload;
 //@property(weak,nonatomic) NSDictionay *_PayloadTransferInfo;
 //@property(nonatomic)int _PayloadSize;
-
 
 - (NetworkPackage*)init:(NSString*)type;
 + (NetworkPackage*) createIdentityPackage;

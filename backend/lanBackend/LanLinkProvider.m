@@ -12,12 +12,13 @@
 {
     __strong GCDAsyncUdpSocket* _udpSocket;
     __strong GCDAsyncSocket* _tcpSocket;
-    __strong NSMutableDictionary* _pendingConnections;
-    long _index;
+    NSMutableArray* _pendingSockets;
+    NSMutableArray* _pendingNps;
     uint16_t _tcpPort;
+    NSUInteger _socketIndex;
 }
 
-@synthesize _visibleComputers;
+@synthesize _connectedLinks;
 @synthesize _linkProviderDelegate;
 
 - (LanLinkProvider*) initWithDelegate:(id)linkProviderDelegate
@@ -26,9 +27,11 @@
     {
         
         _tcpPort=PORT;
-        _pendingConnections=[NSMutableDictionary dictionaryWithCapacity:1];
-        _visibleComputers=[NSMutableDictionary dictionaryWithCapacity:1];
+        _pendingSockets=[NSMutableArray arrayWithCapacity:1];
+        _pendingNps=[NSMutableArray arrayWithCapacity:1];
+        _connectedLinks=[NSMutableArray arrayWithCapacity:1];
         _linkProviderDelegate=linkProviderDelegate;
+        _socketIndex=0;
         socketQueue=dispatch_queue_create("socketQueue", NULL);
     
     }
@@ -71,19 +74,30 @@
     [[np _Body] setValue:[[NSNumber alloc ] initWithUnsignedInt:_tcpPort] forKey:@"tcpPort"];
     NSData* data=[np serialize];
     NSLog(@"%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
-	[_udpSocket sendData:data toHost:@"255.255.255.255" port:PORT withTimeout:-1 tag:0];
+	[_udpSocket sendData:data toHost:@"255.255.255.255" port:PORT withTimeout:-1 tag:UDPBROADCAST_TAG];
 }
 
 - (void)onStop
 {
     [_udpSocket close];
     [_tcpSocket disconnect];
-    for (NSDictionary* connection in _pendingConnections) {
-        [[connection valueForKey:@"socket"] disconnect];
+    for (GCDAsyncSocket* socket in _pendingSockets) {
+        [socket disconnect];
     }
-    for (NSDictionary* connection in _visibleComputers) {
-        [[connection valueForKey:@"socket"] disconnect];
+    for (GCDAsyncSocket* link in _connectedLinks) {
+        [link disconnect];
     }
+    
+    [_pendingNps removeAllObjects];
+    [_pendingSockets removeAllObjects];
+    [_connectedLinks removeAllObjects];
+
+}
+
+- (void)onPause
+{
+    [_udpSocket close];
+    [_tcpSocket disconnect];
 }
 
 - (void)onNetworkChange
@@ -118,9 +132,10 @@
     }
     
     //deal with id package
+    
+    //FIX-ME doesn't work haspREFIX
     NSString* host;
-    uint16_t udpPort;
-    [GCDAsyncUdpSocket getHost:&host port:&udpPort fromAddress:address];
+    [GCDAsyncUdpSocket getHost:&host port:nil fromAddress:address];
     if ([host hasPrefix:@"::ffff:"]) {
         return;
     }
@@ -130,28 +145,30 @@
     uint16_t tcpPort=[[[np _Body] valueForKey:@"tcpPort"] intValue];
     
     NSError* error=nil;
-    bool success=[socket connectToHost:host onPort:tcpPort error:&error];
-    if (!success) {
+    if (![socket connectToHost:host onPort:tcpPort error:&error]) {
         NSLog(@"LanLinkProvider:tcp connection error");
         NSLog(@"try reverse connection");
         [[np2 _Body] setValue:[[NSNumber alloc ] initWithUnsignedInt:_tcpPort] forKey:@"tcpPort"];
         NSData* data=[np serialize];
         NSLog(@"%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
-        [_udpSocket sendData:data toHost:@"255.255.255.255" port:PORT withTimeout:-1 tag:0];
+        [_udpSocket sendData:data toHost:@"255.255.255.255" port:PORT withTimeout:-1 tag:UDPBROADCAST_TAG];
         return;
     }
     NSLog(@"connecting");
     
-    
     //add to pending connection list
-    NSMutableDictionary *connection=[NSMutableDictionary dictionaryWithObjects:[NSMutableArray arrayWithObjects:np,nil] forKeys:[NSArray arrayWithObjects:@"np", nil]];
-    [_pendingConnections setValue:connection forKey:host];
+    @synchronized(_pendingNps)
+    {
+        [_pendingSockets insertObject:socket atIndex:_socketIndex];
+        [_pendingNps insertObject:socket atIndex:_socketIndex];
+        _socketIndex++;
+    }
     
 }
 
 - (void) onLinkDestroyed:(BaseLink*)link
 {
-    
+    [_connectedLinks removeObject:link];
 }
 
 
@@ -170,25 +187,19 @@
 - (void)socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket
 {
 	NSLog(@"TCP server: didAcceptNewSocket");
-	NSString *host = [newSocket connectedHost];
-    NSMutableDictionary *connection=[NSMutableDictionary dictionaryWithObjects:[NSMutableArray arrayWithObjects:sock, nil] forKeys:[NSArray arrayWithObjects:@"socket", nil]];
-    [_pendingConnections setValue:connection forKey:host];
-    
+	@synchronized(_pendingSockets)
+    {
+        [_pendingSockets insertObject:newSocket atIndex:_socketIndex];
+        [_pendingNps insertObject:[NSNull null] atIndex:_socketIndex];
+        _socketIndex++;
+    }
+    long index=[_pendingSockets indexOfObject:newSocket];
     //retrieve id package
-    [newSocket readDataWithTimeout:-1 tag:0];
+    [newSocket readDataWithTimeout:-1 tag:index];
     
-    // TODO  pair request, move to other places
-    NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PAIR];
-    [[np _Body] setValue:[NSNumber numberWithBool:true] forKey:@"pair"];
-    [[np _Body] setValue:@"qwefsdv1241234asvqwefbgwerf1345" forKey:@"publickey"];
-    NSMutableData* data;
-    data= [NSMutableData dataWithData:[np serialize]];
-    [data appendData:[GCDAsyncSocket LFData]];
-    NSLog(@"%@\n",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
-
-    [newSocket writeData:data withTimeout:-1 tag:0];
+    
     [newSocket writeData:[GCDAsyncSocket LFData] withTimeout:KEEPALIVE_TIMEOUT tag:KEEPALIVE_TAG];
-    [newSocket readDataWithTimeout:-1 tag:0];
+    [newSocket readDataWithTimeout:-1 tag:index];
 
 }
 
@@ -201,37 +212,24 @@
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port
 {
     NSLog(@"tcp socket didConnectToHost");    
-    NSMutableDictionary* connection;
     
-    connection=[_visibleComputers objectForKey:host];
-    if (connection) {
-        NSLog(@"it's a visibleComputer connection");
-        [_visibleComputers removeObjectForKey:host];
-    }
-    NSLog(@"it's a new computer connection");
-    
-    connection=[_pendingConnections valueForKey:host];
-    if (!connection) {
+    if ([_pendingSockets indexOfObject:sock]==NSNotFound) {
         NSLog(@"it's not a pending connection");
         return;
     }
-    [_pendingConnections removeObjectForKey:host];
-    
     [sock setDelegate:nil];
     
-    connection=[NSMutableDictionary dictionaryWithObjects:[NSArray arrayWithObjects:sock, nil] forKeys:[NSArray arrayWithObjects:@"socket", nil]];
-
-    [_visibleComputers setValue:connection forKey:host];
-    
     //create LanLink and inform the background
-    NetworkPackage* np=[connection valueForKey:@"np"];
+    NSUInteger index=[_pendingSockets indexOfObject:sock];
+    NetworkPackage* np=[_pendingNps objectAtIndex:index];
     LanLink* link=[[LanLink alloc]init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] setDelegate:nil];
+    [_pendingSockets removeObjectAtIndex:index];
+    [_pendingSockets removeObjectAtIndex:index];
+    [_connectedLinks addObject:link];
     [_linkProviderDelegate onConnectionReceived:np link:link];
-
     //send my id package
     np=[NetworkPackage createIdentityPackage];
     [link sendPackage:np];
-    
 }
 
 /**
@@ -250,18 +248,19 @@
         return;
     }
     
-    NSMutableDictionary* connection=[_pendingConnections valueForKey:host];
+
     //if it's a pendingConnection
-    if ( !connection ) {
+    if ([_pendingSockets indexOfObject:sock]==NSNotFound) {
         NSLog(@"receive something from a connection not pending");
         return;
     }
     [sock setDelegate:nil];
-    [connection setValue:np forKey:@"np"];
-    [_visibleComputers setValue:connection forKey:host];
-    [_pendingConnections removeObjectForKey:host];
+    [_pendingSockets removeObject:sock];
+    
     //create LanLink and inform the background
     LanLink* link=[[LanLink alloc] init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] setDelegate:nil];
+    [_connectedLinks addObject:link];
+
     //call backegroundDelegate
     [_linkProviderDelegate onConnectionReceived:np link:link];
 }
@@ -328,8 +327,8 @@
     }
     else
     {
-        
-        NSLog(@"tcp socket disconnected,remaining %lu connection",(unsigned long)[_pendingConnections count]);
+        [_pendingSockets removeObject:sock];
+        NSLog(@"tcp socket disconnected,remaining %lu pending connection",(unsigned long)[_pendingSockets count]);
     }
 }
 

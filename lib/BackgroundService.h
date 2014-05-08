@@ -11,12 +11,12 @@
 #import "BaseLinkProvider.h"
 #import "Device.h"
 #import "NetworkPackage.h"
+
 @class BaseLink;
 @class Device;
 
 @protocol backgroundServiceDelegate <NSObject>
 @optional
-
 @end
 
 @interface BackgroundService : NSObject<linkDelegate,linkProviderDelegate>
@@ -28,7 +28,7 @@
 - (void) stopDiscovery;
 - (void) onNetworkChange;
 - (void) onConnectionReceived:(NetworkPackage *)np link:(BaseLink *)link;
+- (NSArray*) getVisibleComputers;
 - (NSDictionary*) visibleDevices;
-
 
 @end

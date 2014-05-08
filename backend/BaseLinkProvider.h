@@ -17,15 +17,17 @@
 @protocol linkProviderDelegate <NSObject>
 @optional
 - (void) onConnectionReceived:(NetworkPackage*)np link:(BaseLink*)link;
-
 @end
 
 @interface BaseLinkProvider : NSObject
 
 @property(nonatomic,assign)id _linkProviderDelegate;
+@property(strong,nonatomic) NSMutableArray* _connectedLinks;
+
 - (BaseLinkProvider*) initWithDelegate:(id)linkProviderDelegate;
 - (void) onStart;
 - (void) onStop;
+- (void) onPause;
 - (void) onNetworkChange;
 
 @end
