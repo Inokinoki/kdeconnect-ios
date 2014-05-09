@@ -19,16 +19,16 @@
 @optional
 @end
 
-@interface BackgroundService : NSObject<linkDelegate,linkProviderDelegate>
+@interface BackgroundService : NSObject<linkDelegate,linkProviderDelegate,deviceDelegate>
 
 @property(nonatomic,assign) id _backgroundServiceDelegate;
+@property(strong,nonatomic) NSMutableArray* _visibleDevices;
 
 - (BackgroundService*) initWithDelegate:(id)backgroundServiceDelegate;
 - (void) startDiscovery;
 - (void) stopDiscovery;
 - (void) onNetworkChange;
 - (void) onConnectionReceived:(NetworkPackage *)np link:(BaseLink *)link;
-- (NSArray*) getVisibleComputers;
-- (NSDictionary*) visibleDevices;
+- (void) onReachableStatusChanged;
 
 @end

@@ -19,7 +19,6 @@
 @optional
 - (void) onPackageReceived:(NetworkPackage*)np;
 - (void) onSendSuccess;
-- (void) onDisconnected;
 - (void) onLinkDestroyed:(BaseLink*)link;
 @end
 

@@ -8,9 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "BaseLink.h"
-#import "BackgroundService.h"
 
-@class BackgroundService;
 @class BaseLink;
 @class NetworkPackage;
 
@@ -33,12 +31,13 @@ typedef NS_ENUM(NSUInteger, DeviceType)
 
 @protocol deviceDelegate <NSObject>
 @optional
+-(void) onReachableStatusChanged;
 @end
 
-@interface Device : NSObject
+@interface Device : NSObject <linkDelegate>
 
-@property(weak,readonly,nonatomic)NSString* _id;
-@property(weak,readonly,nonatomic)NSString* _name;
+@property(strong,readonly,nonatomic)NSString* _id;
+@property(strong,readonly,nonatomic)NSString* _name;
 @property(readonly,nonatomic)DeviceType* _type;
 @property(readonly,nonatomic)NSInteger _protocolVersion;
 @property(readonly,nonatomic)PairStatus _pairStatus;
@@ -50,8 +49,9 @@ typedef NS_ENUM(NSUInteger, DeviceType)
 
 #pragma mark Link-related Functions
 - (void) addLink:(NetworkPackage*)np baseLink:(BaseLink*)link;
-- (void) onLinkDestroyed:(BaseLink*)link;
 - (void) onPackageReceived:(NetworkPackage*)np;
+- (void) onLinkDestroyed:(BaseLink *)link;
+- (void) onSendSuccess;
 - (BOOL) sendPackage:(NetworkPackage*)np;
 - (BOOL) isReachable;
 

@@ -27,6 +27,11 @@
     
 }
 
+- (void) onPause
+{
+    
+}
+
 - (void) onNetworkChange
 {
     

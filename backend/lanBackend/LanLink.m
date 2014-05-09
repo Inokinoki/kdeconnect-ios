@@ -136,14 +136,16 @@
  **/
 - (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag
 {
+    if (tag==KEEPALIVE_TAG) {
+        [sock writeData:[GCDAsyncSocket LFData] withTimeout:KEEPALIVE_TIMEOUT tag:KEEPALIVE_TAG];
+        return;
+    }
     NSLog(@"didWriteData");
     if (_linkDelegate!=nil) {
         [_linkDelegate onSendSuccess];
     }
     
-    if (tag==KEEPALIVE_TAG) {
-        [sock writeData:[GCDAsyncSocket LFData] withTimeout:KEEPALIVE_TIMEOUT tag:KEEPALIVE_TAG];
-    }
+    
 }
 
 /**
@@ -229,7 +231,6 @@
  **/
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err
 {
-    [_linkDelegate onDisconnected];
     [_linkDelegate onLinkDestroyed:self];
 }
 

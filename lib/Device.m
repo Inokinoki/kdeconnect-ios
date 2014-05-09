@@ -10,7 +10,7 @@
 
 @implementation Device
 {
-    NSMutableArray* _links;
+    __strong NSMutableArray* _links;
 //    id* _publicKey;
 //    NSMutableDictionary* _plugins;
 //    NSMutableDictionary* _failedPlugins;
@@ -35,16 +35,22 @@
 {
     _id=[[np _Body] valueForKey:@"deviceId"];
     _name=[[np _Body] valueForKey:@"deviceName"];
-
+    _links=[NSMutableArray arrayWithCapacity:1];
     //TODO need a string to type? or a dictionary
 //    _type=[[[np _Body] valueForKey:@"deviceType"] ;
     _protocolVersion=[[[np _Body] valueForKey:@"protocolVersion"] integerValue];
     _deviceDelegate=deviceDelegate;
-
+    [link set_linkDelegate:self];
+    
     //TODO creat a private Key
     
     [self addLink:np baseLink:link];
     return self;
+}
+
+- (NSInteger) compareProtocolVersion
+{
+    return 0;
 }
 
 #pragma mark Link-related Functions
@@ -71,9 +77,10 @@
     
     if ([_links count]==0) {
         NSLog(@"no available link");
-        
         //TODO reachable status changed
+        [_deviceDelegate onReachableStatusChanged];
     }
+    [_deviceDelegate onLinkDestroyed:link];
 
 }
 
@@ -85,6 +92,11 @@
         }
     }
     return false;
+}
+
+- (void) onSendSuccess
+{
+    
 }
 
 - (void) onPackageReceived:(NetworkPackage*)np
@@ -135,6 +147,11 @@
     }else{
         NSLog(@"not paired, ignore packages ");
     }
+}
+
+- (BOOL) isReachable
+{
+    return [_links count]!=0;
 }
 
 #pragma mark Pairing-related Functions
@@ -206,6 +223,13 @@
     [self sendPackage:np];
 }
 
+
+#pragma mark Plugins-related Functions
+
+- (void) reloadPlugins
+{
+    
+}
 @end
 
 

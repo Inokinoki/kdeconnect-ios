@@ -7,15 +7,6 @@
 //
 
 #import "ViewController.h"
-#import "GCDAsyncUdpSocket.h"
-#import "GCDAsyncSocket.h"
-#import <ifaddrs.h>
-#import <CFNetwork/CFNetwork.h>
-#import <arpa/inet.h>
-#import "NetworkPackage.h"
-#import "../backend/lanBackend/LanLinkProvider.h"
-#import "../lib/BackgroundService.h"
-#define FORMAT(format, ...) [NSString stringWithFormat:(format), ##__VA_ARGS__]
 @interface ViewController ()
 {
     NSMutableString *log;
@@ -26,6 +17,9 @@
 
 
 @implementation ViewController
+
+@synthesize start;
+@synthesize pause;
 
 - (void)viewDidLoad
 {
@@ -177,10 +171,21 @@
 	[webView loadHTMLString:html baseURL:nil];
 }
 
-- (IBAction)send:(id)sender
+- (IBAction)start_discovery:(id)sender
 {
     if(bg==nil) bg=[[BackgroundService alloc] initWithDelegate:self];
     [bg startDiscovery];
-    
 }
+- (IBAction)stop_discovery:(id)sender
+{
+    if (bg) {
+        [bg stopDiscovery];
+        NSArray* list=[bg _visibleDevices];
+        for (Device* device in list) {
+            [self logMessage:FORMAT(@"Visible device:%@",[device _name])];
+        }
+    }
+}
+
+
 @end

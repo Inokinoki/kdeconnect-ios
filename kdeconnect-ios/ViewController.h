@@ -7,12 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@interface ViewController : UIViewController
+#import "NetworkPackage.h"
+#import "../lib/BackgroundService.h"
+#define FORMAT(format, ...) [NSString stringWithFormat:(format), ##__VA_ARGS__]
+@interface ViewController : UIViewController<backgroundServiceDelegate>
 {
 	IBOutlet UIWebView *webView;
 }
 
-- (IBAction)send:(id)sender;
+
+@property (weak, nonatomic) IBOutlet UIButton *start;
+@property (weak, nonatomic) IBOutlet UIButton *pause;
+- (IBAction)start_discovery:(id)sender;
+- (IBAction)stop_discovery:(id)sender;
 - (void)logMessage:(NSString *)msg;
 @end

@@ -240,7 +240,6 @@
 {
     NSLog(@"tcp socket didReadData");
     NSLog(@"%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
-    NSString *host = [sock connectedHost];
     NetworkPackage* np=[NetworkPackage unserialize:data];
     
     if (![[np _Type] isEqualToString:PACKAGE_TYPE_IDENTITY]) {

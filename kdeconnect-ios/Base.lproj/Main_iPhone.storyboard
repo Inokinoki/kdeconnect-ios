@@ -22,19 +22,31 @@
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             </webView>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dDU-Kg-eAe">
-                                <rect key="frame" x="137" y="48" width="46" height="30"/>
+                                <rect key="frame" x="20" y="20" width="101" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button">
+                                <state key="normal" title="start discovery">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="send:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="7oK-cy-ctp"/>
+                                    <action selector="start_discovery:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="aNm-1w-Q7k"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TXR-63-qiw">
+                                <rect key="frame" x="20" y="47" width="101" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="stop discovery">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="stop_discovery:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="gIw-dt-g9a"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <connections>
+                        <outlet property="pause" destination="TXR-63-qiw" id="sAF-nX-RoX"/>
+                        <outlet property="start" destination="dDU-Kg-eAe" id="kQI-oO-htm"/>
                         <outlet property="webView" destination="OhK-vO-is0" id="bdW-k3-i57"/>
                     </connections>
                 </viewController>

@@ -15,13 +15,14 @@
 }
 
 @synthesize _backgroundServiceDelegate;
-
+@synthesize _visibleDevices;
 
 - (BackgroundService*) initWithDelegate:(id)backgroundServiceDelegate
 {
     
     _linkProviders=[NSMutableArray arrayWithCapacity:1];
     _devices=[NSMutableDictionary dictionaryWithCapacity:1];
+    _visibleDevices=[NSMutableArray arrayWithCapacity:1];
     [self registerLinkProviders];
     [self loadRemenberedDevices];
     _backgroundServiceDelegate=backgroundServiceDelegate;
@@ -53,16 +54,19 @@
     for (BaseLinkProvider* lp in _linkProviders) {
         [lp onPause];
     }
+    [self refreshVisibleDeviceList];
 }
 
-- (NSArray*) getVisibleComputers
+- (void) refreshVisibleDeviceList
 {
-    NSMutableArray* list=[NSMutableArray arrayWithCapacity:1];
-    for (BaseLinkProvider* lp in _linkProviders) {
-        [list addObjectsFromArray:[lp _connectedLinks]];
+    _visibleDevices=[NSMutableArray arrayWithCapacity:1];
+    for (NSString* id  in [_devices keyEnumerator]) {
+        if ([_devices[id] isReachable]) {
+            [_visibleDevices addObject:_devices[id]];
+        }
     }
-    return list;
 }
+
 
 - (void) onNetworkChange
 {
@@ -70,17 +74,6 @@
     for (LanLinkProvider* lp in _linkProviders){
         [lp onNetworkChange];
     }
-}
-
-- (NSDictionary*) visibleDevices
-{
-    NSMutableDictionary* list=[[NSMutableDictionary alloc] initWithCapacity:1];
-    for (Device* device in _devices) {
-        if ([device isReachable]) {
-            [list setObject:device forKey:[device _name]];
-        }
-    }
-    return list;
 }
 
 - (void) onConnectionReceived:(NetworkPackage *)np link:(BaseLink *)link
@@ -96,16 +89,11 @@
         NSLog(@"new device");
         Device* device=[[Device alloc] init:np baselink:link setDelegate:self];
         [_devices setObject:device forKey:id];
-        //TODO device added
+        [_visibleDevices addObject:device];
     }
-    
-    //TODO refresh device list
+    [self refreshVisibleDeviceList];
 }
 
-- (void) onConnectionLost:(BaseLink*)link
-{
-    
-}
 
 
 @end
