@@ -18,7 +18,9 @@
 
 @property (weak, nonatomic) IBOutlet UIButton *start;
 @property (weak, nonatomic) IBOutlet UIButton *pause;
+@property (weak, nonatomic) IBOutlet UIButton *pair;
 - (IBAction)start_discovery:(id)sender;
 - (IBAction)stop_discovery:(id)sender;
+- (IBAction)pair:(id)sender;
 - (void)logMessage:(NSString *)msg;
 @end

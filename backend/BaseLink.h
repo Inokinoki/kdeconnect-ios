@@ -18,7 +18,7 @@
 @protocol linkDelegate <NSObject>
 @optional
 - (void) onPackageReceived:(NetworkPackage*)np;
-- (void) onSendSuccess;
+- (void) onSendSuccess:(long)tag;
 - (void) onLinkDestroyed:(BaseLink*)link;
 @end
 
@@ -30,7 +30,7 @@
 //@property(strong,nonatomic) _privatekey;
 
 - (BaseLink*) init:(NSString*)deviceId setDelegate:(id)linkDelegate;
-- (BOOL) sendPackage:(NetworkPackage*)np;
+- (BOOL) sendPackage:(NetworkPackage*)np tag:(long)tag;
 - (BOOL) sendPackageEncypted:(NetworkPackage*)np;
 - (void) disconnect;
 

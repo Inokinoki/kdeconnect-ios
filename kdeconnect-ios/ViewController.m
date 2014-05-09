@@ -11,6 +11,7 @@
 {
     NSMutableString *log;
     BackgroundService* bg;
+    Device* _pairRequest_device;
 }
 
 @end
@@ -185,7 +186,51 @@
             [self logMessage:FORMAT(@"Visible device:%@",[device _name])];
         }
     }
+    _pairRequest_device=nil;
 }
 
+- (IBAction)pair:(id)sender {
+    NSArray* list=[bg _visibleDevices];
+    for (Device* device in list) {
+        [self logMessage:FORMAT(@"paring device:%@",[device _name])];
+        [device requestPairing];
+    }
+}
+
+-(void) onPairRequest:(Device*)device
+{
+    [self logMessage:FORMAT(@"%@ request pairing",[device _name])];
+    [self showConfirmationAlert];
+    _pairRequest_device=device;
+}
+
+- (void) showConfirmationAlert
+{
+    // A quick and dirty popup, displayed only once
+    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"HasSeenPopup"])
+    {
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Question"
+                                                       message:@"Do you like cats?"
+                                                      delegate:self
+                                             cancelButtonTitle:@"No"
+                                             otherButtonTitles:@"Yes",nil];
+        [alert show];
+        [[NSUserDefaults standardUserDefaults] setValue:@"YES" forKey:@"HasSeenPopup"];
+    }
+}
+
+
+- (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+	// 0 = Tapped yes
+	if (buttonIndex == 0)
+	{
+        [_pairRequest_device acceptPairing];
+	}
+    else
+    {
+        [_pairRequest_device rejectPairing];
+    }
+}
 
 @end

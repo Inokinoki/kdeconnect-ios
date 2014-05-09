@@ -8,9 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
-#define TCPSERVER_TAG -2
 #define UDPBROADCAST_TAG -1
+#define TCPSERVER_TAG -2
 #define KEEPALIVE_TAG -3
+
+#define PACKAGE_TAG_NORMAL 0
+#define PACKAGE_TAG_IDENTITY 1
+#define PACKAGE_TAG_PAIR 2
+#define PACKAGE_TAG_PING 3
 
 #define KEEPALIVE_TIMEOUT 3
 
@@ -21,6 +26,7 @@
 #define PACKAGE_TYPE_IDENTITY @"kdeconnect.identity"
 #define PACKAGE_TYPE_PAIR @"kdeconnect.pair"
 #define PACKAGE_TYPE_PING @"kdeconnect.ping"
+
 #pragma mark -
 
 @interface NetworkPackage : NSObject

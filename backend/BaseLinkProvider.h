@@ -29,5 +29,6 @@
 - (void) onStop;
 - (void) onPause;
 - (void) onNetworkChange;
+- (void) onLinkDestroyed:(BaseLink*)link;
 
 @end

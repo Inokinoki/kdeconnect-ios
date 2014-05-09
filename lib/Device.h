@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "BaseLink.h"
-
+#import "NetworkPackage.h"
 @class BaseLink;
 @class NetworkPackage;
 
@@ -31,7 +31,8 @@ typedef NS_ENUM(NSUInteger, DeviceType)
 
 @protocol deviceDelegate <NSObject>
 @optional
--(void) onReachableStatusChanged;
+-(void) onReachableStatusChanged:(Device*)device;
+-(void) onPairRequest:(Device*)device;
 @end
 
 @interface Device : NSObject <linkDelegate>
@@ -51,8 +52,8 @@ typedef NS_ENUM(NSUInteger, DeviceType)
 - (void) addLink:(NetworkPackage*)np baseLink:(BaseLink*)link;
 - (void) onPackageReceived:(NetworkPackage*)np;
 - (void) onLinkDestroyed:(BaseLink *)link;
-- (void) onSendSuccess;
-- (BOOL) sendPackage:(NetworkPackage*)np;
+- (void) onSendSuccess:(long)tag;
+- (BOOL) sendPackage:(NetworkPackage*)np tag:(long)tag;
 - (BOOL) isReachable;
 
 #pragma mark Pairing-related Functions

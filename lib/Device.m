@@ -77,25 +77,35 @@
     
     if ([_links count]==0) {
         NSLog(@"no available link");
-        //TODO reachable status changed
-        [_deviceDelegate onReachableStatusChanged];
+        if (_deviceDelegate) {
+            [_deviceDelegate onReachableStatusChanged:self];
+        }
+        
     }
-    [_deviceDelegate onLinkDestroyed:link];
+    if (_deviceDelegate) {
+        [_deviceDelegate onLinkDestroyed:link];
+    }
+    
 
 }
 
-- (BOOL) sendPackage:(NetworkPackage *)np
+- (BOOL) sendPackage:(NetworkPackage *)np tag:(long)tag
 {
     for (BaseLink* link in _links) {
-        if ([link sendPackage:np]) {
+        if ([link sendPackage:np tag:tag]) {
             return true;
         }
     }
     return false;
 }
 
-- (void) onSendSuccess
+- (void) onSendSuccess:(long)tag
 {
+    if (tag==PACKAGE_TAG_PAIR) {
+        if (_pairStatus==RequestedByPeer) {
+            [self setAsPaired];
+        }
+    }
     
 }
 
@@ -122,6 +132,7 @@
             else{
                 //TODO ask if user want to pair
                 _pairStatus=RequestedByPeer;
+                [_deviceDelegate onPairRequest:self];
             }
         }
         else{
@@ -143,6 +154,8 @@
         
     }else if ([self isPaired]){
         //call plugins
+        NSLog(@"recieved a plugin package :%@",[np _Type]);
+
         
     }else{
         NSLog(@"not paired, ignore packages ");
@@ -169,6 +182,7 @@
 - (void) setAsPaired
 {
     _pairStatus=Paired;
+    NSLog(@"paired with %@",_name);
     //TODO stop timmer;
     // save trusted device configuration
     [self reloadPlugins];
@@ -189,8 +203,11 @@
         NSLog(@"failed:not reachable");
         return;
     }
-    NetworkPackage* np=[NetworkPackage createPublicKeyPackage];
-    [self sendPackage:np];
+    _pairStatus=Requested;
+    NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PAIR];
+    [[np _Body] setValue:[NSNumber numberWithBool:true] forKey:@"pair"];
+    [[np _Body] setValue:@"qwefsdv1241234asvqwefbgwerf1345" forKey:@"publickey"];
+    [self sendPackage:np tag:PACKAGE_TAG_PAIR];
 }
 
 - (void) unpair
@@ -203,7 +220,7 @@
     
     NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PAIR];
     [[np _Body] setValue:[NSNumber numberWithBool:false] forKey:@"pair"];
-    [self sendPackage:np];
+    [self sendPackage:np tag:PACKAGE_TAG_PAIR];
     [self reloadPlugins];
 }
 
@@ -211,7 +228,7 @@
 {
     NSLog(@"accepted pair request");
     NetworkPackage* np=[NetworkPackage createPublicKeyPackage];
-    [self sendPackage:np];
+    [self sendPackage:np tag:PACKAGE_TAG_PAIR];
 }
 
 - (void) rejectPairing
@@ -220,9 +237,8 @@
     _pairStatus=NotPaired;
     NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PAIR];
     [[np _Body] setValue:[NSNumber numberWithBool:false] forKey:@"pair"];
-    [self sendPackage:np];
+    [self sendPackage:np tag:PACKAGE_TAG_PAIR];
 }
-
 
 #pragma mark Plugins-related Functions
 

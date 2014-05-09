@@ -67,6 +67,12 @@
     }
 }
 
+- (void) onReachableStatusChanged:(Device*)device
+{
+    if (![device isReachable]) {
+        [_visibleDevices removeObject:device];
+    }
+}
 
 - (void) onNetworkChange
 {
@@ -92,6 +98,18 @@
         [_visibleDevices addObject:device];
     }
     [self refreshVisibleDeviceList];
+}
+
+- (void) onLinkDestroyed:(BaseLink *)link
+{
+    for (BaseLinkProvider* lp in _linkProviders) {
+        [lp onLinkDestroyed:link];
+    }
+}
+
+- (void) onPairRequest:(Device *)device
+{
+    [_backgroundServiceDelegate onPairRequest:device];
 }
 
 

@@ -7,6 +7,7 @@
 //
 
 #import "NetworkPackage.h"
+#define LFDATA [NSData dataWithBytes:"\x0D\x0A" length:2]
 
 #pragma mark Private Methode Declaration
 @interface NetworkPackage(private)
@@ -67,8 +68,8 @@
     NSArray* values=[NSArray arrayWithObjects:[self _Id],[self _Type],[self _Body], nil];
     NSDictionary* info=[NSDictionary dictionaryWithObjects:values forKeys:keys];
     NSError* err=nil;
-    NSData* jsonData=[NSJSONSerialization dataWithJSONObject:info options:0 error:&err];
-
+    NSMutableData* jsonData=[[NSMutableData alloc] initWithData:[NSJSONSerialization dataWithJSONObject:info options:0 error:&err]];
+    [jsonData appendData:LFDATA];
     return jsonData;
 }
 
@@ -77,11 +78,14 @@
     NetworkPackage* np=[[NetworkPackage alloc] init];
     NSError* err=nil;
     NSDictionary* info=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&err];
-    
+
     [np set_Id:[info valueForKey:@"id"]];
     [np set_Type:[info valueForKey:@"type"]];
     [np set_Body:[info valueForKey:@"body"]];
-
+    
+    if (err) {
+        return nil;
+    }
     return np;
 }
 

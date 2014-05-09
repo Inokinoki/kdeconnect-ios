@@ -23,20 +23,24 @@
         _socket=socket;
         _linkDelegate=linkdelegate;
         [_socket setDelegate:self];
+        NSLog(@"LanLink:lanlink device:%@ created",_deviceId);
+        [_socket readDataToData:[GCDAsyncSocket LFData] withTimeout:-1 tag:0];
+        [_socket writeData:[GCDAsyncSocket LFData] withTimeout:KEEPALIVE_TIMEOUT tag:KEEPALIVE_TAG];
     }
-    
-    NSLog(@"LanLink:lanlink device:%@ created",_deviceId);
-    [_socket readDataToData:[GCDAsyncSocket LFData] withTimeout:-1 tag:0];
-    [_socket writeData:[GCDAsyncSocket LFData] withTimeout:KEEPALIVE_TIMEOUT tag:KEEPALIVE_TAG];
     return self;
 }
 
 
-- (BOOL) sendPackage:(NetworkPackage *)np
+- (BOOL) sendPackage:(NetworkPackage *)np tag:(long)tag
 {
     if (![_socket isConnected]) {
         NSLog(@"LanLink: Device:%@ disconnected",_deviceId);
+        return false;
     }
+    
+    NSData* data=[np serialize];
+    
+    [_socket writeData:data withTimeout:-1 tag:tag];
     return true;
 }
 
@@ -51,60 +55,14 @@
     if ([_socket isConnected]) {
         [_socket disconnect];
     }
-    //call Delegate
-    [_linkDelegate onLinkDestroyed:self];
+    if (_linkDelegate) {
+        [_linkDelegate onLinkDestroyed:self];
+    }
+
     NSLog(@"LanLink: Device:%@ disconnected",_deviceId);
 }
 
 #pragma mark TCP delegate
-/**
- * This method is called immediately prior to socket:didAcceptNewSocket:.
- * It optionally allows a listening socket to specify the socketQueue for a new accepted socket.
- * If this method is not implemented, or returns NULL, the new accepted socket will create its own default queue.
- *
- * Since you cannot autorelease a dispatch_queue,
- * this method uses the "new" prefix in its name to specify that the returned queue has been retained.
- *
- * Thus you could do something like this in the implementation:
- * return dispatch_queue_create("MyQueue", NULL);
- *
- * If you are placing multiple sockets on the same queue,
- * then care should be taken to increment the retain count each time this method is invoked.
- *
- * For example, your implementation might look something like this:
- * dispatch_retain(myExistingQueue);
- * return myExistingQueue;
- **/
-/*
-- (dispatch_queue_t)newSocketQueueForConnectionFromAddress:(NSData *)address onSocket:(GCDAsyncSocket *)sock
-{
-    
-}
-*/
-
-/**
- * Called when a socket accepts a connection.
- * Another socket is automatically spawned to handle it.
- *
- * You must retain the newSocket if you wish to handle the connection.
- * Otherwise the newSocket instance will be released and the spawned connection will be closed.
- *
- * By default the new socket will have the same delegate and delegateQueue.
- * You may, of course, change this at any time.
- **/
-- (void)socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket
-{
-    
-}
-
-/**
- * Called when a socket connects and is ready for reading and writing.
- * The host parameter will be an IP address, not a DNS name.
- **/
-- (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port
-{
-    
-}
 
 /**
  * Called when a socket has completed reading the requested data into memory.
@@ -112,23 +70,17 @@
  **/
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
+    //BUG even if we read with a seperator LFData , it's still possible to receive several data package together. So we split the string and retrieve the package
     [_socket readDataToData:[GCDAsyncSocket LFData] withTimeout:-1 tag:0];
-    //inform device that a package received
-    NSLog(@"did read data%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
-    NetworkPackage* np=[NetworkPackage unserialize:data];
-    if (_linkDelegate!=nil) {
-        [_linkDelegate onPackageReceived:np];
+    NSLog(@"did read data:\n%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+    NSString * jsonStr=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSArray* packageArray=[jsonStr componentsSeparatedByString:@"\n"];
+    for (NSString* dataStr in packageArray) {
+        NetworkPackage* np=[NetworkPackage unserialize:[dataStr dataUsingEncoding:NSUTF8StringEncoding]];
+        if (_linkDelegate && np) {
+            [_linkDelegate onPackageReceived:np];
+        }
     }
-}
-
-/**
- * Called when a socket has read in data, but has not yet completed the read.
- * This would occur if using readToData: or readToLength: methods.
- * It may be used to for things such as updating progress bars.
- **/
-- (void)socket:(GCDAsyncSocket *)sock didReadPartialDataOfLength:(NSUInteger)partialLength tag:(long)tag
-{
-    
 }
 
 /**
@@ -141,19 +93,10 @@
         return;
     }
     NSLog(@"didWriteData");
-    if (_linkDelegate!=nil) {
-        [_linkDelegate onSendSuccess];
+    if (_linkDelegate) {
+        [_linkDelegate onSendSuccess:tag];
     }
     
-    
-}
-
-/**
- * Called when a socket has written some data, but has not yet completed the entire write.
- * It may be used to for things such as updating progress bars.
- **/
-- (void)socket:(GCDAsyncSocket *)sock didWritePartialDataOfLength:(NSUInteger)partialLength tag:(long)tag
-{
     
 }
 
@@ -198,17 +141,6 @@
 }
 
 /**
- * Conditionally called if the read stream closes, but the write stream may still be writeable.
- *
- * This delegate method is only called if autoDisconnectOnClosedReadStream has been set to NO.
- * See the discussion on the autoDisconnectOnClosedReadStream method for more information.
- **/
-- (void)socketDidCloseReadStream:(GCDAsyncSocket *)sock
-{
-    
-}
-
-/**
  * Called when a socket disconnects with or without error.
  *
  * If you call the disconnect method, and the socket wasn't already disconnected,
@@ -231,7 +163,10 @@
  **/
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err
 {
-    [_linkDelegate onLinkDestroyed:self];
+    if (_linkDelegate) {
+        [_linkDelegate onLinkDestroyed:self];    
+    }
+    
 }
 
 

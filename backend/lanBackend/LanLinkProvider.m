@@ -40,17 +40,16 @@
 
 - (void)setupSocket
 {
+    NSError* err;
     if (_tcpSocket==nil) {
         _tcpSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:socketQueue];
     }
     if (_udpSocket==nil) {
         _udpSocket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:socketQueue];
-        NSError* err;
-        if (![_udpSocket bindToPort:PORT error:&err]) {
-            NSLog(@"udp bind error");
-        }
-        
         [_udpSocket enableBroadcast:true error:&err];
+    }
+    if (![_udpSocket bindToPort:PORT error:&err]) {
+        NSLog(@"udp bind error");
     }
 }
 
@@ -64,9 +63,12 @@
         return;
     }
     NSLog(@"LanLinkProvider:UDP socket start");
-    while (![_tcpSocket acceptOnPort:_tcpPort error:&err]) {
-        _tcpPort++;
+    if (![_tcpSocket isConnected]) {
+        while (![_tcpSocket acceptOnPort:_tcpPort error:&err]) {
+            _tcpPort++;
+        }
     }
+    
     NSLog(@"LanLinkProvider:setup tcp socket on port %d",_tcpPort);
     
     //Introduce myself , UDP broadcasting my id package
@@ -226,10 +228,13 @@
     [_pendingSockets removeObjectAtIndex:index];
     [_pendingSockets removeObjectAtIndex:index];
     [_connectedLinks addObject:link];
-    [_linkProviderDelegate onConnectionReceived:np link:link];
+    if (_linkProviderDelegate) {
+        [_linkProviderDelegate onConnectionReceived:np link:link];
+    }
+
     //send my id package
     np=[NetworkPackage createIdentityPackage];
-    [link sendPackage:np];
+    [link sendPackage:np tag:PACKAGE_TAG_IDENTITY];
 }
 
 /**
@@ -259,9 +264,10 @@
     //create LanLink and inform the background
     LanLink* link=[[LanLink alloc] init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] setDelegate:nil];
     [_connectedLinks addObject:link];
-
-    //call backegroundDelegate
-    [_linkProviderDelegate onConnectionReceived:np link:link];
+    if (_linkProviderDelegate) {
+        [_linkProviderDelegate onConnectionReceived:np link:link];
+    }
+    
 }
 
 
@@ -321,7 +327,9 @@
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err
 {
     NSLog(@"tcp socket did Disconnect");
-    if ([sock localPort]==_tcpPort) {
+    int localport=[sock localPort];
+    //FIX-ME can't get port of tcpserver when it's disconnected
+    if (localport==_tcpPort) {
         NSLog(@"tcp server disconnected");
     }
     else

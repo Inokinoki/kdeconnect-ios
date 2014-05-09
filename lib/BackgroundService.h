@@ -17,9 +17,10 @@
 
 @protocol backgroundServiceDelegate <NSObject>
 @optional
+-(void) onPairRequest:(Device*)device;
 @end
 
-@interface BackgroundService : NSObject<linkDelegate,linkProviderDelegate,deviceDelegate>
+@interface BackgroundService : NSObject<linkProviderDelegate,deviceDelegate>
 
 @property(nonatomic,assign) id _backgroundServiceDelegate;
 @property(strong,nonatomic) NSMutableArray* _visibleDevices;
@@ -28,7 +29,8 @@
 - (void) startDiscovery;
 - (void) stopDiscovery;
 - (void) onNetworkChange;
+- (void) onLinkDestroyed:(BaseLink*)link;
 - (void) onConnectionReceived:(NetworkPackage *)np link:(BaseLink *)link;
-- (void) onReachableStatusChanged;
-
+- (void) onReachableStatusChanged:(Device*)device;
+- (void) onPairRequest:(Device*)device;
 @end
