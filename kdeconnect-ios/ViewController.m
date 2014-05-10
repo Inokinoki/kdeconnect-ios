@@ -176,6 +176,7 @@
 {
     if(_bg==nil) _bg=[[BackgroundService alloc] initWithDelegate:self];
     [_bg startDiscovery];
+    [self logMessage:FORMAT(@"start discovery")];
 }
 - (IBAction)stop_discovery:(id)sender
 {
@@ -194,8 +195,6 @@
     for (Device* device in list) {
         [self logMessage:FORMAT(@"pairing device:%@",[device _name])];
         [_bg pairDevice:device];
-        [self logMessage:FORMAT(@"paired with device:%@",[device _name])];
-
     }
 }
 
@@ -210,9 +209,24 @@
 
 -(void) onPairRequest:(Device*)device
 {
-    [self logMessage:FORMAT(@"%@ request pairing",[device _name])];
+    [self logMessage:FORMAT(@"request pairing:%@",[device _name])];
     [self showConfirmationAlert];
     _pairRequest_device=device;
+}
+
+- (void) onPairTimeout:(Device*)device
+{
+    [self logMessage:FORMAT(@"pairing timeout: %@",[device _name])];
+}
+
+- (void) onPairSuccess:(Device*)device
+{
+    [self logMessage:FORMAT(@"pairing success:%@",[device _name])];
+}
+
+- (void) onPairRejected:(Device*)device
+{
+    [self logMessage:FORMAT(@"pairing rejected:%@",[device _name])];
 }
 
 - (void) showConfirmationAlert

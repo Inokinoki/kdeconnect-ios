@@ -123,6 +123,21 @@
     [_backgroundServiceDelegate onPairRequest:device];
 }
 
+- (void) onPairTimeout:(Device*)device
+{
+    [_backgroundServiceDelegate onPairTimeout:device];
+}
+
+- (void) onPairSuccess:(Device*)device
+{
+    [_backgroundServiceDelegate onPairSuccess:device];
+}
+
+- (void) onPairRejected:(Device*)device
+{
+    [_backgroundServiceDelegate onPairRejected:device];
+}
+
 
 
 @end

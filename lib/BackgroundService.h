@@ -18,6 +18,9 @@
 @protocol backgroundServiceDelegate <NSObject>
 @optional
 -(void) onPairRequest:(Device*)device;
+- (void) onPairTimeout:(Device*)device;
+- (void) onPairSuccess:(Device*)device;
+- (void) onPairRejected:(Device*)device;
 @end
 
 @interface BackgroundService : NSObject<linkProviderDelegate,deviceDelegate>
@@ -37,4 +40,7 @@
 - (void) onConnectionReceived:(NetworkPackage *)np link:(BaseLink *)link;
 - (void) onReachableStatusChanged:(Device*)device;
 - (void) onPairRequest:(Device*)device;
+- (void) onPairTimeout:(Device*)device;
+- (void) onPairSuccess:(Device*)device;
+- (void) onPairRejected:(Device*)device;
 @end

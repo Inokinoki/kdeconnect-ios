@@ -107,7 +107,6 @@
             [self setAsPaired];
         }
     }
-    
 }
 
 - (void) onPackageReceived:(NetworkPackage*)np
@@ -216,6 +215,9 @@
         _pairStatus=NotPaired;
         NSLog(@"pairing timeout");
         [_deviceDelegate onPairTimeout:self];
+        NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PAIR];
+        [[np _Body] setValue:[NSNumber numberWithBool:NO] forKey:@"pair"];
+        [self sendPackage:np tag:PACKAGE_TAG_UNPAIR];
     }
 }
 
@@ -230,7 +232,7 @@
     
     NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PAIR];
     [[np _Body] setValue:[NSNumber numberWithBool:false] forKey:@"pair"];
-    [self sendPackage:np tag:PACKAGE_TAG_PAIR];
+    [self sendPackage:np tag:PACKAGE_TAG_UNPAIR];
     [self reloadPlugins];
 }
 
