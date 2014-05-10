@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "NetworkPackage.h"
-#import "../lib/BackgroundService.h"
+#import "BackgroundService.h"
 #define FORMAT(format, ...) [NSString stringWithFormat:(format), ##__VA_ARGS__]
 @interface ViewController : UIViewController<backgroundServiceDelegate>
 {

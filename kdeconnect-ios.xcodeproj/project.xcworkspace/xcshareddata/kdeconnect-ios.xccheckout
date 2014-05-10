@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>B1806422-B111-4127-9937-CE1DC81E63C2</string>
+	<key>IDESourceControlProjectName</key>
+	<string>kdeconnect-ios</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>FEDD742D-D411-459B-BC2D-F0A25FFA9A97</key>
+		<string>git://anongit.kde.org/scratch/yangqiao/kdeconnect-ios</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>kdeconnect-ios.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>FEDD742D-D411-459B-BC2D-F0A25FFA9A97</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>git://anongit.kde.org/scratch/yangqiao/kdeconnect-ios</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>FEDD742D-D411-459B-BC2D-F0A25FFA9A97</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>FEDD742D-D411-459B-BC2D-F0A25FFA9A97</string>
+			<key>IDESourceControlWCCName</key>
+			<string>kdeconnect-ios</string>
+		</dict>
+	</array>
+</dict>
+</plist>

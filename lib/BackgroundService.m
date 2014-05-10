@@ -7,7 +7,7 @@
 //
 
 #import "BackgroundService.h"
-#import "../backend/lanBackend/LanLinkProvider.h"
+#import "LanLinkProvider.h"
 @implementation BackgroundService
 {
     __strong NSMutableArray* _linkProviders;
