@@ -31,8 +31,11 @@ typedef NS_ENUM(NSUInteger, DeviceType)
 
 @protocol deviceDelegate <NSObject>
 @optional
--(void) onReachableStatusChanged:(Device*)device;
--(void) onPairRequest:(Device*)device;
+- (void) onReachableStatusChanged:(Device*)device;
+- (void) onPairRequest:(Device*)device;
+- (void) onPairTimeout:(Device*)device;
+- (void) onPairSuccess:(Device*)device;
+- (void) onPairRejected:(Device*)device;
 @end
 
 @interface Device : NSObject <linkDelegate>

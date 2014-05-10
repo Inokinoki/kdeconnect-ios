@@ -9,8 +9,8 @@
 #import "ViewController.h"
 @interface ViewController ()
 {
-    NSMutableString *log;
-    BackgroundService* bg;
+    NSMutableString *_log;
+    BackgroundService* _bg;
     Device* _pairRequest_device;
 }
 
@@ -25,7 +25,7 @@
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
-    log = [[NSMutableString alloc] init];
+    _log = [[NSMutableString alloc] init];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self
 	                                         selector:@selector(keyboardWillShow:)
@@ -144,9 +144,9 @@
 	NSString *prefix = @"<font color=\"#B40404\">";
 	NSString *suffix = @"</font><br/>";
 	
-	[log appendFormat:@"%@%@%@\n", prefix, msg, suffix];
+	[_log appendFormat:@"%@%@%@\n", prefix, msg, suffix];
 	
-	NSString *html = [NSString stringWithFormat:@"<html><body>\n%@\n</body></html>", log];
+	NSString *html = [NSString stringWithFormat:@"<html><body>\n%@\n</body></html>", _log];
 	[webView loadHTMLString:html baseURL:nil];
 }
 
@@ -155,9 +155,9 @@
 	NSString *prefix = @"<font color=\"#6A0888\">";
 	NSString *suffix = @"</font><br/>";
 	
-	[log appendFormat:@"%@%@%@\n", prefix, msg, suffix];
+	[_log appendFormat:@"%@%@%@\n", prefix, msg, suffix];
 	
-	NSString *html = [NSString stringWithFormat:@"<html><body>\n%@\n</body></html>", log];
+	NSString *html = [NSString stringWithFormat:@"<html><body>\n%@\n</body></html>", _log];
 	[webView loadHTMLString:html baseURL:nil];
 }
 
@@ -166,22 +166,22 @@
 	NSString *prefix = @"<font color=\"#000000\">";
 	NSString *suffix = @"</font><br/>";
 	
-	[log appendFormat:@"%@%@%@\n", prefix, msg, suffix];
+	[_log appendFormat:@"%@%@%@\n", prefix, msg, suffix];
 	
-	NSString *html = [NSString stringWithFormat:@"<html><body>%@</body></html>", log];
+	NSString *html = [NSString stringWithFormat:@"<html><body>%@</body></html>", _log];
 	[webView loadHTMLString:html baseURL:nil];
 }
 
 - (IBAction)start_discovery:(id)sender
 {
-    if(bg==nil) bg=[[BackgroundService alloc] initWithDelegate:self];
-    [bg startDiscovery];
+    if(_bg==nil) _bg=[[BackgroundService alloc] initWithDelegate:self];
+    [_bg startDiscovery];
 }
 - (IBAction)stop_discovery:(id)sender
 {
-    if (bg) {
-        [bg stopDiscovery];
-        NSArray* list=[bg _visibleDevices];
+    if (_bg) {
+        [_bg stopDiscovery];
+        NSArray* list=[_bg _visibleDevices];
         for (Device* device in list) {
             [self logMessage:FORMAT(@"Visible device:%@",[device _name])];
         }
@@ -190,11 +190,22 @@
 }
 
 - (IBAction)pair:(id)sender {
-    NSArray* list=[bg _visibleDevices];
+    NSArray* list=[_bg _visibleDevices];
     for (Device* device in list) {
-        [self logMessage:FORMAT(@"paring device:%@",[device _name])];
-        [device requestPairing];
+        [self logMessage:FORMAT(@"pairing device:%@",[device _name])];
+        [_bg pairDevice:device];
+        [self logMessage:FORMAT(@"paired with device:%@",[device _name])];
+
     }
+}
+
+- (IBAction)ping:(id)sender {
+    NSArray* list=[_bg _visibleDevices];
+    for (Device* device in list) {
+        [self logMessage:FORMAT(@"ping device:%@",[device _name])];
+        [_bg pingDevice:device];
+    }
+    
 }
 
 -(void) onPairRequest:(Device*)device

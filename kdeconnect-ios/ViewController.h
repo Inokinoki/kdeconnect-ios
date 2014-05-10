@@ -22,5 +22,6 @@
 - (IBAction)start_discovery:(id)sender;
 - (IBAction)stop_discovery:(id)sender;
 - (IBAction)pair:(id)sender;
+- (IBAction)ping:(id)sender;
 - (void)logMessage:(NSString *)msg;
 @end

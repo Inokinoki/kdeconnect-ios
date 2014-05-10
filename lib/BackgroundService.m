@@ -57,6 +57,17 @@
     [self refreshVisibleDeviceList];
 }
 
+- (void) pairDevice:(Device *)device
+{
+    [device requestPairing];
+}
+
+- (void) pingDevice:(Device *)device
+{
+    NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PING];
+    [device sendPackage:np tag:PACKAGE_TAG_PING];
+}
+
 - (void) refreshVisibleDeviceList
 {
     _visibleDevices=[NSMutableArray arrayWithCapacity:1];

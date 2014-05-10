@@ -157,7 +157,7 @@
     NSLog(@"connecting");
     
     //add to pending connection list
-    @synchronized(_pendingNps,_pendingSockets)
+    @synchronized(_pendingNps)
     {
         [_pendingSockets insertObject:socket atIndex:_socketIndex];
         [_pendingNps insertObject:np atIndex:_socketIndex];

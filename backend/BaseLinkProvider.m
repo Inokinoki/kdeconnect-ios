@@ -36,5 +36,10 @@
 {
     
 }
+- (void) onLinkDestroyed:(BaseLink*)link
+{
+    
+}
+
 
 @end

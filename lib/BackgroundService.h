@@ -28,6 +28,10 @@
 - (BackgroundService*) initWithDelegate:(id)backgroundServiceDelegate;
 - (void) startDiscovery;
 - (void) stopDiscovery;
+
+- (void) pairDevice:(Device*)device;
+- (void) pingDevice:(Device*)device;
+
 - (void) onNetworkChange;
 - (void) onLinkDestroyed:(BaseLink*)link;
 - (void) onConnectionReceived:(NetworkPackage *)np link:(BaseLink *)link;
