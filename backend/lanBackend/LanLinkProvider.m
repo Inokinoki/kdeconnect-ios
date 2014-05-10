@@ -134,9 +134,7 @@
     }
     
     //deal with id package
-    
-    //FIX-ME doesn't work haspREFIX
-    NSString* host;
+        NSString* host;
     [GCDAsyncUdpSocket getHost:&host port:nil fromAddress:address];
     if ([host hasPrefix:@"::ffff:"]) {
         return;
@@ -159,10 +157,10 @@
     NSLog(@"connecting");
     
     //add to pending connection list
-    @synchronized(_pendingNps)
+    @synchronized(_pendingNps,_pendingSockets)
     {
         [_pendingSockets insertObject:socket atIndex:_socketIndex];
-        [_pendingNps insertObject:socket atIndex:_socketIndex];
+        [_pendingNps insertObject:np atIndex:_socketIndex];
         _socketIndex++;
     }
     
@@ -224,17 +222,18 @@
     //create LanLink and inform the background
     NSUInteger index=[_pendingSockets indexOfObject:sock];
     NetworkPackage* np=[_pendingNps objectAtIndex:index];
-    LanLink* link=[[LanLink alloc]init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] setDelegate:nil];
+//    LanLink* link=[[LanLink alloc] init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] setDelegate:nil];
+//    LanLink* link=[[LanLink alloc] init:[[np _Body] valueForKey:@"deviceId"] setDelegate:nil];
     [_pendingSockets removeObjectAtIndex:index];
-    [_pendingSockets removeObjectAtIndex:index];
-    [_connectedLinks addObject:link];
-    if (_linkProviderDelegate) {
-        [_linkProviderDelegate onConnectionReceived:np link:link];
-    }
+    [_pendingNps removeObjectAtIndex:index];
+//    [_connectedLinks addObject:link];
+//    if (_linkProviderDelegate) {
+//        [_linkProviderDelegate onConnectionReceived:np link:link];
+//    }
 
     //send my id package
     np=[NetworkPackage createIdentityPackage];
-    [link sendPackage:np tag:PACKAGE_TAG_IDENTITY];
+//    [link sendPackage:np tag:PACKAGE_TAG_IDENTITY];
 }
 
 /**

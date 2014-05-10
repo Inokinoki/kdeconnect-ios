@@ -7,10 +7,12 @@
 //
 
 #import "Device.h"
+#define PAIR_TIMMER_TIMEOUT  10.0
 
 @implementation Device
 {
     __strong NSMutableArray* _links;
+    NSTimer* _timer;
 //    id* _publicKey;
 //    NSMutableDictionary* _plugins;
 //    NSMutableDictionary* _failedPlugins;
@@ -28,6 +30,7 @@
     _id=deviceId;
     _deviceDelegate=deviceDelegate;
     _links=[NSMutableArray arrayWithCapacity:1];
+    _timer=nil;
     return self;
 }
 
@@ -36,6 +39,7 @@
     _id=[[np _Body] valueForKey:@"deviceId"];
     _name=[[np _Body] valueForKey:@"deviceName"];
     _links=[NSMutableArray arrayWithCapacity:1];
+    _timer=nil;
     //TODO need a string to type? or a dictionary
 //    _type=[[[np _Body] valueForKey:@"deviceType"] ;
     _protocolVersion=[[[np _Body] valueForKey:@"protocolVersion"] integerValue];
@@ -118,7 +122,7 @@
             NSLog(@"already done, paired:%d",wantsPair);
             if (_pairStatus==Requested) {
                 _pairStatus=NotPaired;
-                //TODO stop timer
+                [_timer invalidate];
                 NSLog(@"canceled by other peer");
             }
             return;
@@ -140,10 +144,10 @@
             PairStatus prevPairStatus=_pairStatus;
             _pairStatus=NotPaired;
             if (prevPairStatus==Requested) {
-                //TODO stop pairing timmer
+                [_timer invalidate];
                 NSLog(@"canceled by other peer");
             }else if (prevPairStatus==Paired){
-                //TODO save configuration
+                //TODO remove configuration
                 
                 //reload Plugins
                 [self reloadPlugins];
@@ -183,7 +187,7 @@
 {
     _pairStatus=Paired;
     NSLog(@"paired with %@",_name);
-    //TODO stop timmer;
+    [_timer invalidate];
     // save trusted device configuration
     [self reloadPlugins];
     //inform pairsuccessful
@@ -208,7 +212,15 @@
     [[np _Body] setValue:[NSNumber numberWithBool:true] forKey:@"pair"];
     [[np _Body] setValue:@"qwefsdv1241234asvqwefbgwerf1345" forKey:@"publickey"];
     [self sendPackage:np tag:PACKAGE_TAG_PAIR];
+    _timer=[NSTimer timerWithTimeInterval:PAIR_TIMMER_TIMEOUT target:self selector:@selector(requestPairingTimeout) userInfo:nil repeats:NO];
 }
+
+- (void) requestPairingTimeout
+{
+    _pairStatus=NotPaired;
+    
+}
+
 
 - (void) unpair
 {

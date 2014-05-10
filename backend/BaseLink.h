@@ -31,7 +31,7 @@
 
 - (BaseLink*) init:(NSString*)deviceId setDelegate:(id)linkDelegate;
 - (BOOL) sendPackage:(NetworkPackage*)np tag:(long)tag;
-- (BOOL) sendPackageEncypted:(NetworkPackage*)np;
+- (BOOL) sendPackageEncypted:(NetworkPackage*)np tag:(long)tag;
 - (void) disconnect;
 
 @end;

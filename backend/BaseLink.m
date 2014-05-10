@@ -20,12 +20,12 @@
     return self;
 }
 
-- (BOOL) sendPackage:(NetworkPackage *)np
+- (BOOL) sendPackage:(NetworkPackage *)np tag:(long)tag
 {
     return true;
 }
 
-- (BOOL) sendPackageEncypted:(NetworkPackage *)np
+- (BOOL) sendPackageEncypted:(NetworkPackage *)np tag:(long)tag
 {
     
     return true;
