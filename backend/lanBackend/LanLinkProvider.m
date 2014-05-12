@@ -258,8 +258,11 @@
         return;
     }
     [sock setDelegate:nil];
+    if (tag!=[_pendingSockets indexOfObject:sock]) {
+        NSLog(@"index wrong");
+    }
     [_pendingSockets removeObject:sock];
-    
+    [_pendingNps removeObjectAtIndex:tag];
     //create LanLink and inform the background
     LanLink* link=[[LanLink alloc] init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] setDelegate:nil];
     [_connectedLinks addObject:link];

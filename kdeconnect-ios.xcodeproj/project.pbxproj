@@ -29,6 +29,9 @@
 		4E08A2351913D1780056EEF8 /* BackgroundService.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2301913D1780056EEF8 /* BackgroundService.m */; };
 		4E08A2361913D1780056EEF8 /* Device.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2321913D1780056EEF8 /* Device.m */; };
 		4E08A2371913D1780056EEF8 /* NetworkPackage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2341913D1780056EEF8 /* NetworkPackage.m */; };
+		4EC27545191FCEAB0057AB0E /* Plugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC27544191FCEAB0057AB0E /* Plugin.m */; };
+		4EC27548191FCECD0057AB0E /* Ping.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC27547191FCECD0057AB0E /* Ping.m */; };
+		4EC2754B191FD5490057AB0E /* PluginFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC2754A191FD5490057AB0E /* PluginFactory.m */; };
 		CDF3929BB4CB40FCA1F80352 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2F71AC6EE495B8966C774 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -78,6 +81,12 @@
 		4E08A2321913D1780056EEF8 /* Device.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Device.m; path = lib/Device.m; sourceTree = "<group>"; };
 		4E08A2331913D1780056EEF8 /* NetworkPackage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NetworkPackage.h; path = lib/NetworkPackage.h; sourceTree = "<group>"; };
 		4E08A2341913D1780056EEF8 /* NetworkPackage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NetworkPackage.m; path = lib/NetworkPackage.m; sourceTree = "<group>"; };
+		4EC27543191FCEAB0057AB0E /* Plugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Plugin.h; path = plugins/Plugin.h; sourceTree = "<group>"; };
+		4EC27544191FCEAB0057AB0E /* Plugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Plugin.m; path = plugins/Plugin.m; sourceTree = "<group>"; };
+		4EC27546191FCECD0057AB0E /* Ping.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Ping.h; path = plugins/ping/Ping.h; sourceTree = "<group>"; };
+		4EC27547191FCECD0057AB0E /* Ping.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Ping.m; path = plugins/ping/Ping.m; sourceTree = "<group>"; };
+		4EC27549191FD5490057AB0E /* PluginFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PluginFactory.h; path = plugins/PluginFactory.h; sourceTree = "<group>"; };
+		4EC2754A191FD5490057AB0E /* PluginFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PluginFactory.m; path = plugins/PluginFactory.m; sourceTree = "<group>"; };
 		5B2C3C0E2C4C4FB78D606404 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -109,6 +118,7 @@
 		4E08A1DB1913CF850056EEF8 = {
 			isa = PBXGroup;
 			children = (
+				4EC27541191FCE910057AB0E /* plugins */,
 				4E08A2211913D12B0056EEF8 /* backend */,
 				4E08A21F1913D0CF0056EEF8 /* lib */,
 				4E08A1ED1913CF850056EEF8 /* kdeconnect-ios */,
@@ -218,6 +228,27 @@
 				4E08A2201913D0D50056EEF8 /* lanBackend */,
 			);
 			name = backend;
+			sourceTree = "<group>";
+		};
+		4EC27541191FCE910057AB0E /* plugins */ = {
+			isa = PBXGroup;
+			children = (
+				4EC27542191FCE980057AB0E /* ping */,
+				4EC27543191FCEAB0057AB0E /* Plugin.h */,
+				4EC27544191FCEAB0057AB0E /* Plugin.m */,
+				4EC27549191FD5490057AB0E /* PluginFactory.h */,
+				4EC2754A191FD5490057AB0E /* PluginFactory.m */,
+			);
+			name = plugins;
+			sourceTree = "<group>";
+		};
+		4EC27542191FCE980057AB0E /* ping */ = {
+			isa = PBXGroup;
+			children = (
+				4EC27546191FCECD0057AB0E /* Ping.h */,
+				4EC27547191FCECD0057AB0E /* Ping.m */,
+			);
+			name = ping;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -355,13 +386,16 @@
 			files = (
 				4E08A2011913CF850056EEF8 /* ViewController.m in Sources */,
 				4E08A1F81913CF850056EEF8 /* AppDelegate.m in Sources */,
+				4EC2754B191FD5490057AB0E /* PluginFactory.m in Sources */,
 				4E08A2271913D1550056EEF8 /* BaseLink.m in Sources */,
+				4EC27548191FCECD0057AB0E /* Ping.m in Sources */,
 				4E08A2371913D1780056EEF8 /* NetworkPackage.m in Sources */,
 				4E08A2361913D1780056EEF8 /* Device.m in Sources */,
 				4E08A22D1913D1650056EEF8 /* LanLink.m in Sources */,
 				4E08A2281913D1550056EEF8 /* BaseLinkProvider.m in Sources */,
 				4E08A22E1913D1650056EEF8 /* LanLinkProvider.m in Sources */,
 				4E08A1F41913CF850056EEF8 /* main.m in Sources */,
+				4EC27545191FCEAB0057AB0E /* Plugin.m in Sources */,
 				4E08A2351913D1780056EEF8 /* BackgroundService.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
