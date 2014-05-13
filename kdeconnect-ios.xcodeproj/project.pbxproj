@@ -536,6 +536,7 @@
 				GCC_PREFIX_HEADER = "kdeconnect-ios/kdeconnect-ios-Prefix.pch";
 				INFOPLIST_FILE = "kdeconnect-ios/kdeconnect-ios-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -550,6 +551,7 @@
 				GCC_PREFIX_HEADER = "kdeconnect-ios/kdeconnect-ios-Prefix.pch";
 				INFOPLIST_FILE = "kdeconnect-ios/kdeconnect-ios-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

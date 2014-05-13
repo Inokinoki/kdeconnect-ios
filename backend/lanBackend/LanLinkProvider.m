@@ -222,18 +222,17 @@
     //create LanLink and inform the background
     NSUInteger index=[_pendingSockets indexOfObject:sock];
     NetworkPackage* np=[_pendingNps objectAtIndex:index];
-//    LanLink* link=[[LanLink alloc] init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] setDelegate:nil];
-//    LanLink* link=[[LanLink alloc] init:[[np _Body] valueForKey:@"deviceId"] setDelegate:nil];
+    LanLink* link=[[LanLink alloc] init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] setDelegate:nil];
     [_pendingSockets removeObjectAtIndex:index];
     [_pendingNps removeObjectAtIndex:index];
-//    [_connectedLinks addObject:link];
-//    if (_linkProviderDelegate) {
-//        [_linkProviderDelegate onConnectionReceived:np link:link];
-//    }
+    [_connectedLinks addObject:link];
+    if (_linkProviderDelegate) {
+        [_linkProviderDelegate onConnectionReceived:np link:link];
+    }
 
     //send my id package
     np=[NetworkPackage createIdentityPackage];
-//    [link sendPackage:np tag:PACKAGE_TAG_IDENTITY];
+    [link sendPackage:np tag:PACKAGE_TAG_IDENTITY];
 }
 
 /**

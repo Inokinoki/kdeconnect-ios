@@ -8,8 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import "Plugin.h"
-@class Plugin;
 @class PluginInfo;
+@class Plugin;
 
 @protocol pingDelegate<NSObject>
 @optional
@@ -18,8 +18,8 @@
 @interface Ping : Plugin
 
 + (Ping*) getInstance;
-- (BOOL) onCreate;
-- (void) onDestroy;
+
+
 - (BOOL) onPackageReceived:(NetworkPackage*)np;
 
 @end

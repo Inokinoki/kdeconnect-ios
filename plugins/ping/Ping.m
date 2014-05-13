@@ -9,16 +9,17 @@
 #import "Ping.h"
 
 __strong static Ping* _instance;
+
 @implementation Ping
 
 @synthesize _device;
 @synthesize _pluginInfo;
+@synthesize _pluginDelegate;
 
-- (id) init
+- (Plugin*) init
 {
-    if([super init]){
-        
-    }
+    [self loadPluginInfo];
+    _pluginDelegate=nil;
     return self;
 }
 
@@ -33,17 +34,7 @@ __strong static Ping* _instance;
 - (void) loadPluginInfo
 {
     PluginInfo* pluginInfo=[[PluginInfo alloc] initWithInfos:@"PingPlugin" displayName:@"Ping" description:@"Ping" enabledByDefault:true];
-    [_instance set_pluginInfo:pluginInfo];
-}
-
-- (BOOL) onCreate
-{
-    return true;
-}
-
-- (void) onDestroy
-{
-    
+    [self set_pluginInfo:pluginInfo];
 }
 
 - (BOOL) onPackageReceived:(NetworkPackage *)np

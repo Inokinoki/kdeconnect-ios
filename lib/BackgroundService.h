@@ -11,7 +11,9 @@
 #import "BaseLinkProvider.h"
 #import "Device.h"
 #import "NetworkPackage.h"
+#import "PluginFactory.h"
 
+@class PluginFactory;
 @class BaseLink;
 @class Device;
 

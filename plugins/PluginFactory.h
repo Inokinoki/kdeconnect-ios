@@ -13,17 +13,19 @@
 @class Device;
 @class NetworkPackage;
 @class Plugin;
+@class Ping;
 
 @protocol pluginFactoryDelegate <NSObject>
 @optional
 @end
 
+
 @interface PluginFactory : NSObject
 
-@property(strong,nonatomic,readonly)NSMutableDictionary* _availablePlugins;
-
++ (PluginFactory*) getInstance;
 - (Plugin*) instantiatePluginForDevice:(Device*)device pluginName:(NSString*)pluginName;
-
+- (NSArray*) getAvailablePlugins;
+- (void) registerPlugins;
 @end
 
 

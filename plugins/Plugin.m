@@ -34,14 +34,6 @@ __strong static Plugin* _instance;
 @synthesize _device;
 @synthesize _pluginInfo;
 
-- (id) init
-{
-    if([super init]){
-        
-    }
-    return self;
-}
-
 + (Plugin*) getInstance
 {
     return _instance;

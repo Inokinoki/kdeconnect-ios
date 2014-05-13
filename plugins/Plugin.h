@@ -30,6 +30,7 @@
 
 @property(strong,nonatomic) Device* _device;
 @property(strong,nonatomic) PluginInfo* _pluginInfo;
+@property(nonatomic,assign) id _pluginDelegate;
 
 + (Plugin*) getInstance;
 - (BOOL) onCreate;

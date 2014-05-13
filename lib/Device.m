@@ -13,8 +13,8 @@
 {
     __strong NSMutableArray* _links;
 //    id* _publicKey;
-//    NSMutableDictionary* _plugins;
-//    NSMutableDictionary* _failedPlugins;
+    __strong NSMutableDictionary* _plugins;
+    __strong NSMutableDictionary* _failedPlugins;
 
 }
 @synthesize _id;
@@ -29,6 +29,9 @@
     _id=deviceId;
     _deviceDelegate=deviceDelegate;
     _links=[NSMutableArray arrayWithCapacity:1];
+    _plugins=[NSMutableDictionary dictionaryWithCapacity:1];
+    _failedPlugins=[NSMutableDictionary dictionaryWithCapacity:1];
+    [self reloadPlugins];
     return self;
 }
 
@@ -37,12 +40,14 @@
     _id=[[np _Body] valueForKey:@"deviceId"];
     _name=[[np _Body] valueForKey:@"deviceName"];
     _links=[NSMutableArray arrayWithCapacity:1];
+    _plugins=[NSMutableDictionary dictionaryWithCapacity:1];
+    _failedPlugins=[NSMutableDictionary dictionaryWithCapacity:1];
     //TODO need a string to type? or a dictionary
 //    _type=[[[np _Body] valueForKey:@"deviceType"] ;
     _protocolVersion=[[[np _Body] valueForKey:@"protocolVersion"] integerValue];
     _deviceDelegate=deviceDelegate;
     [link set_linkDelegate:self];
-    
+    [self reloadPlugins];
     //TODO creat a private Key
     
     [self addLink:np baseLink:link];
@@ -152,9 +157,10 @@
         }
         
     }else if ([self isPaired]){
-        //call plugins
         NSLog(@"recieved a plugin package :%@",[np _Type]);
-
+        for (Plugin* plugin in [_plugins allValues]) {
+            [plugin onPackageReceived:np];
+        }
         
     }else{
         NSLog(@"not paired, ignore packages ");
@@ -256,8 +262,23 @@
 
 - (void) reloadPlugins
 {
+    [_failedPlugins removeAllObjects];
+    PluginFactory* pluginFactory=[PluginFactory getInstance];
+    NSArray* pluginNames=[pluginFactory getAvailablePlugins];
+    for (NSString* pluginName in pluginNames) {
+        Plugin* plugin=[pluginFactory instantiatePluginForDevice:self pluginName:pluginName];
+        if (plugin) {
+            [_plugins setValue:plugin forKey:pluginName];
+        }
+    }
     
 }
+
+- (Plugin*) getPlugin:(NSString*)pluginName
+{
+    return [_plugins valueForKey:pluginName];
+}
+
 @end
 
 

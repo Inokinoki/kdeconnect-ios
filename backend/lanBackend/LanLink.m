@@ -21,6 +21,7 @@
     if ([super init:deviceid setDelegate:nil])
     {
         _socket=socket;
+        _deviceId=deviceid;
         _linkDelegate=linkdelegate;
         [_socket setDelegate:self];
         NSLog(@"LanLink:lanlink device:%@ created",_deviceId);

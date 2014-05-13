@@ -9,8 +9,11 @@
 #import <Foundation/Foundation.h>
 #import "BaseLink.h"
 #import "NetworkPackage.h"
+#import "PluginFactory.h"
 @class BaseLink;
 @class NetworkPackage;
+@class Plugin;
+@class PluginFactory;
 
 typedef NS_ENUM(NSUInteger, PairStatus)
 {
@@ -36,6 +39,7 @@ typedef NS_ENUM(NSUInteger, DeviceType)
 - (void) onPairTimeout:(Device*)device;
 - (void) onPairSuccess:(Device*)device;
 - (void) onPairRejected:(Device*)device;
+- (void) onPluginChanged:(Device*)device;
 @end
 
 @interface Device : NSObject <linkDelegate>
@@ -69,6 +73,7 @@ typedef NS_ENUM(NSUInteger, DeviceType)
 
 #pragma mark Plugin-related Functions
 - (void) reloadPlugins;
+- (Plugin*) getPlugin:(NSString*)pluginName;
 
 @end
 

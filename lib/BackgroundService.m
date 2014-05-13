@@ -50,7 +50,7 @@
 
 - (void) stopDiscovery
 {
-    NSLog(@"start Discovery");
+    NSLog(@"stop Discovery");
     for (BaseLinkProvider* lp in _linkProviders) {
         [lp onPause];
     }
