@@ -39,6 +39,10 @@
     [self logInfo:FORMAT(@"Ready")];
     NSLog(@"hello");
     
+    NSLog(@"A:%@",[BackgroundService sharedInstance]);
+    NSLog(@"B:%@",[[BackgroundService alloc] init]);
+    NSLog(@"C:%@",[[BackgroundService alloc] init]);
+    
 }
 
 - (void)viewDidUnload

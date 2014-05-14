@@ -21,6 +21,13 @@
     });
 }
 
++ (id) allocWithZone:(struct _NSZone *)zone
+{
+    DEFINE_SHARED_INSTANCE_USING_BLOCK(^{
+        return [super allocWithZone:zone];
+    });
+}
+
 - (id) init
 {
     _availablePlugins=[NSMutableDictionary dictionaryWithCapacity:1];

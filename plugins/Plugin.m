@@ -41,6 +41,13 @@
     });
 }
 
++ (id) allocWithZone:(struct _NSZone *)zone
+{
+    DEFINE_SHARED_INSTANCE_USING_BLOCK(^{
+        return [super allocWithZone:zone];
+    });
+}
+
 - (BOOL) onCreate
 {
     return true;

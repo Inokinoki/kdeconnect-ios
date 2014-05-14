@@ -23,6 +23,13 @@ __strong static Ping* _instance;
     });
 }
 
++ (id) allocWithZone:(struct _NSZone *)zone
+{
+    DEFINE_SHARED_INSTANCE_USING_BLOCK(^{
+        return [super allocWithZone:zone];
+    });
+}
+
 - (Plugin*) init
 {
     PluginInfo* pluginInfo=[[PluginInfo alloc] initWithInfos:@"PingPlugin" displayName:@"Ping" description:@"Ping" enabledByDefault:true];
