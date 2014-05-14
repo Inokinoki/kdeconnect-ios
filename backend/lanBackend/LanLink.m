@@ -26,6 +26,10 @@
         [_socket setDelegate:self];
         NSLog(@"LanLink:lanlink device:%@ created",_deviceId);
         [_socket readDataToData:[GCDAsyncSocket LFData] withTimeout:-1 tag:0];
+        //send my id package
+        NetworkPackage* np=[NetworkPackage createIdentityPackage];
+        [_socket writeData:[np serialize] withTimeout:-1 tag:PACKAGE_TAG_IDENTITY];
+        
         [_socket writeData:[GCDAsyncSocket LFData] withTimeout:KEEPALIVE_TIMEOUT tag:KEEPALIVE_TAG];
     }
     return self;

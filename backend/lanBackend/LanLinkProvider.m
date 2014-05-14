@@ -15,7 +15,6 @@
     NSMutableArray* _pendingSockets;
     NSMutableArray* _pendingNps;
     uint16_t _tcpPort;
-    NSUInteger _socketIndex;
     dispatch_queue_t socketQueue;
 }
 
@@ -31,11 +30,10 @@
         [_udpSocket close];
         _udpSocket=nil;
         _tcpSocket=nil;
-        _pendingSockets=[NSMutableArray arrayWithCapacity:20];
-        _pendingNps=[NSMutableArray arrayWithCapacity:20];
-        _connectedLinks=[NSMutableArray arrayWithCapacity:20];
+        _pendingSockets=[NSMutableArray arrayWithCapacity:1];
+        _pendingNps=[NSMutableArray arrayWithCapacity:1];
+        _connectedLinks=[NSMutableArray arrayWithCapacity:1];
         _linkProviderDelegate=linkProviderDelegate;
-        _socketIndex=0;
         socketQueue=dispatch_queue_create("socketQueue", NULL);
     }
     return self;
@@ -92,7 +90,6 @@
     [_pendingNps removeAllObjects];
     [_pendingSockets removeAllObjects];
     [_connectedLinks removeAllObjects];
-    _socketIndex=0;
     _udpSocket=nil;
 
 }
@@ -161,9 +158,8 @@
     //add to pending connection list
     @synchronized(_pendingNps)
     {
-        [_pendingSockets insertObject:socket atIndex:_socketIndex];
-        [_pendingNps insertObject:np atIndex:_socketIndex];
-        _socketIndex++;
+        [_pendingSockets insertObject:socket atIndex:0];
+        [_pendingNps insertObject:np atIndex:0];
     }
 }
 
@@ -186,19 +182,11 @@
 - (void)socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket
 {
 	NSLog(@"TCP server: didAcceptNewSocket");
-	@synchronized(_pendingSockets)
-    {
-        [_pendingSockets insertObject:newSocket atIndex:_socketIndex];
-        [_pendingNps insertObject:[NSNull null] atIndex:_socketIndex];
-        _socketIndex++;
-    }
+    [_pendingSockets addObject:newSocket];
     long index=[_pendingSockets indexOfObject:newSocket];
     //retrieve id package
-    [newSocket readDataWithTimeout:-1 tag:index];
-    
-    
     [newSocket writeData:[GCDAsyncSocket LFData] withTimeout:KEEPALIVE_TIMEOUT tag:KEEPALIVE_TAG];
-    [newSocket readDataWithTimeout:-1 tag:index];
+    [newSocket readDataToData:[GCDAsyncSocket LFData] withTimeout:-1 tag:index];
 
 }
 
@@ -209,28 +197,19 @@
 
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port
 {
-    NSLog(@"tcp socket didConnectToHost");    
-    
-    if ([_pendingSockets indexOfObject:sock]==NSNotFound) {
-        NSLog(@"it's not a pending connection");
-        return;
-    }
     [sock setDelegate:nil];
+    NSLog(@"tcp socket didConnectToHost");
     
     //create LanLink and inform the background
     NSUInteger index=[_pendingSockets indexOfObject:sock];
     NetworkPackage* np=[_pendingNps objectAtIndex:index];
     LanLink* link=[[LanLink alloc] init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] setDelegate:nil];
-    [_pendingSockets insertObject:[NSNull null] atIndex:index];
-    [_pendingNps insertObject:[NSNull null] atIndex:index];
+    [_pendingSockets removeObject:sock];
+    [_pendingNps removeObject:np];
     [_connectedLinks addObject:link];
     if (_linkProviderDelegate) {
         [_linkProviderDelegate onConnectionReceived:np link:link];
     }
-
-    //send my id package
-    np=[NetworkPackage createIdentityPackage];
-    [link sendPackage:np tag:PACKAGE_TAG_IDENTITY];
 }
 
 /**
@@ -250,19 +229,9 @@
             return;
         }
         
-
-        //if it's a pendingConnection
-        if ([_pendingSockets indexOfObject:sock]==NSNotFound) {
-            NSLog(@"receive something from a connection not pending");
-            return;
-        }
         [sock setDelegate:nil];
-        if (tag!=[_pendingSockets indexOfObject:sock]) {
-            NSLog(@"index wrong");
-        }
-        long index=[_pendingSockets indexOfObject:sock];
-        [_pendingSockets insertObject:[NSNull null] atIndex:index];
-        [_pendingNps insertObject:[NSNull null] atIndex:index];
+        [_pendingSockets removeObject:sock];
+        
         //create LanLink and inform the background
         LanLink* link=[[LanLink alloc] init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] setDelegate:nil];
         [_connectedLinks addObject:link];
@@ -335,8 +304,7 @@
     }
     else
     {
-        long index=[_pendingSockets indexOfObject:sock];
-        [_pendingSockets insertObject:[NSNull null] atIndex:index];
+        [_pendingSockets removeObject:sock];
     }
 }
 
