@@ -32,7 +32,7 @@
         _tcpSocket=nil;
         _pendingSockets=[NSMutableArray arrayWithCapacity:1];
         _pendingNps=[NSMutableArray arrayWithCapacity:1];
-        _connectedLinks=[NSMutableArray arrayWithCapacity:1];
+        _connectedLinks=[NSMutableDictionary dictionaryWithCapacity:1];
         _linkProviderDelegate=linkProviderDelegate;
         socketQueue=dispatch_queue_create("socketQueue", NULL);
     }
@@ -165,7 +165,7 @@
 
 - (void) onLinkDestroyed:(BaseLink*)link
 {
-    [_connectedLinks removeObject:link];
+    [_connectedLinks removeObjectForKey:[link _deviceId]];
 }
 
 #pragma mark TCP Socket Delegate
@@ -200,13 +200,19 @@
     [sock setDelegate:nil];
     NSLog(@"tcp socket didConnectToHost");
     
+    
     //create LanLink and inform the background
     NSUInteger index=[_pendingSockets indexOfObject:sock];
     NetworkPackage* np=[_pendingNps objectAtIndex:index];
+    NSString* deviceId=[[np _Body] valueForKey:@"deviceId"];
+    if ([[_connectedLinks allKeys] containsObject:deviceId]) {
+        [[_connectedLinks objectForKey:deviceId] disconnect];
+    }
+    
     LanLink* link=[[LanLink alloc] init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] setDelegate:nil];
     [_pendingSockets removeObject:sock];
     [_pendingNps removeObject:np];
-    [_connectedLinks addObject:link];
+    [_connectedLinks setObject:link forKey:[[np _Body] valueForKey:@"deviceId"]];
     if (_linkProviderDelegate) {
         [_linkProviderDelegate onConnectionReceived:np link:link];
     }
@@ -231,10 +237,13 @@
         
         [sock setDelegate:nil];
         [_pendingSockets removeObject:sock];
-        
+        NSString* deviceId=[[np _Body] valueForKey:@"deviceId"];
+        if ([[_connectedLinks allKeys] containsObject:deviceId]) {
+            [[_connectedLinks objectForKey:deviceId] disconnect];
+        }
         //create LanLink and inform the background
         LanLink* link=[[LanLink alloc] init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] setDelegate:nil];
-        [_connectedLinks addObject:link];
+        [_connectedLinks setObject:link forKey:[[np _Body] valueForKey:@"deviceId"]];
         if (_linkProviderDelegate) {
             [_linkProviderDelegate onConnectionReceived:np link:link];
         }
