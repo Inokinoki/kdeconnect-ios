@@ -120,7 +120,10 @@
             if (_pairStatus==Requested) {
                 NSLog(@"canceled by other peer");
                 _pairStatus=NotPaired;
-                [_deviceDelegate onDevicePairRejected:self];
+                if (_deviceDelegate) {
+                    [_deviceDelegate onDevicePairRejected:self];
+                }
+                
             }
             return;
         }
@@ -133,7 +136,10 @@
             else{
                 //TODO ask if user want to pair
                 _pairStatus=RequestedByPeer;
-                [_deviceDelegate onDevicePairRequest:self];
+                if (_deviceDelegate) {
+                    [_deviceDelegate onDevicePairRequest:self];
+                }
+                
             }
         }
         else{
@@ -183,7 +189,10 @@
     NSLog(@"paired with %@",_name);
     // save trusted device configuration
     [self reloadPlugins];
-    [_deviceDelegate onDevicePairSuccess:self];
+    if (_deviceDelegate) {
+        [_deviceDelegate onDevicePairSuccess:self];
+    }
+    
 }
 
 - (void) requestPairing
@@ -213,7 +222,10 @@
     if (_pairStatus!=Paired) {
         _pairStatus=NotPaired;
         NSLog(@"pairing timeout");
-        [_deviceDelegate onDevicePairTimeout:self];
+        if (_deviceDelegate) {
+            [_deviceDelegate onDevicePairTimeout:self];
+        }
+        
         NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PAIR];
         [[np _Body] setValue:[NSNumber numberWithBool:NO] forKey:@"pair"];
         [self sendPackage:np tag:PACKAGE_TAG_UNPAIR];

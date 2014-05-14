@@ -42,7 +42,7 @@
 - (void) onNetworkChange;
 - (void) onLinkDestroyed:(BaseLink*)link;
 - (void) onConnectionReceived:(NetworkPackage *)np link:(BaseLink *)link;
-- (void) onReachableStatusChanged:(NSString*)deviceId;
+- (void) onDeviceReachableStatusChanged:(NSString*)deviceId;
 - (void) onDevicePairRequest:(Device *)device;
 - (void) onDevicePairTimeout:(Device *)device;
 - (void) onDevicePairSuccess:(Device *)device;

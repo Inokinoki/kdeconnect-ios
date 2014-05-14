@@ -27,9 +27,13 @@
     if ([super init])
     {
         _tcpPort=PORT;
-        _pendingSockets=[NSMutableArray arrayWithCapacity:1];
-        _pendingNps=[NSMutableArray arrayWithCapacity:1];
-        _connectedLinks=[NSMutableArray arrayWithCapacity:1];
+        [_tcpSocket disconnect];
+        [_udpSocket close];
+        _udpSocket=nil;
+        _tcpSocket=nil;
+        _pendingSockets=[NSMutableArray arrayWithCapacity:20];
+        _pendingNps=[NSMutableArray arrayWithCapacity:20];
+        _connectedLinks=[NSMutableArray arrayWithCapacity:20];
         _linkProviderDelegate=linkProviderDelegate;
         _socketIndex=0;
         socketQueue=dispatch_queue_create("socketQueue", NULL);
@@ -40,13 +44,9 @@
 - (void)setupSocket
 {
     NSError* err;
-    if (_tcpSocket==nil) {
-        _tcpSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:socketQueue];
-    }
-    if (_udpSocket==nil) {
-        _udpSocket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:socketQueue];
-        [_udpSocket enableBroadcast:true error:&err];
-    }
+    _tcpSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:socketQueue];
+    _udpSocket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:socketQueue];
+    [_udpSocket enableBroadcast:true error:&err];
     if (![_udpSocket bindToPort:PORT error:&err]) {
         NSLog(@"udp bind error");
     }
@@ -92,6 +92,8 @@
     [_pendingNps removeAllObjects];
     [_pendingSockets removeAllObjects];
     [_connectedLinks removeAllObjects];
+    _socketIndex=0;
+    _udpSocket=nil;
 
 }
 
@@ -99,6 +101,7 @@
 {
     [_udpSocket close];
     [_tcpSocket disconnect];
+    _udpSocket=nil;
 }
 
 - (void)onNetworkChange
@@ -218,8 +221,8 @@
     NSUInteger index=[_pendingSockets indexOfObject:sock];
     NetworkPackage* np=[_pendingNps objectAtIndex:index];
     LanLink* link=[[LanLink alloc] init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] setDelegate:nil];
-    [_pendingSockets removeObjectAtIndex:index];
-    [_pendingNps removeObjectAtIndex:index];
+    [_pendingSockets insertObject:[NSNull null] atIndex:index];
+    [_pendingNps insertObject:[NSNull null] atIndex:index];
     [_connectedLinks addObject:link];
     if (_linkProviderDelegate) {
         [_linkProviderDelegate onConnectionReceived:np link:link];
@@ -257,8 +260,9 @@
         if (tag!=[_pendingSockets indexOfObject:sock]) {
             NSLog(@"index wrong");
         }
-        [_pendingSockets removeObject:sock];
-        [_pendingNps removeObjectAtIndex:tag];
+        long index=[_pendingSockets indexOfObject:sock];
+        [_pendingSockets insertObject:[NSNull null] atIndex:index];
+        [_pendingNps insertObject:[NSNull null] atIndex:index];
         //create LanLink and inform the background
         LanLink* link=[[LanLink alloc] init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] setDelegate:nil];
         [_connectedLinks addObject:link];
@@ -325,15 +329,14 @@
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err
 {
     NSLog(@"tcp socket did Disconnect");
-    int localport=[sock localPort];
-    //FIX-ME can't get port of tcpserver when it's disconnected
-    if (localport==_tcpPort) {
+    if (sock==_tcpSocket) {
         NSLog(@"tcp server disconnected");
+        _tcpSocket=nil;
     }
     else
     {
-        [_pendingSockets removeObject:sock];
-        NSLog(@"tcp socket disconnected,remaining %lu pending connection",(unsigned long)[_pendingSockets count]);
+        long index=[_pendingSockets indexOfObject:sock];
+        [_pendingSockets insertObject:[NSNull null] atIndex:index];
     }
 }
 

@@ -106,10 +106,12 @@
             [_visibleDevices addObject:_devices[id]];
         }
     }
-    [_backgroundServiceDelegate onDeviceListRefreshed];
+    if (_backgroundServiceDelegate) {
+        [_backgroundServiceDelegate onDeviceListRefreshed];
+    }
 }
 
-- (void) onReachableStatusChanged:(Device*)device
+- (void) onDeviceReachableStatusChanged:(Device*)device
 {
     if (![device isReachable]) {
         [_visibleDevices removeObject:device];
@@ -152,23 +154,33 @@
 
 - (void) onDevicePairRequest:(Device *)device
 {
-    [_backgroundServiceDelegate onPairRequest:[device _id]];
+    if (_backgroundServiceDelegate) {
+        [_backgroundServiceDelegate onPairRequest:[device _id]];
+    }
+    
 }
 
 - (void) onDevicePairTimeout:(Device*)device
 {
-    [_backgroundServiceDelegate onPairTimeout:[device _id]];
+    if (_backgroundServiceDelegate) {
+        [_backgroundServiceDelegate onPairTimeout:[device _id]];
+    }
 }
 
 - (void) onDevicePairSuccess:(Device*)device
 {
-    [_backgroundServiceDelegate onPairSuccess:[device _id]];
+    if (_backgroundServiceDelegate) {
+        [_backgroundServiceDelegate onPairSuccess:[device _id]];
+    }
 }
 
 - (void) onDevicePairRejected:(Device*)device
 {
-    [_backgroundServiceDelegate onPairRejected:[device _id]];
+    if (_backgroundServiceDelegate) {
+        [_backgroundServiceDelegate onPairRejected:[device _id]];
+    }
 }
+    
 
 @end
 

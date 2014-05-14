@@ -196,6 +196,7 @@
 }
 
 - (IBAction)ping:(id)sender {
+    
 }
 
 -(void) onPairRequest:(NSString*)deviceID
@@ -224,5 +225,9 @@
     [self logMessage:FORMAT(@"pairing rejected:%@",[list valueForKey:deviceID])];
 }
 
+- (void) onDeviceListRefreshed
+{
+    
+}
 
 @end
