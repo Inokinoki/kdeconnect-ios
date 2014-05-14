@@ -28,6 +28,10 @@
     });
 }
 
+- (id)copyWithZone:(NSZone *)zone;{
+    return self;
+}
+
 - (id) init
 {
     _availablePlugins=[NSMutableDictionary dictionaryWithCapacity:1];

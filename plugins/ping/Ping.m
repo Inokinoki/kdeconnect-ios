@@ -30,6 +30,10 @@ __strong static Ping* _instance;
     });
 }
 
+- (id)copyWithZone:(NSZone *)zone;{
+    return self;
+}
+
 - (Plugin*) init
 {
     PluginInfo* pluginInfo=[[PluginInfo alloc] initWithInfos:@"PingPlugin" displayName:@"Ping" description:@"Ping" enabledByDefault:true];

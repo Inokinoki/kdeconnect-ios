@@ -31,6 +31,10 @@
     });
 }
 
+- (id)copyWithZone:(NSZone *)zone;{
+    return self;
+}
+
 - (id) init
 {
     _linkProviders=[NSMutableArray arrayWithCapacity:1];

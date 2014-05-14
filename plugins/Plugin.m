@@ -48,6 +48,10 @@
     });
 }
 
+- (id)copyWithZone:(NSZone *)zone;{
+    return self;
+}
+
 - (BOOL) onCreate
 {
     return true;

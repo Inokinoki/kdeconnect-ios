@@ -39,9 +39,10 @@
     [self logInfo:FORMAT(@"Ready")];
     NSLog(@"hello");
     
-    NSLog(@"A:%@",[BackgroundService sharedInstance]);
+    BackgroundService* bg=[BackgroundService sharedInstance];
+    NSLog(@"A:%@",bg);
     NSLog(@"B:%@",[[BackgroundService alloc] init]);
-    NSLog(@"C:%@",[[BackgroundService alloc] init]);
+    NSLog(@"C:%@",[bg copy]);
     
 }
 
