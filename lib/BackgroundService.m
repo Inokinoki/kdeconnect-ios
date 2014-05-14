@@ -17,15 +17,21 @@
 @synthesize _backgroundServiceDelegate;
 @synthesize _visibleDevices;
 
-- (BackgroundService*) initWithDelegate:(id)backgroundServiceDelegate
++ (id) sharedInstance
 {
-    
+    DEFINE_SHARED_INSTANCE_USING_BLOCK(^{
+        return [[self alloc] init];
+    });
+}
+
+
+- (id) init
+{
     _linkProviders=[NSMutableArray arrayWithCapacity:1];
     _devices=[NSMutableDictionary dictionaryWithCapacity:1];
     _visibleDevices=[NSMutableArray arrayWithCapacity:1];
     [self registerLinkProviders];
     [self loadRemenberedDevices];
-    _backgroundServiceDelegate=backgroundServiceDelegate;
     return self;
 }
 

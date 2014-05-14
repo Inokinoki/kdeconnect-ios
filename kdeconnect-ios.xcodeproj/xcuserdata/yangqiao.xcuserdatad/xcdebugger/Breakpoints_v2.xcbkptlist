@@ -394,11 +394,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "lib/BackgroundService.m"
-            timestampString = "421321383.749349"
+            timestampString = "421760860.677096"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "52"
-            endingLineNumber = "52"
+            startingLineNumber = "58"
+            endingLineNumber = "58"
             landmarkName = "-stopDiscovery"
             landmarkType = "5">
          </BreakpointContent>
@@ -410,11 +410,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "lib/BackgroundService.m"
-            timestampString = "421321383.749349"
+            timestampString = "421760860.677096"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "49"
-            endingLineNumber = "49"
+            startingLineNumber = "55"
+            endingLineNumber = "55"
             landmarkName = "-startDiscovery"
             landmarkType = "5">
          </BreakpointContent>
@@ -714,11 +714,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "lib/BackgroundService.m"
-            timestampString = "421321383.749349"
+            timestampString = "421760860.677096"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "45"
-            endingLineNumber = "45"
+            startingLineNumber = "51"
+            endingLineNumber = "51"
             landmarkName = "-startDiscovery"
             landmarkType = "5">
          </BreakpointContent>
@@ -730,12 +730,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "lib/BackgroundService.m"
-            timestampString = "421251101.560042"
+            timestampString = "421760860.677096"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "23"
-            endingLineNumber = "23"
-            landmarkName = "-initWithDelegate:"
+            startingLineNumber = "30"
+            endingLineNumber = "30"
+            landmarkName = "-init"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -746,11 +746,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "lib/BackgroundService.m"
-            timestampString = "421321383.749349"
+            timestampString = "421760860.677096"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "38"
-            endingLineNumber = "38"
+            startingLineNumber = "44"
+            endingLineNumber = "44"
             landmarkName = "-registerLinkProviders"
             landmarkType = "5">
          </BreakpointContent>
@@ -890,11 +890,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "lib/BackgroundService.m"
-            timestampString = "421409699.575505"
+            timestampString = "421760860.677096"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "98"
-            endingLineNumber = "98"
+            startingLineNumber = "104"
+            endingLineNumber = "104"
             landmarkName = "-onConnectionReceived:link:"
             landmarkType = "5">
          </BreakpointContent>
@@ -906,11 +906,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "lib/BackgroundService.m"
-            timestampString = "421409699.575505"
+            timestampString = "421760860.677096"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "73"
-            endingLineNumber = "73"
+            startingLineNumber = "79"
+            endingLineNumber = "79"
             landmarkName = "-refreshVisibleDeviceList"
             landmarkType = "5">
          </BreakpointContent>
@@ -954,7 +954,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "kdeconnect-ios/ViewController.m"
-            timestampString = "421328973.390981"
+            timestampString = "421760860.677096"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "177"
@@ -970,11 +970,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "kdeconnect-ios/ViewController.m"
-            timestampString = "421417628.555124"
+            timestampString = "421760860.677096"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "183"
-            endingLineNumber = "183"
+            startingLineNumber = "184"
+            endingLineNumber = "184"
             landmarkName = "-stop_discovery:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1146,11 +1146,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "kdeconnect-ios/ViewController.m"
-            timestampString = "421417628.555124"
+            timestampString = "421760860.677096"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "194"
-            endingLineNumber = "194"
+            startingLineNumber = "195"
+            endingLineNumber = "195"
             landmarkName = "-pair:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1194,11 +1194,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "kdeconnect-ios/ViewController.m"
-            timestampString = "421417628.555124"
+            timestampString = "421760860.677096"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "211"
-            endingLineNumber = "211"
+            startingLineNumber = "212"
+            endingLineNumber = "212"
             landmarkName = "-onPairRequest:"
             landmarkType = "5">
          </BreakpointContent>

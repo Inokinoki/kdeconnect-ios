@@ -8,6 +8,7 @@
 
 #import "Plugin.h"
 
+#pragma mark PluginInfo
 @implementation PluginInfo
 
 @synthesize _pluginName;
@@ -27,16 +28,17 @@
 
 @end
 
-__strong static Plugin* _instance;
-
+#pragma mark Plugin
 @implementation Plugin
 
 @synthesize _device;
 @synthesize _pluginInfo;
 
-+ (Plugin*) getInstance
++ (id) sharedInstance
 {
-    return _instance;
+    DEFINE_SHARED_INSTANCE_USING_BLOCK(^{
+        return [[self alloc] init];
+    });
 }
 
 - (BOOL) onCreate
@@ -53,8 +55,4 @@ __strong static Plugin* _instance;
     return false;
 }
 
-- (void) dealloc
-{
-    
-}
 @end

@@ -16,25 +16,20 @@ __strong static Ping* _instance;
 @synthesize _pluginInfo;
 @synthesize _pluginDelegate;
 
++ (id) sharedInstance
+{
+    DEFINE_SHARED_INSTANCE_USING_BLOCK(^{
+        return [[self alloc] init];
+    });
+}
+
 - (Plugin*) init
 {
-    [self loadPluginInfo];
-    _pluginDelegate=nil;
-    return self;
-}
-
-+ (Ping*) getInstance
-{
-    if (!_instance) {
-        _instance=[[Ping alloc] init];
-    }
-    return _instance;
-}
-
-- (void) loadPluginInfo
-{
     PluginInfo* pluginInfo=[[PluginInfo alloc] initWithInfos:@"PingPlugin" displayName:@"Ping" description:@"Ping" enabledByDefault:true];
-    [self set_pluginInfo:pluginInfo];
+    _pluginInfo=pluginInfo;
+    _pluginDelegate=nil;
+    
+    return self;
 }
 
 - (BOOL) onPackageReceived:(NetworkPackage *)np
@@ -45,11 +40,6 @@ __strong static Ping* _instance;
     }
     
     return false;
-}
-
-- (void) dealloc
-{
-
 }
 
 @end

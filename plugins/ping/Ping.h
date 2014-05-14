@@ -17,9 +17,8 @@
 
 @interface Ping : Plugin
 
-+ (Ping*) getInstance;
 
-
++ (id) sharedInstance;
 - (BOOL) onPackageReceived:(NetworkPackage*)np;
 
 @end

@@ -174,7 +174,8 @@
 
 - (IBAction)start_discovery:(id)sender
 {
-    if(_bg==nil) _bg=[[BackgroundService alloc] initWithDelegate:self];
+    if(_bg==nil) _bg=[BackgroundService sharedInstance];
+    [_bg set_backgroundServiceDelegate:self];
     [_bg startDiscovery];
     [self logMessage:FORMAT(@"start discovery")];
 }

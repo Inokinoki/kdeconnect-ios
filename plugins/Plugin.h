@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "Device.h"
+#import "GCDSingleton.h"
 
 @class Device;
 @class NetworkPackage;
@@ -16,6 +17,7 @@
 @optional
 @end
 
+#pragma mark PluginInfo
 @interface PluginInfo : NSObject
 
 @property(strong,nonatomic,readonly) NSString* _pluginName;
@@ -24,15 +26,17 @@
 @property(nonatomic) BOOL _enabledByDefault;
 
 - (PluginInfo*) initWithInfos:(NSString*)pluginName displayName:(NSString*)displayName description:(NSString*)description enabledByDefault:(BOOL)enabledBydefault;
+
 @end
 
+#pragma mark Plugin
 @interface Plugin : NSObject
 
 @property(strong,nonatomic) Device* _device;
 @property(strong,nonatomic) PluginInfo* _pluginInfo;
 @property(nonatomic,assign) id _pluginDelegate;
 
-+ (Plugin*) getInstance;
++ (id) sharedInstance;
 - (BOOL) onCreate;
 - (void) onDestroy;
 - (BOOL) onPackageReceived:(NetworkPackage*)np;

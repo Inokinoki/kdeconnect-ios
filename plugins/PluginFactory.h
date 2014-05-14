@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "Device.h"
 #import "Plugin.h"
+#import "GCDSingleton.h"
 
 @class Device;
 @class NetworkPackage;
@@ -22,10 +23,9 @@
 
 @interface PluginFactory : NSObject
 
-+ (PluginFactory*) getInstance;
++ (id) sharedInstance;
 - (Plugin*) instantiatePluginForDevice:(Device*)device pluginName:(NSString*)pluginName;
 - (NSArray*) getAvailablePlugins;
-- (void) registerPlugins;
 @end
 
 

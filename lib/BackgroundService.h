@@ -12,6 +12,7 @@
 #import "Device.h"
 #import "NetworkPackage.h"
 #import "PluginFactory.h"
+#import "GCDSingleton.h"
 
 @class PluginFactory;
 @class BaseLink;
@@ -30,7 +31,8 @@
 @property(nonatomic,assign) id _backgroundServiceDelegate;
 @property(strong,nonatomic) NSMutableArray* _visibleDevices;
 
-- (BackgroundService*) initWithDelegate:(id)backgroundServiceDelegate;
++ (id) sharedInstance;
+
 - (void) startDiscovery;
 - (void) stopDiscovery;
 

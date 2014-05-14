@@ -87,6 +87,7 @@
 		4EC27547191FCECD0057AB0E /* Ping.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Ping.m; path = plugins/ping/Ping.m; sourceTree = "<group>"; };
 		4EC27549191FD5490057AB0E /* PluginFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PluginFactory.h; path = plugins/PluginFactory.h; sourceTree = "<group>"; };
 		4EC2754A191FD5490057AB0E /* PluginFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PluginFactory.m; path = plugins/PluginFactory.m; sourceTree = "<group>"; };
+		4EEC81BE19238D3D00E13727 /* GCDSingleton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GCDSingleton.h; path = lib/GCDSingleton.h; sourceTree = "<group>"; };
 		5B2C3C0E2C4C4FB78D606404 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -201,6 +202,7 @@
 				4E08A2301913D1780056EEF8 /* BackgroundService.m */,
 				4E08A2311913D1780056EEF8 /* Device.h */,
 				4E08A2321913D1780056EEF8 /* Device.m */,
+				4EEC81BE19238D3D00E13727 /* GCDSingleton.h */,
 				4E08A2331913D1780056EEF8 /* NetworkPackage.h */,
 				4E08A2341913D1780056EEF8 /* NetworkPackage.m */,
 			);

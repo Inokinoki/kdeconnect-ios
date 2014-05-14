@@ -263,7 +263,7 @@
 - (void) reloadPlugins
 {
     [_failedPlugins removeAllObjects];
-    PluginFactory* pluginFactory=[PluginFactory getInstance];
+    PluginFactory* pluginFactory=[PluginFactory sharedInstance];
     NSArray* pluginNames=[pluginFactory getAvailablePlugins];
     for (NSString* pluginName in pluginNames) {
         Plugin* plugin=[pluginFactory instantiatePluginForDevice:self pluginName:pluginName];

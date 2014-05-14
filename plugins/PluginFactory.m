@@ -9,19 +9,23 @@
 #import "PluginFactory.h"
 #import "Ping.h"
 
-__strong static NSMutableDictionary* _availablePlugins;
-__strong static PluginFactory* _instance;
-
 @implementation PluginFactory
-
-+ (PluginFactory*) getInstance
 {
-    if (!_instance) {
-        _instance=[[PluginFactory alloc] init];
-        _availablePlugins=[NSMutableDictionary dictionaryWithCapacity:1];
-        [_instance registerPlugins];
-    }
-    return _instance;
+    __strong NSMutableDictionary* _availablePlugins;
+}
+
++ (id) sharedInstance
+{
+    DEFINE_SHARED_INSTANCE_USING_BLOCK(^{
+        return [[self alloc] init];
+    });
+}
+
+- (id) init
+{
+    _availablePlugins=[NSMutableDictionary dictionaryWithCapacity:1];
+    [self registerPlugins];
+    return self;
 }
 
 - (Plugin*) instantiatePluginForDevice:(Device*)device pluginName:(NSString*)pluginName
@@ -40,7 +44,7 @@ __strong static PluginFactory* _instance;
 
 - (void) registerPlugins
 {
-    Ping* pingPlugin=[Ping getInstance];[_availablePlugins setValue:pingPlugin forKey:[[pingPlugin _pluginInfo] _pluginName]];
+    Ping* pingPlugin=[Ping sharedInstance];[_availablePlugins setValue:pingPlugin forKey:[[pingPlugin _pluginInfo] _pluginName]];
     
 }
 
