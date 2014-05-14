@@ -43,7 +43,7 @@ __strong static Ping* _instance;
     return self;
 }
 
-- (BOOL) onPackageReceived:(NetworkPackage *)np
+- (BOOL) onDevicePackageReceived:(NetworkPackage *)np
 {
     if ([[np _Type] isEqualToString:PACKAGE_TYPE_PING]) {
         

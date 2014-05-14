@@ -15,7 +15,6 @@
 //    id* _publicKey;
     __strong NSMutableDictionary* _plugins;
     __strong NSMutableDictionary* _failedPlugins;
-
 }
 @synthesize _id;
 @synthesize _name;
@@ -84,15 +83,12 @@
     if ([_links count]==0) {
         NSLog(@"no available link");
         if (_deviceDelegate) {
-            [_deviceDelegate onReachableStatusChanged:self];
+            [_deviceDelegate onDeviceReachableStatusChanged:self];
         }
-        
     }
     if (_deviceDelegate) {
         [_deviceDelegate onLinkDestroyed:link];
     }
-    
-
 }
 
 - (BOOL) sendPackage:(NetworkPackage *)np tag:(long)tag
@@ -124,7 +120,7 @@
             if (_pairStatus==Requested) {
                 NSLog(@"canceled by other peer");
                 _pairStatus=NotPaired;
-                [_deviceDelegate onPairRejected:self];
+                [_deviceDelegate onDevicePairRejected:self];
             }
             return;
         }
@@ -137,7 +133,7 @@
             else{
                 //TODO ask if user want to pair
                 _pairStatus=RequestedByPeer;
-                [_deviceDelegate onPairRequest:self];
+                [_deviceDelegate onDevicePairRequest:self];
             }
         }
         else{
@@ -153,13 +149,11 @@
                 [self reloadPlugins];
                 [self unpair];
             }
-            
         }
-        
     }else if ([self isPaired]){
         NSLog(@"recieved a plugin package :%@",[np _Type]);
         for (Plugin* plugin in [_plugins allValues]) {
-            [plugin onPackageReceived:np];
+            [plugin onDevicePackageReceived:np];
         }
         
     }else{
@@ -183,14 +177,13 @@
     return _pairStatus==Requested;
 }
 
-
 - (void) setAsPaired
 {
     _pairStatus=Paired;
     NSLog(@"paired with %@",_name);
     // save trusted device configuration
     [self reloadPlugins];
-    [_deviceDelegate onPairSuccess:self];
+    [_deviceDelegate onDevicePairSuccess:self];
 }
 
 - (void) requestPairing
@@ -220,13 +213,12 @@
     if (_pairStatus!=Paired) {
         _pairStatus=NotPaired;
         NSLog(@"pairing timeout");
-        [_deviceDelegate onPairTimeout:self];
+        [_deviceDelegate onDevicePairTimeout:self];
         NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PAIR];
         [[np _Body] setValue:[NSNumber numberWithBool:NO] forKey:@"pair"];
         [self sendPackage:np tag:PACKAGE_TAG_UNPAIR];
     }
 }
-
 
 - (void) unpair
 {
@@ -259,7 +251,6 @@
 }
 
 #pragma mark Plugins-related Functions
-
 - (void) reloadPlugins
 {
     [_failedPlugins removeAllObjects];

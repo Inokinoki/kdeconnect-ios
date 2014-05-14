@@ -31,7 +31,6 @@
     return self;
 }
 
-
 - (BOOL) sendPackage:(NetworkPackage *)np tag:(long)tag
 {
     if (![_socket isConnected]) {
@@ -64,7 +63,6 @@
 }
 
 #pragma mark TCP delegate
-
 /**
  * Called when a socket has completed reading the requested data into memory.
  * Not called if there is an error.
@@ -169,6 +167,5 @@
     }
     
 }
-
 
 @end

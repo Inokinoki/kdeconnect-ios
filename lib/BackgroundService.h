@@ -20,31 +20,32 @@
 
 @protocol backgroundServiceDelegate <NSObject>
 @optional
--(void) onPairRequest:(Device*)device;
-- (void) onPairTimeout:(Device*)device;
-- (void) onPairSuccess:(Device*)device;
-- (void) onPairRejected:(Device*)device;
+-(void) onPairRequest:(NSString*)deviceId;
+- (void) onPairTimeout:(NSString*)deviceId;
+- (void) onPairSuccess:(NSString*)deviceId;
+- (void) onPairRejected:(NSString*)deviceId;
+- (void) onDeviceListRefreshed;
 @end
 
 @interface BackgroundService : NSObject<linkProviderDelegate,deviceDelegate>
 
 @property(nonatomic,assign) id _backgroundServiceDelegate;
-@property(strong,nonatomic) NSMutableArray* _visibleDevices;
 
 + (id) sharedInstance;
 
 - (void) startDiscovery;
 - (void) stopDiscovery;
-
-- (void) pairDevice:(Device*)device;
-- (void) pingDevice:(Device*)device;
+- (NSDictionary*) getVisibleDevices;
+- (void) pairDevice:(NSString*)deviceId;
+- (void) unpairDevice:(NSString*)deviceId;
 
 - (void) onNetworkChange;
 - (void) onLinkDestroyed:(BaseLink*)link;
 - (void) onConnectionReceived:(NetworkPackage *)np link:(BaseLink *)link;
-- (void) onReachableStatusChanged:(Device*)device;
-- (void) onPairRequest:(Device*)device;
-- (void) onPairTimeout:(Device*)device;
-- (void) onPairSuccess:(Device*)device;
-- (void) onPairRejected:(Device*)device;
+- (void) onReachableStatusChanged:(NSString*)deviceId;
+- (void) onDevicePairRequest:(Device *)device;
+- (void) onDevicePairTimeout:(Device *)device;
+- (void) onDevicePairSuccess:(Device *)device;
+- (void) onDevicePairRejected:(Device *)device;
+
 @end

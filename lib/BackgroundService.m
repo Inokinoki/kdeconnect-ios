@@ -12,10 +12,10 @@
 {
     __strong NSMutableArray* _linkProviders;
     __strong NSMutableDictionary* _devices;
+    __strong NSMutableArray* _visibleDevices;
 }
 
 @synthesize _backgroundServiceDelegate;
-@synthesize _visibleDevices;
 
 + (id) sharedInstance
 {
@@ -73,15 +73,29 @@
     [self refreshVisibleDeviceList];
 }
 
-- (void) pairDevice:(Device *)device
+- (NSDictionary*) getVisibleDevices
 {
-    [device requestPairing];
+    NSMutableDictionary* devices=[NSMutableDictionary dictionaryWithCapacity:1];
+    for (Device* device in _visibleDevices) {
+        [devices setValue:[device _name] forKey:[device _id]];
+    }
+    return devices;
 }
 
-- (void) pingDevice:(Device *)device
+- (void) pairDevice:(NSString*)deviceId;
 {
-    NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PING];
-    [device sendPackage:np tag:PACKAGE_TAG_PING];
+    Device* device=[_devices valueForKey:deviceId];
+    if ([device isReachable]) {
+        [device requestPairing];
+    }
+}
+
+- (void) unpairDevice:(NSString*)deviceId
+{
+    Device* device=[_devices valueForKey:deviceId];
+    if ([device isReachable]) {
+        [device unpair];
+    }
 }
 
 - (void) refreshVisibleDeviceList
@@ -92,6 +106,7 @@
             [_visibleDevices addObject:_devices[id]];
         }
     }
+    [_backgroundServiceDelegate onDeviceListRefreshed];
 }
 
 - (void) onReachableStatusChanged:(Device*)device
@@ -132,29 +147,28 @@
     for (BaseLinkProvider* lp in _linkProviders) {
         [lp onLinkDestroyed:link];
     }
+    
 }
 
-- (void) onPairRequest:(Device *)device
+- (void) onDevicePairRequest:(Device *)device
 {
-    [_backgroundServiceDelegate onPairRequest:device];
+    [_backgroundServiceDelegate onPairRequest:[device _id]];
 }
 
-- (void) onPairTimeout:(Device*)device
+- (void) onDevicePairTimeout:(Device*)device
 {
-    [_backgroundServiceDelegate onPairTimeout:device];
+    [_backgroundServiceDelegate onPairTimeout:[device _id]];
 }
 
-- (void) onPairSuccess:(Device*)device
+- (void) onDevicePairSuccess:(Device*)device
 {
-    [_backgroundServiceDelegate onPairSuccess:device];
+    [_backgroundServiceDelegate onPairSuccess:[device _id]];
 }
 
-- (void) onPairRejected:(Device*)device
+- (void) onDevicePairRejected:(Device*)device
 {
-    [_backgroundServiceDelegate onPairRejected:device];
+    [_backgroundServiceDelegate onPairRejected:[device _id]];
 }
-
-
 
 @end
 

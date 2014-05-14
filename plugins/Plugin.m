@@ -25,7 +25,6 @@
     return self;
 }
 
-
 @end
 
 #pragma mark Plugin
@@ -61,7 +60,7 @@
 {
 }
 
-- (BOOL) onPackageReceived:(NetworkPackage *)np
+- (BOOL) onDevicePackageReceived:(NetworkPackage *)np
 {
     return false;
 }

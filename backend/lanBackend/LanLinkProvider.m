@@ -16,6 +16,7 @@
     NSMutableArray* _pendingNps;
     uint16_t _tcpPort;
     NSUInteger _socketIndex;
+    dispatch_queue_t socketQueue;
 }
 
 @synthesize _connectedLinks;
@@ -25,7 +26,6 @@
 {
     if ([super init])
     {
-        
         _tcpPort=PORT;
         _pendingSockets=[NSMutableArray arrayWithCapacity:1];
         _pendingNps=[NSMutableArray arrayWithCapacity:1];
@@ -33,7 +33,6 @@
         _linkProviderDelegate=linkProviderDelegate;
         _socketIndex=0;
         socketQueue=dispatch_queue_create("socketQueue", NULL);
-    
     }
     return self;
 }
@@ -107,8 +106,8 @@
     [self onStop];
     [self onStart];
 }
-#pragma mark UDP Socket Delegate
 
+#pragma mark UDP Socket Delegate
 /**
  * Called when the socket has received the requested datagram.
  **/
@@ -119,7 +118,7 @@
 	NetworkPackage* np = [NetworkPackage unserialize:data];
     NSLog(@"linkprovider:received a udp package from %@",[[np _Body] valueForKey:@"deviceName"]);
     //not id package
-
+    
     if (![[np _Type] isEqualToString:PACKAGE_TYPE_IDENTITY]){
         NSLog(@"LanLinkProvider:expecting an id package");
         return;
@@ -163,7 +162,6 @@
         [_pendingNps insertObject:np atIndex:_socketIndex];
         _socketIndex++;
     }
-    
 }
 
 - (void) onLinkDestroyed:(BaseLink*)link
@@ -171,9 +169,7 @@
     [_connectedLinks removeObject:link];
 }
 
-
 #pragma mark TCP Socket Delegate
-
 /**
  * Called when a socket accepts a connection.
  * Another socket is automatically spawned to handle it.
@@ -202,7 +198,6 @@
     [newSocket readDataWithTimeout:-1 tag:index];
 
 }
-
 
 /**
  * Called when a socket connects and is ready for reading and writing.
@@ -243,34 +238,36 @@
 {
     NSLog(@"tcp socket didReadData");
     NSLog(@"%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
-    NetworkPackage* np=[NetworkPackage unserialize:data];
-    
-    if (![[np _Type] isEqualToString:PACKAGE_TYPE_IDENTITY]) {
-        NSLog(@"expecting an id package");
-        return;
-    }
-    
+    NSString * jsonStr=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSArray* packageArray=[jsonStr componentsSeparatedByString:@"\n"];
+    for (NSString* dataStr in packageArray) {
+        NetworkPackage* np=[NetworkPackage unserialize:[dataStr dataUsingEncoding:NSUTF8StringEncoding]];
+        if (![[np _Type] isEqualToString:PACKAGE_TYPE_IDENTITY]) {
+            NSLog(@"expecting an id package");
+            return;
+        }
+        
 
-    //if it's a pendingConnection
-    if ([_pendingSockets indexOfObject:sock]==NSNotFound) {
-        NSLog(@"receive something from a connection not pending");
-        return;
-    }
-    [sock setDelegate:nil];
-    if (tag!=[_pendingSockets indexOfObject:sock]) {
-        NSLog(@"index wrong");
-    }
-    [_pendingSockets removeObject:sock];
-    [_pendingNps removeObjectAtIndex:tag];
-    //create LanLink and inform the background
-    LanLink* link=[[LanLink alloc] init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] setDelegate:nil];
-    [_connectedLinks addObject:link];
-    if (_linkProviderDelegate) {
-        [_linkProviderDelegate onConnectionReceived:np link:link];
+        //if it's a pendingConnection
+        if ([_pendingSockets indexOfObject:sock]==NSNotFound) {
+            NSLog(@"receive something from a connection not pending");
+            return;
+        }
+        [sock setDelegate:nil];
+        if (tag!=[_pendingSockets indexOfObject:sock]) {
+            NSLog(@"index wrong");
+        }
+        [_pendingSockets removeObject:sock];
+        [_pendingNps removeObjectAtIndex:tag];
+        //create LanLink and inform the background
+        LanLink* link=[[LanLink alloc] init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] setDelegate:nil];
+        [_connectedLinks addObject:link];
+        if (_linkProviderDelegate) {
+            [_linkProviderDelegate onConnectionReceived:np link:link];
+        }
     }
     
 }
-
 
 /**
  * Called when a socket has completed writing the requested data. Not called if there is an error.

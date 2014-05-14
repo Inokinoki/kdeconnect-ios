@@ -39,7 +39,7 @@
 + (id) sharedInstance;
 - (BOOL) onCreate;
 - (void) onDestroy;
-- (BOOL) onPackageReceived:(NetworkPackage*)np;
+- (BOOL) onDevicePackageReceived:(NetworkPackage*)np;
 
 @end
 

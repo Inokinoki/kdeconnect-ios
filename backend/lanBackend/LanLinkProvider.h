@@ -18,9 +18,6 @@
 @class LanLink;
 
 @interface LanLinkProvider : BaseLinkProvider <linkDelegate>
-{
-    dispatch_queue_t socketQueue;
-}
 
 - (LanLinkProvider*) initWithDelegate:(id)linkProviderDelegate;
 - (void) onStart;

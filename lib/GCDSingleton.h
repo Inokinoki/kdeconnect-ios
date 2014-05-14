@@ -17,5 +17,4 @@ _sharedObject = block(); \
 }); \
 return _sharedObject; \
 
-
 #endif

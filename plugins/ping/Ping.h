@@ -17,8 +17,7 @@
 
 @interface Ping : Plugin
 
-
 + (id) sharedInstance;
-- (BOOL) onPackageReceived:(NetworkPackage*)np;
+- (BOOL) onDevicePackageReceived:(NetworkPackage*)np;
 
 @end

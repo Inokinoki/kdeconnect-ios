@@ -11,7 +11,6 @@
 {
     NSMutableString *_log;
     BackgroundService* _bg;
-    Device* _pairRequest_device;
 }
 
 @end
@@ -37,13 +36,6 @@
 	                                             name:UIKeyboardWillHideNotification
 	                                           object:nil];
     [self logInfo:FORMAT(@"Ready")];
-    NSLog(@"hello");
-    
-    BackgroundService* bg=[BackgroundService sharedInstance];
-    NSLog(@"A:%@",bg);
-    NSLog(@"B:%@",[[BackgroundService alloc] init]);
-    NSLog(@"C:%@",[bg copy]);
-    
 }
 
 - (void)viewDidUnload
@@ -188,80 +180,49 @@
 {
     if (_bg) {
         [_bg stopDiscovery];
-        NSArray* list=[_bg _visibleDevices];
-        for (Device* device in list) {
-            [self logMessage:FORMAT(@"Visible device:%@",[device _name])];
+        NSDictionary* list=[_bg getVisibleDevices];
+        for (NSString* deviceName in [list allValues]) {
+            [self logMessage:FORMAT(@"Visible device:%@",deviceName)];
         }
     }
-    _pairRequest_device=nil;
 }
 
 - (IBAction)pair:(id)sender {
-    NSArray* list=[_bg _visibleDevices];
-    for (Device* device in list) {
-        [self logMessage:FORMAT(@"pairing device:%@",[device _name])];
-        [_bg pairDevice:device];
+    NSDictionary* list=[_bg getVisibleDevices];
+    for (NSString* deviceId in [list allKeys]) {
+        [self logMessage:FORMAT(@"pair device:%@",[list valueForKey:deviceId])];
+        [_bg pairDevice:deviceId];
     }
 }
 
 - (IBAction)ping:(id)sender {
-    NSArray* list=[_bg _visibleDevices];
-    for (Device* device in list) {
-        [self logMessage:FORMAT(@"ping device:%@",[device _name])];
-        [_bg pingDevice:device];
-    }
-    
 }
 
--(void) onPairRequest:(Device*)device
+-(void) onPairRequest:(NSString*)deviceID
 {
-    [self logMessage:FORMAT(@"request pairing:%@",[device _name])];
-    [self showConfirmationAlert];
-    _pairRequest_device=device;
+    NSDictionary* list=[_bg getVisibleDevices];
+    [self logMessage:FORMAT(@"request pairing:%@",[list valueForKey:deviceID])];
 }
 
-- (void) onPairTimeout:(Device*)device
+- (void) onPairTimeout:(NSString*)deviceID
 {
-    [self logMessage:FORMAT(@"pairing timeout: %@",[device _name])];
+    NSDictionary* list=[_bg getVisibleDevices];
+    [self logMessage:FORMAT(@"pairing timeout: %@",[list valueForKey:deviceID])];
 }
 
-- (void) onPairSuccess:(Device*)device
+- (void) onPairSuccess:(NSString*)deviceID
 {
-    [self logMessage:FORMAT(@"pairing success:%@",[device _name])];
+    NSDictionary* list=[_bg getVisibleDevices];
+
+    [self logMessage:FORMAT(@"pairing success:%@",[list valueForKey:deviceID])];
 }
 
-- (void) onPairRejected:(Device*)device
+- (void) onPairRejected:(NSString*)deviceID
 {
-    [self logMessage:FORMAT(@"pairing rejected:%@",[device _name])];
+    NSDictionary* list=[_bg getVisibleDevices];
+
+    [self logMessage:FORMAT(@"pairing rejected:%@",[list valueForKey:deviceID])];
 }
 
-- (void) showConfirmationAlert
-{
-    // A quick and dirty popup, displayed only once
-    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"HasSeenPopup"])
-    {
-        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Question"
-                                                       message:@"Do you like cats?"
-                                                      delegate:self
-                                             cancelButtonTitle:@"No"
-                                             otherButtonTitles:@"Yes",nil];
-        [alert show];
-        [[NSUserDefaults standardUserDefaults] setValue:@"YES" forKey:@"HasSeenPopup"];
-    }
-}
-
-
-- (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-	// 0 = Tapped yes
-	if (buttonIndex == 0)
-	{
-        [_pairRequest_device acceptPairing];
-	}
-    else
-    {
-        [_pairRequest_device rejectPairing];
-    }
-}
 
 @end

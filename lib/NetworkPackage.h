@@ -65,8 +65,4 @@
 - (void) getPayloadSize;
 - (void) getPayloadTransferInfo;
 
-
-
-
-
 @end

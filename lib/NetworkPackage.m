@@ -9,11 +9,6 @@
 #import "NetworkPackage.h"
 #define LFDATA [NSData dataWithBytes:"\x0D\x0A" length:2]
 
-#pragma mark Private Methode Declaration
-@interface NetworkPackage(private)
-@end
-
-#pragma mark -
 #pragma mark Implementation
 @implementation NetworkPackage
 - (NetworkPackage*) init:(NSString *)type
@@ -27,7 +22,6 @@
     return self;
 }
 
-#pragma mark Getter & Setter
 @synthesize _Id;
 @synthesize _Type;
 @synthesize _Body;
@@ -59,7 +53,6 @@
     }
     return false;
 };
-
 
 #pragma mark Serialize
 - (NSData*) serialize

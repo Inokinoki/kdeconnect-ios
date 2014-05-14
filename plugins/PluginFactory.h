@@ -20,7 +20,6 @@
 @optional
 @end
 
-
 @interface PluginFactory : NSObject
 
 + (id) sharedInstance;
