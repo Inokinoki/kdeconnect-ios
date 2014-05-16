@@ -69,6 +69,7 @@
     [_links addObject:Link];
     _id=[[np _Body] valueForKey:@"deviceId"];
     _name=[[np _Body] valueForKey:@"deviceName"];
+    [Link set_linkDelegate:self];
     //TODO need a string to type? or a dictionary
     //    _type=[[[np _Body] valueForKey:@"deviceType"] ;
     //TODO set link privatekey
