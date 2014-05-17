@@ -19,6 +19,4 @@
 @property (weak, nonatomic) IBOutlet UITableView *_tableView;
 - (IBAction)start_discovery:(id)sender;
 - (IBAction)stop_discovery:(id)sender;
-- (IBAction)pair:(id)sender;
-- (IBAction)ping:(id)sender;
 @end

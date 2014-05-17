@@ -55,17 +55,6 @@
     }
 }
 
-- (IBAction)pair:(id)sender {
-    NSDictionary* list=[_bg getVisibleDevices];
-    for (NSString* deviceId in [list allKeys]) {
-        [_bg pairDevice:deviceId];
-    }
-}
-
-- (IBAction)ping:(id)sender {
-    
-}
-
 -(void) onPairRequest:(NSString*)deviceID
 {
 }
@@ -167,10 +156,11 @@
     return cell;
 }
 
+//selete a row
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 //    NextViewController *nextController = [[NextViewController alloc] initWithNibName:@"NextView" bundle:nil];
-//    [self.navigationController pushViewController:nextController <span id="IL_AD9" class="IL_AD">animated</span>:YES];
+//    [self.navigationController pushViewController:nextController animated:YES];
 //    if(indexPath.section == 0)
 //        [nextController changeProductText:[arryAppleProducts objectAtIndex:indexPath.row]];
 //    else
@@ -186,6 +176,7 @@
             break;
         default:;
     }
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 @end
