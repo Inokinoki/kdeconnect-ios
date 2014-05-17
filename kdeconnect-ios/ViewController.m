@@ -11,6 +11,7 @@
 {
     BackgroundService* _bg;
     NSString* _connectedDevice;
+    NSString* _pairingDevice;
     __strong NSDictionary* _rememberedDevices;
     __strong NSDictionary* _notPairedDevices;
 }
@@ -25,6 +26,8 @@
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
+    _connectedDevice=nil;
+    _pairingDevice=nil;
     _notPairedDevices=nil;
     _rememberedDevices=nil;
 }
@@ -35,6 +38,7 @@
 	
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
     _notPairedDevices=nil;
+    _rememberedDevices=nil;
 }
 
 - (void) viewDidAppear:(BOOL)animated
@@ -57,18 +61,61 @@
 
 -(void) onPairRequest:(NSString*)deviceID
 {
+    //TODO should we deal with incoming pair request?
+    UIAlertView* alertDialog;
+    alertDialog=[[UIAlertView alloc]
+                 initWithTitle:@"Request"
+                 message:FORMAT(@"Pair request from device: %@",[_notPairedDevices valueForKey:deviceID])
+                 delegate:nil
+                 cancelButtonTitle:@"ok"
+                 otherButtonTitles: nil];
+    [alertDialog setAlertViewStyle:UIAlertViewStyleDefault];
+    [alertDialog show];
+
 }
 
 - (void) onPairTimeout:(NSString*)deviceID
 {
+    UIAlertView* alertDialog;
+    alertDialog=[[UIAlertView alloc]
+                 initWithTitle:@"Timeout"
+                 message:FORMAT(@"pair device: %@ timeout",[_notPairedDevices valueForKey:deviceID])
+                 delegate:nil
+                 cancelButtonTitle:@"ok"
+                 otherButtonTitles: nil];
+    [alertDialog setAlertViewStyle:UIAlertViewStyleDefault];
+    [alertDialog show];
+    _pairingDevice=nil;
+
 }
 
 - (void) onPairSuccess:(NSString*)deviceID
 {
+    UIAlertView* alertDialog;
+    alertDialog=[[UIAlertView alloc]
+                 initWithTitle:@"Success"
+                 message:FORMAT(@"pair device: %@ success",[_notPairedDevices valueForKey:deviceID])
+                 delegate:self
+                 cancelButtonTitle:@"ok"
+                 otherButtonTitles: nil];
+    [alertDialog setAlertViewStyle:UIAlertViewStyleDefault];
+    [alertDialog show];
+    _connectedDevice=deviceID;
+    _pairingDevice=nil;
 }
 
 - (void) onPairRejected:(NSString*)deviceID
 {
+    UIAlertView* alertDialog;
+    alertDialog=[[UIAlertView alloc]
+                 initWithTitle:@"Rejected"
+                 message:FORMAT(@"pair device: %@ rejected",[_notPairedDevices valueForKey:deviceID])
+                 delegate:nil
+                 cancelButtonTitle:@"ok"
+                 otherButtonTitles: nil];
+    [alertDialog setAlertViewStyle:UIAlertViewStyleDefault];
+    [alertDialog show];
+    _pairingDevice=nil;
 }
 
 - (void) onDeviceListRefreshed
@@ -165,18 +212,58 @@
 //        [nextController changeProductText:[arryAppleProducts objectAtIndex:indexPath.row]];
 //    else
 //        [nextController changeProductText:[arryAdobeSoftwares objectAtIndex:indexPath.row]];
+    UIAlertView* alertDialog;
     NSArray* deviceIds;
     switch (indexPath.section) {
         case 0:
             break;
         case 1:
-            deviceIds=[_notPairedDevices allKeys];
-            [_bg pairDevice:[deviceIds objectAtIndex:indexPath.row]];
+            if(!_pairingDevice){
+                deviceIds=[_notPairedDevices allKeys];
+                _pairingDevice=[deviceIds objectAtIndex:indexPath.row];
+                alertDialog=[[UIAlertView alloc]
+                             initWithTitle:@"Pairing"
+                             message:FORMAT(@"pair device: %@ ?",[_notPairedDevices valueForKey:_pairingDevice])
+                             delegate:self
+                             cancelButtonTitle:@"No"
+                             otherButtonTitles:@"Yes", nil];
+            }
+            else{
+                alertDialog=[[UIAlertView alloc]
+                             initWithTitle:@"Pairing"
+                             message:FORMAT(@"Requesting to pair device: %@ ",[_notPairedDevices valueForKey:_pairingDevice])
+                             delegate:nil
+                             cancelButtonTitle:@"ok"
+                             otherButtonTitles: nil];
+            }
+            break;
+
         case 2:
             break;
         default:;
     }
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    [alertDialog setAlertViewStyle:UIAlertViewStyleDefault];
+    [alertDialog show];
 }
 
+//alertedialog
+- (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if ([[alertView title] isEqualToString:@"Pairing"]) {
+        switch (buttonIndex) {
+            case 0:
+                break;
+            case 1:
+                [_bg pairDevice:_pairingDevice];
+                break;
+            default:
+                break;
+        }
+    }
+    else if ([[alertView title] isEqualToString:@"Success"]){
+        //TODO redirect to device plugins interface
+    }
+        
+}
 @end

@@ -7,7 +7,7 @@
 //
 
 #import "Device.h"
-#define PAIR_TIMMER_TIMEOUT  10.0
+#define PAIR_TIMMER_TIMEOUT  15.0
 
 @implementation Device
 {
@@ -221,7 +221,7 @@
 
 - (void) requestPairingTimeout
 {
-    if (_pairStatus!=Paired) {
+    if (_pairStatus==Requested) {
         _pairStatus=NotPaired;
         NSLog(@"pairing timeout");
         if (_deviceDelegate) {

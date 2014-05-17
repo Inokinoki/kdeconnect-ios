@@ -10,7 +10,7 @@
 #import "NetworkPackage.h"
 #import "BackgroundService.h"
 #define FORMAT(format, ...) [NSString stringWithFormat:(format), ##__VA_ARGS__]
-@interface ViewController : UIViewController<backgroundServiceDelegate,UITableViewDelegate,UITableViewDataSource>
+@interface ViewController : UIViewController<backgroundServiceDelegate,UITableViewDelegate,UITableViewDataSource,UIAlertViewDelegate>
 {
 	IBOutlet UIWebView *webView;
 }
