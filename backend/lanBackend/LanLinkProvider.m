@@ -185,7 +185,6 @@
     [_pendingSockets addObject:newSocket];
     long index=[_pendingSockets indexOfObject:newSocket];
     //retrieve id package
-    [newSocket writeData:[GCDAsyncSocket LFData] withTimeout:KEEPALIVE_TIMEOUT tag:KEEPALIVE_TAG];
     [newSocket readDataToData:[GCDAsyncSocket LFData] withTimeout:-1 tag:index];
 
 }
@@ -256,9 +255,7 @@
  **/
 - (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag
 {
-    if (tag==KEEPALIVE_TAG) {
-        [sock writeData:[GCDAsyncSocket LFData] withTimeout:KEEPALIVE_TIMEOUT tag:KEEPALIVE_TAG];
-    }
+    
 }
 
 /**
@@ -276,10 +273,6 @@
                  elapsed:(NSTimeInterval)elapsed
                bytesDone:(NSUInteger)length
 {
-    if (tag==KEEPALIVE_TAG) {
-        NSLog(@"connection down");
-        [sock disconnect];
-    }
     return 0;
 }
 

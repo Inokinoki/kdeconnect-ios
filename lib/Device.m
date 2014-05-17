@@ -213,6 +213,7 @@
     _pairStatus=Requested;
     NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PAIR];
     [[np _Body] setValue:[NSNumber numberWithBool:true] forKey:@"pair"];
+    //TODO public key
     [[np _Body] setValue:@"qwefsdv1241234asvqwefbgwerf1345" forKey:@"publickey"];
     [self sendPackage:np tag:PACKAGE_TAG_PAIR];
     [self performSelector:@selector(requestPairingTimeout) withObject:self afterDelay:PAIR_TIMMER_TIMEOUT];

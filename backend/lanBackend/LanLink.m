@@ -29,8 +29,6 @@
         //send my id package
         NetworkPackage* np=[NetworkPackage createIdentityPackage];
         [_socket writeData:[np serialize] withTimeout:-1 tag:PACKAGE_TAG_IDENTITY];
-        
-        [_socket writeData:[GCDAsyncSocket LFData] withTimeout:KEEPALIVE_TIMEOUT tag:KEEPALIVE_TAG];
     }
     return self;
 }
@@ -92,10 +90,6 @@
  **/
 - (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag
 {
-    if (tag==KEEPALIVE_TAG) {
-        [sock writeData:[GCDAsyncSocket LFData] withTimeout:KEEPALIVE_TIMEOUT tag:KEEPALIVE_TAG];
-        return;
-    }
     NSLog(@"didWriteData");
     if (_linkDelegate) {
         [_linkDelegate onSendSuccess:tag];

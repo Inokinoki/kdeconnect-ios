@@ -9,8 +9,10 @@
 #import "ViewController.h"
 @interface ViewController ()
 {
-    NSMutableString *_log;
     BackgroundService* _bg;
+    NSString* _connectedDevice;
+    __strong NSDictionary* _rememberedDevices;
+    __strong NSDictionary* _notPairedDevices;
 }
 
 @end
@@ -18,24 +20,13 @@
 
 @implementation ViewController
 
-@synthesize start;
-@synthesize pause;
+@synthesize _tableView;
 
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
-    _log = [[NSMutableString alloc] init];
-	
-	[[NSNotificationCenter defaultCenter] addObserver:self
-	                                         selector:@selector(keyboardWillShow:)
-	                                             name:UIKeyboardWillShowNotification
-	                                           object:nil];
-	
-	[[NSNotificationCenter defaultCenter] addObserver:self
-	                                         selector:@selector(keyboardWillHide:)
-	                                             name:UIKeyboardWillHideNotification
-	                                           object:nil];
-    [self logInfo:FORMAT(@"Ready")];
+    _notPairedDevices=nil;
+    _rememberedDevices=nil;
 }
 
 - (void)viewDidUnload
@@ -43,130 +34,11 @@
 	[super viewDidUnload];
 	
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+    _notPairedDevices=nil;
 }
 
-- (void)getKeyboardHeight:(float *)keyboardHeightPtr
-        animationDuration:(double *)animationDurationPtr
-                     from:(NSNotification *)notification
+- (void) viewDidAppear:(BOOL)animated
 {
-	float keyboardHeight;
-	double animationDuration;
-	
-	// UIKeyboardCenterBeginUserInfoKey:
-	// The key for an NSValue object containing a CGRect
-	// that identifies the start frame of the keyboard in screen coordinates.
-	
-	CGRect beginRect = [[[notification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
-	CGRect endRect   = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-	
-	if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation))
-	{
-		keyboardHeight = ABS(beginRect.origin.x - endRect.origin.x);
-	}
-	else
-	{
-		keyboardHeight = ABS(beginRect.origin.y - endRect.origin.y);
-	}
-	
-	// UIKeyboardAnimationDurationUserInfoKey
-	// The key for an NSValue object containing a double that identifies the duration of the animation in seconds.
-	
-	animationDuration = [[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
-	
-	if (keyboardHeightPtr) *keyboardHeightPtr = keyboardHeight;
-	if (animationDurationPtr) *animationDurationPtr = animationDuration;
-}
-
-- (void)keyboardWillShow:(NSNotification *)notification
-{
-	float keyboardHeight = 0.0F;
-	double animationDuration = 0.0;
-	
-	[self getKeyboardHeight:&keyboardHeight animationDuration:&animationDuration from:notification];
-	
-	CGRect webViewFrame = webView.frame;
-	webViewFrame.size.height -= keyboardHeight;
-	
-	void (^animationBlock)(void) = ^{
-		
-		webView.frame = webViewFrame;
-	};
-	
-	UIViewAnimationOptions options = 0;
-	
-	[UIView animateWithDuration:animationDuration
-	                      delay:0.0
-	                    options:options
-	                 animations:animationBlock
-	                 completion:NULL];
-}
-
-- (void)keyboardWillHide:(NSNotification *)notification
-{
-	float keyboardHeight = 0.0F;
-	double animationDuration = 0.0;
-	
-	[self getKeyboardHeight:&keyboardHeight animationDuration:&animationDuration from:notification];
-	
-	CGRect webViewFrame = webView.frame;
-	webViewFrame.size.height += keyboardHeight;
-	
-	void (^animationBlock)(void) = ^{
-		
-		webView.frame = webViewFrame;
-	};
-	
-	UIViewAnimationOptions options = 0;
-	
-	[UIView animateWithDuration:animationDuration
-	                      delay:0.0
-	                    options:options
-	                 animations:animationBlock
-	                 completion:NULL];
-}
-
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
-{
-}
-
-- (void)webViewDidFinishLoad:(UIWebView *)sender
-{
-	NSString *scrollToBottom = @"window.scrollTo(document.body.scrollWidth, document.body.scrollHeight);";
-	
-    [sender stringByEvaluatingJavaScriptFromString:scrollToBottom];
-}
-
-- (void)logError:(NSString *)msg
-{
-	NSString *prefix = @"<font color=\"#B40404\">";
-	NSString *suffix = @"</font><br/>";
-	
-	[_log appendFormat:@"%@%@%@\n", prefix, msg, suffix];
-	
-	NSString *html = [NSString stringWithFormat:@"<html><body>\n%@\n</body></html>", _log];
-	[webView loadHTMLString:html baseURL:nil];
-}
-
-- (void)logInfo:(NSString *)msg
-{
-	NSString *prefix = @"<font color=\"#6A0888\">";
-	NSString *suffix = @"</font><br/>";
-	
-	[_log appendFormat:@"%@%@%@\n", prefix, msg, suffix];
-	
-	NSString *html = [NSString stringWithFormat:@"<html><body>\n%@\n</body></html>", _log];
-	[webView loadHTMLString:html baseURL:nil];
-}
-
-- (void)logMessage:(NSString *)msg
-{
-	NSString *prefix = @"<font color=\"#000000\">";
-	NSString *suffix = @"</font><br/>";
-	
-	[_log appendFormat:@"%@%@%@\n", prefix, msg, suffix];
-	
-	NSString *html = [NSString stringWithFormat:@"<html><body>%@</body></html>", _log];
-	[webView loadHTMLString:html baseURL:nil];
 }
 
 - (IBAction)start_discovery:(id)sender
@@ -174,23 +46,18 @@
     if(_bg==nil) _bg=[BackgroundService sharedInstance];
     [_bg set_backgroundServiceDelegate:self];
     [_bg startDiscovery];
-    [self logMessage:FORMAT(@"start discovery")];
 }
+
 - (IBAction)stop_discovery:(id)sender
 {
     if (_bg) {
         [_bg stopDiscovery];
-        NSDictionary* list=[_bg getVisibleDevices];
-        for (NSString* deviceName in [list allValues]) {
-            [self logMessage:FORMAT(@"Visible device:%@",deviceName)];
-        }
     }
 }
 
 - (IBAction)pair:(id)sender {
     NSDictionary* list=[_bg getVisibleDevices];
     for (NSString* deviceId in [list allKeys]) {
-        [self logMessage:FORMAT(@"pair device:%@",[list valueForKey:deviceId])];
         [_bg pairDevice:deviceId];
     }
 }
@@ -201,33 +68,124 @@
 
 -(void) onPairRequest:(NSString*)deviceID
 {
-    NSDictionary* list=[_bg getVisibleDevices];
-    [self logMessage:FORMAT(@"request pairing:%@",[list valueForKey:deviceID])];
 }
 
 - (void) onPairTimeout:(NSString*)deviceID
 {
-    NSDictionary* list=[_bg getVisibleDevices];
-    [self logMessage:FORMAT(@"pairing timeout: %@",[list valueForKey:deviceID])];
 }
 
 - (void) onPairSuccess:(NSString*)deviceID
 {
-    NSDictionary* list=[_bg getVisibleDevices];
-
-    [self logMessage:FORMAT(@"pairing success:%@",[list valueForKey:deviceID])];
 }
 
 - (void) onPairRejected:(NSString*)deviceID
 {
-    NSDictionary* list=[_bg getVisibleDevices];
-
-    [self logMessage:FORMAT(@"pairing rejected:%@",[list valueForKey:deviceID])];
 }
 
 - (void) onDeviceListRefreshed
 {
+    _notPairedDevices=[_bg getVisibleDevices];
+    [_tableView reloadData];
+    [_tableView reloadSectionIndexTitles];
+}
+
+#pragma mark -
+#pragma mark Table View Data Source Methods
+
+//return number of sections
+- (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
+{
+    if ([_rememberedDevices count]==0) {
+        return 2;
+    }
+    return 3;
+}
+
+//return row count
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    switch (section) {
+        case 0:
+            if (_connectedDevice) {
+                return 1;
+            }
+            else return 0;
+        
+        case 1:
+            return [_notPairedDevices count];
+            
+        case 2:
+            return [_rememberedDevices count];
+            
+        default:
+            return 0;
+    }
+}
+
+//return section name
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
+    switch (section) {
+        case 0:
+            return @"connected device";
+        case 1:
+            return @"not paired devices";
+        case 2:
+            return @"remembered devices";
+        default:
+            return @"";
+    }
+}
+
+//redraw a row
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
     
+    static NSString *mainListTableId = @"mainListTableId";
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:
+                             mainListTableId];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc]
+                initWithStyle:UITableViewCellStyleDefault
+                reuseIdentifier:mainListTableId];
+    }
+    
+    // Set up the cell...
+    NSArray* deviceIds;
+    switch (indexPath.section) {
+        case 0:
+            cell.textLabel.text =[_rememberedDevices valueForKey:_connectedDevice];break;
+        case 1:
+            deviceIds=[_notPairedDevices allKeys];
+            cell.textLabel.text = [_notPairedDevices valueForKey:[deviceIds objectAtIndex:indexPath.row]];break;
+        case 2:
+            deviceIds=[_rememberedDevices allKeys];
+            cell.textLabel.text = [_rememberedDevices valueForKey:[deviceIds objectAtIndex:indexPath.row]];break;
+            
+        default:;
+    }
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+//    NextViewController *nextController = [[NextViewController alloc] initWithNibName:@"NextView" bundle:nil];
+//    [self.navigationController pushViewController:nextController <span id="IL_AD9" class="IL_AD">animated</span>:YES];
+//    if(indexPath.section == 0)
+//        [nextController changeProductText:[arryAppleProducts objectAtIndex:indexPath.row]];
+//    else
+//        [nextController changeProductText:[arryAdobeSoftwares objectAtIndex:indexPath.row]];
+    NSArray* deviceIds;
+    switch (indexPath.section) {
+        case 0:
+            break;
+        case 1:
+            deviceIds=[_notPairedDevices allKeys];
+            [_bg pairDevice:[deviceIds objectAtIndex:indexPath.row]];
+        case 2:
+            break;
+        default:;
+    }
 }
 
 @end

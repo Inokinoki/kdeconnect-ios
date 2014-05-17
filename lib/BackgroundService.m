@@ -11,8 +11,11 @@
 @implementation BackgroundService
 {
     __strong NSMutableArray* _linkProviders;
+    //TODO regroup not paired devices and remembered devices
     __strong NSMutableDictionary* _devices;
     __strong NSMutableArray* _visibleDevices;
+    __strong NSMutableArray* _notPairedDevices;
+    __strong NSMutableArray* _rememberedDevices;
 }
 
 @synthesize _backgroundServiceDelegate;
@@ -70,7 +73,6 @@
     for (BaseLinkProvider* lp in _linkProviders) {
         [lp onPause];
     }
-    [self refreshVisibleDeviceList];
 }
 
 - (NSDictionary*) getVisibleDevices
@@ -101,9 +103,9 @@
 - (void) refreshVisibleDeviceList
 {
     _visibleDevices=[NSMutableArray arrayWithCapacity:1];
-    for (NSString* id  in [_devices keyEnumerator]) {
-        if ([_devices[id] isReachable]) {
-            [_visibleDevices addObject:_devices[id]];
+    for (NSString* deviceId  in [_devices allKeys]) {
+        if ([_devices[deviceId] isReachable]) {
+            [_visibleDevices addObject:_devices[deviceId]];
         }
     }
     if (_backgroundServiceDelegate) {
@@ -116,6 +118,7 @@
     if (![device isReachable]) {
         [_visibleDevices removeObject:device];
     }
+    [self refreshVisibleDeviceList];
 }
 
 - (void) onNetworkChange
@@ -124,6 +127,7 @@
     for (LanLinkProvider* lp in _linkProviders){
         [lp onNetworkChange];
     }
+    [self refreshVisibleDeviceList];
 }
 
 - (void) onConnectionReceived:(NetworkPackage *)np link:(BaseLink *)link
@@ -149,7 +153,7 @@
     for (BaseLinkProvider* lp in _linkProviders) {
         [lp onLinkDestroyed:link];
     }
-    
+    [self refreshVisibleDeviceList];
 }
 
 - (void) onDevicePairRequest:(Device *)device

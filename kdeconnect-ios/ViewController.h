@@ -10,18 +10,15 @@
 #import "NetworkPackage.h"
 #import "BackgroundService.h"
 #define FORMAT(format, ...) [NSString stringWithFormat:(format), ##__VA_ARGS__]
-@interface ViewController : UIViewController<backgroundServiceDelegate>
+@interface ViewController : UIViewController<backgroundServiceDelegate,UITableViewDelegate,UITableViewDataSource>
 {
 	IBOutlet UIWebView *webView;
 }
 
 
-@property (weak, nonatomic) IBOutlet UIButton *start;
-@property (weak, nonatomic) IBOutlet UIButton *pause;
-@property (weak, nonatomic) IBOutlet UIButton *pair;
+@property (weak, nonatomic) IBOutlet UITableView *_tableView;
 - (IBAction)start_discovery:(id)sender;
 - (IBAction)stop_discovery:(id)sender;
 - (IBAction)pair:(id)sender;
 - (IBAction)ping:(id)sender;
-- (void)logMessage:(NSString *)msg;
 @end
