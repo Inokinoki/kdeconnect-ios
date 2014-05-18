@@ -45,13 +45,13 @@
 - (NSData*) serialize;
 + (NetworkPackage*) unserialize:(NSData*)data;
 
-//TODO
+//TO-DO
 #pragma mark Encyption
 - (BOOL) isEncrypted;
 - (NetworkPackage*) encrypt;
 - (NetworkPackage*) decrypt;
 
-//TODO
+//TO-DO
 #pragma mark Payload
 - (void) setPayload:(NSData*)data;
 - (void) setPayload:(NSInputStream*)inputStream size:(NSInteger*)size;

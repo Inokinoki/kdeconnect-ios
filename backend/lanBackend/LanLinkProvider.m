@@ -41,6 +41,7 @@
 
 - (void)setupSocket
 {
+    NSLog(@"lp setup socket");
     NSError* err;
     _tcpSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:socketQueue];
     _udpSocket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:socketQueue];
@@ -52,7 +53,7 @@
 
 - (void)onStart
 {
-    
+    NSLog(@"lp onstart");
     [self setupSocket];
     NSError* err;
     if (![_udpSocket beginReceiving:&err]) {
@@ -72,12 +73,13 @@
     NetworkPackage* np=[NetworkPackage createIdentityPackage];
     [[np _Body] setValue:[[NSNumber alloc ] initWithUnsignedInt:_tcpPort] forKey:@"tcpPort"];
     NSData* data=[np serialize];
-    NSLog(@"%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+    NSLog(@"sending:%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
 	[_udpSocket sendData:data toHost:@"255.255.255.255" port:PORT withTimeout:-1 tag:UDPBROADCAST_TAG];
 }
 
 - (void)onStop
 {
+    NSLog(@"lp onstop");
     [_udpSocket close];
     [_tcpSocket disconnect];
     for (GCDAsyncSocket* socket in _pendingSockets) {
@@ -96,16 +98,42 @@
 
 - (void)onPause
 {
+    NSLog(@"lp on pause");
     [_udpSocket close];
     [_tcpSocket disconnect];
     _udpSocket=nil;
 }
 
+
+- (void) onRefresh
+{
+    NSLog(@"lp on refresh");
+    if (![_udpSocket isClosed]) {
+        NetworkPackage* np=[NetworkPackage createIdentityPackage];
+        [[np _Body] setValue:[[NSNumber alloc ] initWithUnsignedInt:_tcpPort] forKey:@"tcpPort"];
+        NSData* data=[np serialize];
+        NSLog(@"sending:%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+        [_udpSocket sendData:data toHost:@"255.255.255.255" port:PORT withTimeout:-1 tag:UDPBROADCAST_TAG];
+    }
+}
+
+
 - (void)onNetworkChange
 {
+    NSLog(@"lp on networkchange");
     [self onStop];
     [self onStart];
 }
+
+
+- (void) onLinkDestroyed:(BaseLink*)link
+{
+    NSLog(@"lp on linkdestroyed");
+    if (link==[_connectedLinks objectForKey:[link _deviceId]]) {
+        [_connectedLinks removeObjectForKey:[link _deviceId]];
+    }
+}
+
 
 #pragma mark UDP Socket Delegate
 /**
@@ -115,6 +143,7 @@
 //a new device is introducing itself to me
 - (void)udpSocket:(GCDAsyncUdpSocket *)sock didReceiveData:(NSData *)data fromAddress:(NSData *)address withFilterContext:(id)filterContext
 {
+    NSLog(@"lp receive udp package");
 	NetworkPackage* np = [NetworkPackage unserialize:data];
     NSLog(@"linkprovider:received a udp package from %@",[[np _Body] valueForKey:@"deviceName"]);
     //not id package
@@ -163,11 +192,6 @@
     }
 }
 
-- (void) onLinkDestroyed:(BaseLink*)link
-{
-    [_connectedLinks removeObjectForKey:[link _deviceId]];
-}
-
 #pragma mark TCP Socket Delegate
 /**
  * Called when a socket accepts a connection.
@@ -204,8 +228,9 @@
     NSUInteger index=[_pendingSockets indexOfObject:sock];
     NetworkPackage* np=[_pendingNps objectAtIndex:index];
     NSString* deviceId=[[np _Body] valueForKey:@"deviceId"];
+    LanLink* oldlink;
     if ([[_connectedLinks allKeys] containsObject:deviceId]) {
-        [[_connectedLinks objectForKey:deviceId] disconnect];
+        oldlink=[_connectedLinks objectForKey:deviceId];
     }
     
     LanLink* link=[[LanLink alloc] init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] setDelegate:nil];
@@ -215,6 +240,9 @@
     if (_linkProviderDelegate) {
         [_linkProviderDelegate onConnectionReceived:np link:link];
     }
+    [oldlink disconnect];
+    np=[NetworkPackage createIdentityPackage];
+    [sock writeData:[np serialize] withTimeout:-1 tag:PACKAGE_TAG_IDENTITY];
 }
 
 /**
@@ -223,22 +251,23 @@
  **/
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
-    NSLog(@"tcp socket didReadData");
+    NSLog(@"lp tcp socket didReadData");
     NSLog(@"%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
     NSString * jsonStr=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     NSArray* packageArray=[jsonStr componentsSeparatedByString:@"\n"];
     for (NSString* dataStr in packageArray) {
         NetworkPackage* np=[NetworkPackage unserialize:[dataStr dataUsingEncoding:NSUTF8StringEncoding]];
         if (![[np _Type] isEqualToString:PACKAGE_TYPE_IDENTITY]) {
-            NSLog(@"expecting an id package");
+            NSLog(@"lp expecting an id package");
             return;
         }
         
         [sock setDelegate:nil];
         [_pendingSockets removeObject:sock];
         NSString* deviceId=[[np _Body] valueForKey:@"deviceId"];
+        LanLink* oldlink;
         if ([[_connectedLinks allKeys] containsObject:deviceId]) {
-            [[_connectedLinks objectForKey:deviceId] disconnect];
+            oldlink=[_connectedLinks objectForKey:deviceId];
         }
         //create LanLink and inform the background
         LanLink* link=[[LanLink alloc] init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] setDelegate:nil];
@@ -246,6 +275,7 @@
         if (_linkProviderDelegate) {
             [_linkProviderDelegate onConnectionReceived:np link:link];
         }
+        [oldlink disconnect];
     }
     
 }

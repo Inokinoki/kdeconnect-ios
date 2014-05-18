@@ -30,7 +30,7 @@
 +(NetworkPackage*) createIdentityPackage
 {
     NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_IDENTITY];
-    //TODO get Id?
+    //TO-DO get Id?
     [[np _Body] setValue:@"yangqiao-iphone-id" forKey:@"deviceId"];
     [[np _Body] setValue:[UIDevice currentDevice].name forKey:@"deviceName"];
     [[np _Body] setValue:[NSNumber numberWithInteger:ProtocolVersion] forKey:@"protocolVersion"];
@@ -82,7 +82,7 @@
     return np;
 }
 
-//TODO
+//TO-DO
 #pragma mark Encyption
 - (BOOL) isEncrypted
 {
@@ -99,7 +99,7 @@
     return np;
 };
 
-//TODO
+//TO-DO
 #pragma mark Payload
 - (void) setPayload:(NSData*)data
 {

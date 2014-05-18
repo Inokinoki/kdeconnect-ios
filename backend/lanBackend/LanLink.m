@@ -24,17 +24,15 @@
         _deviceId=deviceid;
         _linkDelegate=linkdelegate;
         [_socket setDelegate:self];
-        NSLog(@"LanLink:lanlink device:%@ created",_deviceId);
-        [_socket readDataToData:[GCDAsyncSocket LFData] withTimeout:-1 tag:0];
-        //send my id package
-        NetworkPackage* np=[NetworkPackage createIdentityPackage];
-        [_socket writeData:[np serialize] withTimeout:-1 tag:PACKAGE_TAG_IDENTITY];
+        NSLog(@"LanLink:lanlink for device:%@ created",_deviceId);
+        [_socket readDataToData:[GCDAsyncSocket LFData] withTimeout:-1 tag:PACKAGE_TAG_NORMAL];
     }
     return self;
 }
 
 - (BOOL) sendPackage:(NetworkPackage *)np tag:(long)tag
 {
+    NSLog(@"llink send package");
     if (![_socket isConnected]) {
         NSLog(@"LanLink: Device:%@ disconnected",_deviceId);
         return false;
@@ -71,8 +69,9 @@
  **/
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
+    NSLog(@"llink did read data");
     //BUG even if we read with a seperator LFData , it's still possible to receive several data package together. So we split the string and retrieve the package
-    [_socket readDataToData:[GCDAsyncSocket LFData] withTimeout:-1 tag:0];
+    [_socket readDataToData:[GCDAsyncSocket LFData] withTimeout:-1 tag:PACKAGE_TAG_NORMAL];
     NSString * jsonStr=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     NSArray* packageArray=[jsonStr componentsSeparatedByString:@"\n"];
     for (NSString* dataStr in packageArray) {
@@ -90,7 +89,7 @@
  **/
 - (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag
 {
-    NSLog(@"didWriteData");
+    NSLog(@"llink didWriteData");
     if (_linkDelegate) {
         [_linkDelegate onSendSuccess:tag];
     }
@@ -131,10 +130,6 @@
                  elapsed:(NSTimeInterval)elapsed
                bytesDone:(NSUInteger)length
 {
-    if (tag==1) {
-        NSLog(@"connection down");
-        [sock disconnect];
-    }
     return 0;
 }
 
@@ -161,6 +156,7 @@
  **/
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err
 {
+    NSLog(@"llink socket did disconnect");
     if (_linkDelegate) {
         [_linkDelegate onLinkDestroyed:self];    
     }

@@ -22,12 +22,17 @@
     
 }
 
-- (void) onStop
+- (void) onRefresh
 {
     
 }
 
 - (void) onPause
+{
+    
+}
+
+- (void) onStop
 {
     
 }

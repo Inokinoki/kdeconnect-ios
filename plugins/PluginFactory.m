@@ -41,6 +41,7 @@
 
 - (Plugin*) instantiatePluginForDevice:(Device*)device pluginName:(NSString*)pluginName
 {
+    NSLog(@"pluginfactory instatiate plugin for device");
     Plugin* plugin=[_availablePlugins valueForKey:pluginName];
     if (plugin) {
         [plugin set_device:device];
@@ -50,11 +51,13 @@
 
 - (NSArray*) getAvailablePlugins
 {
+    NSLog(@"pluginfactory get available plugins");
     return [_availablePlugins allKeys];
 }
 
 - (void) registerPlugins
 {
+    NSLog(@"pluginfactory register plugins");
     Ping* pingPlugin=[Ping sharedInstance];[_availablePlugins setValue:pingPlugin forKey:[[pingPlugin _pluginInfo] _pluginName]];
     
 }

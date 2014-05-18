@@ -9,7 +9,6 @@
 #import "ViewController.h"
 @interface ViewController ()
 {
-    BackgroundService* _bg;
     NSString* _connectedDevice;
     NSString* _pairingDevice;
     __strong NSDictionary* _rememberedDevices;
@@ -30,6 +29,11 @@
     _pairingDevice=nil;
     _notPairedDevices=nil;
     _rememberedDevices=nil;
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+    [refreshControl addTarget:self action:@selector(onRefresh:) forControlEvents:UIControlEventValueChanged];
+    [_tableView addSubview:refreshControl];
+    BackgroundService* _bg=[BackgroundService sharedInstance];
+    [_bg set_backgroundServiceDelegate:self];
 }
 
 - (void)viewDidUnload
@@ -41,27 +45,10 @@
     _rememberedDevices=nil;
 }
 
-- (void) viewDidAppear:(BOOL)animated
-{
-}
-
-- (IBAction)start_discovery:(id)sender
-{
-    if(_bg==nil) _bg=[BackgroundService sharedInstance];
-    [_bg set_backgroundServiceDelegate:self];
-    [_bg startDiscovery];
-}
-
-- (IBAction)stop_discovery:(id)sender
-{
-    if (_bg) {
-        [_bg stopDiscovery];
-    }
-}
-
+//FIX-ME these dialogs show very very slowly, with about 4-8 seconds' delay
 -(void) onPairRequest:(NSString*)deviceID
 {
-    //TODO should we deal with incoming pair request?
+    //TO-DO should we deal with incoming pair request?
     UIAlertView* alertDialog;
     alertDialog=[[UIAlertView alloc]
                  initWithTitle:@"Request"
@@ -76,6 +63,7 @@
 
 - (void) onPairTimeout:(NSString*)deviceID
 {
+    _pairingDevice=nil;
     UIAlertView* alertDialog;
     alertDialog=[[UIAlertView alloc]
                  initWithTitle:@"Timeout"
@@ -85,12 +73,14 @@
                  otherButtonTitles: nil];
     [alertDialog setAlertViewStyle:UIAlertViewStyleDefault];
     [alertDialog show];
-    _pairingDevice=nil;
-
 }
 
 - (void) onPairSuccess:(NSString*)deviceID
 {
+    NSLog(@"viewcontroller onPairSuccess");
+    _connectedDevice=deviceID;
+    _pairingDevice=nil;
+    [self onDeviceListRefreshed];
     UIAlertView* alertDialog;
     alertDialog=[[UIAlertView alloc]
                  initWithTitle:@"Success"
@@ -100,12 +90,12 @@
                  otherButtonTitles: nil];
     [alertDialog setAlertViewStyle:UIAlertViewStyleDefault];
     [alertDialog show];
-    _connectedDevice=deviceID;
-    _pairingDevice=nil;
 }
 
 - (void) onPairRejected:(NSString*)deviceID
 {
+    NSLog(@"viewcontroller onPairRejected");
+    _pairingDevice=nil;
     UIAlertView* alertDialog;
     alertDialog=[[UIAlertView alloc]
                  initWithTitle:@"Rejected"
@@ -115,14 +105,23 @@
                  otherButtonTitles: nil];
     [alertDialog setAlertViewStyle:UIAlertViewStyleDefault];
     [alertDialog show];
-    _pairingDevice=nil;
 }
 
 - (void) onDeviceListRefreshed
 {
-    _notPairedDevices=[_bg getVisibleDevices];
+    NSLog(@"viewcontroller onDeviceListRefreshed");
+    _notPairedDevices=[[BackgroundService sharedInstance] getNotPairedDevices];
+    _rememberedDevices=[[BackgroundService sharedInstance] getPairedDevices];
     [_tableView reloadData];
     [_tableView reloadSectionIndexTitles];
+}
+
+- (void) onRefresh:(id)sender
+{
+    NSLog(@"viewcontroller onRefresh");
+    [[BackgroundService sharedInstance] refreshDiscovery];
+    [self onDeviceListRefreshed];
+    [sender endRefreshing];
 }
 
 #pragma mark -
@@ -131,6 +130,7 @@
 //return number of sections
 - (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
 {
+    NSLog(@"viewcontroller nb of section");
     if ([_rememberedDevices count]==0) {
         return 2;
     }
@@ -140,6 +140,7 @@
 //return row count
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    NSLog(@"viewcontroller nb of rows");
     switch (section) {
         case 0:
             if (_connectedDevice) {
@@ -151,7 +152,10 @@
             return [_notPairedDevices count];
             
         case 2:
-            return [_rememberedDevices count];
+            if (_connectedDevice) {
+                return [_rememberedDevices count]-1;
+            }
+            else return [_rememberedDevices count];
             
         default:
             return 0;
@@ -159,7 +163,9 @@
 }
 
 //return section name
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    NSLog(@"viewcontroller section name");
     switch (section) {
         case 0:
             return @"connected device";
@@ -175,7 +181,7 @@
 //redraw a row
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
+    NSLog(@"viewcontroller load a cell");
     static NSString *mainListTableId = @"mainListTableId";
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:
@@ -187,15 +193,16 @@
     }
     
     // Set up the cell...
-    NSArray* deviceIds;
+    NSMutableArray* deviceIds;
     switch (indexPath.section) {
         case 0:
             cell.textLabel.text =[_rememberedDevices valueForKey:_connectedDevice];break;
         case 1:
-            deviceIds=[_notPairedDevices allKeys];
+            deviceIds=[NSMutableArray arrayWithArray:[_notPairedDevices allKeys]];
             cell.textLabel.text = [_notPairedDevices valueForKey:[deviceIds objectAtIndex:indexPath.row]];break;
         case 2:
-            deviceIds=[_rememberedDevices allKeys];
+            deviceIds=[NSMutableArray arrayWithArray:[_notPairedDevices allKeys]];
+            [deviceIds removeObject:_connectedDevice];
             cell.textLabel.text = [_rememberedDevices valueForKey:[deviceIds objectAtIndex:indexPath.row]];break;
             
         default:;
@@ -212,6 +219,8 @@
 //        [nextController changeProductText:[arryAppleProducts objectAtIndex:indexPath.row]];
 //    else
 //        [nextController changeProductText:[arryAdobeSoftwares objectAtIndex:indexPath.row]];
+    
+    NSLog(@"viewcontroller row selected");
     UIAlertView* alertDialog;
     NSArray* deviceIds;
     switch (indexPath.section) {
@@ -222,7 +231,7 @@
                 deviceIds=[_notPairedDevices allKeys];
                 _pairingDevice=[deviceIds objectAtIndex:indexPath.row];
                 alertDialog=[[UIAlertView alloc]
-                             initWithTitle:@"Pairing"
+                             initWithTitle:@"Pairing Request"
                              message:FORMAT(@"pair device: %@ ?",[_notPairedDevices valueForKey:_pairingDevice])
                              delegate:self
                              cancelButtonTitle:@"No"
@@ -230,7 +239,7 @@
             }
             else{
                 alertDialog=[[UIAlertView alloc]
-                             initWithTitle:@"Pairing"
+                             initWithTitle:@"Is Pairing"
                              message:FORMAT(@"Requesting to pair device: %@ ",[_notPairedDevices valueForKey:_pairingDevice])
                              delegate:nil
                              cancelButtonTitle:@"ok"
@@ -250,19 +259,20 @@
 //alertedialog
 - (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if ([[alertView title] isEqualToString:@"Pairing"]) {
+    if ([[alertView title] isEqualToString:@"Pairing Request"]) {
         switch (buttonIndex) {
             case 0:
+                _pairingDevice=nil;
                 break;
             case 1:
-                [_bg pairDevice:_pairingDevice];
+                [[BackgroundService sharedInstance] pairDevice:_pairingDevice];
                 break;
             default:
                 break;
         }
     }
     else if ([[alertView title] isEqualToString:@"Success"]){
-        //TODO redirect to device plugins interface
+        //TO-DO redirect to device plugins interface
     }
         
 }

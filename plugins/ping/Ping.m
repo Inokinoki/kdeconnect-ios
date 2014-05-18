@@ -45,6 +45,7 @@ __strong static Ping* _instance;
 
 - (BOOL) onDevicePackageReceived:(NetworkPackage *)np
 {
+    NSLog(@"ping plugin receive a package");
     if ([[np _Type] isEqualToString:PACKAGE_TYPE_PING]) {
         
         return true;

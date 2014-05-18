@@ -21,6 +21,7 @@
 
 - (LanLinkProvider*) initWithDelegate:(id)linkProviderDelegate;
 - (void) onStart;
+- (void) onRefresh;
 - (void) onStop;
 - (void) onPause;
 - (void) onNetworkChange;

@@ -34,8 +34,11 @@
 + (id) sharedInstance;
 
 - (void) startDiscovery;
+- (void) refreshDiscovery;
+- (void) pauseDiscovery;
 - (void) stopDiscovery;
-- (NSDictionary*) getVisibleDevices;
+- (NSDictionary*) getNotPairedDevices;
+- (NSDictionary*) getPairedDevices;
 - (void) pairDevice:(NSString*)deviceId;
 - (void) unpairDevice:(NSString*)deviceId;
 

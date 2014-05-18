@@ -24,7 +24,7 @@
 @synthesize _deviceDelegate;
 - (Device*) init:(NSString*)deviceId setDelegate:(id)deviceDelegate
 {
-    //TODO load config from setting
+    //TO-DO load config from setting
     _id=deviceId;
     _deviceDelegate=deviceDelegate;
     _links=[NSMutableArray arrayWithCapacity:1];
@@ -41,14 +41,12 @@
     _links=[NSMutableArray arrayWithCapacity:1];
     _plugins=[NSMutableDictionary dictionaryWithCapacity:1];
     _failedPlugins=[NSMutableDictionary dictionaryWithCapacity:1];
-    //TODO need a string to type? or a dictionary
+    //TO-DO need a string to type? or a dictionary
 //    _type=[[[np _Body] valueForKey:@"deviceType"] ;
     _protocolVersion=[[[np _Body] valueForKey:@"protocolVersion"] integerValue];
     _deviceDelegate=deviceDelegate;
-    [link set_linkDelegate:self];
     [self reloadPlugins];
-    //TODO creat a private Key
-    
+    //TO-DO creat a private Key
     [self addLink:np baseLink:link];
     return self;
 }
@@ -70,14 +68,21 @@
     _id=[[np _Body] valueForKey:@"deviceId"];
     _name=[[np _Body] valueForKey:@"deviceName"];
     [Link set_linkDelegate:self];
-    //TODO need a string to type? or a dictionary
+    if ([_links count]==1) {
+        NSLog(@"no available link");
+        if (_deviceDelegate) {
+            [_deviceDelegate onDeviceReachableStatusChanged:self];
+        }
+    }
+    //TO-DO need a string to type? or a dictionary
     //    _type=[[[np _Body] valueForKey:@"deviceType"] ;
-    //TODO set link privatekey
+    //TO-DO set link privatekey
     //[Link set_privateKey:_privateKey];
 }
 
 - (void) onLinkDestroyed:(BaseLink *)link
 {
+    NSLog(@"device on link destroyed");
     [_links removeObject:link];
     NSLog(@"remove link ; %lu remaining", (unsigned long)[_links count]);
     
@@ -94,6 +99,7 @@
 
 - (BOOL) sendPackage:(NetworkPackage *)np tag:(long)tag
 {
+    NSLog(@"device send package");
     for (BaseLink* link in _links) {
         if ([link sendPackage:np tag:tag]) {
             return true;
@@ -104,6 +110,7 @@
 
 - (void) onSendSuccess:(long)tag
 {
+    NSLog(@"device on send success");
     if (tag==PACKAGE_TAG_PAIR) {
         if (_pairStatus==RequestedByPeer) {
             [self setAsPaired];
@@ -113,6 +120,7 @@
 
 - (void) onPackageReceived:(NetworkPackage*)np
 {
+    NSLog(@"device on package received");
     if ([[np _Type] isEqualToString:PACKAGE_TYPE_PAIR]) {
         NSLog(@"Pair package received");
         BOOL wantsPair=[[[np _Body] valueForKey:@"pair"] boolValue];
@@ -129,13 +137,13 @@
             return;
         }
         if (wantsPair) {
-            //TODO retrieve public key
+            //TO-DO retrieve public key
             NSLog(@"pair request");
             if ((_pairStatus)==Requested) {
                 [self setAsPaired];
             }
             else{
-                //TODO ask if user want to pair
+                //TO-DO ask if user want to pair
                 _pairStatus=RequestedByPeer;
                 if (_deviceDelegate) {
                     [_deviceDelegate onDevicePairRequest:self];
@@ -150,7 +158,7 @@
             if (prevPairStatus==Requested) {
                 NSLog(@"canceled by other peer");
             }else if (prevPairStatus==Paired){
-                //TODO remove configuration
+                //TO-DO remove configuration
                 
                 //reload Plugins
                 [self reloadPlugins];
@@ -198,22 +206,24 @@
 
 - (void) requestPairing
 {
+
     if (_pairStatus==Paired) {
-        NSLog(@"failed:already paired");
+        NSLog(@"device failed:already paired");
         return;
     }
     if (_pairStatus==Requested) {
-        NSLog(@"failed:already requested");
+        NSLog(@"device failed:already requested");
         return;
     }
     if (![self isReachable]) {
-        NSLog(@"failed:not reachable");
+        NSLog(@"device failed:not reachable");
         return;
     }
+    NSLog(@"device request pairing");
     _pairStatus=Requested;
     NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PAIR];
     [[np _Body] setValue:[NSNumber numberWithBool:true] forKey:@"pair"];
-    //TODO public key
+    //TO-DO public key
     [[np _Body] setValue:@"qwefsdv1241234asvqwefbgwerf1345" forKey:@"publickey"];
     [self sendPackage:np tag:PACKAGE_TAG_PAIR];
     [self performSelector:@selector(requestPairingTimeout) withObject:self afterDelay:PAIR_TIMMER_TIMEOUT];
@@ -221,6 +231,7 @@
 
 - (void) requestPairingTimeout
 {
+    NSLog(@"device request pairing timeout");
     if (_pairStatus==Requested) {
         _pairStatus=NotPaired;
         NSLog(@"pairing timeout");
@@ -236,6 +247,7 @@
 
 - (void) unpair
 {
+    NSLog(@"device unpair");
     if (![self isPaired]) return;
     
     _pairStatus=NotPaired;
@@ -250,14 +262,14 @@
 
 - (void) acceptPairing
 {
-    NSLog(@"accepted pair request");
+    NSLog(@"device accepted pair request");
     NetworkPackage* np=[NetworkPackage createPublicKeyPackage];
     [self sendPackage:np tag:PACKAGE_TAG_PAIR];
 }
 
 - (void) rejectPairing
 {
-    NSLog(@"rejected pair request ");
+    NSLog(@"device rejected pair request ");
     _pairStatus=NotPaired;
     NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PAIR];
     [[np _Body] setValue:[NSNumber numberWithBool:false] forKey:@"pair"];
@@ -267,6 +279,7 @@
 #pragma mark Plugins-related Functions
 - (void) reloadPlugins
 {
+    NSLog(@"device reload plugins");
     [_failedPlugins removeAllObjects];
     PluginFactory* pluginFactory=[PluginFactory sharedInstance];
     NSArray* pluginNames=[pluginFactory getAvailablePlugins];
@@ -281,6 +294,7 @@
 
 - (Plugin*) getPlugin:(NSString*)pluginName
 {
+    NSLog(@"device getplugin");
     return [_plugins valueForKey:pluginName];
 }
 

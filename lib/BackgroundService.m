@@ -11,11 +11,9 @@
 @implementation BackgroundService
 {
     __strong NSMutableArray* _linkProviders;
-    //TODO regroup not paired devices and remembered devices
+    //TO-DO regroup not paired devices and remembered devices
     __strong NSMutableDictionary* _devices;
     __strong NSMutableArray* _visibleDevices;
-    __strong NSMutableArray* _notPairedDevices;
-    __strong NSMutableArray* _rememberedDevices;
 }
 
 @synthesize _backgroundServiceDelegate;
@@ -50,42 +48,75 @@
 
 - (void) loadRemenberedDevices
 {
-    //TODO read setting to load remembered Deviceds
+    //TO-DO read setting to load remembered Deviceds
 }
 - (void) registerLinkProviders
 {
-    // TODO  read setting for linkProvider registeration
+    NSLog(@"bg register linkproviders");
+    // TO-DO  read setting for linkProvider registeration
     LanLinkProvider* linkProvider=[[LanLinkProvider alloc] initWithDelegate:self];
     [_linkProviders addObject:linkProvider];
 }
 
 - (void) startDiscovery
 {
-    NSLog(@"start Discovery");
+    NSLog(@"bg start Discovery");
     for (BaseLinkProvider* lp in _linkProviders) {
         [lp onStart];
     }
 }
 
-- (void) stopDiscovery
+- (void) refreshDiscovery
 {
-    NSLog(@"stop Discovery");
+    NSLog(@"bg refresh Discovery");
+    for (BaseLinkProvider* lp in _linkProviders) {
+        [lp onRefresh];
+    }
+}
+
+- (void) pauseDiscovery
+{
+    NSLog(@"bg pause Discovery");
     for (BaseLinkProvider* lp in _linkProviders) {
         [lp onPause];
     }
 }
 
-- (NSDictionary*) getVisibleDevices
+- (void) stopDiscovery
 {
+    NSLog(@"bg stop Discovery");
+    for (BaseLinkProvider* lp in _linkProviders) {
+        [lp onStop];
+    }
+}
+
+- (NSDictionary*) getNotPairedDevices
+{
+    NSLog(@"bg get not paired devices");
     NSMutableDictionary* devices=[NSMutableDictionary dictionaryWithCapacity:1];
     for (Device* device in _visibleDevices) {
-        [devices setValue:[device _name] forKey:[device _id]];
+        if (![device isPaired]) {
+            [devices setValue:[device _name] forKey:[device _id]];
+        }
+    }
+    return devices;
+}
+
+- (NSDictionary*) getPairedDevices
+{
+    NSLog(@"bg get paired devices");
+    NSMutableDictionary* devices=[NSMutableDictionary dictionaryWithCapacity:1];
+    for (Device* device in _visibleDevices) {
+        if ([device isPaired]) {
+            [devices setValue:[device _name] forKey:[device _id]];
+        }
     }
     return devices;
 }
 
 - (void) pairDevice:(NSString*)deviceId;
 {
+    NSLog(@"bg pair device");
     Device* device=[_devices valueForKey:deviceId];
     if ([device isReachable]) {
         [device requestPairing];
@@ -94,6 +125,7 @@
 
 - (void) unpairDevice:(NSString*)deviceId
 {
+    NSLog(@"bg unpair device");
     Device* device=[_devices valueForKey:deviceId];
     if ([device isReachable]) {
         [device unpair];
@@ -102,6 +134,7 @@
 
 - (void) refreshVisibleDeviceList
 {
+    NSLog(@"bg on device refresh visible device list");
     _visibleDevices=[NSMutableArray arrayWithCapacity:1];
     for (NSString* deviceId  in [_devices allKeys]) {
         if ([_devices[deviceId] isReachable]) {
@@ -115,15 +148,21 @@
 
 - (void) onDeviceReachableStatusChanged:(Device*)device
 {
+    NSLog(@"bg on device reachable status changed");
     if (![device isReachable]) {
         [_visibleDevices removeObject:device];
+        NSLog(@"bg device not reachable");
+    }
+    if (![device isPaired]) {
+        [_devices removeObjectForKey:[device _id]];
+        NSLog(@"bg destroy device");
     }
     [self refreshVisibleDeviceList];
 }
 
 - (void) onNetworkChange
 {
-    NSLog(@"Network Change");
+    NSLog(@"bg on network change");
     for (LanLinkProvider* lp in _linkProviders){
         [lp onNetworkChange];
     }
@@ -132,32 +171,34 @@
 
 - (void) onConnectionReceived:(NetworkPackage *)np link:(BaseLink *)link
 {
-    NSString* id=[[np _Body] valueForKey:@"deviceId"];
-    NSLog(@"Device discovered: %@",id);
-    if ([_devices valueForKey:id]) {
+    NSLog(@"bg on connection received");
+    NSString* deviceId=[[np _Body] valueForKey:@"deviceId"];
+    NSLog(@"Device discovered: %@",deviceId);
+    if ([_devices valueForKey:deviceId]) {
         NSLog(@"known device");
-        Device* device=[_devices objectForKey:id];
+        Device* device=[_devices objectForKey:deviceId];
         [device addLink:np baseLink:link];
     }
     else{
         NSLog(@"new device");
         Device* device=[[Device alloc] init:np baselink:link setDelegate:self];
-        [_devices setObject:device forKey:id];
+        [_devices setObject:device forKey:deviceId];
         [_visibleDevices addObject:device];
+        [self refreshVisibleDeviceList];
     }
-    [self refreshVisibleDeviceList];
 }
 
 - (void) onLinkDestroyed:(BaseLink *)link
 {
+    NSLog(@"bg on link destroyed");
     for (BaseLinkProvider* lp in _linkProviders) {
         [lp onLinkDestroyed:link];
     }
-    [self refreshVisibleDeviceList];
 }
 
 - (void) onDevicePairRequest:(Device *)device
 {
+    NSLog(@"bg on device pair request");
     if (_backgroundServiceDelegate) {
         [_backgroundServiceDelegate onPairRequest:[device _id]];
     }
@@ -166,6 +207,7 @@
 
 - (void) onDevicePairTimeout:(Device*)device
 {
+    NSLog(@"bg on device pair timeout");
     if (_backgroundServiceDelegate) {
         [_backgroundServiceDelegate onPairTimeout:[device _id]];
     }
@@ -173,6 +215,7 @@
 
 - (void) onDevicePairSuccess:(Device*)device
 {
+    NSLog(@"bg on device pair success");
     if (_backgroundServiceDelegate) {
         [_backgroundServiceDelegate onPairSuccess:[device _id]];
     }
@@ -180,6 +223,7 @@
 
 - (void) onDevicePairRejected:(Device*)device
 {
+    NSLog(@"bg on device pair rejected");
     if (_backgroundServiceDelegate) {
         [_backgroundServiceDelegate onPairRejected:[device _id]];
     }

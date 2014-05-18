@@ -11,12 +11,7 @@
 #import "BackgroundService.h"
 #define FORMAT(format, ...) [NSString stringWithFormat:(format), ##__VA_ARGS__]
 @interface ViewController : UIViewController<backgroundServiceDelegate,UITableViewDelegate,UITableViewDataSource,UIAlertViewDelegate>
-{
-	IBOutlet UIWebView *webView;
-}
-
 
 @property (weak, nonatomic) IBOutlet UITableView *_tableView;
-- (IBAction)start_discovery:(id)sender;
-- (IBAction)stop_discovery:(id)sender;
+
 @end
