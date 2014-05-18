@@ -7,6 +7,8 @@
 //
 
 #import "ViewController.h"
+#import "MRProgress.h"
+
 @interface ViewController ()
 {
     NSString* _connectedDevice;
@@ -33,9 +35,7 @@
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
     [refreshControl addTarget:self action:@selector(onRefresh:) forControlEvents:UIControlEventValueChanged];
     [_tableView addSubview:refreshControl];
-    BackgroundService* _bg=[BackgroundService sharedInstance];
-    [_bg set_backgroundServiceDelegate:self];
-    dialogQueue=dispatch_queue_create("com.kde.org.kdeconnect.dialogqueue", NULL);
+    [[BackgroundService sharedInstance] set_backgroundServiceDelegate:self];
 }
 
 - (void)viewDidUnload
@@ -64,31 +64,29 @@
 
 - (void) onPairTimeout:(NSString*)deviceID
 {
-    dispatch_queue_t mainQueue = dispatch_get_main_queue();
-    dispatch_async(mainQueue, ^{
-        [[[UIAlertView alloc]
-          initWithTitle:@"Timeout"
-          message:FORMAT(@"pair device: %@ timeout",[_notPairedDevices valueForKey:deviceID])
-          delegate:nil
-          cancelButtonTitle:@"ok"
-          otherButtonTitles: nil] show];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        MRProgressOverlayView* progview=[MRProgressOverlayView overlayForView:self.view];
+        [progview setTitleLabelText:@"Time out"];
+        [progview setMode:MRProgressOverlayViewModeCross];
+        dispatch_time_t dismissTime = dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC);
+        dispatch_after(dismissTime, dispatch_get_main_queue(), ^(void){
+            [progview dismiss:YES];
+        });
     });
     _pairingDevice=nil;
 }
 
 - (void) onPairSuccess:(NSString*)deviceID
 {
-    
-    dispatch_queue_t mainQueue = dispatch_get_main_queue();
-    dispatch_async(mainQueue, ^{
-        [[[UIAlertView alloc]
-          initWithTitle:@"Success"
-          message:FORMAT(@"pair device: %@ success",[_notPairedDevices valueForKey:deviceID])
-          delegate:self
-          cancelButtonTitle:@"ok"
-          otherButtonTitles: nil] show];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        MRProgressOverlayView* progview=[MRProgressOverlayView overlayForView:self.view];
+        [progview setTitleLabelText:@"Success"];
+        [progview setMode:MRProgressOverlayViewModeCheckmark];
+        dispatch_time_t dismissTime = dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC);
+        dispatch_after(dismissTime, dispatch_get_main_queue(), ^(void){
+            [progview dismiss:YES];
+        });
     });
-    
     NSLog(@"viewcontroller onPairSuccess");
     _connectedDevice=deviceID;
     _pairingDevice=nil;
@@ -97,14 +95,14 @@
 
 - (void) onPairRejected:(NSString*)deviceID
 {
-    dispatch_queue_t mainQueue = dispatch_get_main_queue();
-    dispatch_async(mainQueue, ^{
-        [[[UIAlertView alloc]
-          initWithTitle:@"Rejected"
-          message:FORMAT(@"pair device: %@ rejected",[_notPairedDevices valueForKey:deviceID])
-          delegate:nil
-          cancelButtonTitle:@"ok"
-          otherButtonTitles: nil] show];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        MRProgressOverlayView* progview=[MRProgressOverlayView overlayForView:self.view];
+        [progview setTitleLabelText:@"Rejected"];
+        [progview setMode:MRProgressOverlayViewModeCross];
+        dispatch_time_t dismissTime = dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC);
+        dispatch_after(dismissTime, dispatch_get_main_queue(), ^(void){
+            [progview dismiss:YES];
+        });
     });
     NSLog(@"viewcontroller onPairRejected");
     _pairingDevice=nil;
@@ -235,13 +233,14 @@
                 deviceIds=[_notPairedDevices allKeys];
                 _pairingDevice=[deviceIds objectAtIndex:indexPath.row];
                 alertDialog=[[UIAlertView alloc]
-                             initWithTitle:@"Pairing Request"
+                             initWithTitle:@"Pair Request"
                              message:FORMAT(@"pair device: %@ ?",[_notPairedDevices valueForKey:_pairingDevice])
                              delegate:self
                              cancelButtonTitle:@"No"
                              otherButtonTitles:@"Yes", nil];
             }
             else{
+                //using a HUD, normally we will never be here
                 alertDialog=[[UIAlertView alloc]
                              initWithTitle:@"Is Pairing"
                              message:FORMAT(@"Requesting to pair device: %@ ",[_notPairedDevices valueForKey:_pairingDevice])
@@ -262,13 +261,15 @@
 //alertedialog
 - (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if ([[alertView title] isEqualToString:@"Pairing Request"]) {
+    if ([[alertView title] isEqualToString:@"Pair Request"]) {
         switch (buttonIndex) {
             case 0:
                 _pairingDevice=nil;
                 break;
             case 1:
                 [[BackgroundService sharedInstance] pairDevice:_pairingDevice];
+                [[MRProgressOverlayView showOverlayAddedTo:self.view animated:YES]
+                 setTitleLabelText:@"Pairing"];
                 break;
             default:
                 break;

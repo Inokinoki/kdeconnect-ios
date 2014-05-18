@@ -14,7 +14,7 @@
     __strong NSMutableArray* _links;
 //    id* _publicKey;
     __strong NSMutableDictionary* _plugins;
-    __strong NSMutableDictionary* _failedPlugins;
+    __strong NSMutableArray* _failedPlugins;
 }
 @synthesize _id;
 @synthesize _name;
@@ -29,7 +29,7 @@
     _deviceDelegate=deviceDelegate;
     _links=[NSMutableArray arrayWithCapacity:1];
     _plugins=[NSMutableDictionary dictionaryWithCapacity:1];
-    _failedPlugins=[NSMutableDictionary dictionaryWithCapacity:1];
+    _failedPlugins=[NSMutableArray arrayWithCapacity:1];
     [self reloadPlugins];
     return self;
 }
@@ -40,7 +40,7 @@
     _name=[[np _Body] valueForKey:@"deviceName"];
     _links=[NSMutableArray arrayWithCapacity:1];
     _plugins=[NSMutableDictionary dictionaryWithCapacity:1];
-    _failedPlugins=[NSMutableDictionary dictionaryWithCapacity:1];
+    _failedPlugins=[NSMutableArray arrayWithCapacity:1];
     //TO-DO need a string to type? or a dictionary
 //    _type=[[[np _Body] valueForKey:@"deviceType"] ;
     _protocolVersion=[[[np _Body] valueForKey:@"protocolVersion"] integerValue];
@@ -287,11 +287,11 @@
     NSArray* pluginNames=[pluginFactory getAvailablePlugins];
     for (NSString* pluginName in pluginNames) {
         Plugin* plugin=[pluginFactory instantiatePluginForDevice:self pluginName:pluginName];
-        if (plugin) {
+        if (plugin)
             [_plugins setValue:plugin forKey:pluginName];
-        }
+        else
+            [_failedPlugins addObject:pluginName];
     }
-    
 }
 
 - (Plugin*) getPlugin:(NSString*)pluginName
