@@ -7,7 +7,7 @@
 //
 
 #import "Device.h"
-#define PAIR_TIMMER_TIMEOUT  15.0
+#define PAIR_TIMMER_TIMEOUT  10.0
 
 @implementation Device
 {
@@ -128,6 +128,8 @@
             NSLog(@"already done, paired:%d",wantsPair);
             if (_pairStatus==Requested) {
                 NSLog(@"canceled by other peer");
+                //FIX-ME can't cancel the perform request?
+//                [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(requestPairingTimeout:) object:nil];
                 _pairStatus=NotPaired;
                 if (_deviceDelegate) {
                     [_deviceDelegate onDevicePairRejected:self];
@@ -226,10 +228,10 @@
     //TO-DO public key
     [[np _Body] setValue:@"qwefsdv1241234asvqwefbgwerf1345" forKey:@"publickey"];
     [self sendPackage:np tag:PACKAGE_TAG_PAIR];
-    [self performSelector:@selector(requestPairingTimeout) withObject:self afterDelay:PAIR_TIMMER_TIMEOUT];
+    [self performSelector:@selector(requestPairingTimeout:) withObject:nil afterDelay:PAIR_TIMMER_TIMEOUT];
 }
 
-- (void) requestPairingTimeout
+- (void) requestPairingTimeout:(id)sender
 {
     NSLog(@"device request pairing timeout");
     if (_pairStatus==Requested) {

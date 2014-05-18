@@ -78,8 +78,7 @@
         NetworkPackage* np=[NetworkPackage unserialize:[dataStr dataUsingEncoding:NSUTF8StringEncoding]];
         if (_linkDelegate && np) {
             [_linkDelegate onPackageReceived:np];
-            NSLog(@"did read data:\n%@",dataStr);
-
+            NSLog(@"llink did read data:\n%@",dataStr);
         }
     }
 }

@@ -15,7 +15,7 @@
     NSMutableArray* _pendingSockets;
     NSMutableArray* _pendingNps;
     uint16_t _tcpPort;
-    dispatch_queue_t socketQueue;
+    __strong dispatch_queue_t socketQueue;
 }
 
 @synthesize _connectedLinks;
@@ -34,7 +34,7 @@
         _pendingNps=[NSMutableArray arrayWithCapacity:1];
         _connectedLinks=[NSMutableDictionary dictionaryWithCapacity:1];
         _linkProviderDelegate=linkProviderDelegate;
-        socketQueue=dispatch_queue_create("socketQueue", NULL);
+        socketQueue=dispatch_queue_create("com.kde.org.kdeconnect.socketqueue", NULL);
     }
     return self;
 }
@@ -133,7 +133,6 @@
         [_connectedLinks removeObjectForKey:[link _deviceId]];
     }
 }
-
 
 #pragma mark UDP Socket Delegate
 /**

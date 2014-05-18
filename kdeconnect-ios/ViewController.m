@@ -13,6 +13,7 @@
     NSString* _pairingDevice;
     __strong NSDictionary* _rememberedDevices;
     __strong NSDictionary* _notPairedDevices;
+    dispatch_queue_t dialogQueue;
 }
 
 @end
@@ -34,6 +35,7 @@
     [_tableView addSubview:refreshControl];
     BackgroundService* _bg=[BackgroundService sharedInstance];
     [_bg set_backgroundServiceDelegate:self];
+    dialogQueue=dispatch_queue_create("com.kde.org.kdeconnect.dialogqueue", NULL);
 }
 
 - (void)viewDidUnload
@@ -49,62 +51,63 @@
 -(void) onPairRequest:(NSString*)deviceID
 {
     //TO-DO should we deal with incoming pair request?
-    UIAlertView* alertDialog;
-    alertDialog=[[UIAlertView alloc]
-                 initWithTitle:@"Request"
-                 message:FORMAT(@"Pair request from device: %@",[_notPairedDevices valueForKey:deviceID])
-                 delegate:nil
-                 cancelButtonTitle:@"ok"
-                 otherButtonTitles: nil];
-    [alertDialog setAlertViewStyle:UIAlertViewStyleDefault];
-    [alertDialog show];
-
+    dispatch_queue_t mainQueue = dispatch_get_main_queue();
+    dispatch_async(mainQueue, ^{
+        [[[UIAlertView alloc]
+          initWithTitle:@"Incoming Pair Request"
+          message:FORMAT(@"Incoming pair request from device: %@ ",[_notPairedDevices valueForKey:deviceID])
+          delegate:nil
+          cancelButtonTitle:@"ok"
+          otherButtonTitles: nil] show];
+    });
 }
 
 - (void) onPairTimeout:(NSString*)deviceID
 {
+    dispatch_queue_t mainQueue = dispatch_get_main_queue();
+    dispatch_async(mainQueue, ^{
+        [[[UIAlertView alloc]
+          initWithTitle:@"Timeout"
+          message:FORMAT(@"pair device: %@ timeout",[_notPairedDevices valueForKey:deviceID])
+          delegate:nil
+          cancelButtonTitle:@"ok"
+          otherButtonTitles: nil] show];
+    });
     _pairingDevice=nil;
-    UIAlertView* alertDialog;
-    alertDialog=[[UIAlertView alloc]
-                 initWithTitle:@"Timeout"
-                 message:FORMAT(@"pair device: %@ timeout",[_notPairedDevices valueForKey:deviceID])
-                 delegate:nil
-                 cancelButtonTitle:@"ok"
-                 otherButtonTitles: nil];
-    [alertDialog setAlertViewStyle:UIAlertViewStyleDefault];
-    [alertDialog show];
 }
 
 - (void) onPairSuccess:(NSString*)deviceID
 {
+    
+    dispatch_queue_t mainQueue = dispatch_get_main_queue();
+    dispatch_async(mainQueue, ^{
+        [[[UIAlertView alloc]
+          initWithTitle:@"Success"
+          message:FORMAT(@"pair device: %@ success",[_notPairedDevices valueForKey:deviceID])
+          delegate:self
+          cancelButtonTitle:@"ok"
+          otherButtonTitles: nil] show];
+    });
+    
     NSLog(@"viewcontroller onPairSuccess");
     _connectedDevice=deviceID;
     _pairingDevice=nil;
     [self onDeviceListRefreshed];
-    UIAlertView* alertDialog;
-    alertDialog=[[UIAlertView alloc]
-                 initWithTitle:@"Success"
-                 message:FORMAT(@"pair device: %@ success",[_notPairedDevices valueForKey:deviceID])
-                 delegate:self
-                 cancelButtonTitle:@"ok"
-                 otherButtonTitles: nil];
-    [alertDialog setAlertViewStyle:UIAlertViewStyleDefault];
-    [alertDialog show];
 }
 
 - (void) onPairRejected:(NSString*)deviceID
 {
+    dispatch_queue_t mainQueue = dispatch_get_main_queue();
+    dispatch_async(mainQueue, ^{
+        [[[UIAlertView alloc]
+          initWithTitle:@"Rejected"
+          message:FORMAT(@"pair device: %@ rejected",[_notPairedDevices valueForKey:deviceID])
+          delegate:nil
+          cancelButtonTitle:@"ok"
+          otherButtonTitles: nil] show];
+    });
     NSLog(@"viewcontroller onPairRejected");
     _pairingDevice=nil;
-    UIAlertView* alertDialog;
-    alertDialog=[[UIAlertView alloc]
-                 initWithTitle:@"Rejected"
-                 message:FORMAT(@"pair device: %@ rejected",[_notPairedDevices valueForKey:deviceID])
-                 delegate:nil
-                 cancelButtonTitle:@"ok"
-                 otherButtonTitles: nil];
-    [alertDialog setAlertViewStyle:UIAlertViewStyleDefault];
-    [alertDialog show];
 }
 
 - (void) onDeviceListRefreshed
@@ -131,7 +134,8 @@
 - (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
 {
     NSLog(@"viewcontroller nb of section");
-    if ([_rememberedDevices count]==0) {
+    int count=[_rememberedDevices count];
+    if (!count||(count==1 && _connectedDevice)) {
         return 2;
     }
     return 3;
@@ -252,7 +256,6 @@
         default:;
     }
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    [alertDialog setAlertViewStyle:UIAlertViewStyleDefault];
     [alertDialog show];
 }
 
