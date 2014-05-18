@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 yangqiao. All rights reserved.
 //
 
+#import "DeviceViewController.h"
 #import "ViewController.h"
 #import "MRProgress.h"
 
@@ -15,7 +16,6 @@
     NSString* _pairingDevice;
     __strong NSDictionary* _rememberedDevices;
     __strong NSDictionary* _notPairedDevices;
-    dispatch_queue_t dialogQueue;
 }
 
 @end
@@ -215,18 +215,17 @@
 //selete a row
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-//    NextViewController *nextController = [[NextViewController alloc] initWithNibName:@"NextView" bundle:nil];
-//    [self.navigationController pushViewController:nextController animated:YES];
-//    if(indexPath.section == 0)
-//        [nextController changeProductText:[arryAppleProducts objectAtIndex:indexPath.row]];
-//    else
-//        [nextController changeProductText:[arryAdobeSoftwares objectAtIndex:indexPath.row]];
-    
     NSLog(@"viewcontroller row selected");
     UIAlertView* alertDialog;
     NSArray* deviceIds;
+    DeviceViewController* vc;
+    UIStoryboard* storyboard;
     switch (indexPath.section) {
         case 0:
+        case 2:
+            storyboard=[UIStoryboard storyboardWithName:@"Main_iPhone" bundle:[NSBundle mainBundle]];
+            vc=[storyboard instantiateViewControllerWithIdentifier:@"DeviceViewController"];
+            [self presentViewController:vc animated:YES completion:nil];
             break;
         case 1:
             if(!_pairingDevice){
@@ -248,9 +247,6 @@
                              cancelButtonTitle:@"ok"
                              otherButtonTitles: nil];
             }
-            break;
-
-        case 2:
             break;
         default:;
     }
@@ -278,6 +274,5 @@
     else if ([[alertView title] isEqualToString:@"Success"]){
         //TO-DO redirect to device plugins interface
     }
-        
 }
 @end

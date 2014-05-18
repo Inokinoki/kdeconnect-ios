@@ -29,6 +29,7 @@
 		4E08A2351913D1780056EEF8 /* BackgroundService.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2301913D1780056EEF8 /* BackgroundService.m */; };
 		4E08A2361913D1780056EEF8 /* Device.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2321913D1780056EEF8 /* Device.m */; };
 		4E08A2371913D1780056EEF8 /* NetworkPackage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2341913D1780056EEF8 /* NetworkPackage.m */; };
+		4E85B96C1928F9D600EF3C55 /* DeviceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E85B96B1928F9D600EF3C55 /* DeviceViewController.m */; };
 		4EC27545191FCEAB0057AB0E /* Plugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC27544191FCEAB0057AB0E /* Plugin.m */; };
 		4EC27548191FCECD0057AB0E /* Ping.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC27547191FCECD0057AB0E /* Ping.m */; };
 		4EC2754B191FD5490057AB0E /* PluginFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC2754A191FD5490057AB0E /* PluginFactory.m */; };
@@ -81,6 +82,8 @@
 		4E08A2321913D1780056EEF8 /* Device.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Device.m; path = lib/Device.m; sourceTree = "<group>"; };
 		4E08A2331913D1780056EEF8 /* NetworkPackage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NetworkPackage.h; path = lib/NetworkPackage.h; sourceTree = "<group>"; };
 		4E08A2341913D1780056EEF8 /* NetworkPackage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NetworkPackage.m; path = lib/NetworkPackage.m; sourceTree = "<group>"; };
+		4E85B96A1928F9D600EF3C55 /* DeviceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceViewController.h; sourceTree = "<group>"; };
+		4E85B96B1928F9D600EF3C55 /* DeviceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeviceViewController.m; sourceTree = "<group>"; };
 		4EC27543191FCEAB0057AB0E /* Plugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Plugin.h; path = plugins/Plugin.h; sourceTree = "<group>"; };
 		4EC27544191FCEAB0057AB0E /* Plugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Plugin.m; path = plugins/Plugin.m; sourceTree = "<group>"; };
 		4EC27546191FCECD0057AB0E /* Ping.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Ping.h; path = plugins/ping/Ping.h; sourceTree = "<group>"; };
@@ -157,6 +160,8 @@
 				4E08A1F61913CF850056EEF8 /* AppDelegate.h */,
 				4E08A1F71913CF850056EEF8 /* AppDelegate.m */,
 				4E08A1F91913CF850056EEF8 /* Main_iPhone.storyboard */,
+				4E85B96A1928F9D600EF3C55 /* DeviceViewController.h */,
+				4E85B96B1928F9D600EF3C55 /* DeviceViewController.m */,
 				4E08A1FC1913CF850056EEF8 /* Main_iPad.storyboard */,
 				4E08A1FF1913CF850056EEF8 /* ViewController.h */,
 				4E08A2001913CF850056EEF8 /* ViewController.m */,
@@ -398,6 +403,7 @@
 				4E08A22E1913D1650056EEF8 /* LanLinkProvider.m in Sources */,
 				4E08A1F41913CF850056EEF8 /* main.m in Sources */,
 				4EC27545191FCEAB0057AB0E /* Plugin.m in Sources */,
+				4E85B96C1928F9D600EF3C55 /* DeviceViewController.m in Sources */,
 				4E08A2351913D1780056EEF8 /* BackgroundService.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
