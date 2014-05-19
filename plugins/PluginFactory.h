@@ -24,7 +24,10 @@
 
 + (id) sharedInstance;
 - (Plugin*) instantiatePluginForDevice:(Device*)device pluginName:(NSString*)pluginName;
+- (void) deletePlugins;
 - (NSArray*) getAvailablePlugins;
+- (Plugin*) getPlugin:(NSString*)pluginName;
+
 @end
 
 

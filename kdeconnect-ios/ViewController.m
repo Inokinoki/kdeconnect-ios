@@ -14,6 +14,7 @@
 {
     NSString* _connectedDevice;
     NSString* _pairingDevice;
+    NSString* _connectingDevice;
     __strong NSDictionary* _rememberedDevices;
     __strong NSDictionary* _notPairedDevices;
 }
@@ -32,6 +33,7 @@
     _pairingDevice=nil;
     _notPairedDevices=nil;
     _rememberedDevices=nil;
+    _connectingDevice=nil;
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
     [refreshControl addTarget:self action:@selector(onRefresh:) forControlEvents:UIControlEventValueChanged];
     [_tableView addSubview:refreshControl];
@@ -47,18 +49,28 @@
     _rememberedDevices=nil;
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [self.navigationController setNavigationBarHidden:YES animated:animated];
+    [super viewWillAppear:animated];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [self.navigationController setNavigationBarHidden:NO animated:animated];
+    [super viewWillDisappear:animated];
+}
+
 //FIX-ME these dialogs show very very slowly, with about 4-8 seconds' delay
 -(void) onPairRequest:(NSString*)deviceID
 {
     //TO-DO should we deal with incoming pair request?
-    dispatch_queue_t mainQueue = dispatch_get_main_queue();
-    dispatch_async(mainQueue, ^{
+    _pairingDevice=deviceID;
+    dispatch_async(dispatch_get_main_queue(), ^{
         [[[UIAlertView alloc]
           initWithTitle:@"Incoming Pair Request"
           message:FORMAT(@"Incoming pair request from device: %@ ",[_notPairedDevices valueForKey:deviceID])
-          delegate:nil
-          cancelButtonTitle:@"ok"
-          otherButtonTitles: nil] show];
+          delegate:self
+          cancelButtonTitle:@"Cancel"
+          otherButtonTitles:@"Pair",nil] show];
     });
 }
 
@@ -72,8 +84,8 @@
         dispatch_after(dismissTime, dispatch_get_main_queue(), ^(void){
             [progview dismiss:YES];
         });
+        _pairingDevice=nil;
     });
-    _pairingDevice=nil;
 }
 
 - (void) onPairSuccess:(NSString*)deviceID
@@ -86,11 +98,12 @@
         dispatch_after(dismissTime, dispatch_get_main_queue(), ^(void){
             [progview dismiss:YES];
         });
+        _connectedDevice=deviceID;
+        _pairingDevice=nil;
+        [self onDeviceListRefreshed];
     });
     NSLog(@"viewcontroller onPairSuccess");
-    _connectedDevice=deviceID;
-    _pairingDevice=nil;
-    [self onDeviceListRefreshed];
+
 }
 
 - (void) onPairRejected:(NSString*)deviceID
@@ -103,18 +116,40 @@
         dispatch_after(dismissTime, dispatch_get_main_queue(), ^(void){
             [progview dismiss:YES];
         });
+        _pairingDevice=nil;
     });
     NSLog(@"viewcontroller onPairRejected");
-    _pairingDevice=nil;
 }
 
 - (void) onDeviceListRefreshed
 {
     NSLog(@"viewcontroller onDeviceListRefreshed");
-    _notPairedDevices=[[BackgroundService sharedInstance] getNotPairedDevices];
-    _rememberedDevices=[[BackgroundService sharedInstance] getPairedDevices];
-    [_tableView reloadData];
-    [_tableView reloadSectionIndexTitles];
+    BackgroundService* bg=[BackgroundService sharedInstance] ;
+    _notPairedDevices=[bg getNotPairedDevices];
+    _rememberedDevices=[bg getPairedDevices];
+    if (_connectedDevice==nil) {
+        for (NSString* device in [_rememberedDevices allKeys]) {
+            if ([bg isDeviceReachable:device]) {
+                _connectedDevice=device;
+            }
+            else{
+                _connectedDevice=nil;
+            }
+        }
+    }
+    else if (![bg isDeviceReachable:_connectedDevice]) {
+        _connectedDevice=nil;
+        DeviceViewController* vc=[[UIStoryboard storyboardWithName:@"Main_iPhone" bundle:[NSBundle mainBundle]]
+                                  instantiateViewControllerWithIdentifier:@"DeviceViewController"];
+        [vc onDeviceLost];
+    }
+    if (_connectedDevice) {
+        [bg loadPluginForDevice:_connectedDevice];
+    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [_tableView reloadData];
+        [_tableView reloadSectionIndexTitles];
+    });
 }
 
 - (void) onRefresh:(id)sender
@@ -203,7 +238,7 @@
             deviceIds=[NSMutableArray arrayWithArray:[_notPairedDevices allKeys]];
             cell.textLabel.text = [_notPairedDevices valueForKey:[deviceIds objectAtIndex:indexPath.row]];break;
         case 2:
-            deviceIds=[NSMutableArray arrayWithArray:[_notPairedDevices allKeys]];
+            deviceIds=[NSMutableArray arrayWithArray:[_rememberedDevices allKeys]];
             [deviceIds removeObject:_connectedDevice];
             cell.textLabel.text = [_rememberedDevices valueForKey:[deviceIds objectAtIndex:indexPath.row]];break;
             
@@ -217,19 +252,31 @@
 {
     NSLog(@"viewcontroller row selected");
     UIAlertView* alertDialog;
-    NSArray* deviceIds;
     DeviceViewController* vc;
-    UIStoryboard* storyboard;
+    NSMutableArray* deviceIds;
     switch (indexPath.section) {
         case 0:
+            vc=[[UIStoryboard storyboardWithName:@"Main_iPhone" bundle:[NSBundle mainBundle]]
+                instantiateViewControllerWithIdentifier:@"DeviceViewController"];
+            [vc set_deviceId:_connectedDevice];
+            [vc setTitle:[_rememberedDevices valueForKey:_connectedDevice]];
+            [self.navigationController pushViewController:vc animated:YES];
+            break;
         case 2:
-            storyboard=[UIStoryboard storyboardWithName:@"Main_iPhone" bundle:[NSBundle mainBundle]];
-            vc=[storyboard instantiateViewControllerWithIdentifier:@"DeviceViewController"];
-            [self presentViewController:vc animated:YES completion:nil];
+            deviceIds=[NSMutableArray arrayWithArray:[_rememberedDevices allKeys]];
+            [deviceIds removeObject:_connectedDevice];
+            _connectingDevice=[deviceIds objectAtIndex:indexPath.row];
+            alertDialog=[[UIAlertView alloc]
+                         initWithTitle:@"Connect"
+                         message:FORMAT(@"Connect to %@ ?",[_rememberedDevices valueForKey:_connectingDevice])
+                         delegate:self
+                         cancelButtonTitle:@"No"
+                         otherButtonTitles:@"Yes", nil];
+            [alertDialog show];
             break;
         case 1:
             if(!_pairingDevice){
-                deviceIds=[_notPairedDevices allKeys];
+                deviceIds=[NSMutableArray arrayWithArray:[_notPairedDevices allKeys]];
                 _pairingDevice=[deviceIds objectAtIndex:indexPath.row];
                 alertDialog=[[UIAlertView alloc]
                              initWithTitle:@"Pair Request"
@@ -247,11 +294,11 @@
                              cancelButtonTitle:@"ok"
                              otherButtonTitles: nil];
             }
+            [alertDialog show];
             break;
         default:;
     }
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    [alertDialog show];
 }
 
 //alertedialog
@@ -273,6 +320,48 @@
     }
     else if ([[alertView title] isEqualToString:@"Success"]){
         //TO-DO redirect to device plugins interface
+    }
+    else if ([[alertView title] isEqualToString:@"Connect"]){
+        switch (buttonIndex) {
+            case 1:
+                if (_connectingDevice) {
+                    if ([[BackgroundService sharedInstance] isDeviceReachable:_connectingDevice]) {
+                        _connectedDevice=_connectingDevice;
+                        MRProgressOverlayView* progview=[MRProgressOverlayView showOverlayAddedTo:self.view animated:NO];
+                        [progview setTitleLabelText:@"Success"];
+                        [progview setMode:MRProgressOverlayViewModeCheckmark];
+                        dispatch_time_t dismissTime = dispatch_time(DISPATCH_TIME_NOW, 1.5 * NSEC_PER_SEC);
+                        dispatch_after(dismissTime, dispatch_get_main_queue(), ^(void){
+                            [progview dismiss:YES];
+                        });
+                        [self onDeviceListRefreshed];
+                    }
+                    else{
+                        MRProgressOverlayView* progview=[MRProgressOverlayView showOverlayAddedTo:self.view animated:NO];
+                        [progview setTitleLabelText:@"Not Reachable"];
+                        [progview setMode:MRProgressOverlayViewModeCross];
+                        dispatch_time_t dismissTime = dispatch_time(DISPATCH_TIME_NOW, 1.5 * NSEC_PER_SEC);
+                        dispatch_after(dismissTime, dispatch_get_main_queue(), ^(void){
+                            [progview dismiss:YES];
+                        });
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+        _connectingDevice=nil;
+    }
+    else if([[alertView title] isEqualToString:@"Incoming Pair Request"]){
+        switch (buttonIndex) {
+            case 0:
+                break;
+            case 1:
+                [[BackgroundService sharedInstance] pairDevice:_pairingDevice];
+                [MRProgressOverlayView showOverlayAddedTo:self.view animated:NO];
+                break;
+        }
+        _pairingDevice=nil;
     }
 }
 @end

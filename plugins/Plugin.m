@@ -29,6 +29,9 @@
 
 #pragma mark Plugin
 @implementation Plugin
+{
+    __strong UIView* _view;
+}
 
 @synthesize _device;
 @synthesize _pluginInfo;
@@ -63,6 +66,11 @@
 - (BOOL) onDevicePackageReceived:(NetworkPackage *)np
 {
     return false;
+}
+
+- (UIView*) getView
+{
+    return _view;
 }
 
 @end

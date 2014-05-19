@@ -106,7 +106,7 @@
 {
     NSLog(@"bg get paired devices");
     NSMutableDictionary* devices=[NSMutableDictionary dictionaryWithCapacity:1];
-    for (Device* device in _visibleDevices) {
+    for (Device* device in [_devices allValues]) {
         if ([device isPaired]) {
             [devices setValue:[device _name] forKey:[device _id]];
         }
@@ -130,6 +130,23 @@
     if ([device isReachable]) {
         [device unpair];
     }
+}
+
+- (void) loadPluginForDevice:(NSString*)deviceId
+{
+    NSLog(@"bg load plugin for device");
+    Device* device=[_devices valueForKey:deviceId];
+    if (device) {
+        [device reloadPlugins];
+    }
+    else{
+        NSLog(@"device doesn't existe");
+    }
+}
+
+- (BOOL) isDeviceReachable:(NSString*)deviceId
+{
+    return [[_devices valueForKey:deviceId] isReachable];
 }
 
 - (void) refreshVisibleDeviceList

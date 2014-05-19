@@ -11,6 +11,9 @@
 __strong static Ping* _instance;
 
 @implementation Ping
+{
+    __strong UIView* _view;
+}
 
 @synthesize _device;
 @synthesize _pluginInfo;
@@ -36,10 +39,18 @@ __strong static Ping* _instance;
 
 - (Plugin*) init
 {
-    PluginInfo* pluginInfo=[[PluginInfo alloc] initWithInfos:@"PingPlugin" displayName:@"Ping" description:@"Ping" enabledByDefault:true];
-    _pluginInfo=pluginInfo;
+    _pluginInfo=[[PluginInfo alloc] initWithInfos:@"PingPlugin" displayName:@"Ping" description:@"Ping" enabledByDefault:true];
     _pluginDelegate=nil;
-    
+    _device=nil;
+    _view=[[UIView alloc] initWithFrame:CGRectMake(0,64,400, 60)];
+    UILabel* label=[[UILabel alloc] initWithFrame:CGRectMake(20, 0, 400, 30)];
+    [label setText:@"Ping"];
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [button setTitle:@"Send Ping to Device" forState:UIControlStateNormal];
+    button.frame= CGRectMake(0, 30, 300, 30);
+    [button addTarget:self action:@selector(sendPing:) forControlEvents:UIControlEventTouchUpInside];
+    [_view addSubview:label];
+    [_view addSubview:button];
     return self;
 }
 
@@ -52,6 +63,23 @@ __strong static Ping* _instance;
     }
     
     return false;
+}
+
+- (UIView*) getView
+{
+    NSLog(@"ping plugin get view");
+    return _view;
+}
+
+- (void) sendPing:(id)sender
+{
+    if (!_device) {
+        NSLog(@"no registered device");
+        return;
+    }
+    NSLog(@"send ping to %@",[_device _id]);
+    NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PING];
+    [_device sendPackage:np tag:PACKAGE_TAG_PING];
 }
 
 @end

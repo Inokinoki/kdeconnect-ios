@@ -40,7 +40,9 @@
 - (NSDictionary*) getNotPairedDevices;
 - (NSDictionary*) getPairedDevices;
 - (void) pairDevice:(NSString*)deviceId;
+- (void) loadPluginForDevice:(NSString*)deviceId;
 - (void) unpairDevice:(NSString*)deviceId;
+- (BOOL) isDeviceReachable:(NSString*)deviceId;
 
 - (void) onNetworkChange;
 - (void) onLinkDestroyed:(BaseLink*)link;

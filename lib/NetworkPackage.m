@@ -31,7 +31,7 @@
 {
     NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_IDENTITY];
     //TO-DO get Id?
-    [[np _Body] setValue:@"yangqiao-iphone-id" forKey:@"deviceId"];
+    [[np _Body] setValue:[UIDevice currentDevice].name forKey:@"deviceId"];
     [[np _Body] setValue:[UIDevice currentDevice].name forKey:@"deviceName"];
     [[np _Body] setValue:[NSNumber numberWithInteger:ProtocolVersion] forKey:@"protocolVersion"];
     [[np _Body] setValue:@"Phone" forKey:@"deviceType"];

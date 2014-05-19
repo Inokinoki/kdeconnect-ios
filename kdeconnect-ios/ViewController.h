@@ -10,6 +10,7 @@
 #import "NetworkPackage.h"
 #import "BackgroundService.h"
 #define FORMAT(format, ...) [NSString stringWithFormat:(format), ##__VA_ARGS__]
+
 @interface ViewController : UIViewController<backgroundServiceDelegate,UITableViewDelegate,UITableViewDataSource,UIAlertViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *_tableView;

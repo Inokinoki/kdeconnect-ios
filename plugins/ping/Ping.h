@@ -17,7 +17,14 @@
 
 @interface Ping : Plugin
 
+@property(strong,nonatomic) Device* _device;
+@property(strong,nonatomic) PluginInfo* _pluginInfo;
+@property(nonatomic,assign) id _pluginDelegate;
+
 + (id) sharedInstance;
+- (BOOL) onCreate;
+- (void) onDestroy;
 - (BOOL) onDevicePackageReceived:(NetworkPackage*)np;
+- (UIView*) getView;
 
 @end

@@ -30,7 +30,7 @@
     _links=[NSMutableArray arrayWithCapacity:1];
     _plugins=[NSMutableDictionary dictionaryWithCapacity:1];
     _failedPlugins=[NSMutableArray arrayWithCapacity:1];
-    [self reloadPlugins];
+//    [self reloadPlugins];
     return self;
 }
 
@@ -40,12 +40,12 @@
     _name=[[np _Body] valueForKey:@"deviceName"];
     _links=[NSMutableArray arrayWithCapacity:1];
     _plugins=[NSMutableDictionary dictionaryWithCapacity:1];
-    _failedPlugins=[NSMutableArray arrayWithCapacity:1];
+//    _failedPlugins=[NSMutableArray arrayWithCapacity:1];
     //TO-DO need a string to type? or a dictionary
 //    _type=[[[np _Body] valueForKey:@"deviceType"] ;
     _protocolVersion=[[[np _Body] valueForKey:@"protocolVersion"] integerValue];
     _deviceDelegate=deviceDelegate;
-    [self reloadPlugins];
+//    [self reloadPlugins];
     //TO-DO creat a private Key
     [self addLink:np baseLink:link];
     return self;
@@ -69,7 +69,7 @@
     _name=[[np _Body] valueForKey:@"deviceName"];
     [Link set_linkDelegate:self];
     if ([_links count]==1) {
-        NSLog(@"no available link");
+        NSLog(@"one link available");
         if (_deviceDelegate) {
             [_deviceDelegate onDeviceReachableStatusChanged:self];
         }
@@ -128,8 +128,9 @@
             NSLog(@"already done, paired:%d",wantsPair);
             if (_pairStatus==Requested) {
                 NSLog(@"canceled by other peer");
-                //FIX-ME can't cancel the perform request?
-//                [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(requestPairingTimeout:) object:nil];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(requestPairingTimeout:) object:nil];
+                });
                 _pairStatus=NotPaired;
                 if (_deviceDelegate) {
                     [_deviceDelegate onDevicePairRejected:self];
@@ -142,15 +143,16 @@
             //TO-DO retrieve public key
             NSLog(@"pair request");
             if ((_pairStatus)==Requested) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(requestPairingTimeout:) object:nil];
+                });
                 [self setAsPaired];
             }
             else{
-                //TO-DO ask if user want to pair
                 _pairStatus=RequestedByPeer;
                 if (_deviceDelegate) {
                     [_deviceDelegate onDevicePairRequest:self];
                 }
-                
             }
         }
         else{
@@ -159,11 +161,14 @@
             _pairStatus=NotPaired;
             if (prevPairStatus==Requested) {
                 NSLog(@"canceled by other peer");
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(requestPairingTimeout:) object:nil];
+                });
             }else if (prevPairStatus==Paired){
                 //TO-DO remove configuration
                 
                 //reload Plugins
-                [self reloadPlugins];
+//                [self reloadPlugins];
                 [self unpair];
             }
         }
@@ -208,7 +213,10 @@
 
 - (void) requestPairing
 {
-
+    if (![self isReachable]) {
+        NSLog(@"device failed:not reachable");
+        return;
+    }
     if (_pairStatus==Paired) {
         NSLog(@"device failed:already paired");
         return;
@@ -217,18 +225,21 @@
         NSLog(@"device failed:already requested");
         return;
     }
-    if (![self isReachable]) {
-        NSLog(@"device failed:not reachable");
-        return;
+    if (_pairStatus==RequestedByPeer) {
+        NSLog(@"device accept pair request");
     }
-    NSLog(@"device request pairing");
-    _pairStatus=Requested;
+    else{
+        NSLog(@"device request pairing");
+        _pairStatus=Requested;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self performSelector:@selector(requestPairingTimeout:) withObject:nil afterDelay:PAIR_TIMMER_TIMEOUT];
+        });
+    }
     NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PAIR];
     [[np _Body] setValue:[NSNumber numberWithBool:true] forKey:@"pair"];
     //TO-DO public key
     [[np _Body] setValue:@"qwefsdv1241234asvqwefbgwerf1345" forKey:@"publickey"];
     [self sendPackage:np tag:PACKAGE_TAG_PAIR];
-    [self performSelector:@selector(requestPairingTimeout:) withObject:nil afterDelay:PAIR_TIMMER_TIMEOUT];
 }
 
 - (void) requestPairingTimeout:(id)sender
@@ -259,7 +270,7 @@
     NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PAIR];
     [[np _Body] setValue:[NSNumber numberWithBool:false] forKey:@"pair"];
     [self sendPackage:np tag:PACKAGE_TAG_UNPAIR];
-    [self reloadPlugins];
+//    [self reloadPlugins];
 }
 
 - (void) acceptPairing
@@ -284,6 +295,7 @@
     NSLog(@"device reload plugins");
     [_failedPlugins removeAllObjects];
     PluginFactory* pluginFactory=[PluginFactory sharedInstance];
+    [pluginFactory deletePlugins];
     NSArray* pluginNames=[pluginFactory getAvailablePlugins];
     for (NSString* pluginName in pluginNames) {
         Plugin* plugin=[pluginFactory instantiatePluginForDevice:self pluginName:pluginName];

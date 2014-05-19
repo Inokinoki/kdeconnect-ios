@@ -49,10 +49,24 @@
     return plugin;
 }
 
+- (void) deletePlugins
+{
+    NSLog(@"pluginfactory delete all plugins");
+    for (Plugin* plugin in [_availablePlugins allValues]) {
+        [plugin set_device:nil];
+        [plugin set_pluginDelegate:nil];
+    }
+}
+
 - (NSArray*) getAvailablePlugins
 {
     NSLog(@"pluginfactory get available plugins");
     return [_availablePlugins allKeys];
+}
+
+- (Plugin*) getPlugin:(NSString*)pluginName
+{
+    return [_availablePlugins valueForKey:pluginName];
 }
 
 - (void) registerPlugins

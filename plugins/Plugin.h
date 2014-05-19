@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "Device.h"
 #import "GCDSingleton.h"
+#define FORMAT(format, ...) [NSString stringWithFormat:(format), ##__VA_ARGS__]
 
 @class Device;
 @class NetworkPackage;
@@ -40,6 +41,7 @@
 - (BOOL) onCreate;
 - (void) onDestroy;
 - (BOOL) onDevicePackageReceived:(NetworkPackage*)np;
+- (UIView*) getView;
 
 @end
 
