@@ -8,22 +8,25 @@
 
 #import <Foundation/Foundation.h>
 
-#define UDPBROADCAST_TAG -1
-#define TCPSERVER_TAG -2
+#pragma mark Package related macro
 
-#define PACKAGE_TAG_NORMAL 0
-#define PACKAGE_TAG_IDENTITY 1
-#define PACKAGE_TAG_PAIR 2
-#define PACKAGE_TAG_UNPAIR 3
-#define PACKAGE_TAG_PING 4
+#define UDPBROADCAST_TAG        -1
+#define TCPSERVER_TAG           -2
 
-#define PORT 1714
+#define PACKAGE_TAG_NORMAL      0
+#define PACKAGE_TAG_IDENTITY    1
+#define PACKAGE_TAG_PAIR        2
+#define PACKAGE_TAG_UNPAIR      3
+#define PACKAGE_TAG_PING        4
 
-#pragma mark static constant define
-#define ProtocolVersion 5
-#define PACKAGE_TYPE_IDENTITY @"kdeconnect.identity"
-#define PACKAGE_TYPE_PAIR @"kdeconnect.pair"
-#define PACKAGE_TYPE_PING @"kdeconnect.ping"
+#define PORT                    1714
+#define ProtocolVersion         5
+
+#define PACKAGE_TYPE_IDENTITY   @"kdeconnect.identity"
+#define PACKAGE_TYPE_PAIR       @"kdeconnect.pair"
+#define PACKAGE_TYPE_PING       @"kdeconnect.ping"
+#define PACKAGE_TYPE_MPRIS      @"kdeconnect.mpris"
+#define PACKAGE_TYPE_TELEPHONY  @"kdeconnect.telephony"
 
 #pragma mark -
 

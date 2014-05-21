@@ -23,7 +23,7 @@
 
 - (LanLinkProvider*) initWithDelegate:(id)linkProviderDelegate
 {
-    if ([super init])
+    if ([super initWithDelegate:linkProviderDelegate])
     {
         _tcpPort=PORT;
         [_tcpSocket disconnect];

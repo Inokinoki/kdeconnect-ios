@@ -11,7 +11,6 @@
 @implementation BackgroundService
 {
     __strong NSMutableArray* _linkProviders;
-    //TO-DO regroup not paired devices and remembered devices
     __strong NSMutableDictionary* _devices;
     __strong NSMutableArray* _visibleDevices;
 }
@@ -38,11 +37,13 @@
 
 - (id) init
 {
-    _linkProviders=[NSMutableArray arrayWithCapacity:1];
-    _devices=[NSMutableDictionary dictionaryWithCapacity:1];
-    _visibleDevices=[NSMutableArray arrayWithCapacity:1];
-    [self registerLinkProviders];
-    [self loadRemenberedDevices];
+    if ((self=[super init])) {
+        _linkProviders=[NSMutableArray arrayWithCapacity:1];
+        _devices=[NSMutableDictionary dictionaryWithCapacity:1];
+        _visibleDevices=[NSMutableArray arrayWithCapacity:1];
+        [self registerLinkProviders];
+        [self loadRemenberedDevices];
+    }
     return self;
 }
 
@@ -90,28 +91,30 @@
     }
 }
 
-- (NSDictionary*) getNotPairedDevices
+- (NSDictionary*) getDevicesLists
 {
-    NSLog(@"bg get not paired devices");
-    NSMutableDictionary* devices=[NSMutableDictionary dictionaryWithCapacity:1];
-    for (Device* device in _visibleDevices) {
-        if (![device isPaired]) {
-            [devices setValue:[device _name] forKey:[device _id]];
-        }
-    }
-    return devices;
-}
-
-- (NSDictionary*) getPairedDevices
-{
-    NSLog(@"bg get paired devices");
-    NSMutableDictionary* devices=[NSMutableDictionary dictionaryWithCapacity:1];
+    NSLog(@"bg get devices lists");
+    NSMutableDictionary* _visibleDevicesList=[NSMutableDictionary dictionaryWithCapacity:1];
+    NSMutableDictionary* _connectedDevicesList=[NSMutableDictionary dictionaryWithCapacity:1];
+    NSMutableDictionary* _rememberedDevicesList=[NSMutableDictionary dictionaryWithCapacity:1];
     for (Device* device in [_devices allValues]) {
-        if ([device isPaired]) {
-            [devices setValue:[device _name] forKey:[device _id]];
+        if (![device isReachable]) {
+            [_rememberedDevicesList setValue:[device _name] forKey:[device _id]];
+        }
+        else if([device isPaired]){
+            [_connectedDevicesList setValue:[device _name] forKey:[device _id]];
+            //TO-DO move this to a different thread maybe
+            [device reloadPlugins];
+        }
+        else{
+            [_visibleDevicesList setValue:[device _name] forKey:[device _id]];
         }
     }
-    return devices;
+    NSDictionary* list=[NSDictionary dictionaryWithObjectsAndKeys:
+                        _connectedDevicesList,  @"connected",
+                        _visibleDevicesList,    @"visible",
+                        _rememberedDevicesList, @"remembered",nil];
+    return list;
 }
 
 - (void) pairDevice:(NSString*)deviceId;
@@ -132,33 +135,35 @@
     }
 }
 
-- (void) loadPluginForDevice:(NSString*)deviceId
+- (NSArray*) getDevicePluginViews:(NSString*)deviceId
 {
-    NSLog(@"bg load plugin for device");
+    NSLog(@"bg get device plugin view");
     Device* device=[_devices valueForKey:deviceId];
     if (device) {
-        [device reloadPlugins];
+        return [device getPluginViews];
     }
-    else{
-        NSLog(@"device doesn't existe");
-    }
-}
-
-- (BOOL) isDeviceReachable:(NSString*)deviceId
-{
-    return [[_devices valueForKey:deviceId] isReachable];
+    return nil;
 }
 
 - (void) refreshVisibleDeviceList
 {
     NSLog(@"bg on device refresh visible device list");
-    _visibleDevices=[NSMutableArray arrayWithCapacity:1];
-    for (NSString* deviceId  in [_devices allKeys]) {
-        if ([_devices[deviceId] isReachable]) {
-            [_visibleDevices addObject:_devices[deviceId]];
+    BOOL updated=false;
+    for (Device* device  in [_devices allValues]) {
+        if ([device isReachable]) {
+            if (![_visibleDevices containsObject:device]) {
+                updated=true;
+                [_visibleDevices addObject:device];
+            }
+        }
+        else{
+            if ([_visibleDevices containsObject:device]) {
+                updated=true;
+                [_visibleDevices removeObject:device];
+            }
         }
     }
-    if (_backgroundServiceDelegate) {
+    if (_backgroundServiceDelegate && updated) {
         [_backgroundServiceDelegate onDeviceListRefreshed];
     }
 }
@@ -167,7 +172,6 @@
 {
     NSLog(@"bg on device reachable status changed");
     if (![device isReachable]) {
-        [_visibleDevices removeObject:device];
         NSLog(@"bg device not reachable");
     }
     if (![device isPaired]) {
@@ -200,7 +204,6 @@
         NSLog(@"new device");
         Device* device=[[Device alloc] init:np baselink:link setDelegate:self];
         [_devices setObject:device forKey:deviceId];
-        [_visibleDevices addObject:device];
         [self refreshVisibleDeviceList];
     }
 }

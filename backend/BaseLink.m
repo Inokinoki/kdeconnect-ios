@@ -15,8 +15,10 @@
 
 - (BaseLink*) init:(NSString*)deviceId setDelegate:(id)linkDelegate
 {
-    _deviceId=deviceId;
-    _linkDelegate=linkDelegate;
+    if ((self=[super init])) {
+        _deviceId=deviceId;
+        _linkDelegate=linkDelegate;
+    }
     return self;
 }
 

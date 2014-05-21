@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import "Device.h"
-#import "GCDSingleton.h"
 #define FORMAT(format, ...) [NSString stringWithFormat:(format), ##__VA_ARGS__]
 
 @class Device;
@@ -37,9 +36,6 @@
 @property(strong,nonatomic) PluginInfo* _pluginInfo;
 @property(nonatomic,assign) id _pluginDelegate;
 
-+ (id) sharedInstance;
-- (BOOL) onCreate;
-- (void) onDestroy;
 - (BOOL) onDevicePackageReceived:(NetworkPackage*)np;
 - (UIView*) getView;
 

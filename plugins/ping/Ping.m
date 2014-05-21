@@ -19,38 +19,14 @@ __strong static Ping* _instance;
 @synthesize _pluginInfo;
 @synthesize _pluginDelegate;
 
-+ (id) sharedInstance
+- (id) init
 {
-    DEFINE_SHARED_INSTANCE_USING_BLOCK(^{
-        return [[self alloc] init];
-    });
-}
-
-+ (id) allocWithZone:(struct _NSZone *)zone
-{
-    DEFINE_SHARED_INSTANCE_USING_BLOCK(^{
-        return [super allocWithZone:zone];
-    });
-}
-
-- (id)copyWithZone:(NSZone *)zone;{
-    return self;
-}
-
-- (Plugin*) init
-{
-    _pluginInfo=[[PluginInfo alloc] initWithInfos:@"PingPlugin" displayName:@"Ping" description:@"Ping" enabledByDefault:true];
-    _pluginDelegate=nil;
-    _device=nil;
-    _view=[[UIView alloc] initWithFrame:CGRectMake(0,64,400, 60)];
-    UILabel* label=[[UILabel alloc] initWithFrame:CGRectMake(20, 0, 400, 30)];
-    [label setText:@"Ping"];
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [button setTitle:@"Send Ping to Device" forState:UIControlStateNormal];
-    button.frame= CGRectMake(0, 30, 300, 30);
-    [button addTarget:self action:@selector(sendPing:) forControlEvents:UIControlEventTouchUpInside];
-    [_view addSubview:label];
-    [_view addSubview:button];
+    if ((self=[super init])) {
+        _pluginInfo=[[PluginInfo alloc] initWithInfos:@"PingPlugin" displayName:@"Ping" description:@"Ping" enabledByDefault:true];
+        _pluginDelegate=nil;
+        _device=nil;
+        _view=nil;
+    }
     return self;
 }
 
@@ -61,13 +37,23 @@ __strong static Ping* _instance;
         
         return true;
     }
-    
     return false;
 }
 
 - (UIView*) getView
 {
     NSLog(@"ping plugin get view");
+    if ([_device isReachable]) {
+        _view=[[UIView alloc] initWithFrame:CGRectMake(0,64,400, 60)];
+        UILabel* label=[[UILabel alloc] initWithFrame:CGRectMake(20, 0, 400, 30)];
+        [label setText:@"Ping"];
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        [button setTitle:@"Send Ping to Device" forState:UIControlStateNormal];
+        button.frame= CGRectMake(0, 30, 300, 30);
+        [button addTarget:self action:@selector(sendPing:) forControlEvents:UIControlEventTouchUpInside];
+        [_view addSubview:label];
+        [_view addSubview:button];
+    }
     return _view;
 }
 

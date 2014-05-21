@@ -73,8 +73,7 @@ typedef NS_ENUM(NSUInteger, DeviceType)
 
 #pragma mark Plugin-related Functions
 - (void) reloadPlugins;
-- (Plugin*) getPlugin:(NSString*)pluginName;
-
+- (NSArray*) getPluginViews;
 @end
 
 

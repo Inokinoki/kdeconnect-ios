@@ -34,28 +34,28 @@
 
 - (id) init
 {
-    _availablePlugins=[NSMutableDictionary dictionaryWithCapacity:1];
-    [self registerPlugins];
+    if ((self=[super init])) {
+        _availablePlugins=[NSMutableDictionary dictionaryWithCapacity:1];
+        [self registerPlugins];
+    }
     return self;
+}
+
+- (void) dealloc
+{
+    
 }
 
 - (Plugin*) instantiatePluginForDevice:(Device*)device pluginName:(NSString*)pluginName
 {
     NSLog(@"pluginfactory instatiate plugin for device");
-    Plugin* plugin=[_availablePlugins valueForKey:pluginName];
-    if (plugin) {
+    Class pluginClass=[_availablePlugins valueForKey:pluginName];
+    Plugin* plugin;
+    if (pluginClass) {
+        plugin=[[pluginClass alloc] init];
         [plugin set_device:device];
     }
     return plugin;
-}
-
-- (void) deletePlugins
-{
-    NSLog(@"pluginfactory delete all plugins");
-    for (Plugin* plugin in [_availablePlugins allValues]) {
-        [plugin set_device:nil];
-        [plugin set_pluginDelegate:nil];
-    }
 }
 
 - (NSArray*) getAvailablePlugins
@@ -64,15 +64,10 @@
     return [_availablePlugins allKeys];
 }
 
-- (Plugin*) getPlugin:(NSString*)pluginName
-{
-    return [_availablePlugins valueForKey:pluginName];
-}
-
 - (void) registerPlugins
 {
     NSLog(@"pluginfactory register plugins");
-    Ping* pingPlugin=[Ping sharedInstance];[_availablePlugins setValue:pingPlugin forKey:[[pingPlugin _pluginInfo] _pluginName]];
+    Ping* pingPlugin=[[Ping alloc] init];[_availablePlugins setValue:[Ping class] forKey:[[[pingPlugin _pluginInfo] _pluginName] copy]];
     
 }
 

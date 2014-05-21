@@ -21,9 +21,6 @@
 @property(strong,nonatomic) PluginInfo* _pluginInfo;
 @property(nonatomic,assign) id _pluginDelegate;
 
-+ (id) sharedInstance;
-- (BOOL) onCreate;
-- (void) onDestroy;
 - (BOOL) onDevicePackageReceived:(NetworkPackage*)np;
 - (UIView*) getView;
 

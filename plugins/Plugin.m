@@ -18,10 +18,12 @@
 
 - (PluginInfo*) initWithInfos:(NSString*)pluginName displayName:(NSString*)displayName description:(NSString*)description enabledByDefault:(BOOL)enabledBydefault
 {
-    _pluginName=pluginName;
-    _displayName=displayName;
-    _description=description;
-    _enabledByDefault=enabledBydefault;
+    if ((self=[super init])) {
+        _pluginName=pluginName;
+        _displayName=displayName;
+        _description=description;
+        _enabledByDefault=enabledBydefault;
+    }
     return self;
 }
 
@@ -36,33 +38,6 @@
 @synthesize _device;
 @synthesize _pluginInfo;
 
-+ (id) sharedInstance
-{
-    DEFINE_SHARED_INSTANCE_USING_BLOCK(^{
-        return [[self alloc] init];
-    });
-}
-
-+ (id) allocWithZone:(struct _NSZone *)zone
-{
-    DEFINE_SHARED_INSTANCE_USING_BLOCK(^{
-        return [super allocWithZone:zone];
-    });
-}
-
-- (id)copyWithZone:(NSZone *)zone;{
-    return self;
-}
-
-- (BOOL) onCreate
-{
-    return true;
-}
-
-- (void) onDestroy
-{
-}
-
 - (BOOL) onDevicePackageReceived:(NetworkPackage *)np
 {
     return false;
@@ -70,7 +45,7 @@
 
 - (UIView*) getView
 {
-    return _view;
+    return nil;
 }
 
 @end

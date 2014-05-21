@@ -12,7 +12,4 @@
 
 @property(strong,nonatomic)NSString* _deviceId;
 
-- (void) loadPluginsViews:(NSArray*)plugins;
-- (void) onDeviceLost;
-
 @end

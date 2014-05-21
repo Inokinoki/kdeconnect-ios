@@ -18,7 +18,7 @@
 
 - (LanLink*) init:(GCDAsyncSocket*)socket deviceId:(NSString*) deviceid setDelegate:(id)linkdelegate
 {
-    if ([super init:deviceid setDelegate:nil])
+    if ([super init:deviceid setDelegate:linkdelegate])
     {
         _socket=socket;
         _deviceId=deviceid;

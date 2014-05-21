@@ -24,30 +24,32 @@
 @synthesize _deviceDelegate;
 - (Device*) init:(NSString*)deviceId setDelegate:(id)deviceDelegate
 {
-    //TO-DO load config from setting
-    _id=deviceId;
-    _deviceDelegate=deviceDelegate;
-    _links=[NSMutableArray arrayWithCapacity:1];
-    _plugins=[NSMutableDictionary dictionaryWithCapacity:1];
-    _failedPlugins=[NSMutableArray arrayWithCapacity:1];
-//    [self reloadPlugins];
+    if ((self=[super init])) {
+        //TO-DO load config from setting
+        _id=deviceId;
+        _deviceDelegate=deviceDelegate;
+        _links=[NSMutableArray arrayWithCapacity:1];
+        _plugins=[NSMutableDictionary dictionaryWithCapacity:1];
+        _failedPlugins=[NSMutableArray arrayWithCapacity:1];
+    }
     return self;
 }
 
 - (Device*) init:(NetworkPackage*)np baselink:(BaseLink*)link setDelegate:(id)deviceDelegate
 {
-    _id=[[np _Body] valueForKey:@"deviceId"];
-    _name=[[np _Body] valueForKey:@"deviceName"];
-    _links=[NSMutableArray arrayWithCapacity:1];
-    _plugins=[NSMutableDictionary dictionaryWithCapacity:1];
-//    _failedPlugins=[NSMutableArray arrayWithCapacity:1];
-    //TO-DO need a string to type? or a dictionary
-//    _type=[[[np _Body] valueForKey:@"deviceType"] ;
-    _protocolVersion=[[[np _Body] valueForKey:@"protocolVersion"] integerValue];
-    _deviceDelegate=deviceDelegate;
-//    [self reloadPlugins];
-    //TO-DO creat a private Key
-    [self addLink:np baseLink:link];
+    if ((self=[super init])) {
+        _id=[[np _Body] valueForKey:@"deviceId"];
+        _name=[[np _Body] valueForKey:@"deviceName"];
+        _links=[NSMutableArray arrayWithCapacity:1];
+        _plugins=[NSMutableDictionary dictionaryWithCapacity:1];
+        //    _failedPlugins=[NSMutableArray arrayWithCapacity:1];
+        //TO-DO need a string to type? or a dictionary
+        //    _type=[[[np _Body] valueForKey:@"deviceType"] ;
+        _protocolVersion=[[[np _Body] valueForKey:@"protocolVersion"] integerValue];
+        _deviceDelegate=deviceDelegate;
+        //TO-DO creat a private Key
+        [self addLink:np baseLink:link];
+    }
     return self;
 }
 
@@ -167,8 +169,6 @@
             }else if (prevPairStatus==Paired){
                 //TO-DO remove configuration
                 
-                //reload Plugins
-//                [self reloadPlugins];
                 [self unpair];
             }
         }
@@ -179,7 +179,10 @@
         }
         
     }else{
-        NSLog(@"not paired, ignore packages ");
+        NSLog(@"not paired, ignore packages, unpair the device");
+        NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PAIR];
+        [[np _Body] setValue:[NSNumber numberWithBool:false] forKey:@"pair"];
+        [self sendPackage:np tag:PACKAGE_TAG_UNPAIR];
     }
 }
 
@@ -204,7 +207,6 @@
     _pairStatus=Paired;
     NSLog(@"paired with %@",_name);
     // save trusted device configuration
-    [self reloadPlugins];
     if (_deviceDelegate) {
         [_deviceDelegate onDevicePairSuccess:self];
     }
@@ -270,7 +272,6 @@
     NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PAIR];
     [[np _Body] setValue:[NSNumber numberWithBool:false] forKey:@"pair"];
     [self sendPackage:np tag:PACKAGE_TAG_UNPAIR];
-//    [self reloadPlugins];
 }
 
 - (void) acceptPairing
@@ -295,23 +296,30 @@
     NSLog(@"device reload plugins");
     [_failedPlugins removeAllObjects];
     PluginFactory* pluginFactory=[PluginFactory sharedInstance];
-    [pluginFactory deletePlugins];
     NSArray* pluginNames=[pluginFactory getAvailablePlugins];
     for (NSString* pluginName in pluginNames) {
-        Plugin* plugin=[pluginFactory instantiatePluginForDevice:self pluginName:pluginName];
-        if (plugin)
-            [_plugins setValue:plugin forKey:pluginName];
-        else
-            [_failedPlugins addObject:pluginName];
+        //TO-DO load configure file
+        if ((![[_plugins allKeys] containsObject:pluginName])||(![_plugins valueForKey:pluginName])) {
+            Plugin* plugin=[pluginFactory instantiatePluginForDevice:self pluginName:pluginName];
+            if (plugin)
+                [_plugins setValue:plugin forKey:pluginName];
+            else
+                [_failedPlugins addObject:pluginName];
+        }
     }
 }
 
-- (Plugin*) getPlugin:(NSString*)pluginName
+- (NSArray*) getPluginViews
 {
-    NSLog(@"device getplugin");
-    return [_plugins valueForKey:pluginName];
+    NSMutableArray* views=[NSMutableArray arrayWithCapacity:1];
+    for (Plugin* plugin in [_plugins allValues]) {
+        UIView* view=[plugin getView];
+        if (view) {
+            [views addObject:view];
+        }
+    }
+    return views;
 }
-
 @end
 
 

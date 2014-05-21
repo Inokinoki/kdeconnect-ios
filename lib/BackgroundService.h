@@ -37,20 +37,11 @@
 - (void) refreshDiscovery;
 - (void) pauseDiscovery;
 - (void) stopDiscovery;
-- (NSDictionary*) getNotPairedDevices;
-- (NSDictionary*) getPairedDevices;
 - (void) pairDevice:(NSString*)deviceId;
-- (void) loadPluginForDevice:(NSString*)deviceId;
 - (void) unpairDevice:(NSString*)deviceId;
-- (BOOL) isDeviceReachable:(NSString*)deviceId;
+- (NSArray*) getDevicePluginViews:(NSString*)deviceId;
+- (NSDictionary*) getDevicesLists;
+
 
 - (void) onNetworkChange;
-- (void) onLinkDestroyed:(BaseLink*)link;
-- (void) onConnectionReceived:(NetworkPackage *)np link:(BaseLink *)link;
-- (void) onDeviceReachableStatusChanged:(NSString*)deviceId;
-- (void) onDevicePairRequest:(Device *)device;
-- (void) onDevicePairTimeout:(Device *)device;
-- (void) onDevicePairSuccess:(Device *)device;
-- (void) onDevicePairRejected:(Device *)device;
-
 @end

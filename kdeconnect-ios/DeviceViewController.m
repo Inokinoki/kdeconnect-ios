@@ -8,7 +8,7 @@
 
 #import "MRProgress.h"
 #import "DeviceViewController.h"
-#import "PluginFactory.h"
+#import "BackgroundService.h"
 @interface DeviceViewController ()
 
 @end
@@ -30,19 +30,15 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    NSArray* pluginList=[[PluginFactory sharedInstance] getAvailablePlugins];
-    for (NSString* plugin in pluginList) {
-        UIView* pluginView=[[[PluginFactory sharedInstance] getPlugin:plugin] getView];
-        [self.view addSubview:pluginView];
-    }
+    [self loadPluginsViews];
 }
 
 //TO-DO
-- (void) loadPluginsViews:(NSArray*)plugins
+- (void) loadPluginsViews
 {
-    for (NSString* plugin in plugins) {
-        UIView* pluginView=[[[PluginFactory sharedInstance] getPlugin:plugin] getView];
-        [self.view addSubview:pluginView];
+    NSArray* viewlist=[[BackgroundService sharedInstance] getDevicePluginViews:_deviceId];
+    for (UIView* view in viewlist) {
+        [self.view addSubview:view];
     }
 }
 

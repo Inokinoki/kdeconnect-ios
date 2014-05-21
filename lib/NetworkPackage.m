@@ -13,7 +13,7 @@
 @implementation NetworkPackage
 - (NetworkPackage*) init:(NSString *)type
 {
-    if ([super init])
+    if ((self=[super init]))
     {
         self._Id=[[NSNumber numberWithLong:[[NSDate date] timeIntervalSince1970]] stringValue];
         self._Type=type;
