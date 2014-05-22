@@ -1,8 +1,8 @@
 //
-//  Ping.h
+//  MPRIS.h
 //  kdeconnect-ios
 //
-//  Created by yangqiao on 5/11/14.
+//  Created by yangqiao on 5/22/14.
 //  Copyright (c) 2014 yangqiao. All rights reserved.
 //
 
@@ -10,11 +10,11 @@
 @class PluginInfo;
 @class Plugin;
 
-@protocol pingDelegate<NSObject>
+@protocol mprisDelegate<NSObject>
 @optional
 @end
 
-@interface Ping : Plugin
+@interface MPRIS : Plugin
 
 @property(strong,nonatomic) Device* _device;
 @property(strong,nonatomic) PluginInfo* _pluginInfo;

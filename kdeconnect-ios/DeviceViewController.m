@@ -36,9 +36,11 @@
 //TO-DO
 - (void) loadPluginsViews
 {
-    NSArray* viewlist=[[BackgroundService sharedInstance] getDevicePluginViews:_deviceId];
+    NSArray* viewlist=[[BackgroundService sharedInstance] getDevicePluginViews:_deviceId viewController:self];
+    UIView* viewP= self.view;
     for (UIView* view in viewlist) {
-        [self.view addSubview:view];
+        [viewP addSubview:view];
+        viewP=view;
     }
 }
 

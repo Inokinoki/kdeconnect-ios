@@ -43,7 +43,7 @@
     return false;
 }
 
-- (UIView*) getView
+- (UIView*) getView:(UIViewController*)vc
 {
     return nil;
 }

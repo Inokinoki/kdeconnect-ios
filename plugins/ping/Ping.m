@@ -8,8 +8,6 @@
 
 #import "Ping.h"
 
-__strong static Ping* _instance;
-
 @implementation Ping
 {
     __strong UIView* _view;
@@ -40,7 +38,7 @@ __strong static Ping* _instance;
     return false;
 }
 
-- (UIView*) getView
+- (UIView*) getView:(UIViewController*)vc
 {
     NSLog(@"ping plugin get view");
     if ([_device isReachable]) {

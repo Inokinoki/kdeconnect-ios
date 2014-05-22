@@ -8,6 +8,7 @@
 
 #import "PluginFactory.h"
 #import "Ping.h"
+#import "MPRIS.h"
 
 @implementation PluginFactory
 {
@@ -68,7 +69,7 @@
 {
     NSLog(@"pluginfactory register plugins");
     Ping* pingPlugin=[[Ping alloc] init];[_availablePlugins setValue:[Ping class] forKey:[[[pingPlugin _pluginInfo] _pluginName] copy]];
-    
+    MPRIS* mprisPlugin=[[MPRIS alloc] init];[_availablePlugins setValue:[MPRIS class] forKey:[[[mprisPlugin _pluginInfo] _pluginName] copy]];
 }
 
 @end

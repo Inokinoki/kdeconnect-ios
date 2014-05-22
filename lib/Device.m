@@ -309,11 +309,11 @@
     }
 }
 
-- (NSArray*) getPluginViews
+- (NSArray*) getPluginViews:(UIViewController*)vc
 {
     NSMutableArray* views=[NSMutableArray arrayWithCapacity:1];
     for (Plugin* plugin in [_plugins allValues]) {
-        UIView* view=[plugin getView];
+        UIView* view=[plugin getView:vc];
         if (view) {
             [views addObject:view];
         }

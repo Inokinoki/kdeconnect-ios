@@ -144,7 +144,7 @@
 - (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
 {
     NSLog(@"viewcontroller nb of section");
-    int count=[_rememberedDevices count];
+    NSUInteger count=[_rememberedDevices count];
     if (!count) {
         return 2;
     }

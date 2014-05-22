@@ -135,12 +135,12 @@
     }
 }
 
-- (NSArray*) getDevicePluginViews:(NSString*)deviceId
+- (NSArray*) getDevicePluginViews:(NSString*)deviceId viewController:(UIViewController*)vc
 {
     NSLog(@"bg get device plugin view");
     Device* device=[_devices valueForKey:deviceId];
     if (device) {
-        return [device getPluginViews];
+        return [device getPluginViews:vc];
     }
     return nil;
 }

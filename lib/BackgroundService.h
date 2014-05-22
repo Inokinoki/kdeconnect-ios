@@ -39,7 +39,7 @@
 - (void) stopDiscovery;
 - (void) pairDevice:(NSString*)deviceId;
 - (void) unpairDevice:(NSString*)deviceId;
-- (NSArray*) getDevicePluginViews:(NSString*)deviceId;
+- (NSArray*) getDevicePluginViews:(NSString*)deviceId viewController:(UIViewController*)vc;
 - (NSDictionary*) getDevicesLists;
 
 

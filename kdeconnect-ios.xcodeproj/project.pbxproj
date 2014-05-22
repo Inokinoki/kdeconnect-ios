@@ -34,6 +34,8 @@
 		4EC27545191FCEAB0057AB0E /* Plugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC27544191FCEAB0057AB0E /* Plugin.m */; };
 		4EC27548191FCECD0057AB0E /* Ping.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC27547191FCECD0057AB0E /* Ping.m */; };
 		4EC2754B191FD5490057AB0E /* PluginFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC2754A191FD5490057AB0E /* PluginFactory.m */; };
+		4EDD98FA192DAAD700C6AB01 /* MPRISViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EDD98F9192DAAD700C6AB01 /* MPRISViewController.m */; };
+		4EDD98FD192DAAF800C6AB01 /* MPRIS.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EDD98FC192DAAF800C6AB01 /* MPRIS.m */; };
 		CDF3929BB4CB40FCA1F80352 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2F71AC6EE495B8966C774 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -92,6 +94,10 @@
 		4EC27547191FCECD0057AB0E /* Ping.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Ping.m; path = plugins/ping/Ping.m; sourceTree = "<group>"; };
 		4EC27549191FD5490057AB0E /* PluginFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PluginFactory.h; path = plugins/PluginFactory.h; sourceTree = "<group>"; };
 		4EC2754A191FD5490057AB0E /* PluginFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PluginFactory.m; path = plugins/PluginFactory.m; sourceTree = "<group>"; };
+		4EDD98F8192DAAD700C6AB01 /* MPRISViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MPRISViewController.h; path = plugins/MPRIS/MPRISViewController.h; sourceTree = "<group>"; };
+		4EDD98F9192DAAD700C6AB01 /* MPRISViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MPRISViewController.m; path = plugins/MPRIS/MPRISViewController.m; sourceTree = "<group>"; };
+		4EDD98FB192DAAF800C6AB01 /* MPRIS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MPRIS.h; path = plugins/MPRIS/MPRIS.h; sourceTree = "<group>"; };
+		4EDD98FC192DAAF800C6AB01 /* MPRIS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MPRIS.m; path = plugins/MPRIS/MPRIS.m; sourceTree = "<group>"; };
 		4EEC81BE19238D3D00E13727 /* GCDSingleton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GCDSingleton.h; path = lib/GCDSingleton.h; sourceTree = "<group>"; };
 		5B2C3C0E2C4C4FB78D606404 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -243,6 +249,7 @@
 		4EC27541191FCE910057AB0E /* plugins */ = {
 			isa = PBXGroup;
 			children = (
+				4EDD98F7192DA9F000C6AB01 /* MPRIS */,
 				4EC27542191FCE980057AB0E /* ping */,
 				4EC27543191FCEAB0057AB0E /* Plugin.h */,
 				4EC27544191FCEAB0057AB0E /* Plugin.m */,
@@ -259,6 +266,17 @@
 				4EC27547191FCECD0057AB0E /* Ping.m */,
 			);
 			name = ping;
+			sourceTree = "<group>";
+		};
+		4EDD98F7192DA9F000C6AB01 /* MPRIS */ = {
+			isa = PBXGroup;
+			children = (
+				4EDD98F8192DAAD700C6AB01 /* MPRISViewController.h */,
+				4EDD98F9192DAAD700C6AB01 /* MPRISViewController.m */,
+				4EDD98FB192DAAF800C6AB01 /* MPRIS.h */,
+				4EDD98FC192DAAF800C6AB01 /* MPRIS.m */,
+			);
+			name = MPRIS;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -408,7 +426,9 @@
 				4E08A1F41913CF850056EEF8 /* main.m in Sources */,
 				4EC27545191FCEAB0057AB0E /* Plugin.m in Sources */,
 				4E85B96C1928F9D600EF3C55 /* DeviceViewController.m in Sources */,
+				4EDD98FD192DAAF800C6AB01 /* MPRIS.m in Sources */,
 				4E08A2351913D1780056EEF8 /* BackgroundService.m in Sources */,
+				4EDD98FA192DAAD700C6AB01 /* MPRISViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
