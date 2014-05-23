@@ -9,7 +9,6 @@
 #import "AppDelegate.h"
 #import "BackgroundService.h"
 #import "PluginFactory.h"
-@class BackgroundService;
 
 @implementation AppDelegate
 

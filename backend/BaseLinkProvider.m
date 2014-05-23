@@ -19,33 +19,5 @@
     }
     return self;
 }
-- (void) onStart
-{
-    
-}
-
-- (void) onRefresh
-{
-    
-}
-
-- (void) onPause
-{
-    
-}
-
-- (void) onStop
-{
-    
-}
-
-- (void) onNetworkChange
-{
-    
-}
-- (void) onLinkDestroyed:(BaseLink*)link
-{
-    
-}
 
 @end

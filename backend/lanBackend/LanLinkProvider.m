@@ -7,6 +7,10 @@
 //
 
 #import "LanLinkProvider.h"
+#import <Security/Security.h>
+#import <Security/SecItem.h>
+#import <CommonCrypto/CommonDigest.h>
+#import <CommonCrypto/CommonCryptor.h>
 
 @implementation LanLinkProvider
 {
@@ -74,7 +78,7 @@
     [[np _Body] setValue:[[NSNumber alloc ] initWithUnsignedInt:_tcpPort] forKey:@"tcpPort"];
     NSData* data=[np serialize];
     NSLog(@"sending:%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
-	[_udpSocket sendData:data toHost:@"255.255.255.255" port:PORT withTimeout:-1 tag:UDPBROADCAST_TAG];
+	[_udpSocket sendData:data  toHost:@"255.255.255.255" port:PORT withTimeout:-1 tag:UDPBROADCAST_TAG];
 }
 
 - (void)onStop
@@ -104,7 +108,6 @@
     _udpSocket=nil;
 }
 
-
 - (void) onRefresh
 {
     NSLog(@"lp on refresh");
@@ -116,7 +119,6 @@
         [_udpSocket sendData:data toHost:@"255.255.255.255" port:PORT withTimeout:-1 tag:UDPBROADCAST_TAG];
     }
 }
-
 
 - (void)onNetworkChange
 {

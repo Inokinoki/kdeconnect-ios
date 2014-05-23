@@ -12,6 +12,7 @@
 
 @protocol mprisDelegate<NSObject>
 @optional
+
 @end
 
 @interface MPRIS : Plugin
@@ -22,5 +23,17 @@
 
 - (BOOL) onDevicePackageReceived:(NetworkPackage*)np;
 - (UIView*) getView:(UIViewController*)vc;
+- (void) sendAction:(NSString*)action;
+- (void) setVolume:(NSUInteger)volume;
+- (void) seek:(NSInteger)offset;
+- (NSString*) getCurrentSong;
+- (NSArray*) getPlayerList;
+- (void) setPlayer:(NSString*)player;
+- (NSUInteger) getVolume;
+
+- (void) requestPlayerList;
+- (void) requestPlayerStatus;
+- (void) onPlayerStatusUpdated;
+- (void) onPlayerListUpdated;
 
 @end

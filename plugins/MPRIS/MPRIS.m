@@ -68,7 +68,8 @@
     [_mprisViewController setTitle:FORMAT(@"MPRIS Panel for %@",[_device _name])];
     
     [_deviceViewController.navigationController presentViewController:_mprisViewController animated:YES completion:^(void){}];
-    
 }
+
+
 
 @end

@@ -22,20 +22,4 @@
     return self;
 }
 
-- (BOOL) sendPackage:(NetworkPackage *)np tag:(long)tag
-{
-    return true;
-}
-
-- (BOOL) sendPackageEncypted:(NetworkPackage *)np tag:(long)tag
-{
-    
-    return true;
-}
-
-- (void) disconnect
-{
-    
-}
-
 @end
