@@ -19,13 +19,20 @@
     //instancie backgroundservice and pluginfactory
     [BackgroundService sharedInstance];
     [PluginFactory sharedInstance];
-    if (![[SecKeyWrapper sharedWrapper] getPublicKeyBits]) {
+//    if (![[SecKeyWrapper sharedWrapper] getPublicKeyBits]) {
         [[SecKeyWrapper sharedWrapper] generateKeyPair:2048];
         [[SecKeyWrapper sharedWrapper] generateSymmetricKey];
-    }
+        SecKeyRef publickey=[[SecKeyWrapper sharedWrapper] getPublicKeyRef];
+        size_t keysize=SecKeyGetBlockSize(publickey);
+        NSData* keyData = [NSData dataWithBytes:publickey length:keysize];
+        keyData=[[SecKeyWrapper sharedWrapper] unwrapSymmetricKey:keyData];
+        NSString *keyStringB64 = [keyData base64EncodedStringWithOptions:0];
+        NSData* keyData2 = [[SecKeyWrapper sharedWrapper] getPublicKeyBits];
+        NSString *keyStringB642 = [keyData2 base64EncodedStringWithOptions:0];
+//    }
     return YES;
 }
-							
+
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

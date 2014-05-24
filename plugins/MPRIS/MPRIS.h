@@ -12,7 +12,8 @@
 
 @protocol mprisDelegate<NSObject>
 @optional
-
+- (void) onPlayerStatusUpdated;
+- (void) onPlayerListUpdated;
 @end
 
 @interface MPRIS : Plugin
@@ -28,8 +29,9 @@
 - (void) seek:(NSInteger)offset;
 - (NSString*) getCurrentSong;
 - (NSArray*) getPlayerList;
-- (void) setPlayer:(NSString*)player;
 - (NSUInteger) getVolume;
+- (void) setPlayer:(NSString*)player;
+- (BOOL) isPlaying;
 
 - (void) requestPlayerList;
 - (void) requestPlayerStatus;

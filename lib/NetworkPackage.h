@@ -18,6 +18,7 @@
 #define PACKAGE_TAG_PAIR        2
 #define PACKAGE_TAG_UNPAIR      3
 #define PACKAGE_TAG_PING        4
+#define PACKAGE_TAG_MPRIS       5
 
 #define PORT                    1714
 #define ProtocolVersion         5
@@ -39,10 +40,10 @@
 //@property(weak,nonatomic) NSDictionay *_PayloadTransferInfo;
 //@property(nonatomic)int _PayloadSize;
 
-- (NetworkPackage*)init:(NSString*)type;
+- (NetworkPackage*)initWithType:(NSString*)type;
 + (NetworkPackage*) createIdentityPackage;
 + (NetworkPackage*) createPublicKeyPackage;
-- (BOOL) bodyHas:(NSString*)key;
+- (BOOL) bodyHasKey:(NSString*)key;
 
 #pragma mark Serialize
 - (NSData*) serialize;

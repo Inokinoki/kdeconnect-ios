@@ -19,7 +19,7 @@ static SecKeyRef _publicKeyRef;
     SecKeyRef _privateKeyRef;
 }
 
-- (NetworkPackage*) init:(NSString *)type
+- (NetworkPackage*) initWithType:(NSString *)type
 {
     if ((self=[super init]))
     {
@@ -38,7 +38,7 @@ static SecKeyRef _publicKeyRef;
 #pragma mark create Package
 +(NetworkPackage*) createIdentityPackage
 {
-    NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_IDENTITY];
+    NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_IDENTITY];
     //TO-DO get Id?
     [[np _Body] setValue:[UIDevice currentDevice].name forKey:@"deviceId"];
     [[np _Body] setValue:[UIDevice currentDevice].name forKey:@"deviceName"];
@@ -51,7 +51,7 @@ static SecKeyRef _publicKeyRef;
 
 + (NetworkPackage*) createPublicKeyPackage
 {
-    NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PAIR];
+    NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_PAIR];
     if (!_publicKeyStr) {
         if (!_publicKeyRef) {
             _publicKeyRef=[[SecKeyWrapper sharedWrapper] getPublicKeyRef];
@@ -69,7 +69,7 @@ static SecKeyRef _publicKeyRef;
     return np;
 }
 
-- (BOOL) bodyHas:(NSString*)key
+- (BOOL) bodyHasKey:(NSString*)key
 {
     if ([self._Body valueForKey:key]!=nil) {
         return true;

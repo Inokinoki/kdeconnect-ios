@@ -65,7 +65,7 @@
         return;
     }
     NSLog(@"send ping to %@",[_device _id]);
-    NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PING];
+    NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_PING];
     [_device sendPackage:np tag:PACKAGE_TAG_PING];
 }
 

@@ -180,7 +180,7 @@
         
     }else{
         NSLog(@"not paired, ignore packages, unpair the device");
-        NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PAIR];
+        NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_PAIR];
         [[np _Body] setValue:[NSNumber numberWithBool:false] forKey:@"pair"];
         [self sendPackage:np tag:PACKAGE_TAG_UNPAIR];
     }
@@ -254,7 +254,7 @@
             [_deviceDelegate onDevicePairTimeout:self];
         }
         
-        NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PAIR];
+        NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_PAIR];
         [[np _Body] setValue:[NSNumber numberWithBool:NO] forKey:@"pair"];
         [self sendPackage:np tag:PACKAGE_TAG_UNPAIR];
     }
@@ -269,7 +269,7 @@
     
     //delete from config file
     
-    NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PAIR];
+    NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_PAIR];
     [[np _Body] setValue:[NSNumber numberWithBool:false] forKey:@"pair"];
     [self sendPackage:np tag:PACKAGE_TAG_UNPAIR];
 }
@@ -285,7 +285,7 @@
 {
     NSLog(@"device rejected pair request ");
     _pairStatus=NotPaired;
-    NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PAIR];
+    NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_PAIR];
     [[np _Body] setValue:[NSNumber numberWithBool:false] forKey:@"pair"];
     [self sendPackage:np tag:PACKAGE_TAG_PAIR];
 }
