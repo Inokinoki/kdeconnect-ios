@@ -30,9 +30,9 @@
 #define kTypeOfSigPadding		kSecPaddingPKCS1SHA1
 
 // constants used to find public, private, and symmetric keys.
-#define kPublicKeyTag			"com.apple.sample.publickey"
-#define kPrivateKeyTag			"com.apple.sample.privatekey"
-#define kSymmetricKeyTag		"com.apple.sample.symmetrickey"
+#define kPublicKeyTag			"org.kde.kdeconnect.publickey"
+#define kPrivateKeyTag			"org.kde.kdeconnect.privatekey"
+#define kSymmetricKeyTag		"org.kde.kdeconnect.symmetrickey"
 
 @interface SecKeyWrapper : NSObject {
 	NSData * publicTag;

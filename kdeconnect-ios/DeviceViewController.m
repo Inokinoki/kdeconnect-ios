@@ -37,10 +37,13 @@
 - (void) loadPluginsViews
 {
     NSArray* viewlist=[[BackgroundService sharedInstance] getDevicePluginViews:_deviceId viewController:self];
-    UIView* viewP= self.view;
+    CGRect preFrame=CGRectMake(0, 64, 0, 0);
     for (UIView* view in viewlist) {
-        [viewP addSubview:view];
-        viewP=view;
+        CGRect viewFrame=view.frame;
+        viewFrame.origin.y+=(preFrame.origin.y+preFrame.size.height);
+        preFrame=viewFrame;
+        [view setFrame:viewFrame];
+        [self.view addSubview:view];
     }
 }
 

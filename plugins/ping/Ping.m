@@ -42,7 +42,7 @@
 {
     NSLog(@"ping plugin get view");
     if ([_device isReachable]) {
-        _view=[[UIView alloc] initWithFrame:CGRectMake(0,64,400, 60)];
+        _view=[[UIView alloc] initWithFrame:CGRectMake(0,0,400, 60)];
         UILabel* label=[[UILabel alloc] initWithFrame:CGRectMake(20, 0, 400, 30)];
         [label setText:@"Ping"];
         UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -51,6 +51,9 @@
         [button addTarget:self action:@selector(sendPing:) forControlEvents:UIControlEventTouchUpInside];
         [_view addSubview:label];
         [_view addSubview:button];
+    }
+    else{
+        _view=nil;
     }
     return _view;
 }

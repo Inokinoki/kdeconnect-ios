@@ -237,7 +237,7 @@
             [self performSelector:@selector(requestPairingTimeout:) withObject:nil afterDelay:PAIR_TIMMER_TIMEOUT];
         });
     }
-    NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PAIR];
+    NetworkPackage* np=[NetworkPackage createPublicKeyPackage];
     [[np _Body] setValue:[NSNumber numberWithBool:true] forKey:@"pair"];
     //TO-DO public key
     [[np _Body] setValue:@"qwefsdv1241234asvqwefbgwerf1345" forKey:@"publickey"];

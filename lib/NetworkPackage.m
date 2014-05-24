@@ -7,17 +7,26 @@
 //
 
 #import "NetworkPackage.h"
+#import "SecKeyWrapper.h"
 #define LFDATA [NSData dataWithBytes:"\x0D\x0A" length:2]
+
+__strong static NSString* _publicKeyStr;
+static SecKeyRef _publicKeyRef;
 
 #pragma mark Implementation
 @implementation NetworkPackage
+{
+    SecKeyRef _privateKeyRef;
+}
+
 - (NetworkPackage*) init:(NSString *)type
 {
     if ((self=[super init]))
     {
-        self._Id=[[NSNumber numberWithLong:[[NSDate date] timeIntervalSince1970]] stringValue];
-        self._Type=type;
-        self._Body=[NSMutableDictionary dictionary];
+        _Id=[[NSNumber numberWithLong:[[NSDate date] timeIntervalSince1970]] stringValue];
+        _Type=type;
+        _Body=[NSMutableDictionary dictionary];
+        _publicKeyStr=nil;
     }
     return self;
 }
@@ -42,7 +51,21 @@
 
 + (NetworkPackage*) createPublicKeyPackage
 {
-    NetworkPackage* np=nil;
+    NetworkPackage* np=[[NetworkPackage alloc] init:PACKAGE_TYPE_PAIR];
+    if (!_publicKeyStr) {
+        if (!_publicKeyRef) {
+            _publicKeyRef=[[SecKeyWrapper sharedWrapper] getPublicKeyRef];
+        }
+        NSData* keybyte=[[SecKeyWrapper sharedWrapper] getPublicKeyBits];
+        _publicKeyStr=[NSString stringWithFormat:@"%@\n%@\n%@\n",
+                       @"-----BEGIN PUBLIC KEY-----",
+                       [keybyte base64EncodedStringWithOptions:0],
+                       @"-----END PUBLIC KEY-----"];
+        NSLog(@"np public key:%@",_publicKeyStr);
+    }
+    [[np _Body] setValue:_publicKeyStr forKey:@"publickey"];
+    [[np _Body] setValue:[NSNumber numberWithBool:true] forKey:@"pair"];
+
     return np;
 }
 
@@ -88,11 +111,13 @@
 {
     return true;
 };
+
 - (NetworkPackage*) encrypt
 {
     NetworkPackage* np=nil;
     return np;
 };
+
 - (NetworkPackage*) decrypt
 {
     NetworkPackage* np=nil;
