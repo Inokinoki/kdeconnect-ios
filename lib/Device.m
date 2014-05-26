@@ -12,7 +12,6 @@
 @implementation Device
 {
     __strong NSMutableArray* _links;
-//    id* _publicKey;
     __strong NSMutableDictionary* _plugins;
     __strong NSMutableArray* _failedPlugins;
 }
@@ -42,12 +41,11 @@
         _name=[[np _Body] valueForKey:@"deviceName"];
         _links=[NSMutableArray arrayWithCapacity:1];
         _plugins=[NSMutableDictionary dictionaryWithCapacity:1];
-        //    _failedPlugins=[NSMutableArray arrayWithCapacity:1];
+        _failedPlugins=[NSMutableArray arrayWithCapacity:1];
         //TO-DO need a string to type? or a dictionary
         //    _type=[[[np _Body] valueForKey:@"deviceType"] ;
         _protocolVersion=[[[np _Body] valueForKey:@"protocolVersion"] integerValue];
         _deviceDelegate=deviceDelegate;
-        //TO-DO creat a private Key
         [self addLink:np baseLink:link];
     }
     return self;
@@ -78,8 +76,6 @@
     }
     //TO-DO need a string to type? or a dictionary
     //    _type=[[[np _Body] valueForKey:@"deviceType"] ;
-    //TO-DO set link privatekey
-    //[Link set_privateKey:_privateKey];
 }
 
 - (void) onLinkDestroyed:(BaseLink *)link

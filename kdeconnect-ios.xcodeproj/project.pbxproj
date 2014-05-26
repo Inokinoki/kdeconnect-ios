@@ -31,10 +31,10 @@
 		4E08A2371913D1780056EEF8 /* NetworkPackage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2341913D1780056EEF8 /* NetworkPackage.m */; };
 		4E0E321F192B495E001D88CD /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4E0E321E192B495E001D88CD /* Settings.bundle */; };
 		4E85B96C1928F9D600EF3C55 /* DeviceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E85B96B1928F9D600EF3C55 /* DeviceViewController.m */; };
-		4EA5D08B192FE693005B178B /* SecKeyWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EA5D08A192FE693005B178B /* SecKeyWrapper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		4EC27545191FCEAB0057AB0E /* Plugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC27544191FCEAB0057AB0E /* Plugin.m */; };
 		4EC27548191FCECD0057AB0E /* Ping.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC27547191FCECD0057AB0E /* Ping.m */; };
 		4EC2754B191FD5490057AB0E /* PluginFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC2754A191FD5490057AB0E /* PluginFactory.m */; };
+		4ECA38301933EE560015C07C /* SecKeyWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ECA382F1933EE560015C07C /* SecKeyWrapper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		4EDD98FA192DAAD700C6AB01 /* MPRISViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EDD98F9192DAAD700C6AB01 /* MPRISViewController.m */; };
 		4EDD98FD192DAAF800C6AB01 /* MPRIS.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EDD98FC192DAAF800C6AB01 /* MPRIS.m */; };
 		CDF3929BB4CB40FCA1F80352 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2F71AC6EE495B8966C774 /* libPods.a */; };
@@ -89,14 +89,14 @@
 		4E0E321E192B495E001D88CD /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		4E85B96A1928F9D600EF3C55 /* DeviceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceViewController.h; sourceTree = "<group>"; };
 		4E85B96B1928F9D600EF3C55 /* DeviceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeviceViewController.m; sourceTree = "<group>"; };
-		4EA5D089192FE693005B178B /* SecKeyWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SecKeyWrapper.h; path = lib/SecKeyWrapper.h; sourceTree = "<group>"; };
-		4EA5D08A192FE693005B178B /* SecKeyWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SecKeyWrapper.m; path = lib/SecKeyWrapper.m; sourceTree = "<group>"; };
 		4EC27543191FCEAB0057AB0E /* Plugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Plugin.h; path = plugins/Plugin.h; sourceTree = "<group>"; };
 		4EC27544191FCEAB0057AB0E /* Plugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Plugin.m; path = plugins/Plugin.m; sourceTree = "<group>"; };
 		4EC27546191FCECD0057AB0E /* Ping.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Ping.h; path = plugins/ping/Ping.h; sourceTree = "<group>"; };
 		4EC27547191FCECD0057AB0E /* Ping.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Ping.m; path = plugins/ping/Ping.m; sourceTree = "<group>"; };
 		4EC27549191FD5490057AB0E /* PluginFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PluginFactory.h; path = plugins/PluginFactory.h; sourceTree = "<group>"; };
 		4EC2754A191FD5490057AB0E /* PluginFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PluginFactory.m; path = plugins/PluginFactory.m; sourceTree = "<group>"; };
+		4ECA382E1933EE560015C07C /* SecKeyWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SecKeyWrapper.h; path = lib/SecKeyWrapper.h; sourceTree = "<group>"; };
+		4ECA382F1933EE560015C07C /* SecKeyWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SecKeyWrapper.m; path = lib/SecKeyWrapper.m; sourceTree = "<group>"; };
 		4EDD98F8192DAAD700C6AB01 /* MPRISViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MPRISViewController.h; path = plugins/MPRIS/MPRISViewController.h; sourceTree = "<group>"; };
 		4EDD98F9192DAAD700C6AB01 /* MPRISViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MPRISViewController.m; path = plugins/MPRIS/MPRISViewController.m; sourceTree = "<group>"; };
 		4EDD98FB192DAAF800C6AB01 /* MPRIS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MPRIS.h; path = plugins/MPRIS/MPRIS.h; sourceTree = "<group>"; };
@@ -215,6 +215,8 @@
 		4E08A21F1913D0CF0056EEF8 /* lib */ = {
 			isa = PBXGroup;
 			children = (
+				4ECA382E1933EE560015C07C /* SecKeyWrapper.h */,
+				4ECA382F1933EE560015C07C /* SecKeyWrapper.m */,
 				4E08A22F1913D1780056EEF8 /* BackgroundService.h */,
 				4E08A2301913D1780056EEF8 /* BackgroundService.m */,
 				4E08A2311913D1780056EEF8 /* Device.h */,
@@ -222,8 +224,6 @@
 				4EEC81BE19238D3D00E13727 /* GCDSingleton.h */,
 				4E08A2331913D1780056EEF8 /* NetworkPackage.h */,
 				4E08A2341913D1780056EEF8 /* NetworkPackage.m */,
-				4EA5D089192FE693005B178B /* SecKeyWrapper.h */,
-				4EA5D08A192FE693005B178B /* SecKeyWrapper.m */,
 			);
 			name = lib;
 			sourceTree = "<group>";
@@ -419,6 +419,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4E08A2011913CF850056EEF8 /* ViewController.m in Sources */,
+				4ECA38301933EE560015C07C /* SecKeyWrapper.m in Sources */,
 				4E08A1F81913CF850056EEF8 /* AppDelegate.m in Sources */,
 				4EC2754B191FD5490057AB0E /* PluginFactory.m in Sources */,
 				4E08A2271913D1550056EEF8 /* BaseLink.m in Sources */,
@@ -433,7 +434,6 @@
 				4E85B96C1928F9D600EF3C55 /* DeviceViewController.m in Sources */,
 				4EDD98FD192DAAF800C6AB01 /* MPRIS.m in Sources */,
 				4E08A2351913D1780056EEF8 /* BackgroundService.m in Sources */,
-				4EA5D08B192FE693005B178B /* SecKeyWrapper.m in Sources */,
 				4EDD98FA192DAAD700C6AB01 /* MPRISViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

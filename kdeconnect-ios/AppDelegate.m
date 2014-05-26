@@ -9,7 +9,7 @@
 #import "AppDelegate.h"
 #import "BackgroundService.h"
 #import "PluginFactory.h"
-#import "SecKeyWrapper.h"
+
 
 @implementation AppDelegate
 
@@ -19,17 +19,6 @@
     //instancie backgroundservice and pluginfactory
     [BackgroundService sharedInstance];
     [PluginFactory sharedInstance];
-//    if (![[SecKeyWrapper sharedWrapper] getPublicKeyBits]) {
-        [[SecKeyWrapper sharedWrapper] generateKeyPair:2048];
-        [[SecKeyWrapper sharedWrapper] generateSymmetricKey];
-        SecKeyRef publickey=[[SecKeyWrapper sharedWrapper] getPublicKeyRef];
-        size_t keysize=SecKeyGetBlockSize(publickey);
-        NSData* keyData = [NSData dataWithBytes:publickey length:keysize];
-        keyData=[[SecKeyWrapper sharedWrapper] unwrapSymmetricKey:keyData];
-        NSString *keyStringB64 = [keyData base64EncodedStringWithOptions:0];
-        NSData* keyData2 = [[SecKeyWrapper sharedWrapper] getPublicKeyBits];
-        NSString *keyStringB642 = [keyData2 base64EncodedStringWithOptions:0];
-//    }
     return YES;
 }
 

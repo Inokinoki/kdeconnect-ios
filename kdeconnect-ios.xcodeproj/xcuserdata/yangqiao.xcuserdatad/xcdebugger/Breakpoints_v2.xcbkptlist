@@ -218,11 +218,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "lib/NetworkPackage.m"
-            timestampString = "422630947.491317"
+            timestampString = "422834398.907944"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "43"
-            endingLineNumber = "43"
+            startingLineNumber = "44"
+            endingLineNumber = "44"
             landmarkName = "+createIdentityPackage"
             landmarkType = "5">
          </BreakpointContent>
@@ -895,7 +895,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "106"
             endingLineNumber = "106"
-            landmarkName = "+unserialize:"
+            landmarkName = "-isEncrypted"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

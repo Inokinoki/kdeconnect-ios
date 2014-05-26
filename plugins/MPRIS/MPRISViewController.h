@@ -9,7 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "MPRIS.h"
 
-@interface MPRISViewController : UIViewController
+@interface MPRISViewController : UIViewController<mprisDelegate>
+@property (strong, nonatomic) IBOutlet UISlider *_volumeSlider;
 
 - (void) setPlugin:(MPRIS*)mprisPlugin;
 

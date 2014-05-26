@@ -151,9 +151,9 @@
     _currentSong=nil;
     _volume=50;
     _playing=false;
-    if (!_pluginDelegate) {
-        [_pluginDelegate onPlayerStatusUpdated];
-    }
+//    if (!_pluginDelegate) {
+//        [_pluginDelegate onPlayerStatusUpdated];
+//    }
     [self requestPlayerStatus];
 }
 

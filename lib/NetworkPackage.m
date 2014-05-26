@@ -49,21 +49,17 @@ static SecKeyRef _publicKeyRef;
     return np;
 }
 
+
 + (NetworkPackage*) createPublicKeyPackage
 {
     NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_PAIR];
-    if (!_publicKeyStr) {
-        if (!_publicKeyRef) {
-            _publicKeyRef=[[SecKeyWrapper sharedWrapper] getPublicKeyRef];
-        }
-        NSData* keybyte=[[SecKeyWrapper sharedWrapper] getPublicKeyBits];
+    NSString* publicKeyStr=[[SecKeyWrapper sharedWrapper] getRSAPublicKeyAsBase64];
         _publicKeyStr=[NSString stringWithFormat:@"%@\n%@\n%@\n",
                        @"-----BEGIN PUBLIC KEY-----",
-                       [keybyte base64EncodedStringWithOptions:0],
+                       publicKeyStr,
                        @"-----END PUBLIC KEY-----"];
         NSLog(@"np public key:%@",_publicKeyStr);
-    }
-    [[np _Body] setValue:_publicKeyStr forKey:@"publickey"];
+    [[np _Body] setValue:_publicKeyStr forKey:@"publicKey"];
     [[np _Body] setValue:[NSNumber numberWithBool:true] forKey:@"pair"];
 
     return np;

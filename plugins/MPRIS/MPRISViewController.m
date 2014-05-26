@@ -15,7 +15,14 @@
 @implementation MPRISViewController
 {
     __strong MPRIS* _mprisPlugin;
+    __strong NSString* _currentSong;
+    NSUInteger _volume;
+    __strong NSArray* _playerList;
+    __strong NSString* _player;
+    BOOL _playing;
 }
+
+@synthesize _volumeSlider;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -23,6 +30,11 @@
     if (self) {
         // Custom initialization
         _mprisPlugin=nil;
+        _currentSong=nil;
+        _volume=50;
+        _playerList=nil;
+        _player=nil;
+        _playing=false;
     }
     return self;
 }
@@ -44,8 +56,59 @@
     _mprisPlugin=mprisPlugin;
 }
 
-- (IBAction)dismiss:(id)sender {
+- (IBAction)dismiss:(id)sender
+{
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (IBAction)updateVolume:(id)sender
+{
+    float value=[_volumeSlider value];
+    if (!_mprisPlugin) {
+        [_mprisPlugin setVolume:value*100];
+    }
+}
+- (IBAction)playPause:(id)sender
+{
+    if (!_mprisPlugin) {
+        [_mprisPlugin sendAction:@"PlayPause"];
+    }
+}
+
+- (IBAction)previous:(id)sender {
+    if (!_mprisPlugin) {
+        [_mprisPlugin sendAction:@"Previous"];
+    }
+}
+
+- (IBAction)next:(id)sender {
+    if (!_mprisPlugin) {
+        [_mprisPlugin sendAction:@" Next"];
+    }
+}
+
+- (IBAction)rewind:(id)sender {
+    if (!_mprisPlugin) {
+        [_mprisPlugin seek:-10000000];
+    }
+}
+
+- (IBAction)forward:(id)sender {
+    if (!_mprisPlugin) {
+        [_mprisPlugin seek:10000000];
+    }
+}
+
+- (void) onPlayerListUpdated
+{
+    _playerList=[_mprisPlugin getPlayerList];
+}
+
+- (void) onPlayerStatusUpdated
+{
+    _currentSong=[_mprisPlugin getCurrentSong];
+    _volume=[_mprisPlugin getVolume];
+    _playing=[_mprisPlugin isPlaying];
 }
 
 /*
