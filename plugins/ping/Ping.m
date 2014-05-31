@@ -32,7 +32,14 @@
 {
     NSLog(@"ping plugin receive a package");
     if ([[np _Type] isEqualToString:PACKAGE_TYPE_PING]) {
-        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[[UIAlertView alloc]
+              initWithTitle:@"Ping"
+              message:FORMAT(@"Ping from device: %@ ",[_device _name])
+              delegate:nil
+              cancelButtonTitle:@"ok"
+              otherButtonTitles:nil,nil] show];
+        });
         return true;
     }
     return false;

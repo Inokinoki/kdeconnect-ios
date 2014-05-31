@@ -20,7 +20,7 @@
 
 - (LanLink*) init:(GCDAsyncSocket*)socket deviceId:(NSString*) deviceid setDelegate:(id)linkDelegate;
 - (BOOL) sendPackage:(NetworkPackage *)np tag:(long)tag;
-- (BOOL) sendPackageEncypted:(NetworkPackage *)np;
+- (BOOL) sendPackageEncypted:(NetworkPackage *)np tag:(long)tag;
 - (void) disconnect;
-
+- (void) loadPublicKey;
 @end

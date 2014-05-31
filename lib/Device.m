@@ -98,9 +98,18 @@
 - (BOOL) sendPackage:(NetworkPackage *)np tag:(long)tag
 {
     NSLog(@"device send package");
-    for (BaseLink* link in _links) {
-        if ([link sendPackage:np tag:tag]) {
-            return true;
+    if (![[np _Type] isEqualToString:PACKAGE_TYPE_PAIR]) {
+        for (BaseLink* link in _links) {
+            if ([link sendPackageEncypted:np tag:tag]) {
+                return true;
+            }
+        }
+    }
+    else{
+        for (BaseLink* link in _links) {
+            if ([link sendPackage:np tag:tag]) {
+                return true;
+            }
         }
     }
     return false;
@@ -206,7 +215,9 @@
     if (_deviceDelegate) {
         [_deviceDelegate onDevicePairSuccess:self];
     }
-    
+    for (BaseLink* link in _links) {
+        [link loadPublicKey];
+    }
 }
 
 - (void) requestPairing
@@ -234,9 +245,6 @@
         });
     }
     NetworkPackage* np=[NetworkPackage createPublicKeyPackage];
-    [[np _Body] setValue:[NSNumber numberWithBool:true] forKey:@"pair"];
-    //TO-DO public key
-    [[np _Body] setValue:@"qwefsdv1241234asvqwefbgwerf1345" forKey:@"publickey"];
     [self sendPackage:np tag:PACKAGE_TAG_PAIR];
 }
 

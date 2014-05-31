@@ -15,15 +15,17 @@
 
 #define PACKAGE_TAG_NORMAL      0
 #define PACKAGE_TAG_IDENTITY    1
-#define PACKAGE_TAG_PAIR        2
-#define PACKAGE_TAG_UNPAIR      3
-#define PACKAGE_TAG_PING        4
-#define PACKAGE_TAG_MPRIS       5
+#define PACKAGE_TAG_ENCRYPTED   2
+#define PACKAGE_TAG_PAIR        3
+#define PACKAGE_TAG_UNPAIR      4
+#define PACKAGE_TAG_PING        5
+#define PACKAGE_TAG_MPRIS       6
 
 #define PORT                    1714
 #define ProtocolVersion         5
 
 #define PACKAGE_TYPE_IDENTITY   @"kdeconnect.identity"
+#define PACKAGE_TYPE_ENCRYPTED  @"kdeconnect.encrypted"
 #define PACKAGE_TYPE_PAIR       @"kdeconnect.pair"
 #define PACKAGE_TYPE_PING       @"kdeconnect.ping"
 #define PACKAGE_TYPE_MPRIS      @"kdeconnect.mpris"
@@ -40,9 +42,10 @@
 //@property(weak,nonatomic) NSDictionay *_PayloadTransferInfo;
 //@property(nonatomic)int _PayloadSize;
 
-- (NetworkPackage*)initWithType:(NSString*)type;
+- (NetworkPackage*) initWithType:(NSString*)type;
 + (NetworkPackage*) createIdentityPackage;
 + (NetworkPackage*) createPublicKeyPackage;
+- (NSData*) retrievePublicKeyBits;
 - (BOOL) bodyHasKey:(NSString*)key;
 
 #pragma mark Serialize
@@ -52,7 +55,7 @@
 //TO-DO
 #pragma mark Encyption
 - (BOOL) isEncrypted;
-- (NetworkPackage*) encrypt;
+- (NetworkPackage*) encryptWithPublicKeyRef:(SecKeyRef)publicKeyRef;
 - (NetworkPackage*) decrypt;
 
 //TO-DO

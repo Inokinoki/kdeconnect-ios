@@ -7,14 +7,17 @@
 //
 
 #import "LanLink.h"
+#import "SecKeyWrapper.h";
 
 @implementation LanLink
 {
     __strong GCDAsyncSocket* _socket;
+    __strong NetworkPackage* _pendingPairNP;
 }
 
 @synthesize _deviceId;
 @synthesize _linkDelegate;
+@synthesize _publicKey;
 
 - (LanLink*) init:(GCDAsyncSocket*)socket deviceId:(NSString*) deviceid setDelegate:(id)linkdelegate
 {
@@ -23,6 +26,8 @@
         _socket=socket;
         _deviceId=deviceid;
         _linkDelegate=linkdelegate;
+        _pendingPairNP=nil;
+        _publicKey=[[SecKeyWrapper sharedWrapper] getPeerPublicKeyRef:_deviceId];
         [_socket setDelegate:self];
         NSLog(@"LanLink:lanlink for device:%@ created",_deviceId);
         [_socket readDataToData:[GCDAsyncSocket LFData] withTimeout:-1 tag:PACKAGE_TAG_NORMAL];
@@ -44,10 +49,20 @@
     return true;
 }
 
-- (BOOL) sendPackageEncypted:(NetworkPackage *)np
+- (BOOL) sendPackageEncypted:(NetworkPackage *)np tag:(long)tag
 {
-    
-    return true;
+    NetworkPackage* encryptedPackage=[np encryptWithPublicKeyRef:_publicKey];
+    return [self sendPackage:encryptedPackage tag:PACKAGE_TAG_ENCRYPTED];
+}
+
+- (void) loadPublicKey
+{
+    NSLog(@"load Public key for %@",_deviceId);
+    if (_pendingPairNP) {
+        NSData* publicKeyBits=[_pendingPairNP retrievePublicKeyBits];
+        [[SecKeyWrapper sharedWrapper] removePeerPublicKey:_deviceId];
+        _publicKey=[[SecKeyWrapper sharedWrapper] addPeerRSAPublicKey:_deviceId keyBits:publicKeyBits];
+    }
 }
 
 - (void) disconnect
@@ -58,7 +73,7 @@
     if (_linkDelegate) {
         [_linkDelegate onLinkDestroyed:self];
     }
-
+    _pendingPairNP=nil;
     NSLog(@"LanLink: Device:%@ disconnected",_deviceId);
 }
 
@@ -77,8 +92,14 @@
     for (NSString* dataStr in packageArray) {
         NetworkPackage* np=[NetworkPackage unserialize:[dataStr dataUsingEncoding:NSUTF8StringEncoding]];
         if (_linkDelegate && np) {
-            [_linkDelegate onPackageReceived:np];
             NSLog(@"llink did read data:\n%@",dataStr);
+            if ([[np _Type] isEqualToString:PACKAGE_TYPE_PAIR]) {
+                _pendingPairNP=np;
+            }
+            if ([[np _Type] isEqualToString:PACKAGE_TYPE_ENCRYPTED]) {
+                np=[np decrypt];
+            }
+            [_linkDelegate onPackageReceived:np];
         }
     }
 }

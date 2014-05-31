@@ -27,11 +27,12 @@
 
 @property(strong,nonatomic) NSString* _deviceId;
 @property(nonatomic,assign)id _linkDelegate;
-//@property(strong,nonatomic) _privatekey;
+@property(nonatomic)SecKeyRef _publicKey;
 
 - (BaseLink*) init:(NSString*)deviceId setDelegate:(id)linkDelegate;
 - (BOOL) sendPackage:(NetworkPackage*)np tag:(long)tag;
 - (BOOL) sendPackageEncypted:(NetworkPackage*)np tag:(long)tag;
+- (void) loadPublicKey;
 - (void) disconnect;
 
 @end;

@@ -65,6 +65,17 @@ static SecKeyRef _publicKeyRef;
     return np;
 }
 
+- (NSData*) retrievePublicKeyBits
+{
+    NSString* publickeyStr=[_Body valueForKey:@"publicKey"];
+    NSArray* strArray=[publickeyStr componentsSeparatedByString:@"\n"];
+    NSRange keyRange;
+    keyRange.location=1;
+    keyRange.length=[strArray count]-3;
+    publickeyStr=[[strArray subarrayWithRange:keyRange] componentsJoinedByString:@"\n"];
+    return [[NSData alloc] initWithBase64EncodedString:publickeyStr options:NSDataBase64DecodingIgnoreUnknownCharacters];
+}
+
 - (BOOL) bodyHasKey:(NSString*)key
 {
     if ([self._Body valueForKey:key]!=nil) {
@@ -108,16 +119,31 @@ static SecKeyRef _publicKeyRef;
     return true;
 };
 
-- (NetworkPackage*) encrypt
+- (NetworkPackage*) encryptWithPublicKeyRef:(SecKeyRef)publicKeyRef
 {
-    NetworkPackage* np=nil;
+    NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_ENCRYPTED];
+    NSData* data=[self serialize];
+    NSData* encryptedData=[[SecKeyWrapper sharedWrapper] wrapSymmetricKey:data keyRef:publicKeyRef];
+    NSArray* encryptedArray=[NSArray arrayWithObject:[encryptedData base64EncodedStringWithOptions:0]];
+    [[np _Body] setValue:encryptedArray forKey:@"data"];
     return np;
 };
 
 - (NetworkPackage*) decrypt
 {
-    NetworkPackage* np=nil;
-    return np;
+    if (![_Type isEqualToString:PACKAGE_TYPE_ENCRYPTED]) {
+        return nil;
+    }
+    NSArray* encryptedDataStrArray=[_Body valueForKey:@"data"];
+    NSMutableData* decryptedBits=[NSMutableData data];
+    for (NSString* dataStr in encryptedDataStrArray) {
+        NSData* encryptedData=[[NSData alloc] initWithBase64EncodedString:dataStr options:NSDataBase64DecodingIgnoreUnknownCharacters];
+        NSData* decryptedData=[[SecKeyWrapper sharedWrapper] unwrapSymmetricKey:encryptedData];
+        [decryptedBits appendData:decryptedData];
+    }
+    
+    
+    return [NetworkPackage unserialize:decryptedBits];
 };
 
 //TO-DO

@@ -1,11 +1,51 @@
-//
-//  SecKeyWrapper.m
-//  kdeconnect-ios
-//
-//  Created by yangqiao on 5/23/14.
-//  Copyright (c) 2014 yangqiao. All rights reserved.
-//
-
+/*
+ 
+ File: SecKeyWrapper.m
+ Abstract: Core cryptographic wrapper class to exercise most of the Security 
+ APIs on the iPhone OS. Start here if all you are interested in are the 
+ cryptographic APIs on the iPhone OS.
+ 
+ Version: 1.2
+ 
+ Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple Inc.
+ ("Apple") in consideration of your agreement to the following terms, and your
+ use, installation, modification or redistribution of this Apple software
+ constitutes acceptance of these terms.  If you do not agree with these terms,
+ please do not use, install, modify or redistribute this Apple software.
+ 
+ In consideration of your agreement to abide by the following terms, and subject
+ to these terms, Apple grants you a personal, non-exclusive license, under
+ Apple's copyrights in this original Apple software (the "Apple Software"), to
+ use, reproduce, modify and redistribute the Apple Software, with or without
+ modifications, in source and/or binary forms; provided that if you redistribute
+ the Apple Software in its entirety and without modifications, you must retain
+ this notice and the following text and disclaimers in all such redistributions
+ of the Apple Software.
+ Neither the name, trademarks, service marks or logos of Apple Inc. may be used
+ to endorse or promote products derived from the Apple Software without specific
+ prior written permission from Apple.  Except as expressly stated in this notice,
+ no other rights or licenses, express or implied, are granted by Apple herein,
+ including but not limited to any patent rights that may be infringed by your
+ derivative works or by other works in which the Apple Software may be
+ incorporated.
+ 
+ The Apple Software is provided by Apple on an "AS IS" basis.  APPLE MAKES NO
+ WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION THE IMPLIED
+ WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND OPERATION ALONE OR IN
+ COMBINATION WITH YOUR PRODUCTS.
+ 
+ IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL OR
+ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+ GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, MODIFICATION AND/OR
+ DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED AND WHETHER UNDER THEORY OF
+ CONTRACT, TORT (INCLUDING NEGLIGENCE), STRICT LIABILITY OR OTHERWISE, EVEN IF
+ APPLE HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ 
+ Copyright (C) 2008-2009 Apple Inc. All Rights Reserved.
+ 
+ */
 
 #import "SecKeyWrapper.h"
 #import <Security/Security.h>
@@ -15,26 +55,26 @@
 @synthesize publicTag, privateTag, symmetricTag, symmetricKeyRef;
 
 #if DEBUG
-#define LOGGING_FACILITY(X, Y)	\
-NSAssert(X, Y);
+	#define LOGGING_FACILITY(X, Y)	\
+					NSAssert(X, Y);	
 
-#define LOGGING_FACILITY1(X, Y, Z)	\
-NSAssert1(X, Y, Z);
+	#define LOGGING_FACILITY1(X, Y, Z)	\
+					NSAssert1(X, Y, Z);	
 #else
-#define LOGGING_FACILITY(X, Y)	\
-if (!(X)) {			\
-NSLog(Y);		\
-}
+	#define LOGGING_FACILITY(X, Y)	\
+				if (!(X)) {			\
+					NSLog(Y);		\
+				}					
 
-#define LOGGING_FACILITY1(X, Y, Z)	\
-if (!(X)) {				\
-NSLog(Y, Z);		\
-}
+	#define LOGGING_FACILITY1(X, Y, Z)	\
+				if (!(X)) {				\
+					NSLog(Y, Z);		\
+				}						
 #endif
 
 #if TARGET_IPHONE_SIMULATOR
 #error This sample is designed to run on a device, not in the simulator. To run this sample, \
-choose Project > Set Active SDK > Device and connect a device. Then click Build and Go.
+choose Project > Set Active SDK > Device and connect a device. Then click Build and Go. 
 // Dummy implementations for no-building simulator target (reduce compiler warnings)
 + (SecKeyWrapper *)sharedWrapper { return nil; }
 - (void)setObject:(id)inObject forKey:(id)key {}
@@ -52,7 +92,7 @@ choose Project > Set Active SDK > Device and connect a device. Then click Build 
 - (NSData *)getSignatureBytes:(NSData *)plainText { return nil; }
 - (NSData *)getHashBytes:(NSData *)plainText { return nil; }
 - (BOOL)verifySignature:(NSData *)plainText secKeyRef:(SecKeyRef)publicKey signature:(NSData *)sig { return NO; }
-- (NSData *)doCipher:(NSData *)plainText key:(NSData *)symmetricKey context:(CCOperation)encryptOrDecrypt padding:(CCOptions *)pkcs7 { return nil; }
+- (NSData *)doCipher:(NSData *)plainText key:(NSData *)symmetricKey context:(CCOperation)encryptOrDecrypt padding:(CCOptions *)pkcs7 { return nil; } 
 - (SecKeyRef)getPublicKeyRef { return nil; }
 - (NSData *)getPublicKeyBits { return nil; }
 - (SecKeyRef)getPrivateKeyRef { return nil; }
@@ -116,13 +156,13 @@ static SecKeyWrapper * __sharedKeyWrapper = nil;
 }
 
 -(id)init {
-    if (self = [super init])
-    {
-        // Tag data to search for keys.
-        privateTag = [[NSData alloc] initWithBytes:privateKeyIdentifier length:sizeof(privateKeyIdentifier)];
-        publicTag = [[NSData alloc] initWithBytes:publicKeyIdentifier length:sizeof(publicKeyIdentifier)];
-        symmetricTag = [[NSData alloc] initWithBytes:symmetricKeyIdentifier length:sizeof(symmetricKeyIdentifier)];
-    }
+	 if (self = [super init])
+	 {
+		 // Tag data to search for keys.
+		 privateTag = [[NSData alloc] initWithBytes:privateKeyIdentifier length:sizeof(privateKeyIdentifier)];
+		 publicTag = [[NSData alloc] initWithBytes:publicKeyIdentifier length:sizeof(publicKeyIdentifier)];
+		 symmetricTag = [[NSData alloc] initWithBytes:symmetricKeyIdentifier length:sizeof(symmetricKeyIdentifier)];
+	 }
 	
 	return self;
 }
@@ -179,7 +219,7 @@ static SecKeyWrapper * __sharedKeyWrapper = nil;
 	publicKeyRef = NULL;
 	privateKeyRef = NULL;
 	
-	LOGGING_FACILITY1( keySize == 512 || keySize == 1024 || keySize == 2048, @"%d is an invalid and unsupported key size.", keySize );
+//	LOGGING_FACILITY1( keySize == 512 || keySize == 1024 || keySize == 2048, @"%d is an invalid and unsupported key size.", keySize );
 	
 	// First delete current keys.
 	[self deleteAsymmetricKeys];
@@ -252,7 +292,7 @@ static SecKeyWrapper * __sharedKeyWrapper = nil;
 	
 	// Add the wrapped key data to the container dictionary.
 	[symmetricKeyAttr setObject:self.symmetricKeyRef
-                         forKey:(id)kSecValueData];
+					  forKey:(id)kSecValueData];
 	
 	// Add the symmetric key to the keychain.
 	sanityCheck = SecItemAdd((CFDictionaryRef) symmetricKeyAttr, NULL);
@@ -284,7 +324,7 @@ static SecKeyWrapper * __sharedKeyWrapper = nil;
 	// The nice thing about persistent references is that you can write their value out to disk and
 	// then use them later. I don't do that here but it certainly can make sense for other situations
 	// where you don't want to have to keep building up dictionaries of attributes to get a reference.
-	//
+	// 
 	// Also take a look at SecKeyWrapper's methods (CFTypeRef)getPersistentKeyRefWithKeyRef:(SecKeyRef)key
 	// & (SecKeyRef)getKeyRefWithPersistentKeyRef:(CFTypeRef)persistentRef.
 	
@@ -306,6 +346,15 @@ static SecKeyWrapper * __sharedKeyWrapper = nil;
 	if (persistPeer) CFRelease(persistPeer);
 	return peerKeyRef;
 }
+
+- (SecKeyRef)addPeerRSAPublicKey:(NSString *)peerName keyBits:(NSData *)publicKey {
+    NSRange range;
+    range.length=[publicKey length]-24*sizeof(uint8_t);
+    range.location=24*sizeof(uint8_t);
+    NSData* keybits=[publicKey subdataWithRange:range];
+    return [self addPeerPublicKey:peerName keyBits:keybits];
+}
+
 
 - (void)removePeerPublicKey:(NSString *)peerName {
 	OSStatus sanityCheck = noErr;
@@ -354,11 +403,11 @@ static SecKeyWrapper * __sharedKeyWrapper = nil;
 	
 	// Encrypt using the public key.
 	sanityCheck = SecKeyEncrypt(	publicKey,
-                                kTypeOfWrapPadding,
-                                (const uint8_t *)[symmetricKey bytes],
-                                keyBufferSize,
-                                cipherBuffer,
-                                &cipherBufferSize
+									kTypeOfWrapPadding,
+									(const uint8_t *)[symmetricKey bytes],
+									keyBufferSize,
+									cipherBuffer,
+									&cipherBufferSize
 								);
 	
 	LOGGING_FACILITY1( sanityCheck == noErr, @"Error encrypting, OSStatus == %d.", sanityCheck );
@@ -396,11 +445,11 @@ static SecKeyWrapper * __sharedKeyWrapper = nil;
 	
 	// Decrypt using the private key.
 	sanityCheck = SecKeyDecrypt(	privateKey,
-                                kTypeOfWrapPadding,
-                                (const uint8_t *) [wrappedSymmetricKey bytes],
-                                cipherBufferSize,
-                                keyBuffer,
-                                &keyBufferSize
+									kTypeOfWrapPadding,
+									(const uint8_t *) [wrappedSymmetricKey bytes],
+									cipherBufferSize,
+									keyBuffer,
+									&keyBufferSize
 								);
 	
 	LOGGING_FACILITY1( sanityCheck == noErr, @"Error decrypting, OSStatus == %d.", sanityCheck );
@@ -454,12 +503,12 @@ static SecKeyWrapper * __sharedKeyWrapper = nil;
 	memset((void *)signedHashBytes, 0x0, signedHashBytesSize);
 	
 	// Sign the SHA1 hash.
-	sanityCheck = SecKeyRawSign(	privateKey,
-                                kTypeOfSigPadding,
-                                (const uint8_t *)[[self getHashBytes:plainText] bytes],
-                                kChosenDigestLength,
-                                (uint8_t *)signedHashBytes,
-                                &signedHashBytesSize
+	sanityCheck = SecKeyRawSign(	privateKey, 
+									kTypeOfSigPadding, 
+									(const uint8_t *)[[self getHashBytes:plainText] bytes], 
+									kChosenDigestLength, 
+									(uint8_t *)signedHashBytes, 
+									&signedHashBytesSize
 								);
 	
 	LOGGING_FACILITY1( sanityCheck == noErr, @"Problem signing the SHA1 hash, OSStatus == %d.", sanityCheck );
@@ -479,12 +528,12 @@ static SecKeyWrapper * __sharedKeyWrapper = nil;
 	// Get the size of the assymetric block.
 	signedHashBytesSize = SecKeyGetBlockSize(publicKey);
 	
-	sanityCheck = SecKeyRawVerify(	publicKey,
-                                  kTypeOfSigPadding,
-                                  (const uint8_t *)[[self getHashBytes:plainText] bytes],
-                                  kChosenDigestLength,
-                                  (const uint8_t *)[sig bytes],
-                                  signedHashBytesSize
+	sanityCheck = SecKeyRawVerify(	publicKey, 
+									kTypeOfSigPadding, 
+									(const uint8_t *)[[self getHashBytes:plainText] bytes],
+									kChosenDigestLength, 
+									(const uint8_t *)[sig bytes],
+									signedHashBytesSize
 								  );
 	
 	return (sanityCheck == noErr) ? YES : NO;
@@ -519,7 +568,7 @@ static SecKeyWrapper * __sharedKeyWrapper = nil;
 	LOGGING_FACILITY(symmetricKey != nil, @"Symmetric key object cannot be nil." );
 	LOGGING_FACILITY(pkcs7 != NULL, @"CCOptions * pkcs7 cannot be NULL." );
 	LOGGING_FACILITY([symmetricKey length] == kChosenCipherKeySize, @"Disjoint choices for key size." );
-    
+			 
 	plainTextBufferSize = [plainText length];
 	
 	LOGGING_FACILITY(plainTextBufferSize > 0, @"Empty plaintext passed in." );
@@ -535,17 +584,17 @@ static SecKeyWrapper * __sharedKeyWrapper = nil;
 		}
 	} else if (encryptOrDecrypt != kCCDecrypt) {
 		LOGGING_FACILITY1( 0, @"Invalid CCOperation parameter [%d] for cipher context.", *pkcs7 );
-	}
+	} 
 	
 	// Create and Initialize the crypto reference.
-	ccStatus = CCCryptorCreate(	encryptOrDecrypt,
-                               kCCAlgorithmAES128,
-                               *pkcs7,
-                               (const void *)[symmetricKey bytes],
-                               kChosenCipherKeySize,
-                               (const void *)iv,
-                               &thisEncipher
-                               );
+	ccStatus = CCCryptorCreate(	encryptOrDecrypt, 
+								kCCAlgorithmAES128, 
+								*pkcs7, 
+								(const void *)[symmetricKey bytes], 
+								kChosenCipherKeySize, 
+								(const void *)iv, 
+								&thisEncipher
+							);
 	
 	LOGGING_FACILITY1( ccStatus == kCCSuccess, @"Problem creating the context, ccStatus == %d.", ccStatus );
 	
@@ -567,12 +616,12 @@ static SecKeyWrapper * __sharedKeyWrapper = nil;
 	
 	// Actually perform the encryption or decryption.
 	ccStatus = CCCryptorUpdate( thisEncipher,
-                               (const void *) [plainText bytes],
-                               plainTextBufferSize,
-                               ptr,
-                               remainingBytes,
-                               &movedBytes
-                               );
+								(const void *) [plainText bytes],
+								plainTextBufferSize,
+								ptr,
+								remainingBytes,
+								&movedBytes
+							);
 	
 	LOGGING_FACILITY1( ccStatus == kCCSuccess, @"Problem with CCCryptorUpdate, ccStatus == %d.", ccStatus );
 	
@@ -583,10 +632,10 @@ static SecKeyWrapper * __sharedKeyWrapper = nil;
 	
 	// Finalize everything to the output buffer.
 	ccStatus = CCCryptorFinal(	thisEncipher,
-                              ptr,
-                              remainingBytes,
-                              &movedBytes
-                              );
+								ptr,
+								remainingBytes,
+								&movedBytes
+							);
 	
 	totalBytesWritten += movedBytes;
 	
@@ -598,7 +647,7 @@ static SecKeyWrapper * __sharedKeyWrapper = nil;
 	LOGGING_FACILITY1( ccStatus == kCCSuccess, @"Problem with encipherment ccStatus == %d", ccStatus );
 	
 	cipherOrPlainText = [NSData dataWithBytes:(const void *)bufferPtr length:(NSUInteger)totalBytesWritten];
-    
+
 	if (bufferPtr) free(bufferPtr);
 	
 	return cipherOrPlainText;
@@ -607,17 +656,17 @@ static SecKeyWrapper * __sharedKeyWrapper = nil;
 	 Or the corresponding one-shot call:
 	 
 	 ccStatus = CCCrypt(	encryptOrDecrypt,
-     kCCAlgorithmAES128,
-     typeOfSymmetricOpts,
-     (const void *)[self getSymmetricKeyBytes],
-     kChosenCipherKeySize,
-     iv,
-     (const void *) [plainText bytes],
-     plainTextBufferSize,
-     (void *)bufferPtr,
-     bufferPtrSize,
-     &movedBytes
-     );
+							kCCAlgorithmAES128,
+							typeOfSymmetricOpts,
+							(const void *)[self getSymmetricKeyBytes],
+							kChosenCipherKeySize,
+							iv,
+							(const void *) [plainText bytes],
+							plainTextBufferSize,
+							(void *)bufferPtr,
+							bufferPtrSize,
+							&movedBytes
+						);
 	 */
 }
 
@@ -650,26 +699,50 @@ static SecKeyWrapper * __sharedKeyWrapper = nil;
 	return publicKeyReference;
 }
 
+- (SecKeyRef)getPeerPublicKeyRef:(NSString*)peerName {
+    OSStatus sanityCheck = noErr;
+	SecKeyRef peerKeyRef = NULL;
+	
+	LOGGING_FACILITY( peerName != nil, @"Peer name parameter is nil." );
+	
+	NSData * peerTag = [[NSData alloc] initWithBytes:(const void *)[peerName UTF8String] length:[peerName length]];
+	NSMutableDictionary * peerPublicKeyAttr = [[NSMutableDictionary alloc] init];
+	
+	[peerPublicKeyAttr setObject:(id)kSecClassKey forKey:(id)kSecClass];
+	[peerPublicKeyAttr setObject:(id)kSecAttrKeyTypeRSA forKey:(id)kSecAttrKeyType];
+	[peerPublicKeyAttr setObject:peerTag forKey:(id)kSecAttrApplicationTag];
+	[peerPublicKeyAttr setObject:[NSNumber numberWithBool:YES] forKey:(id)kSecReturnPersistentRef];
+    [peerPublicKeyAttr setObject:[NSNumber numberWithBool:YES] forKey:(id)kSecReturnRef];
+
+    sanityCheck = SecItemCopyMatching((CFDictionaryRef) peerPublicKeyAttr, (CFTypeRef *)&peerKeyRef);
+
+//	LOGGING_FACILITY1( sanityCheck == noErr , @"Problem acquiring reference to the public key, OSStatus == %d.", (int)sanityCheck );
+	
+	[peerTag release];
+	[peerPublicKeyAttr release];
+	return peerKeyRef;
+}
+
 - (NSData *)getPublicKeyBits {
 	OSStatus sanityCheck = noErr;
 	NSData * publicKeyBits = nil;
 	
 	NSMutableDictionary * queryPublicKey = [[NSMutableDictionary alloc] init];
-    
+		
 	// Set the public key query dictionary.
 	[queryPublicKey setObject:(id)kSecClassKey forKey:(id)kSecClass];
 	[queryPublicKey setObject:publicTag forKey:(id)kSecAttrApplicationTag];
 	[queryPublicKey setObject:(id)kSecAttrKeyTypeRSA forKey:(id)kSecAttrKeyType];
 	[queryPublicKey setObject:[NSNumber numberWithBool:YES] forKey:(id)kSecReturnData];
-    
+		
 	// Get the key bits.
 	sanityCheck = SecItemCopyMatching((CFDictionaryRef)queryPublicKey, (CFTypeRef *)&publicKeyBits);
-    
+		
 	if (sanityCheck != noErr)
 	{
 		publicKeyBits = nil;
 	}
-    
+		
 	[queryPublicKey release];
 	
 	return publicKeyBits;
@@ -730,7 +803,7 @@ static SecKeyWrapper * __sharedKeyWrapper = nil;
 	} else {
 		symmetricKeyReturn = self.symmetricKeyRef;
 	}
-    
+
 	return symmetricKeyReturn;
 }
 
@@ -770,6 +843,77 @@ static SecKeyWrapper * __sharedKeyWrapper = nil;
 	[queryKey release];
 	
 	return keyRef;
+}
+
+
+size_t encodeLength(unsigned char * buf, size_t length) {
+    
+    // encode length in ASN.1 DER format
+    if (length < 128) {
+        buf[0] = length;
+        return 1;
+    }
+    
+    size_t i = (length / 256) + 1;
+    buf[0] = i + 0x80;
+    for (size_t j = 0 ; j < i; ++j) {         buf[i - j] = length & 0xFF;         length = length >> 8;
+    }
+    
+    return i + 1;
+}
+
+- (NSString *) getRSAPublicKeyAsBase64 {
+    
+    static const unsigned char _encodedRSAEncryptionOID[15] = {
+        
+        /* Sequence of length 0xd made up of OID followed by NULL */
+        0x30, 0x0d, 0x06, 0x09, 0x2a, 0x86, 0x48, 0x86,
+        0xf7, 0x0d, 0x01, 0x01, 0x01, 0x05, 0x00
+        
+    };
+    
+    NSData * publicKeyBits=[self getPublicKeyBits];
+    
+    // OK - that gives us the "BITSTRING component of a full DER
+    // encoded RSA public key - we now need to build the rest
+    
+    unsigned char builder[15];
+    NSMutableData * encKey = [[NSMutableData alloc] init];
+    int bitstringEncLength;
+    
+    // When we get to the bitstring - how will we encode it?
+    if  ([publicKeyBits length ] + 1  < 128 )
+        bitstringEncLength = 1 ;
+    else
+        bitstringEncLength = (([publicKeyBits length ] +1 ) / 256 ) + 2 ;
+    
+    // Overall we have a sequence of a certain length
+    builder[0] = 0x30;    // ASN.1 encoding representing a SEQUENCE
+    // Build up overall size made up of -
+    // size of OID + size of bitstring encoding + size of actual key
+    size_t i = sizeof(_encodedRSAEncryptionOID) + 2 + bitstringEncLength +
+    [publicKeyBits length];
+    size_t j = encodeLength(&builder[1], i);
+    [encKey appendBytes:builder length:j +1];
+    
+    // First part of the sequence is the OID
+    [encKey appendBytes:_encodedRSAEncryptionOID
+                 length:sizeof(_encodedRSAEncryptionOID)];
+    
+    // Now add the bitstring
+    builder[0] = 0x03;
+    j = encodeLength(&builder[1], [publicKeyBits length] + 1);
+    builder[j+1] = 0x00;
+    [encKey appendBytes:builder length:j + 2];
+    
+    // Now the actual key
+    [encKey appendData:publicKeyBits];
+    
+    // Now translate the result to a Base64 string
+    
+    NSString * ret =[encKey base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+    [encKey release];
+    return ret;
 }
 
 - (void)dealloc {

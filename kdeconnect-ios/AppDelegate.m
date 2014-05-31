@@ -9,7 +9,7 @@
 #import "AppDelegate.h"
 #import "BackgroundService.h"
 #import "PluginFactory.h"
-
+#import "SecKeyWrapper.h"
 
 @implementation AppDelegate
 
@@ -19,6 +19,9 @@
     //instancie backgroundservice and pluginfactory
     [BackgroundService sharedInstance];
     [PluginFactory sharedInstance];
+    if (![[SecKeyWrapper sharedWrapper] getPublicKeyBits]) {
+        [[SecKeyWrapper sharedWrapper] generateKeyPair:2048];
+    }
     return YES;
 }
 
