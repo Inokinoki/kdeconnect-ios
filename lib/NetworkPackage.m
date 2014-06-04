@@ -11,13 +11,9 @@
 #define LFDATA [NSData dataWithBytes:"\x0D\x0A" length:2]
 
 __strong static NSString* _publicKeyStr;
-static SecKeyRef _publicKeyRef;
 
 #pragma mark Implementation
 @implementation NetworkPackage
-{
-    SecKeyRef _privateKeyRef;
-}
 
 - (NetworkPackage*) initWithType:(NSString *)type
 {
@@ -53,12 +49,13 @@ static SecKeyRef _publicKeyRef;
 + (NetworkPackage*) createPublicKeyPackage
 {
     NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_PAIR];
-    NSString* publicKeyStr=[[SecKeyWrapper sharedWrapper] getRSAPublicKeyAsBase64];
+    if (!_publicKeyStr) {
+        NSString* publicKeyStr=[[SecKeyWrapper sharedWrapper] getRSAPublicKeyAsBase64];
         _publicKeyStr=[NSString stringWithFormat:@"%@\n%@\n%@\n",
                        @"-----BEGIN PUBLIC KEY-----",
                        publicKeyStr,
                        @"-----END PUBLIC KEY-----"];
-        NSLog(@"np public key:%@",_publicKeyStr);
+    }
     [[np _Body] setValue:_publicKeyStr forKey:@"publicKey"];
     [[np _Body] setValue:[NSNumber numberWithBool:true] forKey:@"pair"];
 

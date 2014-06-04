@@ -57,10 +57,10 @@
                 if ([np bodyHasKey:@"volume"]) {
                     _volume=[[[np _Body] valueForKey:@"volume"] unsignedIntegerValue];
                 }
-                if ([np bodyHasKey:@"nowPlaying"]) {
+                if ([np bodyHasKey:@"isPlaying"]) {
                     _playing=[[[np _Body] valueForKey:@"isPlaying"] boolValue];
                 }
-                if (!_pluginDelegate) {
+                if (_pluginDelegate) {
                     [_pluginDelegate onPlayerStatusUpdated];
                 }
                 
@@ -70,7 +70,7 @@
             NSArray* newPlayerList=[[np _Body] valueForKey:@"playerList"];
             if (![_playerList isEqualToArray:newPlayerList] ) {
                 _playerList=newPlayerList;
-                if (!_pluginDelegate) {
+                if (_pluginDelegate) {
                     [_pluginDelegate onPlayerListUpdated];
                 }
             }
@@ -100,9 +100,11 @@
 
 - (void) openPanel:(id)sender
 {
-    _mprisViewController=[[UIStoryboard storyboardWithName:@"Main_iPhone" bundle:[NSBundle mainBundle]] instantiateViewControllerWithIdentifier:@"MPRISViewController"];
-    [_mprisViewController setTitle:FORMAT(@"MPRIS Panel for %@",[_device _name])];
-    
+    if (!_mprisViewController) {
+        _mprisViewController=[[UIStoryboard storyboardWithName:@"Main_iPhone" bundle:[NSBundle mainBundle]] instantiateViewControllerWithIdentifier:@"MPRISViewController"];
+            [_mprisViewController setTitle:FORMAT(@"MPRIS Panel for %@",[_device _name])];
+            [_mprisViewController setPlugin:self];
+    }
     [_deviceViewController.navigationController presentViewController:_mprisViewController animated:YES completion:^(void){}];
 }
 
@@ -118,7 +120,7 @@
 {
     NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_MPRIS];
     [[np _Body] setValue:_player forKey:@"player"];
-    [[np _Body] setValue:[NSNumber numberWithUnsignedInteger:_volume] forKey:@"setVolume"];
+    [[np _Body] setValue:[NSNumber numberWithUnsignedInteger:volume] forKey:@"setVolume"];
     [_device sendPackage:np tag:PACKAGE_TAG_MPRIS];
 }
 
@@ -147,14 +149,13 @@
 
 - (void) setPlayer:(NSString*)player
 {
-    _player=player;
-    _currentSong=nil;
-    _volume=50;
-    _playing=false;
-//    if (!_pluginDelegate) {
-//        [_pluginDelegate onPlayerStatusUpdated];
-//    }
-    [self requestPlayerStatus];
+    if (_player!=player) {
+        _player=player;
+        _currentSong=nil;
+        _volume=50;
+        _playing=false;
+        [self requestPlayerStatus];
+    }
 }
 
 - (BOOL) isPlaying

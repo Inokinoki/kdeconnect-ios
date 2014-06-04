@@ -9,20 +9,26 @@
 #import "MPRISViewController.h"
 #import "MPRIS.h"
 @interface MPRISViewController ()
+@property (weak, nonatomic) IBOutlet UILabel *_currentText;
+@property (weak, nonatomic) IBOutlet UISlider *_volumeSlider;
+@property (weak, nonatomic) IBOutlet UIButton *_playPause;
+@property (weak, nonatomic) IBOutlet UIPickerView *_playerPicker;
+@property (weak, nonatomic) IBOutlet UILabel *_currentPlayer;
 
 @end
 
 @implementation MPRISViewController
 {
     __strong MPRIS* _mprisPlugin;
-    __strong NSString* _currentSong;
-    NSUInteger _volume;
     __strong NSArray* _playerList;
     __strong NSString* _player;
-    BOOL _playing;
 }
 
 @synthesize _volumeSlider;
+@synthesize _currentText;
+@synthesize _playPause;
+@synthesize _currentPlayer;
+@synthesize _playerPicker;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -30,11 +36,9 @@
     if (self) {
         // Custom initialization
         _mprisPlugin=nil;
-        _currentSong=nil;
-        _volume=50;
         _playerList=nil;
         _player=nil;
-        _playing=false;
+        
     }
     return self;
 }
@@ -43,6 +47,8 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    [self onPlayerStatusUpdated];
+    [self onPlayerListUpdated];
 }
 
 - (void)didReceiveMemoryWarning
@@ -54,8 +60,61 @@
 - (void) setPlugin:(MPRIS*)mprisPlugin
 {
     _mprisPlugin=mprisPlugin;
+    [_mprisPlugin set_pluginDelegate:self];
 }
 
+- (void) onPlayerStatusUpdated
+{
+    if (!_mprisPlugin) {
+        return;
+    }
+    NSString* s=[_mprisPlugin getCurrentSong];
+    float v=[_mprisPlugin getVolume];
+    BOOL isPlaying=[_mprisPlugin isPlaying];
+    NSString* buttonText;
+    if (isPlaying) {
+        buttonText=@"Pause";
+    }
+    else{
+        buttonText=@"Play";
+    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+//        NSAttributedString* attributedTitle=[_playPause attributedTitleForState:UIControlStateNormal];
+//        NSMutableAttributedString *mas = [[NSMutableAttributedString alloc] initWithAttributedString:attributedTitle];
+//        [mas.mutableString setString:buttonText];
+//        [_playPause setAttributedTitle:mas forState:UIControlStateNormal];
+        [_playPause setTitle:buttonText forState:UIControlStateNormal];
+        [_currentText setText:s];
+        [_volumeSlider setValue:(v/100)];
+    });
+}
+
+- (void) onPlayerListUpdated
+{
+    if (!_mprisPlugin) {
+        return;
+    }
+    _playerList=_mprisPlugin.getPlayerList;
+    if (!_player) {
+        _player=[_playerList objectAtIndex:0];
+    }
+    if (!_playerList) {
+        _player=nil;
+    }
+    else{
+        if (![_playerList containsObject:_player]) {
+            _player=[_playerList objectAtIndex:0];
+        }
+    }
+    [_mprisPlugin setPlayer:_player];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [_playerPicker reloadAllComponents];
+        [_currentPlayer setText:_player];
+        [_playerPicker selectRow:[_playerList indexOfObject:_player] inComponent:0 animated:NO];
+    });
+}
+
+#pragma mark Actions
 - (IBAction)dismiss:(id)sender
 {
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -64,51 +123,70 @@
 - (IBAction)updateVolume:(id)sender
 {
     float value=[_volumeSlider value];
-    if (!_mprisPlugin) {
+    if (_mprisPlugin) {
         [_mprisPlugin setVolume:value*100];
     }
 }
 - (IBAction)playPause:(id)sender
 {
-    if (!_mprisPlugin) {
+    if (_mprisPlugin) {
         [_mprisPlugin sendAction:@"PlayPause"];
     }
 }
 
 - (IBAction)previous:(id)sender {
-    if (!_mprisPlugin) {
+    if (_mprisPlugin) {
         [_mprisPlugin sendAction:@"Previous"];
     }
 }
 
 - (IBAction)next:(id)sender {
-    if (!_mprisPlugin) {
+    if (_mprisPlugin) {
         [_mprisPlugin sendAction:@" Next"];
     }
 }
 
 - (IBAction)rewind:(id)sender {
-    if (!_mprisPlugin) {
+    if (_mprisPlugin) {
         [_mprisPlugin seek:-10000000];
     }
 }
 
 - (IBAction)forward:(id)sender {
-    if (!_mprisPlugin) {
+    if (_mprisPlugin) {
         [_mprisPlugin seek:10000000];
     }
 }
 
-- (void) onPlayerListUpdated
+#pragma mark UIPickerViewDatasource
+
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
 {
-    _playerList=[_mprisPlugin getPlayerList];
+    return 1;
 }
 
-- (void) onPlayerStatusUpdated
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent: (NSInteger)component
 {
-    _currentSong=[_mprisPlugin getCurrentSong];
-    _volume=[_mprisPlugin getVolume];
-    _playing=[_mprisPlugin isPlaying];
+    return [_playerList count];
+}
+
+#pragma mark UIPickerViewDelegate
+
+-(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row   forComponent:(NSInteger)component
+{
+    return [_playerList objectAtIndex:row];
+}
+
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row   inComponent:(NSInteger)component
+{
+    if (_player!=[_playerList objectAtIndex:row]) {
+        _player=[_playerList objectAtIndex:row];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [_currentPlayer setText:_player];
+            [_currentText setText:[_mprisPlugin getCurrentSong]];
+        });
+        [_mprisPlugin setPlayer:_player];
+    }
 }
 
 /*

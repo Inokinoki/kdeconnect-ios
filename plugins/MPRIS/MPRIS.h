@@ -7,10 +7,11 @@
 //
 
 #import "Plugin.h"
+
 @class PluginInfo;
 @class Plugin;
 
-@protocol mprisDelegate<NSObject>
+@protocol MPRISDelegate<NSObject>
 @optional
 - (void) onPlayerStatusUpdated;
 - (void) onPlayerListUpdated;
@@ -35,7 +36,6 @@
 
 - (void) requestPlayerList;
 - (void) requestPlayerStatus;
-- (void) onPlayerStatusUpdated;
-- (void) onPlayerListUpdated;
 
 @end
+
