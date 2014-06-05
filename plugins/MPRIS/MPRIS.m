@@ -8,7 +8,6 @@
 
 #import "MPRIS.h"
 #import "MPRISViewController.h"
-#import "DeviceViewController.h"
 
 @implementation MPRIS
 {
@@ -47,8 +46,8 @@
 
 - (BOOL) onDevicePackageReceived:(NetworkPackage *)np
 {
-    NSLog(@"mpris receive a package");
     if ([[np _Type] isEqualToString:PACKAGE_TYPE_MPRIS]) {
+        NSLog(@"mpris receive a package");
         if ([np bodyHasKey:@"nowPlaying"]||[np bodyHasKey:@"volume"]||[np bodyHasKey:@"isPlaying"]) {
             if ([[[np _Body] valueForKey:@"player"] isEqualToString:_player]) {
                 if ([np bodyHasKey:@"nowPlaying"]) {
@@ -102,10 +101,9 @@
 {
     if (!_mprisViewController) {
         _mprisViewController=[[UIStoryboard storyboardWithName:@"Main_iPhone" bundle:[NSBundle mainBundle]] instantiateViewControllerWithIdentifier:@"MPRISViewController"];
-            [_mprisViewController setTitle:FORMAT(@"MPRIS Panel for %@",[_device _name])];
             [_mprisViewController setPlugin:self];
     }
-    [_deviceViewController.navigationController presentViewController:_mprisViewController animated:YES completion:^(void){}];
+    [_deviceViewController.navigationController presentViewController:_mprisViewController animated:YES completion:nil];
 }
 
 - (void) sendAction:(NSString *)action

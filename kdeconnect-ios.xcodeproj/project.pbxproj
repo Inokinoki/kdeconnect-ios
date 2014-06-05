@@ -30,6 +30,8 @@
 		4E08A2361913D1780056EEF8 /* Device.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2321913D1780056EEF8 /* Device.m */; };
 		4E08A2371913D1780056EEF8 /* NetworkPackage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2341913D1780056EEF8 /* NetworkPackage.m */; };
 		4E0E321F192B495E001D88CD /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4E0E321E192B495E001D88CD /* Settings.bundle */; };
+		4E3038FC1940889900F28091 /* ClipBoard.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E3038FB1940889900F28091 /* ClipBoard.m */; };
+		4E51BBED193FADA7007E74F4 /* Share.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E51BBEC193FADA7007E74F4 /* Share.m */; };
 		4E85B96C1928F9D600EF3C55 /* DeviceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E85B96B1928F9D600EF3C55 /* DeviceViewController.m */; };
 		4EC27545191FCEAB0057AB0E /* Plugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC27544191FCEAB0057AB0E /* Plugin.m */; };
 		4EC27548191FCECD0057AB0E /* Ping.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC27547191FCECD0057AB0E /* Ping.m */; };
@@ -87,6 +89,10 @@
 		4E08A2331913D1780056EEF8 /* NetworkPackage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NetworkPackage.h; path = lib/NetworkPackage.h; sourceTree = "<group>"; };
 		4E08A2341913D1780056EEF8 /* NetworkPackage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NetworkPackage.m; path = lib/NetworkPackage.m; sourceTree = "<group>"; };
 		4E0E321E192B495E001D88CD /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		4E3038FA1940889900F28091 /* ClipBoard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ClipBoard.h; path = plugins/ClipBoard/ClipBoard.h; sourceTree = "<group>"; };
+		4E3038FB1940889900F28091 /* ClipBoard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ClipBoard.m; path = plugins/ClipBoard/ClipBoard.m; sourceTree = "<group>"; };
+		4E51BBEB193FADA7007E74F4 /* Share.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Share.h; path = plugins/SHARE/Share.h; sourceTree = "<group>"; };
+		4E51BBEC193FADA7007E74F4 /* Share.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Share.m; path = plugins/SHARE/Share.m; sourceTree = "<group>"; };
 		4E85B96A1928F9D600EF3C55 /* DeviceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceViewController.h; sourceTree = "<group>"; };
 		4E85B96B1928F9D600EF3C55 /* DeviceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeviceViewController.m; sourceTree = "<group>"; };
 		4EC27543191FCEAB0057AB0E /* Plugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Plugin.h; path = plugins/Plugin.h; sourceTree = "<group>"; };
@@ -251,11 +257,31 @@
 			name = backend;
 			sourceTree = "<group>";
 		};
+		4E3038F91940886800F28091 /* ClipBoard */ = {
+			isa = PBXGroup;
+			children = (
+				4E3038FA1940889900F28091 /* ClipBoard.h */,
+				4E3038FB1940889900F28091 /* ClipBoard.m */,
+			);
+			name = ClipBoard;
+			sourceTree = "<group>";
+		};
+		4E51BBEA193F6E96007E74F4 /* SHARE */ = {
+			isa = PBXGroup;
+			children = (
+				4E51BBEB193FADA7007E74F4 /* Share.h */,
+				4E51BBEC193FADA7007E74F4 /* Share.m */,
+			);
+			name = SHARE;
+			sourceTree = "<group>";
+		};
 		4EC27541191FCE910057AB0E /* plugins */ = {
 			isa = PBXGroup;
 			children = (
+				4E3038F91940886800F28091 /* ClipBoard */,
+				4E51BBEA193F6E96007E74F4 /* SHARE */,
 				4EDD98F7192DA9F000C6AB01 /* MPRIS */,
-				4EC27542191FCE980057AB0E /* ping */,
+				4EC27542191FCE980057AB0E /* Ping */,
 				4EC27543191FCEAB0057AB0E /* Plugin.h */,
 				4EC27544191FCEAB0057AB0E /* Plugin.m */,
 				4EC27549191FD5490057AB0E /* PluginFactory.h */,
@@ -264,13 +290,13 @@
 			name = plugins;
 			sourceTree = "<group>";
 		};
-		4EC27542191FCE980057AB0E /* ping */ = {
+		4EC27542191FCE980057AB0E /* Ping */ = {
 			isa = PBXGroup;
 			children = (
 				4EC27546191FCECD0057AB0E /* Ping.h */,
 				4EC27547191FCECD0057AB0E /* Ping.m */,
 			);
-			name = ping;
+			name = Ping;
 			sourceTree = "<group>";
 		};
 		4EDD98F7192DA9F000C6AB01 /* MPRIS */ = {
@@ -421,6 +447,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4E3038FC1940889900F28091 /* ClipBoard.m in Sources */,
 				4E08A2011913CF850056EEF8 /* ViewController.m in Sources */,
 				4ECA38301933EE560015C07C /* SecKeyWrapper.m in Sources */,
 				4E08A1F81913CF850056EEF8 /* AppDelegate.m in Sources */,
@@ -430,6 +457,7 @@
 				4E08A2371913D1780056EEF8 /* NetworkPackage.m in Sources */,
 				4E08A2361913D1780056EEF8 /* Device.m in Sources */,
 				4E08A22D1913D1650056EEF8 /* LanLink.m in Sources */,
+				4E51BBED193FADA7007E74F4 /* Share.m in Sources */,
 				4E08A2281913D1550056EEF8 /* BaseLinkProvider.m in Sources */,
 				4E08A22E1913D1650056EEF8 /* LanLinkProvider.m in Sources */,
 				4E08A1F41913CF850056EEF8 /* main.m in Sources */,

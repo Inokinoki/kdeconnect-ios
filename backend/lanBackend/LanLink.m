@@ -7,13 +7,23 @@
 //
 
 #import "LanLink.h"
-#import "SecKeyWrapper.h";
-
-@implementation LanLink
+#import "SecKeyWrapper.h"
+#define PAYLOAD_PORT 1739
+@interface LanLink()
 {
     __strong GCDAsyncSocket* _socket;
     __strong NetworkPackage* _pendingPairNP;
+    __strong NSMutableArray* _pendingRSockets;
+    __strong NSMutableArray* _pendingLSockets;
+    __strong NSMutableArray* _pendingPayloadNP;
+    __strong NSMutableArray* _pendingPayloads;
+    uint16_t _payloadPort;
+    dispatch_queue_t _socketQueue;
 }
+
+@end
+
+@implementation LanLink
 
 @synthesize _deviceId;
 @synthesize _linkDelegate;
@@ -29,8 +39,17 @@
         _pendingPairNP=nil;
         _publicKey=[[SecKeyWrapper sharedWrapper] getPeerPublicKeyRef:_deviceId];
         [_socket setDelegate:self];
+        [_socket performBlock:^{
+            [_socket enableBackgroundingOnSocket];
+        }];
         NSLog(@"LanLink:lanlink for device:%@ created",_deviceId);
         [_socket readDataToData:[GCDAsyncSocket LFData] withTimeout:-1 tag:PACKAGE_TAG_NORMAL];
+        _pendingRSockets=[NSMutableArray arrayWithCapacity:1];
+        _pendingLSockets=[NSMutableArray arrayWithCapacity:1];
+        _pendingPayloadNP=[NSMutableArray arrayWithCapacity:1];
+        _pendingPayloads=[NSMutableArray arrayWithCapacity:1];
+        _payloadPort=PAYLOAD_PORT;
+        _socketQueue=dispatch_queue_create("com.kde.org.kdeconnect.payload_socketQueue", NULL);
     }
     return self;
 }
@@ -44,13 +63,55 @@
     }
     
     NSData* data=[np serialize];
-    
     [_socket writeData:data withTimeout:-1 tag:tag];
+    //TODO return true only when send successfully
     return true;
 }
 
 - (BOOL) sendPackageEncypted:(NetworkPackage *)np tag:(long)tag
 {
+    if ([np _Payload]) {
+        GCDAsyncSocket* socket=[[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:_socketQueue];
+        [socket performBlock:^{
+            [_socket enableBackgroundingOnSocket];
+        }];
+        NSError* err;
+        while (![socket acceptOnPort:_payloadPort error:&err]) {
+            _payloadPort++;
+            if (_payloadPort>1764) {
+                NSLog(@"LanLink send payload failed as no port available");
+                return false;
+            }
+        }
+        [np set_PayloadTransferInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:_payloadPort] forKey:@"port"]];
+        
+        NSMutableArray* payloadArray=[NSMutableArray arrayWithCapacity:1];
+        NSRange range;
+        NSData* payload=[np _Payload];
+        NSUInteger length=[payload length];
+        range.location=0;
+        range.length=4096;
+        while (length>0) {
+            if (length<range.length) {
+                range.length=length;
+                length=0;
+            }
+            else{
+                length-=range.length;
+            }
+            NSMutableData* chunk=[NSMutableData dataWithData:[payload subdataWithRange:range]];
+            [payloadArray addObject:chunk];
+            range.location+=range.length;
+        }
+        
+        @synchronized(_pendingLSockets)
+        {
+            [_pendingLSockets addObject:socket];
+            [_pendingPayloads addObject:payloadArray];
+        }
+
+        //TODO return true only when send successfully
+    }
     NetworkPackage* encryptedPackage=[np encryptWithPublicKeyRef:_publicKey];
     return [self sendPackage:encryptedPackage tag:PACKAGE_TAG_ENCRYPTED];
 }
@@ -79,11 +140,64 @@
 
 #pragma mark TCP delegate
 /**
+ * Called when a socket accepts a connection.
+ * Another socket is automatically spawned to handle it.
+ *
+ * You must retain the newSocket if you wish to handle the connection.
+ * Otherwise the newSocket instance will be released and the spawned connection will be closed.
+ *
+ * By default the new socket will have the same delegate and delegateQueue.
+ * You may, of course, change this at any time.
+ **/
+- (void)socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket
+{
+	NSLog(@"Lanlink: didAcceptNewSocket");
+    NSArray* payloadArray;
+    @synchronized(_pendingLSockets){
+        NSUInteger index=[_pendingLSockets indexOfObject:sock];
+        payloadArray=[_pendingPayloads objectAtIndex:index];
+    }
+    for (NSData* chunk in payloadArray) {
+        [newSocket writeData:chunk withTimeout:-1 tag:PACKAGE_TAG_PAYLOAD];
+    }
+}
+
+
+/**
+ * Called when a socket connects and is ready for reading and writing.
+ * The host parameter will be an IP address, not a DNS name.
+ **/
+
+- (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port
+{
+    NSLog(@"Lanlink did connect to payload host, begin recieving data");
+    @synchronized(_pendingRSockets){
+    NSUInteger index=[_pendingRSockets indexOfObject:sock];
+    [sock readDataToLength:[[_pendingPayloadNP objectAtIndex:index] _PayloadSize] withTimeout:-1 tag:PACKAGE_TAG_PAYLOAD];
+    }
+}
+
+/**
  * Called when a socket has completed reading the requested data into memory.
  * Not called if there is an error.
  **/
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
+    if (tag==PACKAGE_TAG_PAYLOAD) {
+        NetworkPackage* np;
+        @synchronized(_pendingRSockets){
+        NSUInteger index=[_pendingRSockets indexOfObject:sock];
+        np=[_pendingPayloadNP objectAtIndex:index];
+        [np set_Payload:data];
+        }
+        
+        @synchronized(_pendingPayloadNP){
+            [_pendingPayloadNP removeObject:np];
+            [_pendingRSockets removeObject:sock];
+        }
+        [_linkDelegate onPackageReceived:np];
+        return;
+    }
     NSLog(@"llink did read data");
     //BUG even if we read with a seperator LFData , it's still possible to receive several data package together. So we split the string and retrieve the package
     [_socket readDataToData:[GCDAsyncSocket LFData] withTimeout:-1 tag:PACKAGE_TAG_NORMAL];
@@ -99,6 +213,19 @@
             if ([[np _Type] isEqualToString:PACKAGE_TYPE_ENCRYPTED]) {
                 np=[np decrypt];
             }
+            if ([np _PayloadTransferInfo]) {
+                GCDAsyncSocket* socket=[[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:_socketQueue];
+                @synchronized(_pendingRSockets){
+                    [_pendingRSockets addObject:socket];
+                    [_pendingPayloadNP addObject:np];
+                }
+                NSError* error=nil;
+                uint16_t tcpPort=[[[np _PayloadTransferInfo] valueForKey:@"port"] unsignedIntValue];
+                if (![socket connectToHost:[sock connectedHost] onPort:tcpPort error:&error]){
+                    NSLog(@"Lanlink connect to payload host failed");
+                }
+                return;
+            }
             [_linkDelegate onPackageReceived:np];
         }
     }
@@ -113,7 +240,9 @@
     if (_linkDelegate) {
         [_linkDelegate onSendSuccess:tag];
     }
-    
+    if (tag==PACKAGE_TAG_PAYLOAD) {
+        NSLog(@"llink payload sendpk");
+    }
     
 }
 
@@ -157,7 +286,7 @@
  * Called when a socket disconnects with or without error.
  *
  * If you call the disconnect method, and the socket wasn't already disconnected,
- * then an invocation of this delegate method will be enqueued on the delegateQueue
+ * then an invocation of this delegate method will be enqueued on the _socketQueue
  * before the disconnect method returns.
  *
  * Note: If the GCDAsyncSocket instance is deallocated while it is still connected,
@@ -176,11 +305,30 @@
  **/
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err
 {
-    NSLog(@"llink socket did disconnect");
-    if (_linkDelegate) {
-        [_linkDelegate onLinkDestroyed:self];    
+    if ([_pendingRSockets containsObject:sock]) {
+        NSLog(@"llink payload socket disconnected");
+        @synchronized(_pendingRSockets){
+            NSUInteger index=[_pendingRSockets indexOfObject:sock];
+            [_pendingRSockets removeObjectAtIndex:index];
+            [_pendingPayloadNP removeObjectAtIndex:index];
+        }
+    }
+    if (_linkDelegate&&(sock==_socket)) {
+        NSLog(@"llink socket did disconnect");
+        [_linkDelegate onLinkDestroyed:self];
     }
     
 }
+
+/**
+ * Called when a socket has written some data, but has not yet completed the entire write.
+ * It may be used to for things such as updating progress bars.
+ **/
+- (void)socket:(GCDAsyncSocket *)sock didWritePartialDataOfLength:(NSUInteger)partialLength tag:(long)tag
+{
+    
+}
+
+
 
 @end

@@ -30,6 +30,9 @@ __strong static NSString* _publicKeyStr;
 @synthesize _Id;
 @synthesize _Type;
 @synthesize _Body;
+@synthesize _Payload;
+@synthesize _PayloadSize;
+@synthesize _PayloadTransferInfo;
 
 #pragma mark create Package
 +(NetworkPackage*) createIdentityPackage
@@ -86,9 +89,17 @@ __strong static NSString* _publicKeyStr;
 {
     NSArray* keys=[NSArray arrayWithObjects:@"id",@"type",@"body", nil];
     NSArray* values=[NSArray arrayWithObjects:[self _Id],[self _Type],[self _Body], nil];
-    NSDictionary* info=[NSDictionary dictionaryWithObjects:values forKeys:keys];
+    NSMutableDictionary* info=[NSMutableDictionary dictionaryWithObjects:values forKeys:keys];
+    if (_Payload) {
+        [info setValue:[NSNumber numberWithLong:(_PayloadSize?_PayloadSize:-1)] forKey:@"payloadSize"];
+        [info setValue:_PayloadTransferInfo forKey:@"payloadTransferInfo"];
+    }
     NSError* err=nil;
     NSMutableData* jsonData=[[NSMutableData alloc] initWithData:[NSJSONSerialization dataWithJSONObject:info options:0 error:&err]];
+    if (err) {
+        NSLog(@"NP serialize error");
+        return nil;
+    }
     [jsonData appendData:LFDATA];
     return jsonData;
 }
@@ -102,6 +113,16 @@ __strong static NSString* _publicKeyStr;
     [np set_Id:[info valueForKey:@"id"]];
     [np set_Type:[info valueForKey:@"type"]];
     [np set_Body:[info valueForKey:@"body"]];
+    [np set_PayloadSize:[[info valueForKey:@"payloadSize"]longValue]];
+    [np set_PayloadTransferInfo:[info valueForKey:@"payloadTransferInfo"]];
+    
+    //TODO should change for laptop
+    if ([np _PayloadSize]==-1) {
+        id temp;
+        long size=(temp=[[np _Body] valueForKey:@"size"])?[temp longValue]:-1;
+        [np set_PayloadSize:size];
+    }
+    [np set_PayloadTransferInfo:[info valueForKey:@"payloadTransferInfo"]];
     
     if (err) {
         return nil;
@@ -109,11 +130,10 @@ __strong static NSString* _publicKeyStr;
     return np;
 }
 
-//TO-DO
 #pragma mark Encyption
 - (BOOL) isEncrypted
 {
-    return true;
+    return [_Type isEqual:PACKAGE_TYPE_ENCRYPTED];
 };
 
 - (NetworkPackage*) encryptWithPublicKeyRef:(SecKeyRef)publicKeyRef
@@ -121,7 +141,25 @@ __strong static NSString* _publicKeyStr;
     NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_ENCRYPTED];
     NSData* data=[self serialize];
     NSData* encryptedData=[[SecKeyWrapper sharedWrapper] wrapSymmetricKey:data keyRef:publicKeyRef];
-    NSArray* encryptedArray=[NSArray arrayWithObject:[encryptedData base64EncodedStringWithOptions:0]];
+    NSRange range;
+    range.length=256;
+    range.location=0;
+    NSUInteger length=[encryptedData length];
+    NSMutableArray* encryptedArray=[NSMutableArray arrayWithCapacity:1];
+    while (length>0) {
+        if (length<range.length) {
+            range.length=length;
+            length=0;
+        }
+        else{
+            length-=range.length;
+        }
+        NSData* chunk=[encryptedData subdataWithRange:range];
+        range.location+=range.length;
+        [encryptedArray addObject:[chunk base64EncodedStringWithOptions:0]];
+    }
+
+    
     [[np _Body] setValue:encryptedArray forKey:@"data"];
     return np;
 };
@@ -142,41 +180,5 @@ __strong static NSString* _publicKeyStr;
     
     return [NetworkPackage unserialize:decryptedBits];
 };
-
-//TO-DO
-#pragma mark Payload
-- (void) setPayload:(NSData*)data
-{
-    
-}
-
-- (void) setPayload:(NSInputStream*)inputStream size:(NSInteger*)size
-{
-    
-}
-- (void) setPayloadTransferInfo
-{
-    
-}
-- (BOOL) hasPayload
-{
-    return false;
-}
-- (BOOL) hasPayloadTransferInfo
-{
-    return false;
-}
-- (void) getPayload
-{
-    
-}
-- (void) getPayloadSize
-{
-    
-}
-- (void) getPayloadTransferInfo
-{
-    
-}
 
 @end

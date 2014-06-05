@@ -111,6 +111,10 @@
 - (void) onRefresh
 {
     NSLog(@"lp on refresh");
+    if (![_tcpSocket isConnected]) {
+        [self onNetworkChange];
+        return;
+    }
     if (![_udpSocket isClosed]) {
         NetworkPackage* np=[NetworkPackage createIdentityPackage];
         [[np _Body] setValue:[[NSNumber alloc ] initWithUnsignedInt:_tcpPort] forKey:@"tcpPort"];

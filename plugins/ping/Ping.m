@@ -8,10 +8,14 @@
 
 #import "Ping.h"
 
-@implementation Ping
+@interface Ping()
 {
     __strong UIView* _view;
 }
+
+@end
+
+@implementation Ping
 
 @synthesize _device;
 @synthesize _pluginInfo;
@@ -30,8 +34,8 @@
 
 - (BOOL) onDevicePackageReceived:(NetworkPackage *)np
 {
-    NSLog(@"ping plugin receive a package");
     if ([[np _Type] isEqualToString:PACKAGE_TYPE_PING]) {
+        NSLog(@"ping plugin receive a package");
         dispatch_async(dispatch_get_main_queue(), ^{
             [[[UIAlertView alloc]
               initWithTitle:@"Ping"

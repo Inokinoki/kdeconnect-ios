@@ -62,10 +62,10 @@
             </objects>
             <point key="canvasLocation" x="106" y="210"/>
         </scene>
-        <!--View Controller-->
+        <!--MPRIS View Controller-->
         <scene sceneID="5Fr-dv-ppL">
             <objects>
-                <viewController storyboardIdentifier="MPRISViewController" id="anI-Xu-3ug" customClass="MPRISViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MPRISViewController" id="anI-Xu-3ug" userLabel="MPRIS View Controller" customClass="MPRISViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="UkH-cv-Qw6"/>
                         <viewControllerLayoutGuide type="bottom" id="kFL-ak-b6B"/>
@@ -204,7 +204,6 @@
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="FcT-aC-BJ0"/>
-                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dOl-AZ-2tv" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
