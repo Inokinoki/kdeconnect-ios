@@ -80,6 +80,7 @@
             if (![pastboardContents isEqualToString:[UIPasteboard generalPasteboard].string])
             {
                 pastboardContents = [UIPasteboard generalPasteboard].string;
+                if (!pastboardContents) continue;
                 NSLog(@"Pasteboard Contents: %@", pastboardContents);
                 NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_CLIPBOARD];
                 [[np _Body] setObject:pastboardContents forKey:@"content"];

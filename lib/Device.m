@@ -24,9 +24,9 @@
 - (Device*) init:(NSString*)deviceId setDelegate:(id)deviceDelegate
 {
     if ((self=[super init])) {
-        //TO-DO load config from setting
         _id=deviceId;
         _deviceDelegate=deviceDelegate;
+        [self loadSetting];
         _links=[NSMutableArray arrayWithCapacity:1];
         _plugins=[NSMutableDictionary dictionaryWithCapacity:1];
         _failedPlugins=[NSMutableArray arrayWithCapacity:1];
@@ -142,7 +142,9 @@
                 if (_deviceDelegate) {
                     [_deviceDelegate onDevicePairRejected:self];
                 }
-                
+            }
+            else if(wantsPair){
+                [self acceptPairing];
             }
             return;
         }
@@ -196,6 +198,49 @@
     return [_links count]!=0;
 }
 
+- (void) loadSetting
+{
+    //get app document path
+    NSArray *paths=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
+    NSString *plistPath = [paths objectAtIndex:0];
+    NSString *filename=[plistPath stringByAppendingPathComponent:@"rememberedDevices.plist"];
+    @synchronized(filename){
+        NSMutableDictionary *dict = [[[NSMutableDictionary alloc] initWithContentsOfFile:filename]
+                                     valueForKey:_id];
+        _name=[dict valueForKey:@"name"];
+        _pairStatus=Paired;
+        _protocolVersion=[[dict valueForKey:@"protocolVersion"] integerValue];
+        //            _type=[dict valueForKey:@"type"];
+    }
+}
+
+- (void) saveSetting
+{
+    //get app document path
+    //TO-DO Type
+    NSArray *paths=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
+    NSString *plistPath = [paths objectAtIndex:0];
+    NSString *filename=[plistPath stringByAppendingPathComponent:@"rememberedDevices.plist"];
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithContentsOfFile:filename];
+    NSDictionary* setting=@{@"name": _name,
+                            @"protocolVersion":[NSNumber numberWithInteger:_protocolVersion],
+                            @"type":@"unknown"};
+    [dict setObject:setting forKey:_id];
+    [dict writeToFile:filename atomically:YES];
+}
+
+- (void) removeSetting
+{
+    //get app document path
+    NSArray *paths=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
+    NSString *plistPath = [paths objectAtIndex:0];
+    NSString *filename=[plistPath stringByAppendingPathComponent:@"rememberedDevices.plist"];
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithContentsOfFile:filename];
+    [dict removeObjectForKey:_id];
+    [dict writeToFile:filename atomically:YES];
+
+}
+
 #pragma mark Pairing-related Functions
 - (BOOL) isPaired
 {
@@ -211,7 +256,7 @@
 {
     _pairStatus=Paired;
     NSLog(@"paired with %@",_name);
-    // save trusted device configuration
+    [self saveSetting];
     if (_deviceDelegate) {
         [_deviceDelegate onDevicePairSuccess:self];
     }
@@ -268,14 +313,14 @@
 {
     NSLog(@"device unpair");
     if (![self isPaired]) return;
-    
     _pairStatus=NotPaired;
-    
-    //delete from config file
-    
+    [self removeSetting];
     NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_PAIR];
     [[np _Body] setValue:[NSNumber numberWithBool:false] forKey:@"pair"];
     [self sendPackage:np tag:PACKAGE_TAG_UNPAIR];
+    for (BaseLink* link in _links) {
+        [link loadPublicKey];
+    }
 }
 
 - (void) acceptPairing

@@ -46,7 +46,7 @@ typedef NS_ENUM(NSUInteger, DeviceType)
 
 @property(strong,readonly,nonatomic)NSString* _id;
 @property(strong,readonly,nonatomic)NSString* _name;
-@property(readonly,nonatomic)DeviceType* _type;
+@property(readonly,nonatomic)DeviceType _type;
 @property(readonly,nonatomic)NSInteger _protocolVersion;
 @property(readonly,nonatomic)PairStatus _pairStatus;
 @property(nonatomic,assign) id _deviceDelegate;

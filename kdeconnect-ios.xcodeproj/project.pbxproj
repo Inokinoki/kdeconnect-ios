@@ -31,6 +31,7 @@
 		4E08A2371913D1780056EEF8 /* NetworkPackage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2341913D1780056EEF8 /* NetworkPackage.m */; };
 		4E0E321F192B495E001D88CD /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4E0E321E192B495E001D88CD /* Settings.bundle */; };
 		4E3038FC1940889900F28091 /* ClipBoard.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E3038FB1940889900F28091 /* ClipBoard.m */; };
+		4E33B2DB1944DF90005119FD /* rememberedDevices.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4E33B2DA1944DF90005119FD /* rememberedDevices.plist */; };
 		4E51BBED193FADA7007E74F4 /* Share.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E51BBEC193FADA7007E74F4 /* Share.m */; };
 		4E85B96C1928F9D600EF3C55 /* DeviceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E85B96B1928F9D600EF3C55 /* DeviceViewController.m */; };
 		4EC27545191FCEAB0057AB0E /* Plugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC27544191FCEAB0057AB0E /* Plugin.m */; };
@@ -91,6 +92,7 @@
 		4E0E321E192B495E001D88CD /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		4E3038FA1940889900F28091 /* ClipBoard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ClipBoard.h; path = plugins/ClipBoard/ClipBoard.h; sourceTree = "<group>"; };
 		4E3038FB1940889900F28091 /* ClipBoard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ClipBoard.m; path = plugins/ClipBoard/ClipBoard.m; sourceTree = "<group>"; };
+		4E33B2DA1944DF90005119FD /* rememberedDevices.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = rememberedDevices.plist; sourceTree = "<group>"; };
 		4E51BBEB193FADA7007E74F4 /* Share.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Share.h; path = plugins/SHARE/Share.h; sourceTree = "<group>"; };
 		4E51BBEC193FADA7007E74F4 /* Share.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Share.m; path = plugins/SHARE/Share.m; sourceTree = "<group>"; };
 		4E85B96A1928F9D600EF3C55 /* DeviceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceViewController.h; sourceTree = "<group>"; };
@@ -194,6 +196,7 @@
 			children = (
 				4E08A1EF1913CF850056EEF8 /* kdeconnect-ios-Info.plist */,
 				4E08A1F01913CF850056EEF8 /* InfoPlist.strings */,
+				4E33B2DA1944DF90005119FD /* rememberedDevices.plist */,
 				4E08A1F31913CF850056EEF8 /* main.m */,
 				4E08A1F51913CF850056EEF8 /* kdeconnect-ios-Prefix.pch */,
 			);
@@ -395,6 +398,7 @@
 				4E08A2031913CF850056EEF8 /* Images.xcassets in Resources */,
 				4E0E321F192B495E001D88CD /* Settings.bundle in Resources */,
 				4E08A1FB1913CF850056EEF8 /* Main_iPhone.storyboard in Resources */,
+				4E33B2DB1944DF90005119FD /* rememberedDevices.plist in Resources */,
 				4E08A1F21913CF850056EEF8 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

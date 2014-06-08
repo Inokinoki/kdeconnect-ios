@@ -50,6 +50,26 @@
 - (void) loadRemenberedDevices
 {
     //TO-DO read setting to load remembered Deviceds
+
+    //get app document path
+    NSArray *paths=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
+    NSString *plistPath1 = [paths objectAtIndex:0];
+
+    //get local configue file
+    NSString *filename=[plistPath1 stringByAppendingPathComponent:@"rememberedDevices.plist"];
+    BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:filename];
+    if (!fileExists) {
+        NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"rememberedDevices" ofType:@"plist"];
+        NSMutableDictionary *data = [[NSMutableDictionary alloc] initWithContentsOfFile:plistPath];
+        [[data valueForKey:@"rememberedDevices"] writeToFile:filename atomically:YES];
+    }
+    
+    NSMutableDictionary *devicesDict = [[NSMutableDictionary alloc] initWithContentsOfFile:filename];
+    for (NSString* deviceId in [devicesDict allKeys]) {
+        Device* device=[[Device alloc] init:deviceId setDelegate:self];
+        [_devices setObject:device forKey:deviceId];
+    }
+    NSLog(@"%@", devicesDict);
 }
 - (void) registerLinkProviders
 {

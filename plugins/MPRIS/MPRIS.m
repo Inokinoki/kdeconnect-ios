@@ -101,7 +101,7 @@
 {
     if (!_mprisViewController) {
         _mprisViewController=[[UIStoryboard storyboardWithName:@"Main_iPhone" bundle:[NSBundle mainBundle]] instantiateViewControllerWithIdentifier:@"MPRISViewController"];
-            [_mprisViewController setPlugin:self];
+        [_mprisViewController setPlugin:self];
     }
     [_deviceViewController.navigationController presentViewController:_mprisViewController animated:YES completion:nil];
 }

@@ -23,4 +23,5 @@
 - (BOOL) sendPackageEncypted:(NetworkPackage *)np tag:(long)tag;
 - (void) disconnect;
 - (void) loadPublicKey;
+- (void) removePublicKey;
 @end

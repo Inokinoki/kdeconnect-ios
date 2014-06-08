@@ -16,7 +16,17 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
-    //instancie backgroundservice and pluginfactory
+    // Register the preference defaults early.
+    NSDictionary *appDefaults = [NSDictionary
+                                 dictionaryWithObjectsAndKeys:
+                                 [NSNumber numberWithBool:YES],@"ping",
+                                 [NSNumber numberWithBool:YES],@"mpris",
+                                 [NSNumber numberWithBool:YES],@"clipboard",
+                                 [NSNumber numberWithBool:YES],@"share",
+                                 nil];
+    [[NSUserDefaults standardUserDefaults] registerDefaults:appDefaults];
+    
+    //instancie backgroundservice, pluginfactory and generate keys if not existe.
     [BackgroundService sharedInstance];
     [PluginFactory sharedInstance];
     if (![[SecKeyWrapper sharedWrapper] getPublicKeyBits]) {

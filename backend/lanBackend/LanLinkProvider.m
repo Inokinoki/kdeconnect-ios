@@ -89,7 +89,7 @@
     for (GCDAsyncSocket* socket in _pendingSockets) {
         [socket disconnect];
     }
-    for (GCDAsyncSocket* link in _connectedLinks) {
+    for (LanLink* link in [_connectedLinks allValues]) {
         [link disconnect];
     }
     

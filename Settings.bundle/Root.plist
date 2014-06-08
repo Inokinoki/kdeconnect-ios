@@ -14,7 +14,7 @@
 			<key>DefaultValue</key>
 			<true/>
 			<key>Key</key>
-			<string>enabled_preference</string>
+			<string>ping</string>
 			<key>Title</key>
 			<string>Ping</string>
 			<key>Type</key>
@@ -24,7 +24,7 @@
 			<key>DefaultValue</key>
 			<true/>
 			<key>Key</key>
-			<string>enabled_preference</string>
+			<string>mpris</string>
 			<key>Title</key>
 			<string>MPRIS</string>
 			<key>Type</key>
@@ -36,7 +36,7 @@
 			<key>Title</key>
 			<string>ClipBoard</string>
 			<key>Key</key>
-			<string>enabled_preference</string>
+			<string>clipboard</string>
 			<key>DefaultValue</key>
 			<true/>
 		</dict>
@@ -46,7 +46,7 @@
 			<key>Title</key>
 			<string>Share</string>
 			<key>Key</key>
-			<string>enabled_preference</string>
+			<string>share</string>
 			<key>DefaultValue</key>
 			<true/>
 		</dict>

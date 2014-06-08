@@ -35,6 +35,7 @@
     [refreshControl addTarget:self action:@selector(onRefresh:) forControlEvents:UIControlEventValueChanged];
     [_tableView addSubview:refreshControl];
     [[BackgroundService sharedInstance] set_backgroundServiceDelegate:self];
+    [self onDeviceListRefreshed];
 }
 
 - (void)viewDidUnload

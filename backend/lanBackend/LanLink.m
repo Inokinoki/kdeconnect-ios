@@ -126,6 +126,12 @@
     }
 }
 
+- (void) removePublicKey
+{
+    NSLog(@"remove Public key for %@",_deviceId);
+    [[SecKeyWrapper sharedWrapper] removePeerPublicKey:_deviceId];
+}
+
 - (void) disconnect
 {
     if ([_socket isConnected]) {
@@ -157,8 +163,12 @@
         NSUInteger index=[_pendingLSockets indexOfObject:sock];
         payloadArray=[_pendingPayloads objectAtIndex:index];
     }
+    dispatch_time_t t = dispatch_time(DISPATCH_TIME_NOW,0);
     for (NSData* chunk in payloadArray) {
-        [newSocket writeData:chunk withTimeout:-1 tag:PACKAGE_TAG_PAYLOAD];
+        t=dispatch_time(t, 20*NSEC_PER_MSEC);
+        dispatch_after(t,_socketQueue, ^(void){
+            [newSocket writeData:chunk withTimeout:-1 tag:PACKAGE_TAG_PAYLOAD];
+        });
     }
 }
 
