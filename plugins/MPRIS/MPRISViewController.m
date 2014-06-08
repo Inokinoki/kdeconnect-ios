@@ -142,7 +142,7 @@
 
 - (IBAction)next:(id)sender {
     if (_mprisPlugin) {
-        [_mprisPlugin sendAction:@" Next"];
+        [_mprisPlugin sendAction:@"Next"];
     }
 }
 
