@@ -40,6 +40,7 @@
 		4ECA38301933EE560015C07C /* SecKeyWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ECA382F1933EE560015C07C /* SecKeyWrapper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		4EDD98FA192DAAD700C6AB01 /* MPRISViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EDD98F9192DAAD700C6AB01 /* MPRISViewController.m */; };
 		4EDD98FD192DAAF800C6AB01 /* MPRIS.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EDD98FC192DAAF800C6AB01 /* MPRIS.m */; };
+		4EF576E9194784D80046213D /* inAppSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EF576E8194784D80046213D /* inAppSettingViewController.m */; };
 		CDF3929BB4CB40FCA1F80352 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2F71AC6EE495B8966C774 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -110,6 +111,8 @@
 		4EDD98FB192DAAF800C6AB01 /* MPRIS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MPRIS.h; path = plugins/MPRIS/MPRIS.h; sourceTree = "<group>"; };
 		4EDD98FC192DAAF800C6AB01 /* MPRIS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MPRIS.m; path = plugins/MPRIS/MPRIS.m; sourceTree = "<group>"; };
 		4EEC81BE19238D3D00E13727 /* GCDSingleton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GCDSingleton.h; path = lib/GCDSingleton.h; sourceTree = "<group>"; };
+		4EF576E7194784D80046213D /* inAppSettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = inAppSettingViewController.h; sourceTree = "<group>"; };
+		4EF576E8194784D80046213D /* inAppSettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = inAppSettingViewController.m; sourceTree = "<group>"; };
 		5B2C3C0E2C4C4FB78D606404 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -180,6 +183,8 @@
 				4E08A1F61913CF850056EEF8 /* AppDelegate.h */,
 				4E08A1F71913CF850056EEF8 /* AppDelegate.m */,
 				4E08A1F91913CF850056EEF8 /* Main_iPhone.storyboard */,
+				4EF576E7194784D80046213D /* inAppSettingViewController.h */,
+				4EF576E8194784D80046213D /* inAppSettingViewController.m */,
 				4E85B96A1928F9D600EF3C55 /* DeviceViewController.h */,
 				4E85B96B1928F9D600EF3C55 /* DeviceViewController.m */,
 				4E08A1FC1913CF850056EEF8 /* Main_iPad.storyboard */,
@@ -463,6 +468,7 @@
 				4E08A22D1913D1650056EEF8 /* LanLink.m in Sources */,
 				4E51BBED193FADA7007E74F4 /* Share.m in Sources */,
 				4E08A2281913D1550056EEF8 /* BaseLinkProvider.m in Sources */,
+				4EF576E9194784D80046213D /* inAppSettingViewController.m in Sources */,
 				4E08A22E1913D1650056EEF8 /* LanLinkProvider.m in Sources */,
 				4E08A1F41913CF850056EEF8 /* main.m in Sources */,
 				4EC27545191FCEAB0057AB0E /* Plugin.m in Sources */,

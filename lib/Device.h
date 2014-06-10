@@ -44,12 +44,12 @@ typedef NS_ENUM(NSUInteger, DeviceType)
 
 @interface Device : NSObject <linkDelegate>
 
-@property(strong,readonly,nonatomic)NSString* _id;
-@property(strong,readonly,nonatomic)NSString* _name;
-@property(readonly,nonatomic)DeviceType _type;
-@property(readonly,nonatomic)NSInteger _protocolVersion;
-@property(readonly,nonatomic)PairStatus _pairStatus;
-@property(nonatomic,assign) id _deviceDelegate;
+@property(readonly,nonatomic) NSString* _id;
+@property(readonly,nonatomic) NSString* _name;
+@property(readonly,nonatomic) DeviceType _type;
+@property(readonly,nonatomic) NSInteger _protocolVersion;
+@property(readonly,nonatomic) PairStatus _pairStatus;
+@property(nonatomic) id _deviceDelegate;
 
 - (Device*) init:(NSString*)deviceId setDelegate:(id)deviceDelegate;
 - (Device*) init:(NetworkPackage*)np baselink:(BaseLink*)link setDelegate:(id)deviceDelegate;

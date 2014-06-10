@@ -9,11 +9,8 @@
 #import "Share.h"
 
 @interface Share()
-{
-    __strong UIView* _view;
-    UIViewController* _deviceViewController;
-}
-
+@property(nonatomic) UIView* _view;
+@property(nonatomic) UIViewController* _deviceViewController;
 @end
 
 @implementation Share
@@ -21,6 +18,8 @@
 @synthesize _device;
 @synthesize _pluginInfo;
 @synthesize _pluginDelegate;
+@synthesize _view;
+@synthesize _deviceViewController;
 
 - (id) init
 {

@@ -9,10 +9,7 @@
 #import "Ping.h"
 
 @interface Ping()
-{
-    __strong UIView* _view;
-}
-
+@property(nonatomic) UIView* _view;
 @end
 
 @implementation Ping
@@ -20,6 +17,7 @@
 @synthesize _device;
 @synthesize _pluginInfo;
 @synthesize _pluginDelegate;
+@synthesize _view;
 
 - (id) init
 {

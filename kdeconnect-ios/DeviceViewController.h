@@ -10,6 +10,6 @@
 #import "IASKAppSettingsViewController.h"
 @interface DeviceViewController : UIViewController<IASKSettingsDelegate,UITextViewDelegate>
 
-@property(strong,nonatomic)NSString* _deviceId;
+@property(nonatomic)NSString* _deviceId;
 
 @end

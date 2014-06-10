@@ -40,11 +40,11 @@
 
 @interface NetworkPackage : NSObject
 
-@property(strong,nonatomic) NSString* _Id;
-@property(strong,nonatomic) NSString *_Type;
-@property(strong,nonatomic) NSMutableDictionary *_Body;
-@property(weak,nonatomic) NSData *_Payload;
-@property(weak,nonatomic) NSDictionary *_PayloadTransferInfo;
+@property(nonatomic) NSString* _Id;
+@property(nonatomic) NSString *_Type;
+@property(nonatomic) NSMutableDictionary *_Body;
+@property(nonatomic) NSData *_Payload;
+@property(nonatomic) NSDictionary *_PayloadTransferInfo;
 @property(nonatomic)long _PayloadSize;
 
 - (NetworkPackage*) initWithType:(NSString*)type;

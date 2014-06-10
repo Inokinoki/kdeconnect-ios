@@ -66,6 +66,14 @@
 }
 
 
+- (IBAction)showSettingsModal:(id)sender {
+    UINavigationController *aNavController = [[UINavigationController alloc] initWithRootViewController:self.appSettingsViewController];
+    //[viewController setShowCreditsFooter:NO];   // Uncomment to not display InAppSettingsKit credits for creators.
+    // But we encourage you not to uncomment. Thank you!
+    self.appSettingsViewController.showDoneButton = YES;
+    [self presentViewController:aNavController animated:YES completion:nil];
+}
+
 - (void)showSettingsPopover:(id)sender {
 	if(self.currentPopoverController) {
         [self dismissCurrentPopover];
@@ -94,14 +102,6 @@
 		appSettingsViewController.delegate = self;
 	}
 	return appSettingsViewController;
-}
-
-- (IBAction)showSettingsModal:(id)sender {
-    UINavigationController *aNavController = [[UINavigationController alloc] initWithRootViewController:self.appSettingsViewController];
-    //[viewController setShowCreditsFooter:NO];   // Uncomment to not display InAppSettingsKit credits for creators.
-    // But we encourage you not to uncomment. Thank you!
-    self.appSettingsViewController.showDoneButton = YES;
-    [self presentViewController:aNavController animated:YES completion:nil];
 }
 
 #pragma mark - View Lifecycle

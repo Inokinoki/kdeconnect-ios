@@ -12,10 +12,13 @@
 #import "Share.h"
 #import "ClipBoard.h"
 
+@interface PluginFactory()
+@property(nonatomic) NSMutableDictionary* _availablePlugins;
+@end
+
 @implementation PluginFactory
-{
-    __strong NSMutableDictionary* _availablePlugins;
-}
+
+@synthesize _availablePlugins;
 
 + (id) sharedInstance
 {

@@ -14,21 +14,22 @@
 @property (weak, nonatomic) IBOutlet UIButton *_playPause;
 @property (weak, nonatomic) IBOutlet UIPickerView *_playerPicker;
 @property (weak, nonatomic) IBOutlet UILabel *_currentPlayer;
+@property (nonatomic) MPRIS* _mprisPlugin;
+@property (nonatomic) NSArray* _playerList;
+@property (nonatomic) NSString* _player;
 
 @end
 
 @implementation MPRISViewController
-{
-    __strong MPRIS* _mprisPlugin;
-    __strong NSArray* _playerList;
-    __strong NSString* _player;
-}
 
 @synthesize _volumeSlider;
 @synthesize _currentText;
 @synthesize _playPause;
 @synthesize _currentPlayer;
 @synthesize _playerPicker;
+@synthesize _playerList;
+@synthesize _player;
+@synthesize _mprisPlugin;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {

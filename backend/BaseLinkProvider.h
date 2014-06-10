@@ -21,8 +21,8 @@
 
 @interface BaseLinkProvider : NSObject
 
-@property(nonatomic,assign)id _linkProviderDelegate;
-@property(strong,nonatomic) NSMutableDictionary* _connectedLinks;
+@property(nonatomic) id _linkProviderDelegate;
+@property(nonatomic) NSMutableDictionary* _connectedLinks;
 
 - (BaseLinkProvider*) initWithDelegate:(id)linkProviderDelegate;
 - (void) onStart;

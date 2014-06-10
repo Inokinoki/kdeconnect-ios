@@ -8,19 +8,23 @@
 
 #import "Device.h"
 #define PAIR_TIMMER_TIMEOUT  10.0
-
+@interface Device()
+@property(nonatomic) NSMutableArray* _links;
+@property(nonatomic) NSMutableDictionary* _plugins;
+@property(nonatomic) NSMutableArray* _failedPlugins;
+@end
 @implementation Device
-{
-    __strong NSMutableArray* _links;
-    __strong NSMutableDictionary* _plugins;
-    __strong NSMutableArray* _failedPlugins;
-}
+
 @synthesize _id;
 @synthesize _name;
 @synthesize _pairStatus;
 @synthesize _protocolVersion;
 @synthesize _type;
 @synthesize _deviceDelegate;
+@synthesize _links;
+@synthesize _plugins;
+@synthesize _failedPlugins;
+
 - (Device*) init:(NSString*)deviceId setDelegate:(id)deviceDelegate
 {
     if ((self=[super init])) {

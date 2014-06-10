@@ -25,9 +25,9 @@
 
 @interface BaseLink : NSObject
 
-@property(strong,nonatomic) NSString* _deviceId;
-@property(nonatomic,assign)id _linkDelegate;
-@property(nonatomic)SecKeyRef _publicKey;
+@property(nonatomic) NSString* _deviceId;
+@property(nonatomic) id _linkDelegate;
+@property(nonatomic) SecKeyRef _publicKey;
 
 - (BaseLink*) init:(NSString*)deviceId setDelegate:(id)linkDelegate;
 - (BOOL) sendPackage:(NetworkPackage*)np tag:(long)tag;

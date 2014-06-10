@@ -44,6 +44,16 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="separatorColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="sectionIndexColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="deviceListCell" id="AkS-bY-sFw">
+                                        <rect key="frame" x="0.0" y="55" width="280" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="AkS-bY-sFw" id="wxk-vo-g0Q">
+                                            <rect key="frame" x="0.0" y="0.0" width="280" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
                                 <connections>
                                     <outlet property="dataSource" destination="vXZ-lx-hvc" id="vTI-ut-hKd"/>
                                     <outlet property="delegate" destination="vXZ-lx-hvc" id="Kfh-cM-bDu"/>
@@ -63,16 +73,16 @@
             </objects>
             <point key="canvasLocation" x="179" y="222"/>
         </scene>
-        <!--App Settings View Controller-->
+        <!--In App Setting View Controller-->
         <scene sceneID="945-O8-N0g">
             <objects>
-                <tableViewController id="7RH-L9-aqA" customClass="IASKAppSettingsViewController" sceneMemberID="viewController">
+                <tableViewController id="7RH-L9-aqA" customClass="inAppSettingViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="blL-4l-rij">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="Z2H-Uu-bzI">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="settingCell" id="Z2H-Uu-bzI">
                                 <rect key="frame" x="0.0" y="86" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Z2H-Uu-bzI" id="KZ6-2I-0EK">
@@ -112,7 +122,7 @@
         <scene sceneID="PSm-V7-2ES">
             <objects>
                 <tabBarController definesPresentationContext="YES" id="fLV-0M-tAH" sceneMemberID="viewController">
-                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="yBH-Tb-Fcd">
                         <rect key="frame" x="129" y="330" width="163" height="49"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
@@ -257,7 +267,7 @@
         <!--Device View Controller-->
         <scene sceneID="94R-cA-pBh">
             <objects>
-                <viewController storyboardIdentifier="DeviceViewController" id="p81-Gt-FnP" customClass="DeviceViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="DeviceViewController" hidesBottomBarWhenPushed="YES" id="p81-Gt-FnP" customClass="DeviceViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="XWz-kX-RFU"/>
                         <viewControllerLayoutGuide type="bottom" id="xsk-sv-69s"/>

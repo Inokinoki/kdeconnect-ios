@@ -9,21 +9,30 @@
 #import "MPRIS.h"
 #import "MPRISViewController.h"
 
-@implementation MPRIS
+@interface MPRIS()
 {
-    __strong UIView* _view;
-    MPRISViewController* _mprisViewController;
-    UIViewController* _deviceViewController;
-    __strong NSString* _currentSong;
-    NSUInteger _volume;
-    __strong NSArray* _playerList;
-    __strong NSString* _player;
+    NSUInteger _volume; 
     BOOL _playing;
 }
+@property(nonatomic) UIView* _view;
+@property(nonatomic) MPRISViewController* _mprisViewController;
+@property(nonatomic) UIViewController* _deviceViewController;
+@property(nonatomic) NSString* _currentSong;
+@property(nonatomic) NSArray* _playerList;
+@property(nonatomic) NSString* _player;
+@end
+
+@implementation MPRIS
 
 @synthesize _device;
 @synthesize _pluginInfo;
 @synthesize _pluginDelegate;
+@synthesize _deviceViewController;
+@synthesize _view;
+@synthesize _currentSong;
+@synthesize _mprisViewController;
+@synthesize _player;
+@synthesize _playerList;
 
 - (id) init
 {

@@ -11,15 +11,16 @@
 #define PAYLOAD_PORT 1739
 @interface LanLink()
 {
-    __strong GCDAsyncSocket* _socket;
-    __strong NetworkPackage* _pendingPairNP;
-    __strong NSMutableArray* _pendingRSockets;
-    __strong NSMutableArray* _pendingLSockets;
-    __strong NSMutableArray* _pendingPayloadNP;
-    __strong NSMutableArray* _pendingPayloads;
     uint16_t _payloadPort;
     dispatch_queue_t _socketQueue;
 }
+
+@property(nonatomic) GCDAsyncSocket* _socket;
+@property(nonatomic) NetworkPackage* _pendingPairNP;
+@property(nonatomic) NSMutableArray* _pendingRSockets;
+@property(nonatomic) NSMutableArray* _pendingLSockets;
+@property(nonatomic) NSMutableArray* _pendingPayloadNP;
+@property(nonatomic) NSMutableArray* _pendingPayloads;
 
 @end
 
@@ -28,6 +29,12 @@
 @synthesize _deviceId;
 @synthesize _linkDelegate;
 @synthesize _publicKey;
+@synthesize _pendingLSockets;
+@synthesize _pendingPairNP;
+@synthesize _pendingPayloadNP;
+@synthesize _pendingPayloads;
+@synthesize _pendingRSockets;
+@synthesize _socket;
 
 - (LanLink*) init:(GCDAsyncSocket*)socket deviceId:(NSString*) deviceid setDelegate:(id)linkdelegate
 {

@@ -8,14 +8,18 @@
 
 #import "BackgroundService.h"
 #import "LanLinkProvider.h"
+@interface BackgroundService()
+@property(nonatomic)NSMutableArray* _linkProviders;
+@property(nonatomic)NSMutableDictionary* _devices;
+@property(nonatomic)NSMutableArray* _visibleDevices;
+@end
+
 @implementation BackgroundService
-{
-    __strong NSMutableArray* _linkProviders;
-    __strong NSMutableDictionary* _devices;
-    __strong NSMutableArray* _visibleDevices;
-}
 
 @synthesize _backgroundServiceDelegate;
+@synthesize _devices;
+@synthesize _linkProviders;
+@synthesize _visibleDevices;
 
 + (id) sharedInstance
 {

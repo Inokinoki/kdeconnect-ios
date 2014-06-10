@@ -20,9 +20,9 @@
 #pragma mark PluginInfo
 @interface PluginInfo : NSObject
 
-@property(strong,nonatomic,readonly) NSString* _pluginName;
-@property(strong,nonatomic,readonly) NSString* _displayName;
-@property(strong,nonatomic,readonly) NSString* _description;
+@property(nonatomic,readonly) NSString* _pluginName;
+@property(nonatomic,readonly) NSString* _displayName;
+@property(nonatomic,readonly) NSString* _description;
 @property(nonatomic) BOOL _enabledByDefault;
 
 - (PluginInfo*) initWithInfos:(NSString*)pluginName displayName:(NSString*)displayName description:(NSString*)description enabledByDefault:(BOOL)enabledBydefault;
@@ -32,9 +32,9 @@
 #pragma mark Plugin
 @interface Plugin : NSObject
 
-@property(strong,nonatomic) Device* _device;
-@property(strong,nonatomic) PluginInfo* _pluginInfo;
-@property(nonatomic,assign) id _pluginDelegate;
+@property(nonatomic) Device* _device;
+@property(nonatomic) PluginInfo* _pluginInfo;
+@property(nonatomic) id _pluginDelegate;
 
 - (BOOL) onDevicePackageReceived:(NetworkPackage*)np;
 - (UIView*) getView:(UIViewController*)vc;

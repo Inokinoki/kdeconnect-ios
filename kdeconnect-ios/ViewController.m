@@ -11,19 +11,19 @@
 #import "MRProgress.h"
 
 @interface ViewController ()
-{
-    NSString* _pairingDevice;
-    __strong NSDictionary* _connectedDevices;
-    __strong NSDictionary* _rememberedDevices;
-    __strong NSDictionary* _visibleDevices;
-}
-
+@property(nonatomic)NSString* _pairingDevice;
+@property(nonatomic)NSDictionary* _connectedDevices;
+@property(nonatomic)NSDictionary* _rememberedDevices;
+@property(nonatomic)NSDictionary* _visibleDevices;
 @end
-
 
 @implementation ViewController
 
 @synthesize _tableView;
+@synthesize _visibleDevices;
+@synthesize _connectedDevices;
+@synthesize _pairingDevice;
+@synthesize _rememberedDevices;
 
 - (void)viewDidLoad
 {

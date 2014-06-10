@@ -12,18 +12,25 @@
 #import <CommonCrypto/CommonDigest.h>
 #import <CommonCrypto/CommonCryptor.h>
 
-@implementation LanLinkProvider
+@interface LanLinkProvider()
 {
-    __strong GCDAsyncUdpSocket* _udpSocket;
-    __strong GCDAsyncSocket* _tcpSocket;
-    NSMutableArray* _pendingSockets;
-    NSMutableArray* _pendingNps;
     uint16_t _tcpPort;
-    __strong dispatch_queue_t socketQueue;
+    dispatch_queue_t socketQueue;
 }
+@property(nonatomic) GCDAsyncUdpSocket* _udpSocket;
+@property(nonatomic) GCDAsyncSocket* _tcpSocket;
+@property(nonatomic) NSMutableArray* _pendingSockets;
+@property(nonatomic) NSMutableArray* _pendingNps;
+@end
+
+@implementation LanLinkProvider
 
 @synthesize _connectedLinks;
 @synthesize _linkProviderDelegate;
+@synthesize _pendingNps;
+@synthesize _pendingSockets;
+@synthesize _tcpSocket;
+@synthesize _udpSocket;
 
 - (LanLinkProvider*) initWithDelegate:(id)linkProviderDelegate
 {
