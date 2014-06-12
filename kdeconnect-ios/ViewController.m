@@ -290,4 +290,11 @@
         _pairingDevice=nil;
     }
 }
+
+#pragma mark - UITabBarControllerDelegate
+- (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
+{
+    [[BackgroundService sharedInstance] reloadAllPlugins];
+}
+
 @end

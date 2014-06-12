@@ -10,16 +10,17 @@
 #import "DeviceViewController.h"
 #import "BackgroundService.h"
 #import "IASKSettingsReader.h"
+#import "SettingsStore.h"
 
 @interface DeviceViewController ()
-@property (nonatomic, retain) IASKAppSettingsViewController *appSettingsViewController;
-@property (nonatomic) UIPopoverController* currentPopoverController;
+@property (nonatomic, retain) AppSettingViewController *_appSettingsViewController;
+@property (nonatomic) UIPopoverController* _currentPopoverController;
 @end
 
 @implementation DeviceViewController
 
 @synthesize _deviceId;
-@synthesize appSettingsViewController;
+@synthesize _appSettingsViewController;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -34,6 +35,8 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    UIBarButtonItem* buttonItem=[[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStylePlain target:self action:@selector(showSettingsModal:)];
+    self.navigationItem.rightBarButtonItem = buttonItem;
     [self loadPluginsViews];
 }
 
@@ -67,94 +70,103 @@
 
 
 - (IBAction)showSettingsModal:(id)sender {
-    UINavigationController *aNavController = [[UINavigationController alloc] initWithRootViewController:self.appSettingsViewController];
+    UINavigationController *aNavController = [[UINavigationController alloc] initWithRootViewController:self._appSettingsViewController];
     //[viewController setShowCreditsFooter:NO];   // Uncomment to not display InAppSettingsKit credits for creators.
     // But we encourage you not to uncomment. Thank you!
-    self.appSettingsViewController.showDoneButton = YES;
+    self._appSettingsViewController.showDoneButton = YES;
     [self presentViewController:aNavController animated:YES completion:nil];
 }
 
 - (void)showSettingsPopover:(id)sender {
-	if(self.currentPopoverController) {
+	if(self._currentPopoverController) {
         [self dismissCurrentPopover];
 		return;
 	}
     
-	self.appSettingsViewController.showDoneButton = NO;
-	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:self.appSettingsViewController];
+	self._appSettingsViewController.showDoneButton = NO;
+	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:self._appSettingsViewController];
 	UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:navController];
 	popover.delegate = self;
 	[popover presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionUp animated:NO];
-	self.currentPopoverController = popover;
+	self._currentPopoverController = popover;
 }
 
 - (void)awakeFromNib {
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingDidChange:) name:kIASKAppSettingChanged object:nil];
+//	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingDidChange:) name:kIASKAppSettingChanged object:nil];
     
 	if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
 		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(showSettingsPopover:)];
 	}
 }
 
-- (IASKAppSettingsViewController*)appSettingsViewController {
-	if (!appSettingsViewController) {
-		appSettingsViewController = [[IASKAppSettingsViewController alloc] init];
-		appSettingsViewController.delegate = self;
+- (IASKAppSettingsViewController*)_appSettingsViewController {
+	if (!_appSettingsViewController) {
+		_appSettingsViewController = [[IASKAppSettingsViewController alloc] init];
+		_appSettingsViewController.delegate = self;
+        [_appSettingsViewController setSettingsReader:[[IASKSettingsReader alloc]init]];
+        [_appSettingsViewController setSettingsStore:[[SettingsStore alloc] initWithPath:_deviceId]];
 	}
-	return appSettingsViewController;
+	return _appSettingsViewController;
 }
 
 #pragma mark - View Lifecycle
 - (void)viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
-	if(self.currentPopoverController) {
+	if(self._currentPopoverController) {
 		[self dismissCurrentPopover];
 	}
 }
 
 - (void) dismissCurrentPopover {
-	[self.currentPopoverController dismissPopoverAnimated:YES];
-	self.currentPopoverController = nil;
+	[self._currentPopoverController dismissPopoverAnimated:YES];
+	self._currentPopoverController = nil;
 }
 
 #pragma mark IASKAppSettingsViewControllerDelegate protocol
 - (void)settingsViewControllerDidEnd:(IASKAppSettingsViewController*)sender {
     [self dismissViewControllerAnimated:YES completion:nil];
-	
 	// your code here to reconfigure the app for changed settings
+    [[BackgroundService sharedInstance] reloadAllPlugins];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[self.view subviews]
+                        makeObjectsPerformSelector:@selector(removeFromSuperview)];
+        [self viewDidLoad];
+        [self viewWillAppear:YES];
+        [self.view setNeedsDisplay];
+    });
 }
 
-- (CGFloat)settingsViewController:(id<IASKViewController>)settingsViewController
-                        tableView:(UITableView *)tableView
-        heightForHeaderForSection:(NSInteger)section {
-		return 55.f;
-}
+//- (CGFloat)settingsViewController:(id<IASKViewController>)settingsViewController
+//                        tableView:(UITableView *)tableView
+//        heightForHeaderForSection:(NSInteger)section {
+//		return 55.f;
+//}
 
-- (UIView *)settingsViewController:(id<IASKViewController>)settingsViewController
-                         tableView:(UITableView *)tableView
-           viewForHeaderForSection:(NSInteger)section {
+//- (UIView *)settingsViewController:(id<IASKViewController>)settingsViewController
+//                         tableView:(UITableView *)tableView
+//           viewForHeaderForSection:(NSInteger)section {
+//
+//        UILabel* label = [[UILabel alloc] initWithFrame:CGRectZero];
+//        label.backgroundColor = [UIColor clearColor];
+//        label.textColor = [UIColor redColor];
+//        label.shadowColor = [UIColor whiteColor];
+//        label.shadowOffset = CGSizeMake(0, 1);
+//        label.numberOfLines = 0;
+//        label.font = [UIFont boldSystemFontOfSize:16.f];
+//        
+//        //figure out the title from settingsbundle
+//        label.text = [settingsViewController.settingsReader titleForSection:section];
+//        return label;
+//}
+//
+//- (CGFloat)tableView:(UITableView*)tableView heightForSpecifier:(IASKSpecifier*)specifier {
+//	return 0;
+//}
 
-        UILabel* label = [[UILabel alloc] initWithFrame:CGRectZero];
-        label.backgroundColor = [UIColor clearColor];
-        label.textColor = [UIColor redColor];
-        label.shadowColor = [UIColor whiteColor];
-        label.shadowOffset = CGSizeMake(0, 1);
-        label.numberOfLines = 0;
-        label.font = [UIFont boldSystemFontOfSize:16.f];
-        
-        //figure out the title from settingsbundle
-        label.text = [settingsViewController.settingsReader titleForSection:section];
-        return label;
-}
-
-- (CGFloat)tableView:(UITableView*)tableView heightForSpecifier:(IASKSpecifier*)specifier {
-	return 0;
-}
-
-#pragma mark kIASKAppSettingChanged notification
-- (void)settingDidChange:(NSNotification*)notification {
-
-}
+//#pragma mark kIASKAppSettingChanged notification
+//- (void)settingDidChange:(NSNotification*)notification {
+//    
+//}
 
 /*
 #pragma mark - Navigation

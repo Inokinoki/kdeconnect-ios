@@ -8,10 +8,15 @@
 
 #import "BackgroundService.h"
 #import "LanLinkProvider.h"
+#import "SettingsStore.h"
+#import "PluginFactory.h"
+#import "SecKeyWrapper.h"
+
 @interface BackgroundService()
 @property(nonatomic)NSMutableArray* _linkProviders;
 @property(nonatomic)NSMutableDictionary* _devices;
 @property(nonatomic)NSMutableArray* _visibleDevices;
+@property(nonatomic)SettingsStore* _settings;
 @end
 
 @implementation BackgroundService
@@ -20,6 +25,7 @@
 @synthesize _devices;
 @synthesize _linkProviders;
 @synthesize _visibleDevices;
+@synthesize _settings;
 
 + (id) sharedInstance
 {
@@ -45,35 +51,24 @@
         _linkProviders=[NSMutableArray arrayWithCapacity:1];
         _devices=[NSMutableDictionary dictionaryWithCapacity:1];
         _visibleDevices=[NSMutableArray arrayWithCapacity:1];
+        _settings=[[SettingsStore alloc] initWithPath:KDECONNECT_REMEMBERED_DEV_FILE_PATH];
         [self registerLinkProviders];
         [self loadRemenberedDevices];
+        [PluginFactory sharedInstance];
+        if (![[SecKeyWrapper sharedWrapper] getPublicKeyBits]) {
+            [[SecKeyWrapper sharedWrapper] generateKeyPair:2048];
+        }
+
     }
     return self;
 }
 
 - (void) loadRemenberedDevices
 {
-    //TO-DO read setting to load remembered Deviceds
-
-    //get app document path
-    NSArray *paths=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
-    NSString *plistPath1 = [paths objectAtIndex:0];
-
-    //get local configue file
-    NSString *filename=[plistPath1 stringByAppendingPathComponent:@"rememberedDevices.plist"];
-    BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:filename];
-    if (!fileExists) {
-        NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"rememberedDevices" ofType:@"plist"];
-        NSMutableDictionary *data = [[NSMutableDictionary alloc] initWithContentsOfFile:plistPath];
-        [[data valueForKey:@"rememberedDevices"] writeToFile:filename atomically:YES];
-    }
-    
-    NSMutableDictionary *devicesDict = [[NSMutableDictionary alloc] initWithContentsOfFile:filename];
-    for (NSString* deviceId in [devicesDict allKeys]) {
+    for (NSString* deviceId in [_settings getAllKeys]) {
         Device* device=[[Device alloc] init:deviceId setDelegate:self];
         [_devices setObject:device forKey:deviceId];
     }
-    NSLog(@"%@", devicesDict);
 }
 - (void) registerLinkProviders
 {
@@ -246,7 +241,6 @@
     if (_backgroundServiceDelegate) {
         [_backgroundServiceDelegate onPairRequest:[device _id]];
     }
-    
 }
 
 - (void) onDevicePairTimeout:(Device*)device
@@ -255,6 +249,8 @@
     if (_backgroundServiceDelegate) {
         [_backgroundServiceDelegate onPairTimeout:[device _id]];
     }
+    [_settings setObject:nil forKey:[device _id]];
+    [_settings synchronize];
 }
 
 - (void) onDevicePairSuccess:(Device*)device
@@ -263,6 +259,8 @@
     if (_backgroundServiceDelegate) {
         [_backgroundServiceDelegate onPairSuccess:[device _id]];
     }
+    [_settings setObject:[device _name] forKey:[device _id]];
+    [_settings synchronize];
 }
 
 - (void) onDevicePairRejected:(Device*)device
@@ -271,8 +269,16 @@
     if (_backgroundServiceDelegate) {
         [_backgroundServiceDelegate onPairRejected:[device _id]];
     }
+    [_settings setObject:nil forKey:[device _id]];
+    [_settings synchronize];
 }
-    
+
+- (void) reloadAllPlugins
+{
+    for (Device* dev in _visibleDevices) {
+        [dev reloadPlugins];
+    }
+}
 
 @end
 

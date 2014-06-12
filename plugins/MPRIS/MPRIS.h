@@ -24,7 +24,9 @@
 @property(nonatomic) id _pluginDelegate;
 
 - (BOOL) onDevicePackageReceived:(NetworkPackage*)np;
+- (void) stop;
 - (UIView*) getView:(UIViewController*)vc;
+
 - (void) sendAction:(NSString*)action;
 - (void) setVolume:(NSUInteger)volume;
 - (void) seek:(NSInteger)offset;

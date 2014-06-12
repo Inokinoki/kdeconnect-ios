@@ -24,7 +24,7 @@
 - (id) init
 {
     if ((self=[super init])) {
-        _pluginInfo=[[PluginInfo alloc] initWithInfos:@"SharePlugin" displayName:@"Share" description:@"Share" enabledByDefault:true];
+        _pluginInfo=[[PluginInfo alloc] initWithInfos:@"Share" displayName:@"Share" description:@"Share" enabledByDefault:true];
         _pluginDelegate=nil;
         _device=nil;
         _view=nil;
@@ -72,7 +72,7 @@
         _imagePicker.delegate=self;
         _imagePicker.allowsEditing=NO;
         _imagePicker.sourceType=UIImagePickerControllerSourceTypeCamera;
-    [_deviceViewController presentViewController:_imagePicker animated:YES completion:nil];
+        [_deviceViewController presentViewController:_imagePicker animated:YES completion:nil];
 }
 
 - (IBAction)sharePhotoFromLibrary:(id)sender

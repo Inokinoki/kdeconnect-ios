@@ -7,7 +7,10 @@
 //
 
 #import "Device.h"
+#import "SettingsStore.h"
+#import "IASKSettingsReader.h"
 #define PAIR_TIMMER_TIMEOUT  10.0
+
 @interface Device()
 @property(nonatomic) NSMutableArray* _links;
 @property(nonatomic) NSMutableDictionary* _plugins;
@@ -92,6 +95,8 @@
         NSLog(@"no available link");
         if (_deviceDelegate) {
             [_deviceDelegate onDeviceReachableStatusChanged:self];
+            [_plugins removeAllObjects];
+            [_failedPlugins removeAllObjects];
         }
     }
     if (_deviceDelegate) {
@@ -205,44 +210,21 @@
 - (void) loadSetting
 {
     //get app document path
-    NSArray *paths=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
-    NSString *plistPath = [paths objectAtIndex:0];
-    NSString *filename=[plistPath stringByAppendingPathComponent:@"rememberedDevices.plist"];
-    @synchronized(filename){
-        NSMutableDictionary *dict = [[[NSMutableDictionary alloc] initWithContentsOfFile:filename]
-                                     valueForKey:_id];
-        _name=[dict valueForKey:@"name"];
-        _pairStatus=Paired;
-        _protocolVersion=[[dict valueForKey:@"protocolVersion"] integerValue];
-        //            _type=[dict valueForKey:@"type"];
-    }
+    SettingsStore* _devSettings=[[SettingsStore alloc] initWithPath:_id];
+    _name=[_devSettings objectForKey:@"name"];
+    _pairStatus=Paired;
+    _protocolVersion=[_devSettings integerForKey:@"protocolVersion"];
+    //            _type=[dict valueForKey:@"type"];
 }
 
 - (void) saveSetting
 {
     //get app document path
     //TO-DO Type
-    NSArray *paths=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
-    NSString *plistPath = [paths objectAtIndex:0];
-    NSString *filename=[plistPath stringByAppendingPathComponent:@"rememberedDevices.plist"];
-    NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithContentsOfFile:filename];
-    NSDictionary* setting=@{@"name": _name,
-                            @"protocolVersion":[NSNumber numberWithInteger:_protocolVersion],
-                            @"type":@"unknown"};
-    [dict setObject:setting forKey:_id];
-    [dict writeToFile:filename atomically:YES];
-}
-
-- (void) removeSetting
-{
-    //get app document path
-    NSArray *paths=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
-    NSString *plistPath = [paths objectAtIndex:0];
-    NSString *filename=[plistPath stringByAppendingPathComponent:@"rememberedDevices.plist"];
-    NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithContentsOfFile:filename];
-    [dict removeObjectForKey:_id];
-    [dict writeToFile:filename atomically:YES];
-
+    SettingsStore* _devSettings=[[SettingsStore alloc] initWithPath:_id];
+    [_devSettings setObject:_name forKey:@"name"];
+    [_devSettings setInteger:_protocolVersion forKey:@"protocolVersion"];
+    [_devSettings synchronize];
 }
 
 #pragma mark Pairing-related Functions
@@ -318,7 +300,6 @@
     NSLog(@"device unpair");
     if (![self isPaired]) return;
     _pairStatus=NotPaired;
-    [self removeSetting];
     NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_PAIR];
     [[np _Body] setValue:[NSNumber numberWithBool:false] forKey:@"pair"];
     [self sendPackage:np tag:PACKAGE_TAG_UNPAIR];
@@ -346,19 +327,29 @@
 #pragma mark Plugins-related Functions
 - (void) reloadPlugins
 {
+    if (![self isReachable]) {
+        return;
+    }
     NSLog(@"device reload plugins");
     [_failedPlugins removeAllObjects];
     PluginFactory* pluginFactory=[PluginFactory sharedInstance];
     NSArray* pluginNames=[pluginFactory getAvailablePlugins];
+    NSSortDescriptor *sd = [[NSSortDescriptor alloc] initWithKey:nil ascending:YES];
+    pluginNames=[pluginNames sortedArrayUsingDescriptors:[NSArray arrayWithObject:sd]];
+    SettingsStore* _devSettings=[[SettingsStore alloc] initWithPath:_id];
     for (NSString* pluginName in pluginNames) {
-        //TO-DO load configure file
-        if ((![[_plugins allKeys] containsObject:pluginName])||(![_plugins valueForKey:pluginName])) {
-            Plugin* plugin=[pluginFactory instantiatePluginForDevice:self pluginName:pluginName];
-            if (plugin)
-                [_plugins setValue:plugin forKey:pluginName];
-            else
-                [_failedPlugins addObject:pluginName];
+        if ([_devSettings objectForKey:pluginName]!=nil && ![_devSettings boolForKey:pluginName]) {
+            [[_plugins objectForKey:pluginName] stop];
+            [_plugins removeObjectForKey:pluginName];
+            [_failedPlugins addObject:pluginName];
+            continue;
         }
+        [_plugins removeObjectForKey:pluginName];
+        Plugin* plugin=[pluginFactory instantiatePluginForDevice:self pluginName:pluginName];
+        if (plugin)
+            [_plugins setValue:plugin forKey:pluginName];
+        else
+            [_failedPlugins addObject:pluginName];
     }
 }
 

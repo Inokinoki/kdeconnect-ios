@@ -48,6 +48,10 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    UIBarButtonItem *buttonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                target:self
+                                                                                action:@selector(dismiss:)];
+    self.navigationItem.rightBarButtonItem = buttonItem;
     [self onPlayerStatusUpdated];
     [self onPlayerListUpdated];
 }

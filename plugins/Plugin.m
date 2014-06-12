@@ -31,4 +31,17 @@
 
 #pragma mark Plugin
 @implementation Plugin
+- (BOOL) onDevicePackageReceived:(NetworkPackage*)np
+{
+    return false;
+}
+
+- (void) stop
+{
+    
+}
+- (UIView*) getView:(UIViewController*)vc
+{
+    return nil;
+}
 @end

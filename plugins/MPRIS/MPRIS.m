@@ -37,7 +37,7 @@
 - (id) init
 {
     if ((self=[super init])) {
-        _pluginInfo=[[PluginInfo alloc] initWithInfos:@"MPRISPlugin" displayName:@"MPRIS" description:@"MPRIS" enabledByDefault:true];
+        _pluginInfo=[[PluginInfo alloc] initWithInfos:@"MPRIS" displayName:@"MPRIS" description:@"MPRIS" enabledByDefault:true];
         _pluginDelegate=nil;
         _device=nil;
         _view=nil;
@@ -111,8 +111,10 @@
     if (!_mprisViewController) {
         _mprisViewController=[[UIStoryboard storyboardWithName:@"Main_iPhone" bundle:[NSBundle mainBundle]] instantiateViewControllerWithIdentifier:@"MPRISViewController"];
         [_mprisViewController setPlugin:self];
+        [_mprisViewController setTitle:@"MPRIS"];
     }
-    [_deviceViewController.navigationController presentViewController:_mprisViewController animated:YES completion:nil];
+    UINavigationController *aNavController = [[UINavigationController alloc] initWithRootViewController:_mprisViewController];
+    [_deviceViewController presentViewController:aNavController animated:YES completion:nil];
 }
 
 - (void) sendAction:(NSString *)action

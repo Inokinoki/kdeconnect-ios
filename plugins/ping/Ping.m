@@ -22,7 +22,7 @@
 - (id) init
 {
     if ((self=[super init])) {
-        _pluginInfo=[[PluginInfo alloc] initWithInfos:@"PingPlugin" displayName:@"Ping" description:@"Ping" enabledByDefault:true];
+        _pluginInfo=[[PluginInfo alloc] initWithInfos:@"Ping" displayName:@"Ping" description:@"Ping" enabledByDefault:true];
         _pluginDelegate=nil;
         _device=nil;
         _view=nil;

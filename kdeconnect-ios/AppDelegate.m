@@ -8,8 +8,7 @@
 
 #import "AppDelegate.h"
 #import "BackgroundService.h"
-#import "PluginFactory.h"
-#import "SecKeyWrapper.h"
+
 
 @implementation AppDelegate
 
@@ -17,21 +16,8 @@
 {
     // Override point for customization after application launch.
     // Register the preference defaults early.
-    NSDictionary *appDefaults = [NSDictionary
-                                 dictionaryWithObjectsAndKeys:
-                                 [NSNumber numberWithBool:YES],@"ping",
-                                 [NSNumber numberWithBool:YES],@"mpris",
-                                 [NSNumber numberWithBool:YES],@"clipboard",
-                                 [NSNumber numberWithBool:YES],@"share",
-                                 nil];
-    [[NSUserDefaults standardUserDefaults] registerDefaults:appDefaults];
     
-    //instancie backgroundservice, pluginfactory and generate keys if not existe.
     [BackgroundService sharedInstance];
-    [PluginFactory sharedInstance];
-    if (![[SecKeyWrapper sharedWrapper] getPublicKeyBits]) {
-        [[SecKeyWrapper sharedWrapper] generateKeyPair:2048];
-    }
     [[BackgroundService sharedInstance] startDiscovery];
     return YES;
 }

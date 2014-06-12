@@ -7,6 +7,7 @@
 //
 
 #import "PluginFactory.h"
+#import "SettingsStore.h"
 #import "Ping.h"
 #import "MPRIS.h"
 #import "Share.h"
@@ -43,6 +44,11 @@
     if ((self=[super init])) {
         _availablePlugins=[NSMutableDictionary dictionaryWithCapacity:1];
         [self registerPlugins];
+        NSMutableDictionary* appDefaults=[NSMutableDictionary dictionaryWithCapacity:1];
+        for (NSString* pluginName in [_availablePlugins allKeys]) {
+            [appDefaults setObject:[NSNumber numberWithBool:YES] forKey:pluginName];
+        }
+        [[NSUserDefaults standardUserDefaults] registerDefaults:appDefaults];
     }
     return self;
 }
@@ -54,6 +60,11 @@
 
 - (Plugin*) instantiatePluginForDevice:(Device*)device pluginName:(NSString*)pluginName
 {
+    SettingsStore* setting=[[SettingsStore alloc] initWithPath:KDECONNECT_GLOBAL_SETTING_FILE_PATH];
+    if ([setting objectForKey:pluginName]!=nil && ![setting boolForKey:pluginName]) {
+        return nil;
+    }
+
     NSLog(@"pluginfactory instatiate plugin for device");
     Class pluginClass=[_availablePlugins valueForKey:pluginName];
     Plugin* plugin;

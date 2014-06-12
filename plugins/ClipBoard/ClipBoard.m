@@ -25,7 +25,7 @@
 - (id) init
 {
     if ((self=[super init])) {
-        _pluginInfo=[[PluginInfo alloc] initWithInfos:@"ClipBoardPlugin" displayName:@"ClipBoard" description:@"ClipBoard" enabledByDefault:true];
+        _pluginInfo=[[PluginInfo alloc] initWithInfos:@"ClipBoard" displayName:@"ClipBoard" description:@"ClipBoard" enabledByDefault:true];
         _pluginDelegate=nil;
         _device=nil;
         pastboardContents = [UIPasteboard generalPasteboard].string;
@@ -93,9 +93,14 @@
     });
 }
 
-- (void) dealloc
+- (void) stop
 {
     UIApplication* application=[UIApplication sharedApplication];
     [application endBackgroundTask:task];
+}
+
+- (void) dealloc
+{
+    [self stop];
 }
 @end

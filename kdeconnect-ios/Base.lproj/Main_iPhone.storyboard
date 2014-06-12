@@ -73,10 +73,10 @@
             </objects>
             <point key="canvasLocation" x="179" y="222"/>
         </scene>
-        <!--In App Setting View Controller-->
+        <!--App Setting View Controller-->
         <scene sceneID="945-O8-N0g">
             <objects>
-                <tableViewController id="7RH-L9-aqA" customClass="inAppSettingViewController" sceneMemberID="viewController">
+                <tableViewController id="7RH-L9-aqA" customClass="AppSettingViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="blL-4l-rij">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

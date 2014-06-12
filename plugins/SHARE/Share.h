@@ -21,6 +21,7 @@
 @property(nonatomic) id _pluginDelegate;
 
 - (BOOL) onDevicePackageReceived:(NetworkPackage*)np;
+- (void) stop;
 - (UIView*) getView:(UIViewController*)vc;
 
 @end
