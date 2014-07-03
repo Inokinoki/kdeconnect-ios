@@ -62,6 +62,9 @@
         [_view addSubview:button1];
         [_view addSubview:button2];
     }
+    else{
+        _view=nil;
+    }
     _deviceViewController=vc;
     return _view;
 }

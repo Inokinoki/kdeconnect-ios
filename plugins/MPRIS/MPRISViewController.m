@@ -108,8 +108,16 @@
     }
     else{
         if (![_playerList containsObject:_player]) {
-            _player=[_playerList objectAtIndex:0];
+            _player=[_playerList firstObject];
         }
+    }
+    if (!_player) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [_playerPicker reloadAllComponents];
+            [_currentPlayer setText:nil];
+            [_currentText setText:nil];
+        });
+        return;
     }
     [_mprisPlugin setPlayer:_player];
     dispatch_async(dispatch_get_main_queue(), ^{

@@ -30,6 +30,8 @@
 		4E08A2361913D1780056EEF8 /* Device.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2321913D1780056EEF8 /* Device.m */; };
 		4E08A2371913D1780056EEF8 /* NetworkPackage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2341913D1780056EEF8 /* NetworkPackage.m */; };
 		4E0E321F192B495E001D88CD /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4E0E321E192B495E001D88CD /* Settings.bundle */; };
+		4E1A82A319657DD700174217 /* MousePad.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E1A82A219657DD700174217 /* MousePad.m */; };
+		4E1A82A619657FF400174217 /* MousePadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E1A82A519657FF400174217 /* MousePadViewController.m */; };
 		4E3038FC1940889900F28091 /* ClipBoard.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E3038FB1940889900F28091 /* ClipBoard.m */; };
 		4E51BBED193FADA7007E74F4 /* Share.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E51BBEC193FADA7007E74F4 /* Share.m */; };
 		4E85B96C1928F9D600EF3C55 /* DeviceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E85B96B1928F9D600EF3C55 /* DeviceViewController.m */; };
@@ -91,6 +93,10 @@
 		4E08A2331913D1780056EEF8 /* NetworkPackage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NetworkPackage.h; path = lib/NetworkPackage.h; sourceTree = "<group>"; };
 		4E08A2341913D1780056EEF8 /* NetworkPackage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NetworkPackage.m; path = lib/NetworkPackage.m; sourceTree = "<group>"; };
 		4E0E321E192B495E001D88CD /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		4E1A82A119657DD700174217 /* MousePad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MousePad.h; path = plugins/MousePad/MousePad.h; sourceTree = "<group>"; };
+		4E1A82A219657DD700174217 /* MousePad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MousePad.m; path = plugins/MousePad/MousePad.m; sourceTree = "<group>"; };
+		4E1A82A419657FF400174217 /* MousePadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MousePadViewController.h; path = plugins/MousePad/MousePadViewController.h; sourceTree = "<group>"; };
+		4E1A82A519657FF400174217 /* MousePadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MousePadViewController.m; path = plugins/MousePad/MousePadViewController.m; sourceTree = "<group>"; };
 		4E3038FA1940889900F28091 /* ClipBoard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ClipBoard.h; path = plugins/ClipBoard/ClipBoard.h; sourceTree = "<group>"; };
 		4E3038FB1940889900F28091 /* ClipBoard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ClipBoard.m; path = plugins/ClipBoard/ClipBoard.m; sourceTree = "<group>"; };
 		4E51BBEB193FADA7007E74F4 /* Share.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Share.h; path = plugins/SHARE/Share.h; sourceTree = "<group>"; };
@@ -267,6 +273,17 @@
 			name = backend;
 			sourceTree = "<group>";
 		};
+		4E1A82A019657D0800174217 /* MousePad */ = {
+			isa = PBXGroup;
+			children = (
+				4E1A82A419657FF400174217 /* MousePadViewController.h */,
+				4E1A82A519657FF400174217 /* MousePadViewController.m */,
+				4E1A82A119657DD700174217 /* MousePad.h */,
+				4E1A82A219657DD700174217 /* MousePad.m */,
+			);
+			name = MousePad;
+			sourceTree = "<group>";
+		};
 		4E3038F91940886800F28091 /* ClipBoard */ = {
 			isa = PBXGroup;
 			children = (
@@ -288,6 +305,7 @@
 		4EC27541191FCE910057AB0E /* plugins */ = {
 			isa = PBXGroup;
 			children = (
+				4E1A82A019657D0800174217 /* MousePad */,
 				4E3038F91940886800F28091 /* ClipBoard */,
 				4E51BBEA193F6E96007E74F4 /* SHARE */,
 				4EDD98F7192DA9F000C6AB01 /* MPRIS */,
@@ -464,12 +482,14 @@
 				4EC2754B191FD5490057AB0E /* PluginFactory.m in Sources */,
 				4E08A2271913D1550056EEF8 /* BaseLink.m in Sources */,
 				4EC27548191FCECD0057AB0E /* Ping.m in Sources */,
+				4E1A82A619657FF400174217 /* MousePadViewController.m in Sources */,
 				4E08A2371913D1780056EEF8 /* NetworkPackage.m in Sources */,
 				4E08A2361913D1780056EEF8 /* Device.m in Sources */,
 				4E08A22D1913D1650056EEF8 /* LanLink.m in Sources */,
 				4E51BBED193FADA7007E74F4 /* Share.m in Sources */,
 				4E08A2281913D1550056EEF8 /* BaseLinkProvider.m in Sources */,
 				4E95A1911949954600647948 /* SettingsStore.m in Sources */,
+				4E1A82A319657DD700174217 /* MousePad.m in Sources */,
 				4EF576E9194784D80046213D /* AppSettingViewController.m in Sources */,
 				4E08A22E1913D1650056EEF8 /* LanLinkProvider.m in Sources */,
 				4E08A1F41913CF850056EEF8 /* main.m in Sources */,

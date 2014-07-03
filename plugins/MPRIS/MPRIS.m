@@ -102,6 +102,9 @@
         [_view addSubview:label];
         [_view addSubview:button];
     }
+    else{
+        _view=nil;
+    }
     _deviceViewController=vc;
     return _view;
 }

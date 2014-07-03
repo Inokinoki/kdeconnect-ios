@@ -23,6 +23,7 @@
 #define PACKAGE_TAG_MPRIS       6
 #define PACKAGE_TAG_SHARE       7
 #define PACKAGE_TAG_CLIPBOARD   8
+#define PACKAGE_TAG_MOUSEPAD    9
 
 #define PORT                    1714
 #define ProtocolVersion         5
@@ -35,6 +36,7 @@
 #define PACKAGE_TYPE_TELEPHONY  @"kdeconnect.telephony"
 #define PACKAGE_TYPE_SHARE      @"kdeconnect.share"
 #define PACKAGE_TYPE_CLIPBOARD  @"kdeconnect.clipboard"
+#define PACKAGE_TYPE_MOUSEPAD   @"kdeconnect.mousepad"
 
 #pragma mark -
 

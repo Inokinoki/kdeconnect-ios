@@ -264,6 +264,24 @@
             </objects>
             <point key="canvasLocation" x="1093" y="222"/>
         </scene>
+        <!--Mouse Pad View Controller-->
+        <scene sceneID="EA3-N5-9b7">
+            <objects>
+                <viewController storyboardIdentifier="MousePadViewController" id="GdB-HQ-Hvg" customClass="MousePadViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="O8o-Z6-o47"/>
+                        <viewControllerLayoutGuide type="bottom" id="42l-y9-MQk"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="ciJ-0U-9wp">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="xgU-8z-RQE" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1541" y="222"/>
+        </scene>
         <!--Device View Controller-->
         <scene sceneID="94R-cA-pBh">
             <objects>

@@ -12,6 +12,7 @@
 #import "MPRIS.h"
 #import "Share.h"
 #import "ClipBoard.h"
+#import "MousePad.h"
 
 @interface PluginFactory()
 @property(nonatomic) NSMutableDictionary* _availablePlugins;
@@ -88,10 +89,12 @@
     MPRIS* mprisPlugin=[[MPRIS alloc] init];
     Share* sharePlugin=[[Share alloc] init];
     ClipBoard* clipboardPlugin=[[ClipBoard alloc] init];
+    MousePad* mousePadPlugin=[[MousePad alloc] init];
     [_availablePlugins setValue:[Ping class] forKey:[[[pingPlugin _pluginInfo] _pluginName] copy]];
     [_availablePlugins setValue:[MPRIS class] forKey:[[[mprisPlugin _pluginInfo] _pluginName] copy]];
     [_availablePlugins setValue:[Share class] forKey:[[[sharePlugin _pluginInfo] _pluginName] copy]];
     [_availablePlugins setValue:[ClipBoard class] forKey:[[[clipboardPlugin _pluginInfo] _pluginName] copy]];
+    [_availablePlugins setValue:[MousePad class] forKey:[[[mousePadPlugin _pluginInfo] _pluginName] copy]];
 }
 
 @end

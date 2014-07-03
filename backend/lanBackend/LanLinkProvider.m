@@ -75,6 +75,9 @@
     if (![_tcpSocket isConnected]) {
         while (![_tcpSocket acceptOnPort:_tcpPort error:&err]) {
             _tcpPort++;
+            if (_tcpPort==65536) {
+                _tcpPort=PORT;
+            }
         }
     }
     
@@ -104,6 +107,7 @@
     [_pendingSockets removeAllObjects];
     [_connectedLinks removeAllObjects];
     _udpSocket=nil;
+    _tcpSocket=nil;
 
 }
 

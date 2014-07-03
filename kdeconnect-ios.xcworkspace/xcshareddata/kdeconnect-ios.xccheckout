@@ -5,15 +5,13 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>55CE1F40-CCB6-4554-89B9-C38A48E01685</string>
+	<string>92764FAE-F924-4BC0-8C2C-83BDEEB400E8</string>
 	<key>IDESourceControlProjectName</key>
 	<string>kdeconnect-ios</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>92406F53-2525-48C4-B0A7-A1F77939921B</key>
 		<string>ssh://git.kde.org/scratch/yangqiao/kdeconnect-ios</string>
-		<key>F6E4544D-6E3C-4689-BFD4-7A9A89DE3EDC</key>
-		<string>https://github.com/futuretap/InAppSettingsKit.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>kdeconnect-ios.xcworkspace</string>
@@ -21,8 +19,6 @@
 	<dict>
 		<key>92406F53-2525-48C4-B0A7-A1F77939921B</key>
 		<string>..</string>
-		<key>F6E4544D-6E3C-4689-BFD4-7A9A89DE3EDC</key>
-		<string>../../InAppSettingsKit</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>ssh://git.kde.org/scratch/yangqiao/kdeconnect-ios</string>
@@ -32,14 +28,6 @@
 	<string>92406F53-2525-48C4-B0A7-A1F77939921B</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
-		<dict>
-			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
-			<string>public.vcs.git</string>
-			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>F6E4544D-6E3C-4689-BFD4-7A9A89DE3EDC</string>
-			<key>IDESourceControlWCCName</key>
-			<string>InAppSettingsKit</string>
-		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
