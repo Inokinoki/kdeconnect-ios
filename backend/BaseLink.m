@@ -7,6 +7,7 @@
 //
 
 #import "BaseLink.h"
+#import "BaseLinkProvider.h"
 
 @implementation BaseLink
 

@@ -7,15 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Device.h"
-#define FORMAT(format, ...) [NSString stringWithFormat:(format), ##__VA_ARGS__]
 
 @class Device;
 @class NetworkPackage;
-
-@protocol pluginDelegate <NSObject>
-@optional
-@end
 
 #pragma mark PluginInfo
 @interface PluginInfo : NSObject
@@ -41,4 +35,3 @@
 - (UIView*) getView:(UIViewController*)vc;
 
 @end
-

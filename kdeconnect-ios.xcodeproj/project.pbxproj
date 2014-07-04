@@ -126,7 +126,6 @@
 		4EDD98F9192DAAD700C6AB01 /* MPRISViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MPRISViewController.m; path = plugins/MPRIS/MPRISViewController.m; sourceTree = "<group>"; };
 		4EDD98FB192DAAF800C6AB01 /* MPRIS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MPRIS.h; path = plugins/MPRIS/MPRIS.h; sourceTree = "<group>"; };
 		4EDD98FC192DAAF800C6AB01 /* MPRIS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MPRIS.m; path = plugins/MPRIS/MPRIS.m; sourceTree = "<group>"; };
-		4EEC81BE19238D3D00E13727 /* GCDSingleton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GCDSingleton.h; path = lib/GCDSingleton.h; sourceTree = "<group>"; };
 		4EF576E7194784D80046213D /* AppSettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppSettingViewController.h; sourceTree = "<group>"; };
 		4EF576E8194784D80046213D /* AppSettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppSettingViewController.m; sourceTree = "<group>"; };
 		5B2C3C0E2C4C4FB78D606404 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
@@ -256,7 +255,6 @@
 				4E08A2301913D1780056EEF8 /* BackgroundService.m */,
 				4E08A2311913D1780056EEF8 /* Device.h */,
 				4E08A2321913D1780056EEF8 /* Device.m */,
-				4EEC81BE19238D3D00E13727 /* GCDSingleton.h */,
 				4E08A2331913D1780056EEF8 /* NetworkPackage.h */,
 				4E08A2341913D1780056EEF8 /* NetworkPackage.m */,
 			);

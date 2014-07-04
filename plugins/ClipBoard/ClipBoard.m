@@ -7,7 +7,7 @@
 //
 
 #import "ClipBoard.h"
-
+#import "device.h"
 @interface ClipBoard()
 {
     __block UIBackgroundTaskIdentifier task;

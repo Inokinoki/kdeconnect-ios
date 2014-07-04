@@ -7,7 +7,7 @@
 //
 
 #import "Plugin.h"
-
+#import "Device.h"
 #pragma mark PluginInfo
 @implementation PluginInfo
 

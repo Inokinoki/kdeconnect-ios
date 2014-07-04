@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "BaseLink.h"
 #import "LanLinkProvider.h"
-#import "GCDAsyncSocket.h"
 
 @class GCDAsyncSocket;
 @class LanLinkProvider;

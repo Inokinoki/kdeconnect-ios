@@ -10,15 +10,6 @@
 #import "NetworkPackage.h"
 #import "BaseLink.h"
 
-@class BackgroundService;
-@class BaseLink;
-@class NetworkPackage;
-
-@protocol linkProviderDelegate <NSObject>
-@optional
-- (void) onConnectionReceived:(NetworkPackage*)np link:(BaseLink*)link;
-@end
-
 @interface BaseLinkProvider : NSObject
 
 @property(nonatomic) id _linkProviderDelegate;
@@ -32,4 +23,9 @@
 - (void) onNetworkChange;
 - (void) onLinkDestroyed:(BaseLink*)link;
 
+@end
+
+@protocol linkProviderDelegate <NSObject>
+@optional
+- (void) onConnectionReceived:(NetworkPackage*)np link:(BaseLink*)link;
 @end

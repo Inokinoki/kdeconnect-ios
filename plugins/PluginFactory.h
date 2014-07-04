@@ -7,14 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Device.h"
 #import "Plugin.h"
-#import "GCDSingleton.h"
+#import "common.h"
 
 @class Device;
-@class NetworkPackage;
-@class Plugin;
-@class Ping;
 
 @protocol pluginFactoryDelegate <NSObject>
 @optional

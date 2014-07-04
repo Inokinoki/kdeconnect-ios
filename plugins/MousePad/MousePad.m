@@ -8,6 +8,7 @@
 
 #import "MousePad.h"
 #import "MousePadViewController.h"
+#import "device.h"
 
 @interface MousePad()
 @property(nonatomic) UIView* _view;

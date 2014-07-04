@@ -7,6 +7,7 @@
 //
 
 #import "Share.h"
+#import "device.h"
 
 @interface Share()
 @property(nonatomic) UIView* _view;

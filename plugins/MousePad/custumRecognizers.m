@@ -7,6 +7,7 @@
 //
 
 #import "custumRecognizers.h"
+#import <UIKit/UIGestureRecognizerSubclass.h>
 
 @implementation custumRecognizer
 

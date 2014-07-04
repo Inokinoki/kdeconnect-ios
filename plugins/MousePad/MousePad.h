@@ -7,12 +7,6 @@
 //
 
 #import "Plugin.h"
-@class PluginInfo;
-@class Plugin;
-
-@protocol mousepadDelegate<NSObject>
-@optional
-@end
 
 @interface MousePad : Plugin
 

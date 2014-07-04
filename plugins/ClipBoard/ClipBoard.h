@@ -7,12 +7,6 @@
 //
 
 #import "Plugin.h"
-@class PluginInfo;
-@class Plugin;
-
-@protocol ClipBoardDelegate<NSObject>
-@optional
-@end
 
 @interface ClipBoard : Plugin
 

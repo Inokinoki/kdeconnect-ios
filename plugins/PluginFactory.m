@@ -8,6 +8,7 @@
 
 #import "PluginFactory.h"
 #import "SettingsStore.h"
+#import "Device.h"
 #import "Ping.h"
 #import "MPRIS.h"
 #import "Share.h"

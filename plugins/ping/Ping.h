@@ -7,12 +7,6 @@
 //
 
 #import "Plugin.h"
-@class PluginInfo;
-@class Plugin;
-
-@protocol pingDelegate<NSObject>
-@optional
-@end
 
 @interface Ping : Plugin
 

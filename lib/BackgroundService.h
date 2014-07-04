@@ -12,8 +12,7 @@
 #import "Device.h"
 #import "NetworkPackage.h"
 #import "PluginFactory.h"
-#import "GCDSingleton.h"
-
+#import "common.h"
 @class PluginFactory;
 @class BaseLink;
 @class Device;

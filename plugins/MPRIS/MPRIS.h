@@ -8,9 +8,6 @@
 
 #import "Plugin.h"
 
-@class PluginInfo;
-@class Plugin;
-
 @protocol MPRISDelegate<NSObject>
 @optional
 - (void) onPlayerStatusUpdated;

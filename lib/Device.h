@@ -32,15 +32,6 @@ typedef NS_ENUM(NSUInteger, DeviceType)
     Tablet
 };
 
-@protocol deviceDelegate <NSObject>
-@optional
-- (void) onDeviceReachableStatusChanged:(Device*)device;
-- (void) onDevicePairRequest:(Device*)device;
-- (void) onDevicePairTimeout:(Device*)device;
-- (void) onDevicePairSuccess:(Device*)device;
-- (void) onDevicePairRejected:(Device*)device;
-- (void) onDevicePluginChanged:(Device*)device;
-@end
 
 @interface Device : NSObject <linkDelegate>
 
@@ -76,5 +67,15 @@ typedef NS_ENUM(NSUInteger, DeviceType)
 - (NSArray*) getPluginViews:(UIViewController*)vc;
 @end
 
+
+@protocol deviceDelegate <NSObject>
+@optional
+- (void) onDeviceReachableStatusChanged:(Device*)device;
+- (void) onDevicePairRequest:(Device*)device;
+- (void) onDevicePairTimeout:(Device*)device;
+- (void) onDevicePairSuccess:(Device*)device;
+- (void) onDevicePairRejected:(Device*)device;
+- (void) onDevicePluginChanged:(Device*)device;
+@end
 
 

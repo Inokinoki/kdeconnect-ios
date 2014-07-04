@@ -6,16 +6,8 @@
 //  Copyright (c) 2014 yangqiao. All rights reserved.
 //
 #import <Foundation/Foundation.h>
-#import "GCDAsyncUdpSocket.h"
-#import "GCDAsyncSocket.h"
-#import "NetworkPackage.h"
-#import "BaseLinkProvider.h"
 #import "LanLink.h"
-
-@class GCDAsyncSocket;
-@class GCDAsyncUdpSocket;
-@class BackgroundService;
-@class LanLink;
+#import "BaseLinkProvider.h"
 
 @interface LanLinkProvider : BaseLinkProvider <linkDelegate>
 

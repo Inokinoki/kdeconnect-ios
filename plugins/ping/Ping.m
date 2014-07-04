@@ -7,6 +7,7 @@
 //
 
 #import "Ping.h"
+#import "device.h"
 
 @interface Ping()
 @property(nonatomic) UIView* _view;

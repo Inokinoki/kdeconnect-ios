@@ -10,10 +10,6 @@
 @class PluginInfo;
 @class Plugin;
 
-@protocol ShareDelegate<NSObject>
-@optional
-@end
-
 @interface Share : Plugin <UIImagePickerControllerDelegate,UINavigationControllerDelegate>
 
 @property(nonatomic) Device* _device;

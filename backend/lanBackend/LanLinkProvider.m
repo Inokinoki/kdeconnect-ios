@@ -7,6 +7,10 @@
 //
 
 #import "LanLinkProvider.h"
+#import "GCDAsyncUdpSocket.h"
+#import "GCDAsyncSocket.h"
+#import "NetworkPackage.h"
+
 #import <Security/Security.h>
 #import <Security/SecItem.h>
 #import <CommonCrypto/CommonDigest.h>

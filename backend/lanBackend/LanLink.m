@@ -7,8 +7,11 @@
 //
 
 #import "LanLink.h"
+
+#import "GCDAsyncSocket.h"
 #import "SecKeyWrapper.h"
 #define PAYLOAD_PORT 1739
+
 @interface LanLink()
 {
     uint16_t _payloadPort;

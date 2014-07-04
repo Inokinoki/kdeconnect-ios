@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <UIKit/UIGestureRecognizerSubclass.h>
 
 @interface custumRecognizer : UIGestureRecognizer
 - (void)reset;

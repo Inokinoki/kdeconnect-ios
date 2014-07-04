@@ -8,6 +8,7 @@
 
 #import "MPRIS.h"
 #import "MPRISViewController.h"
+#import "device.h"
 
 @interface MPRIS()
 {

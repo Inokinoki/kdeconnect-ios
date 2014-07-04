@@ -7,21 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "BaseLinkProvider.h"
 #import "NetworkPackage.h"
-
-@class BaseLinkProvider;
-@class BaseLink;
-@class NetworkPackage;
-@class Device;
-
-@protocol linkDelegate <NSObject>
-@optional
-- (void) onPackageReceived:(NetworkPackage*)np;
-- (void) onSendSuccess:(long)tag;
-- (void) onLinkDestroyed:(BaseLink*)link;
-@end
-
 
 @interface BaseLink : NSObject
 
@@ -37,3 +23,10 @@
 - (void) disconnect;
 
 @end;
+
+@protocol linkDelegate <NSObject>
+@optional
+- (void) onPackageReceived:(NetworkPackage*)np;
+- (void) onSendSuccess:(long)tag;
+- (void) onLinkDestroyed:(BaseLink*)link;
+@end
