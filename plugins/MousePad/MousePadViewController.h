@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 @class MousePad;
 
-@interface MousePadViewController : UIViewController
+@interface MousePadViewController : UIViewController<UIGestureRecognizerDelegate>
 
 - (void) setPlugin:(MousePad*)mousePadPlugin;
 

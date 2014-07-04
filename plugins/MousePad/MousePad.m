@@ -10,9 +10,6 @@
 #import "MousePadViewController.h"
 
 @interface MousePad()
-{
-    float _x,_y;
-}
 @property(nonatomic) UIView* _view;
 @property(nonatomic) MousePadViewController* _mousePadController;
 @property(nonatomic) UIViewController* _deviceViewController;
@@ -35,10 +32,6 @@
         _device=nil;
         _view=nil;
         _mousePadController=nil;
-        CGRect screenBounds = [[UIScreen mainScreen] bounds];
-        CGSize screenSize=[[UIScreen mainScreen] bounds].size;
-        _x=screenSize.width/2;
-        _y=screenSize.height/2;
     }
     return self;
 }
@@ -91,19 +84,11 @@
 
 #pragma mark mouse actions
 
-- (void) setStartPointWithX:(double)x Y:(double)y
-{
-    _x=x;
-    _y=y;
-}
-
-- (void) sendPointsWithX:(double)x Y:(double)y
+- (void) sendPointsWithDx:(double)x Dy:(double)y
 {
     NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_MOUSEPAD];
-    [[np _Body] setValue:[NSNumber numberWithDouble:x-_x] forKey:@"dx"];
-    [[np _Body] setValue:[NSNumber numberWithDouble:y-_y] forKey:@"dy"];
-    _x=x;
-    _y=y;
+    [[np _Body] setValue:[NSNumber numberWithDouble:x] forKey:@"dx"];
+    [[np _Body] setValue:[NSNumber numberWithDouble:y] forKey:@"dy"];
     [_device sendPackage:np tag:PACKAGE_TAG_MOUSEPAD];
 }
 
@@ -114,4 +99,33 @@
     [_device sendPackage:np tag:PACKAGE_TAG_MOUSEPAD];
 }
 
+- (void) sendDoubleClick
+{
+    NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_MOUSEPAD];
+    [[np _Body] setValue:[NSNumber numberWithBool:YES] forKey:@"doubleclick"];
+    [_device sendPackage:np tag:PACKAGE_TAG_MOUSEPAD];
+}
+- (void) sendMiddleClick
+{
+    NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_MOUSEPAD];
+    [[np _Body] setValue:[NSNumber numberWithBool:YES] forKey:@"middleclick"];
+    [_device sendPackage:np tag:PACKAGE_TAG_MOUSEPAD];
+}
+- (void) sendRightClick
+{
+    NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_MOUSEPAD];
+    [[np _Body] setValue:[NSNumber numberWithBool:YES] forKey:@"rightclick"];
+    [_device sendPackage:np tag:PACKAGE_TAG_MOUSEPAD];
+}
+- (void) sendScrollWithDx:(double)x Dy:(double)y
+{
+    CGSize screenSize=[[UIScreen mainScreen] bounds].size;
+    x/=screenSize.width;
+    y/=screenSize.height;
+    NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_MOUSEPAD];
+    [[np _Body] setValue:[NSNumber numberWithBool:YES] forKey:@"scroll"];
+    [[np _Body] setValue:[NSNumber numberWithDouble:x] forKey:@"dx"];
+    [[np _Body] setValue:[NSNumber numberWithDouble:y] forKey:@"dy"];
+    [_device sendPackage:np tag:PACKAGE_TAG_MOUSEPAD];
+}
 @end

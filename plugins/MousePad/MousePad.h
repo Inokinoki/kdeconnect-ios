@@ -23,7 +23,10 @@
 - (BOOL) onDevicePackageReceived:(NetworkPackage*)np;
 - (void) stop;
 - (UIView*) getView:(UIViewController*)vc;
-- (void) setStartPointWithX:(double)x Y:(double) y;
-- (void) sendPointsWithX:(double)x Y:(double) y;
+- (void) sendPointsWithDx:(double)x Dy:(double) y;
 - (void) sendSingleClick;
+- (void) sendDoubleClick;
+- (void) sendMiddleClick;
+- (void) sendRightClick;
+- (void) sendScrollWithDx:(double)x Dy:(double)y;
 @end
