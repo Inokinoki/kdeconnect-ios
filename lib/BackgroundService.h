@@ -43,6 +43,5 @@
 - (NSDictionary*) getDevicesLists;
 - (void) reloadAllPlugins;
 
-
 - (void) onNetworkChange;
 @end

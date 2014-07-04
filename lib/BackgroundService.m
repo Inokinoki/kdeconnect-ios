@@ -11,6 +11,7 @@
 #import "SettingsStore.h"
 #import "PluginFactory.h"
 #import "SecKeyWrapper.h"
+#import "KeychainItemWrapper.h"
 
 @interface BackgroundService()
 @property(nonatomic)NSMutableArray* _linkProviders;
@@ -187,6 +188,7 @@
     }
 }
 
+#pragma mark reactions
 - (void) onDeviceReachableStatusChanged:(Device*)device
 {
     NSLog(@"bg on device reachable status changed");

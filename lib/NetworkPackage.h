@@ -54,6 +54,7 @@
 + (NetworkPackage*) createPublicKeyPackage;
 - (NSData*) retrievePublicKeyBits;
 - (BOOL) bodyHasKey:(NSString*)key;
++ (NSString*) getUUID;
 
 #pragma mark Serialize
 - (NSData*) serialize;

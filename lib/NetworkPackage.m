@@ -8,9 +8,12 @@
 
 #import "NetworkPackage.h"
 #import "SecKeyWrapper.h"
+#import "KeychainItemWrapper.h"
+
 #define LFDATA [NSData dataWithBytes:"\x0D\x0A" length:2]
 
 __strong static NSString* _publicKeyStr;
+__strong static NSString* _UUID;
 
 #pragma mark Implementation
 @implementation NetworkPackage
@@ -38,8 +41,7 @@ __strong static NSString* _publicKeyStr;
 +(NetworkPackage*) createIdentityPackage
 {
     NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_IDENTITY];
-    //TO-DO get Id?
-    [[np _Body] setValue:[UIDevice currentDevice].name forKey:@"deviceId"];
+    [[np _Body] setValue:[NetworkPackage getUUID]forKey:@"deviceId"];
     [[np _Body] setValue:[UIDevice currentDevice].name forKey:@"deviceName"];
     [[np _Body] setValue:[NSNumber numberWithInteger:ProtocolVersion] forKey:@"protocolVersion"];
     [[np _Body] setValue:@"Phone" forKey:@"deviceType"];
@@ -48,6 +50,17 @@ __strong static NSString* _publicKeyStr;
     return np;
 }
 
+//Never touch these!
++ (NSString*) getUUID
+{
+    if (!_UUID) {
+        NSString* group=@"34RXKJTKWE.org.kde.kdeconnect-ios";
+        KeychainItemWrapper* wrapper=[[KeychainItemWrapper alloc] initWithIdentifier:@"org.kde.kdeconnect-ios" accessGroup:group];
+        _UUID=[[UIDevice currentDevice].identifierForVendor UUIDString];
+        [wrapper setObject:_UUID forKey:(__bridge id)(kSecValueData)];
+    }
+    return _UUID;
+}
 
 + (NetworkPackage*) createPublicKeyPackage
 {
