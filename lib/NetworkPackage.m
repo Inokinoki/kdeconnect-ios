@@ -89,6 +89,7 @@ __strong static NSString* _UUID;
     return [[NSData alloc] initWithBase64EncodedString:publickeyStr options:NSDataBase64DecodingIgnoreUnknownCharacters];
 }
 
+//
 - (BOOL) bodyHasKey:(NSString*)key
 {
     if ([self._Body valueForKey:key]!=nil) {
@@ -96,6 +97,45 @@ __strong static NSString* _UUID;
     }
     return false;
 };
+
+- (void)setBool:(BOOL)value forKey:(NSString*)key {
+    [self setObject:[NSNumber numberWithBool:value] forKey:key];
+}
+
+- (void)setFloat:(float)value forKey:(NSString*)key {
+    [self setObject:[NSNumber numberWithFloat:value] forKey:key];
+}
+
+- (void)setInteger:(NSInteger)value forKey:(NSString*)key {
+    [self setObject:[NSNumber numberWithInteger:value] forKey:key];
+}
+
+- (void)setDouble:(double)value forKey:(NSString*)key {
+    [self setObject:[NSNumber numberWithDouble:value] forKey:key];
+}
+
+- (void)setObject:(id)value forKey:(NSString *)key{
+    [_Body setObject:value forKey:key];
+}
+
+- (BOOL)boolForKey:(NSString*)key {
+    return [[self objectForKey:key] boolValue];
+}
+
+- (float)floatForKey:(NSString*)key {
+    return [[self objectForKey:key] floatValue];
+}
+- (NSInteger)integerForKey:(NSString*)key {
+    return [[self objectForKey:key] integerValue];
+}
+
+- (double)doubleForKey:(NSString*)key {
+    return [[self objectForKey:key] doubleValue];
+}
+
+- (id)objectForKey:(NSString *)key{
+    return [_Body objectForKey:key];
+}
 
 #pragma mark Serialize
 - (NSData*) serialize
@@ -129,7 +169,7 @@ __strong static NSString* _UUID;
     [np set_PayloadSize:[[info valueForKey:@"payloadSize"]longValue]];
     [np set_PayloadTransferInfo:[info valueForKey:@"payloadTransferInfo"]];
     
-    //TODO should change for laptop
+    //TO-DO should change for laptop
     if ([np _PayloadSize]==-1) {
         id temp;
         long size=(temp=[[np _Body] valueForKey:@"size"])?[temp longValue]:-1;

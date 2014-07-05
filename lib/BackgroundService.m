@@ -214,7 +214,7 @@
 - (void) onConnectionReceived:(NetworkPackage *)np link:(BaseLink *)link
 {
     NSLog(@"bg on connection received");
-    NSString* deviceId=[[np _Body] valueForKey:@"deviceId"];
+    NSString* deviceId=[np objectForKey:@"deviceId"];
     NSLog(@"Device discovered: %@",deviceId);
     if ([_devices valueForKey:deviceId]) {
         NSLog(@"known device");

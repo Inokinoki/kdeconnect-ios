@@ -132,6 +132,11 @@
             [self setAsPaired];
         }
     }
+    else{
+        for (Plugin* plugin in [_plugins allValues]) {
+//            [plugin sentPercentage:100 tag:tag];
+        }
+    }
 }
 
 - (void) onPackageReceived:(NetworkPackage*)np

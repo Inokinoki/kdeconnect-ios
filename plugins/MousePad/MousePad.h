@@ -17,6 +17,8 @@
 - (BOOL) onDevicePackageReceived:(NetworkPackage*)np;
 - (void) stop;
 - (UIView*) getView:(UIViewController*)vc;
+- (void) sentPercentage:(short)percentage tag:(long)tag;
+
 - (void) sendPointsWithDx:(double)x Dy:(double) y;
 - (void) sendSingleClick;
 - (void) sendDoubleClick;

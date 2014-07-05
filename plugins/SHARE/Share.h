@@ -10,7 +10,7 @@
 @class PluginInfo;
 @class Plugin;
 
-@interface Share : Plugin <UIImagePickerControllerDelegate,UINavigationControllerDelegate>
+@interface Share : Plugin <UIImagePickerControllerDelegate,UINavigationControllerDelegate,UIActionSheetDelegate>
 
 @property(nonatomic) Device* _device;
 @property(nonatomic) PluginInfo* _pluginInfo;
@@ -19,5 +19,6 @@
 - (BOOL) onDevicePackageReceived:(NetworkPackage*)np;
 - (void) stop;
 - (UIView*) getView:(UIViewController*)vc;
+- (void) sentPercentage:(short)percentage tag:(long)tag;
 
 @end

@@ -53,7 +53,18 @@
 + (NetworkPackage*) createIdentityPackage;
 + (NetworkPackage*) createPublicKeyPackage;
 - (NSData*) retrievePublicKeyBits;
+
 - (BOOL) bodyHasKey:(NSString*)key;
+- (void)setBool:(BOOL)value      forKey:(NSString*)key;
+- (void)setFloat:(float)value    forKey:(NSString*)key;
+- (void)setDouble:(double)value  forKey:(NSString*)key;
+- (void)setInteger:(NSInteger)value    forKey:(NSString*)key;
+- (void)setObject:(id)value      forKey:(NSString*)key;
+- (BOOL)boolForKey:(NSString*)key;
+- (float)floatForKey:(NSString*)key;
+- (double)doubleForKey:(NSString*)key;
+- (NSInteger)integerForKey:(NSString*)key;
+- (id)objectForKey:(NSString*)key;
 
 #pragma mark Serialize
 - (NSData*) serialize;

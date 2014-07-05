@@ -8,6 +8,7 @@
 
 #import "ClipBoard.h"
 #import "device.h"
+#import <AudioToolbox/AudioServices.h>
 @interface ClipBoard()
 {
     __block UIBackgroundTaskIdentifier task;
@@ -62,6 +63,12 @@
     
     task = [application beginBackgroundTaskWithExpirationHandler:^{
         NSLog(@"System terminated background task");
+        UILocalNotification* localNotification = [[UILocalNotification alloc] init];
+        localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:0];
+        localNotification.alertBody = @"System terminated background task";
+        localNotification.timeZone = [NSTimeZone defaultTimeZone];
+        [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+        AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
         [application endBackgroundTask:task];
     }];
     

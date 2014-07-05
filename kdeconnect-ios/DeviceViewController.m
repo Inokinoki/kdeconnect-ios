@@ -40,7 +40,6 @@
     [self loadPluginsViews];
 }
 
-//TO-DO
 - (void) loadPluginsViews
 {
     NSArray* viewlist=[[BackgroundService sharedInstance] getDevicePluginViews:_deviceId viewController:self];

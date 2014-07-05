@@ -28,5 +28,6 @@
 @optional
 - (void) onPackageReceived:(NetworkPackage*)np;
 - (void) onSendSuccess:(long)tag;
+- (void) onSentPercentage:(short)percentage tag:(long)tag;
 - (void) onLinkDestroyed:(BaseLink*)link;
 @end

@@ -99,6 +99,9 @@
         UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
         [button setTitle:@"Open MPRIS Panel" forState:UIControlStateNormal];
         button.frame= CGRectMake(0, 30, 300, 30);
+        button.layer.borderWidth=1;
+        button.layer.cornerRadius=10.0;
+        button.layer.borderColor=[[UIColor grayColor] CGColor];
         [button addTarget:self action:@selector(openPanel:) forControlEvents:UIControlEventTouchUpInside];
         [_view addSubview:label];
         [_view addSubview:button];

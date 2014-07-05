@@ -8,6 +8,7 @@
 
 #import "Ping.h"
 #import "device.h"
+#import <AudioToolbox/AudioServices.h>
 
 @interface Ping()
 @property(nonatomic) UIView* _view;
@@ -35,14 +36,15 @@
 {
     if ([[np _Type] isEqualToString:PACKAGE_TYPE_PING]) {
         NSLog(@"ping plugin receive a package");
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[[UIAlertView alloc]
-              initWithTitle:@"Ping"
-              message:FORMAT(@"Ping from device: %@ ",[_device _name])
-              delegate:nil
-              cancelButtonTitle:@"ok"
-              otherButtonTitles:nil,nil] show];
-        });
+        
+        // local notification
+        UILocalNotification* localNotification = [[UILocalNotification alloc] init];
+        localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:0];
+        localNotification.alertBody = FORMAT(@"%@: Ping!",[_device _name]);
+        localNotification.timeZone = [NSTimeZone defaultTimeZone];
+        localNotification.soundName=UILocalNotificationDefaultSoundName;
+        localNotification.applicationIconBadgeNumber+=1;
+        [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
         return true;
     }
     return false;
@@ -58,6 +60,9 @@
         UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
         [button setTitle:@"Send Ping to Device" forState:UIControlStateNormal];
         button.frame= CGRectMake(0, 30, 300, 30);
+        button.layer.borderWidth=1;
+        button.layer.cornerRadius=10.0;
+        button.layer.borderColor=[[UIColor grayColor] CGColor];
         [button addTarget:self action:@selector(sendPing:) forControlEvents:UIControlEventTouchUpInside];
         [_view addSubview:label];
         [_view addSubview:button];

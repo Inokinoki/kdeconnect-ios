@@ -138,6 +138,16 @@
     });
 }
 
+- (void) actionOnDevice:(id)sender
+{
+    UIActionSheet *actionSheet = [[UIActionSheet alloc]initWithTitle:@"More Actions"
+                                                            delegate:self
+                                                   cancelButtonTitle:@"back"
+                                              destructiveButtonTitle:nil
+                                                   otherButtonTitles:@"Unpair",nil];
+    actionSheet.actionSheetStyle =UIActionSheetStyleAutomatic;
+    [actionSheet showInView:[UIApplication sharedApplication].keyWindow];
+}
 #pragma mark -
 #pragma mark Table View Data Source Methods
 
@@ -212,6 +222,17 @@
             cell.textLabel.text =[_rememberedDevices valueForKey:[deviceIds objectAtIndex:indexPath.row]];break;
         default:;
     }
+    //accessory button
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeInfoLight];
+    //set the position of the button
+    int height=cell.frame.size.height;
+    height*=0.8;
+    button.frame = CGRectMake(cell.frame.origin.x, cell.frame.origin.y , height, height);
+    button.layer.borderWidth=1;
+    [button addTarget:self action:@selector(actionOnDevice:) forControlEvents:UIControlEventTouchUpInside];
+    button.backgroundColor= [UIColor clearColor];
+    cell.accessoryView=button;
+
     return cell;
 }
 
@@ -297,4 +318,20 @@
     [[BackgroundService sharedInstance] reloadAllPlugins];
 }
 
+#pragma mark -UIActionsheet delegate
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    UITableViewCell *owningCell = (UITableViewCell*)[actionSheet superview];
+    NSString* deviceid=owningCell.textLabel.text;
+    if ([[actionSheet title] isEqualToString:@"More Actions"]) {
+        switch (buttonIndex) {
+            case 0:
+                [[BackgroundService sharedInstance] unpairDevice:deviceid];
+                break;
+            case 1:
+            default:
+                break;
+        }
+    }
+}
 @end

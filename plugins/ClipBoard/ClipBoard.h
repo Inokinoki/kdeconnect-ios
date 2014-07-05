@@ -17,5 +17,6 @@
 - (BOOL) onDevicePackageReceived:(NetworkPackage*)np;
 - (void) stop;
 - (UIView*) getView:(UIViewController*)vc;
+- (void) sentPercentage:(short)percentage tag:(long)tag;
 
 @end

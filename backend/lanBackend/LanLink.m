@@ -11,6 +11,7 @@
 #import "GCDAsyncSocket.h"
 #import "SecKeyWrapper.h"
 #define PAYLOAD_PORT 1739
+#define PAYLOAD_SEND_DELAY 0 //ns
 
 @interface LanLink()
 {
@@ -74,7 +75,7 @@
     
     NSData* data=[np serialize];
     [_socket writeData:data withTimeout:-1 tag:tag];
-    //TODO return true only when send successfully
+    //TO-DO return true only when send successfully
     return true;
 }
 
@@ -119,8 +120,6 @@
             [_pendingLSockets addObject:socket];
             [_pendingPayloads addObject:payloadArray];
         }
-
-        //TODO return true only when send successfully
     }
     NetworkPackage* encryptedPackage=[np encryptWithPublicKeyRef:_publicKey];
     return [self sendPackage:encryptedPackage tag:PACKAGE_TAG_ENCRYPTED];
@@ -168,14 +167,27 @@
 - (void)socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket
 {
 	NSLog(@"Lanlink: didAcceptNewSocket");
-    NSArray* payloadArray;
+    NSMutableArray* payloadArray;
     @synchronized(_pendingLSockets){
+        //TO-DO should use a single sock for listing and send payload with newSocket
         NSUInteger index=[_pendingLSockets indexOfObject:sock];
         payloadArray=[_pendingPayloads objectAtIndex:index];
     }
     dispatch_time_t t = dispatch_time(DISPATCH_TIME_NOW,0);
+    NSData* chunk=[payloadArray firstObject];
+    if (!payloadArray|!chunk) {
+        @synchronized(_pendingLSockets){
+            NSUInteger index=[_pendingLSockets indexOfObject:sock];
+            payloadArray=[_pendingPayloads objectAtIndex:index];
+            [_pendingLSockets removeObject:sock];
+            [_pendingPayloads removeObjectAtIndex:index];
+        }
+        return;
+    }
+    //TO-DO send the data chunk one by one inorder to get the proccess percentage
+    //FIX-ME for some pc , if we send too quickly , they may loose some package
     for (NSData* chunk in payloadArray) {
-        t=dispatch_time(t, 20*NSEC_PER_MSEC);
+        t=dispatch_time(t, PAYLOAD_SEND_DELAY*NSEC_PER_MSEC);
         dispatch_after(t,_socketQueue, ^(void){
             [newSocket writeData:chunk withTimeout:-1 tag:PACKAGE_TAG_PAYLOAD];
         });
