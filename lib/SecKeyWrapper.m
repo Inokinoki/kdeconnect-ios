@@ -73,8 +73,8 @@
 #endif
 
 #if TARGET_IPHONE_SIMULATOR
-#error This sample is designed to run on a device, not in the simulator. To run this sample, \
-choose Project > Set Active SDK > Device and connect a device. Then click Build and Go. 
+//#error This sample is designed to run on a device, not in the simulator. To run this sample, \
+choose Project > Set Active SDK > Device and connect a device. Then click Build and Go.
 // Dummy implementations for no-building simulator target (reduce compiler warnings)
 + (SecKeyWrapper *)sharedWrapper { return nil; }
 - (void)setObject:(id)inObject forKey:(id)key {}

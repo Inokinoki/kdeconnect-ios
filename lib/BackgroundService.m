@@ -153,6 +153,7 @@
     if ([device isReachable]) {
         [device unpair];
     }
+    [_devices removeObjectForKey:deviceId];
     [_settings setObject:nil forKey:deviceId];
     [_settings synchronize];
 }
