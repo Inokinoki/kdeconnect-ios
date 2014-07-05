@@ -45,6 +45,7 @@
         localNotification.soundName=UILocalNotificationDefaultSoundName;
         localNotification.applicationIconBadgeNumber+=1;
         [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
         return true;
     }
     return false;

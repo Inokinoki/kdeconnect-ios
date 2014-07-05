@@ -17,21 +17,20 @@
 
 typedef NS_ENUM(NSUInteger, PairStatus)
 {
-    NotPaired,
-    Requested,
-    RequestedByPeer,
-    Paired
+    NotPaired=0,
+    Requested=1,
+    RequestedByPeer=2,
+    Paired=3
 };
 
 typedef NS_ENUM(NSUInteger, DeviceType)
 {
-    Unknown,
-    Desktop,
-    Laptop,
-    Phone,
-    Tablet
+    Unknown=0,
+    Desktop=1,
+    Laptop=2,
+    Phone=3,
+    Tablet=4
 };
-
 
 @interface Device : NSObject <linkDelegate>
 
@@ -65,6 +64,10 @@ typedef NS_ENUM(NSUInteger, DeviceType)
 #pragma mark Plugin-related Functions
 - (void) reloadPlugins;
 - (NSArray*) getPluginViews:(UIViewController*)vc;
+
+#pragma mark enum tools
++ (NSString*)Devicetype2Str:(DeviceType)type;
++ (DeviceType)Str2Devicetype:(NSString*)str;
 @end
 
 

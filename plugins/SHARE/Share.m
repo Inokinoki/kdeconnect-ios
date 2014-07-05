@@ -8,6 +8,7 @@
 
 #import "Share.h"
 #import "device.h"
+#import <AudioToolbox/AudioServices.h>
 
 @interface Share()
 @property(nonatomic) UIView* _view;
@@ -45,7 +46,9 @@
         localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:0];
         localNotification.alertBody = FORMAT(@"Share:received a photo from:%@",[_device _name]);
         localNotification.timeZone = [NSTimeZone defaultTimeZone];
+        localNotification.soundName= UILocalNotificationDefaultSoundName;
         [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
         return true;
     }
     return false;
@@ -179,15 +182,15 @@
         
         NSData* imageData=UIImageJPEGRepresentation(_image, quality);
         NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_SHARE];
-        [[np _Body] setValue:[NSNumber numberWithLong:[imageData length]] forKey:@"size"];
+        [np setInteger:[imageData length] forKey:@"size"];
         NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
         [dateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
         NSDate *now = [NSDate date];
         NSString *theDate = [dateFormat stringFromDate:now];
-        [[np _Body] setValue:FORMAT(@"%@_%@",[UIDevice currentDevice].name,theDate) forKey:@"filename"];
+        [np setObject:FORMAT(@"%@_%@",[UIDevice currentDevice].name,theDate) forKey:@"filename"];
         [np set_Payload:imageData];
         [_device sendPackage:np tag:PACKAGE_TAG_SHARE];
-    }else if([[actionSheet title] isEqualToString:@"Photo Source Select"]){
+    }else if([[actionSheet title] isEqualToString:@"Photo Source"]){
         switch (buttonIndex) {
             case 0:
                 [self sharePhotoFromCamera];

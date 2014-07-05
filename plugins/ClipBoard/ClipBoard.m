@@ -39,7 +39,7 @@
 {
     if ([[np _Type] isEqualToString:PACKAGE_TYPE_CLIPBOARD]) {
         NSLog(@"ClipBoard plugin receive a package");
-        NSString *str = [[np _Body] valueForKey:@"content"];
+        NSString *str = [np objectForKey:@"content"];
         UIPasteboard *pb = [UIPasteboard generalPasteboard];
         NSLog(@"str %@ copied to pasteboard ",str);
         if (![str isEqualToString:pastboardContents]) {
@@ -90,7 +90,7 @@
                 if (!pastboardContents) continue;
                 NSLog(@"Pasteboard Contents: %@", pastboardContents);
                 NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_CLIPBOARD];
-                [[np _Body] setObject:pastboardContents forKey:@"content"];
+                [np setObject:pastboardContents forKey:@"content"];
                 [_device sendPackage:np tag:PACKAGE_TAG_CLIPBOARD];
             }
             

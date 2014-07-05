@@ -59,15 +59,15 @@
     if ([[np _Type] isEqualToString:PACKAGE_TYPE_MPRIS]) {
         NSLog(@"mpris receive a package");
         if ([np bodyHasKey:@"nowPlaying"]||[np bodyHasKey:@"volume"]||[np bodyHasKey:@"isPlaying"]) {
-            if ([[[np _Body] valueForKey:@"player"] isEqualToString:_player]) {
+            if ([[np objectForKey:@"player"] isEqualToString:_player]) {
                 if ([np bodyHasKey:@"nowPlaying"]) {
-                    _currentSong=[[np _Body] valueForKey:@"nowPlaying"];
+                    _currentSong=[np objectForKey:@"nowPlaying"];
                 }
                 if ([np bodyHasKey:@"volume"]) {
-                    _volume=[[[np _Body] valueForKey:@"volume"] unsignedIntegerValue];
+                    _volume=[np integerForKey:@"volume"];
                 }
                 if ([np bodyHasKey:@"isPlaying"]) {
-                    _playing=[[[np _Body] valueForKey:@"isPlaying"] boolValue];
+                    _playing=[np boolForKey:@"isPlaying"];
                 }
                 if (_pluginDelegate) {
                     [_pluginDelegate onPlayerStatusUpdated];
@@ -75,8 +75,8 @@
                 
             }
         }
-        if ([[np _Body] valueForKey:@"playerList"]){
-            NSArray* newPlayerList=[[np _Body] valueForKey:@"playerList"];
+        if ([np objectForKey:@"playerList"]){
+            NSArray* newPlayerList=[np objectForKey:@"playerList"];
             if (![_playerList isEqualToArray:newPlayerList] ) {
                 _playerList=newPlayerList;
                 if (_pluginDelegate) {
@@ -126,25 +126,34 @@
 
 - (void) sendAction:(NSString *)action
 {
+    if (!_player) {
+        return;
+    }
     NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_MPRIS];
-    [[np _Body] setValue:_player forKey:@"player"];
-    [[np _Body] setValue:action forKey:@"action"];
+    [np setObject:_player forKey:@"player"];
+    [np setObject:action forKey:@"action"];
     [_device sendPackage:np tag:PACKAGE_TAG_MPRIS];
 }
 
 - (void) setVolume:(NSUInteger)volume
 {
+    if (!_player) {
+        return;
+    }
     NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_MPRIS];
-    [[np _Body] setValue:_player forKey:@"player"];
-    [[np _Body] setValue:[NSNumber numberWithUnsignedInteger:volume] forKey:@"setVolume"];
+    [np setObject:_player forKey:@"player"];
+    [np setObject:[NSNumber numberWithUnsignedInteger:volume] forKey:@"setVolume"];
     [_device sendPackage:np tag:PACKAGE_TAG_MPRIS];
 }
 
 - (void) seek:(NSInteger)offset
 {
+    if (!_player) {
+        return;
+    }
     NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_MPRIS];
-    [[np _Body] setValue:_player forKey:@"player"];
-    [[np _Body] setValue:[NSNumber numberWithUnsignedInteger:offset] forKey:@"Seek"];
+    [np setObject:_player forKey:@"player"];
+    [np setInteger:offset forKey:@"Seek"];
     [_device sendPackage:np tag:PACKAGE_TAG_MPRIS];
 }
 
@@ -165,6 +174,9 @@
 
 - (void) setPlayer:(NSString*)player
 {
+    if (!_player) {
+        return;
+    }
     if (_player!=player) {
         _player=player;
         _currentSong=nil;
@@ -181,17 +193,20 @@
 
 - (void) requestPlayerStatus
 {
+    if (!_player) {
+        return;
+    }
     NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_MPRIS];
-    [[np _Body] setValue:_player forKey:@"player"];
-    [[np _Body] setValue:[NSNumber numberWithBool:true] forKey:@"requestNowPlaying"];
-    [[np _Body] setValue:[NSNumber numberWithBool:true] forKey:@"requestVolume"];
+    [np setObject:_player forKey:@"player"];
+    [np setBool:YES forKey:@"requestNowPlaying"];
+    [np setBool:YES forKey:@"requestVolume"];
     [_device sendPackage:np tag:PACKAGE_TAG_MPRIS];
 }
 
 - (void) requestPlayerList
 {
     NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_MPRIS];
-    [[np _Body] setValue:[NSNumber numberWithBool:true] forKey:@"requestPlayerList"];
+    [np setBool:YES forKey:@"requestPlayerList"];
     [_device sendPackage:np tag:PACKAGE_TAG_MPRIS];
 }
 

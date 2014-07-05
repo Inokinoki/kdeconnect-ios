@@ -89,7 +89,7 @@
     
     //Introduce myself , UDP broadcasting my id package
     NetworkPackage* np=[NetworkPackage createIdentityPackage];
-    [[np _Body] setValue:[[NSNumber alloc ] initWithUnsignedInt:_tcpPort] forKey:@"tcpPort"];
+    [np setInteger:_tcpPort forKey:@"tcpPort"];
     NSData* data=[np serialize];
     NSLog(@"sending:%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
 	[_udpSocket sendData:data  toHost:@"255.255.255.255" port:PORT withTimeout:-1 tag:UDPBROADCAST_TAG];
@@ -132,7 +132,7 @@
     }
     if (![_udpSocket isClosed]) {
         NetworkPackage* np=[NetworkPackage createIdentityPackage];
-        [[np _Body] setValue:[[NSNumber alloc ] initWithUnsignedInt:_tcpPort] forKey:@"tcpPort"];
+        [np setInteger:_tcpPort forKey:@"tcpPort"];
         NSData* data=[np serialize];
         NSLog(@"sending:%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
         [_udpSocket sendData:data toHost:@"255.255.255.255" port:PORT withTimeout:-1 tag:UDPBROADCAST_TAG];
@@ -165,7 +165,7 @@
 {
     NSLog(@"lp receive udp package");
 	NetworkPackage* np = [NetworkPackage unserialize:data];
-    NSLog(@"linkprovider:received a udp package from %@",[[np _Body] valueForKey:@"deviceName"]);
+    NSLog(@"linkprovider:received a udp package from %@",[np objectForKey:@"deviceName"]);
     //not id package
     
     if (![[np _Type] isEqualToString:PACKAGE_TYPE_IDENTITY]){
@@ -176,7 +176,7 @@
     //my own package
     NetworkPackage* np2=[NetworkPackage createIdentityPackage];
     NSString* myId=[[np2 _Body] valueForKey:@"deviceId"];
-    if ([[[np _Body] valueForKey:@"deviceId"] isEqualToString:myId]){
+    if ([[np objectForKey:@"deviceId"] isEqualToString:myId]){
         NSLog(@"Ignore my own id package");
         return;
     }
@@ -190,7 +190,7 @@
     
     NSLog(@"LanLinkProvider:id package received, creating link and a TCP connection socket");
     GCDAsyncSocket* socket=[[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:socketQueue];
-    uint16_t tcpPort=[[[np _Body] valueForKey:@"tcpPort"] intValue];
+    uint16_t tcpPort=[np integerForKey:@"tcpPort"];
     
     NSError* error=nil;
     if (![socket connectToHost:host onPort:tcpPort error:&error]) {
@@ -247,16 +247,16 @@
     //create LanLink and inform the background
     NSUInteger index=[_pendingSockets indexOfObject:sock];
     NetworkPackage* np=[_pendingNps objectAtIndex:index];
-    NSString* deviceId=[[np _Body] valueForKey:@"deviceId"];
+    NSString* deviceId=[np objectForKey:@"deviceId"];
     LanLink* oldlink;
     if ([[_connectedLinks allKeys] containsObject:deviceId]) {
         oldlink=[_connectedLinks objectForKey:deviceId];
     }
     
-    LanLink* link=[[LanLink alloc] init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] setDelegate:nil];
+    LanLink* link=[[LanLink alloc] init:sock deviceId:[np objectForKey:@"deviceId"] setDelegate:nil];
     [_pendingSockets removeObject:sock];
     [_pendingNps removeObject:np];
-    [_connectedLinks setObject:link forKey:[[np _Body] valueForKey:@"deviceId"]];
+    [_connectedLinks setObject:link forKey:[np objectForKey:@"deviceId"]];
     if (_linkProviderDelegate) {
         [_linkProviderDelegate onConnectionReceived:np link:link];
     }
@@ -284,14 +284,14 @@
         
         [sock setDelegate:nil];
         [_pendingSockets removeObject:sock];
-        NSString* deviceId=[[np _Body] valueForKey:@"deviceId"];
+        NSString* deviceId=[np objectForKey:@"deviceId"];
         LanLink* oldlink;
         if ([[_connectedLinks allKeys] containsObject:deviceId]) {
             oldlink=[_connectedLinks objectForKey:deviceId];
         }
         //create LanLink and inform the background
-        LanLink* link=[[LanLink alloc] init:sock deviceId:[[np _Body] valueForKey:@"deviceId"] setDelegate:nil];
-        [_connectedLinks setObject:link forKey:[[np _Body] valueForKey:@"deviceId"]];
+        LanLink* link=[[LanLink alloc] init:sock deviceId:[np objectForKey:@"deviceId"] setDelegate:nil];
+        [_connectedLinks setObject:link forKey:[np objectForKey:@"deviceId"]];
         if (_linkProviderDelegate) {
             [_linkProviderDelegate onConnectionReceived:np link:link];
         }

@@ -32,6 +32,7 @@
 {
     if ((self=[super init])) {
         _id=deviceId;
+        _type=[Device Str2Devicetype:@"phone"];
         _deviceDelegate=deviceDelegate;
         [self loadSetting];
         _links=[NSMutableArray arrayWithCapacity:1];
@@ -44,14 +45,13 @@
 - (Device*) init:(NetworkPackage*)np baselink:(BaseLink*)link setDelegate:(id)deviceDelegate
 {
     if ((self=[super init])) {
-        _id=[[np _Body] valueForKey:@"deviceId"];
-        _name=[[np _Body] valueForKey:@"deviceName"];
+        _id=[np objectForKey:@"deviceId"];
+        _type=[Device Str2Devicetype:[np objectForKey:@"deviceType"]];
+        _name=[np objectForKey:@"deviceName"];
         _links=[NSMutableArray arrayWithCapacity:1];
         _plugins=[NSMutableDictionary dictionaryWithCapacity:1];
         _failedPlugins=[NSMutableArray arrayWithCapacity:1];
-        //TO-DO need a string to type? or a dictionary
-        //    _type=[[[np _Body] valueForKey:@"deviceType"] ;
-        _protocolVersion=[[[np _Body] valueForKey:@"protocolVersion"] integerValue];
+        _protocolVersion=[np integerForKey:@"protocolVersion"];
         _deviceDelegate=deviceDelegate;
         [self addLink:np baseLink:link];
     }
@@ -68,12 +68,13 @@
 - (void) addLink:(NetworkPackage*)np baseLink:(BaseLink*)Link
 {
     NSLog(@"add link to %@",_id);
-    if (_protocolVersion!=[[[np _Body] valueForKey:@"protocolVersion"] integerValue]) {
+    if (_protocolVersion!=[np integerForKey:@"protocolVersion"]) {
         NSLog(@"using different protocol version");
     }
     [_links addObject:Link];
-    _id=[[np _Body] valueForKey:@"deviceId"];
-    _name=[[np _Body] valueForKey:@"deviceName"];
+    _id=[np objectForKey:@"deviceId"];
+    _name=[np objectForKey:@"deviceName"];
+    _type=[Device Str2Devicetype:[np objectForKey:@"deviceType"]];
     [Link set_linkDelegate:self];
     if ([_links count]==1) {
         NSLog(@"one link available");
@@ -81,8 +82,6 @@
             [_deviceDelegate onDeviceReachableStatusChanged:self];
         }
     }
-    //TO-DO need a string to type? or a dictionary
-    //    _type=[[[np _Body] valueForKey:@"deviceType"] ;
 }
 
 - (void) onLinkDestroyed:(BaseLink *)link
@@ -144,7 +143,7 @@
     NSLog(@"device on package received");
     if ([[np _Type] isEqualToString:PACKAGE_TYPE_PAIR]) {
         NSLog(@"Pair package received");
-        BOOL wantsPair=[[[np _Body] valueForKey:@"pair"] boolValue];
+        BOOL wantsPair=[np boolForKey:@"pair"];
         if (wantsPair==[self isPaired]) {
             NSLog(@"already done, paired:%d",wantsPair);
             if (_pairStatus==Requested) {
@@ -201,9 +200,7 @@
         
     }else{
         NSLog(@"not paired, ignore packages, unpair the device");
-        NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_PAIR];
-        [[np _Body] setValue:[NSNumber numberWithBool:false] forKey:@"pair"];
-        [self sendPackage:np tag:PACKAGE_TAG_UNPAIR];
+        [self unpair];
     }
 }
 
@@ -217,6 +214,7 @@
     //get app document path
     SettingsStore* _devSettings=[[SettingsStore alloc] initWithPath:_id];
     _name=[_devSettings objectForKey:@"name"];
+    _type=[Device Str2Devicetype:[_devSettings objectForKey:@"type"]];
     _pairStatus=Paired;
     _protocolVersion=[_devSettings integerForKey:@"protocolVersion"];
     //            _type=[dict valueForKey:@"type"];
@@ -228,6 +226,7 @@
     //TO-DO Type
     SettingsStore* _devSettings=[[SettingsStore alloc] initWithPath:_id];
     [_devSettings setObject:_name forKey:@"name"];
+    [_devSettings setObject:[Device Devicetype2Str:_type] forKey:@"type"];
     [_devSettings setInteger:_protocolVersion forKey:@"protocolVersion"];
     [_devSettings synchronize];
 }
@@ -293,24 +292,17 @@
         if (_deviceDelegate) {
             [_deviceDelegate onDevicePairTimeout:self];
         }
-        
-        NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_PAIR];
-        [[np _Body] setValue:[NSNumber numberWithBool:NO] forKey:@"pair"];
-        [self sendPackage:np tag:PACKAGE_TAG_UNPAIR];
+        [self unpair];
     }
 }
 
 - (void) unpair
 {
     NSLog(@"device unpair");
-    if (![self isPaired]) return;
     _pairStatus=NotPaired;
     NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_PAIR];
-    [[np _Body] setValue:[NSNumber numberWithBool:false] forKey:@"pair"];
+    [np setBool:false forKey:@"pair"];
     [self sendPackage:np tag:PACKAGE_TAG_UNPAIR];
-    for (BaseLink* link in _links) {
-        [link loadPublicKey];
-    }
 }
 
 - (void) acceptPairing
@@ -323,10 +315,7 @@
 - (void) rejectPairing
 {
     NSLog(@"device rejected pair request ");
-    _pairStatus=NotPaired;
-    NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_PAIR];
-    [[np _Body] setValue:[NSNumber numberWithBool:false] forKey:@"pair"];
-    [self sendPackage:np tag:PACKAGE_TAG_PAIR];
+    [self unpair];
 }
 
 #pragma mark Plugins-related Functions
@@ -369,6 +358,40 @@
     }
     return views;
 }
+
+#pragma mark enum tools
++ (NSString*)Devicetype2Str:(DeviceType)type
+{
+    switch (type) {
+        case Desktop:
+            return @"desktop";
+        case Laptop:
+            return @"laptop";
+        case Phone:
+            return @"phone";
+        case Tablet:
+            return @"tablet";
+        default:
+            return @"unknown";
+    }
+}
++ (DeviceType)Str2Devicetype:(NSString*)str
+{
+    if ([str isEqualToString:@"desktop"]) {
+        return Desktop;
+    }
+    if ([str isEqualToString:@"laptop"]) {
+        return Laptop;
+    }
+    if ([str isEqualToString:@"phone"]) {
+        return Phone;
+    }
+    if ([str isEqualToString:@"tablet"]) {
+        return Tablet;
+    }
+    return Unknown;
+}
+
 @end
 
 

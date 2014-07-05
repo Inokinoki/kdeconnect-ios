@@ -153,6 +153,8 @@
     if ([device isReachable]) {
         [device unpair];
     }
+    [_settings setObject:nil forKey:deviceId];
+    [_settings synchronize];
 }
 
 - (NSArray*) getDevicePluginViews:(NSString*)deviceId viewController:(UIViewController*)vc

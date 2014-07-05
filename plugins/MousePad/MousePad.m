@@ -91,34 +91,34 @@
 - (void) sendPointsWithDx:(double)x Dy:(double)y
 {
     NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_MOUSEPAD];
-    [[np _Body] setValue:[NSNumber numberWithDouble:x] forKey:@"dx"];
-    [[np _Body] setValue:[NSNumber numberWithDouble:y] forKey:@"dy"];
+    [np setDouble:x forKey:@"dx"];
+    [np setDouble:y forKey:@"dy"];
     [_device sendPackage:np tag:PACKAGE_TAG_MOUSEPAD];
 }
 
 - (void) sendSingleClick
 {
     NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_MOUSEPAD];
-    [[np _Body] setValue:[NSNumber numberWithBool:YES] forKey:@"singleclick"];
+    [np setBool:YES forKey:@"singleclick"];
     [_device sendPackage:np tag:PACKAGE_TAG_MOUSEPAD];
 }
 
 - (void) sendDoubleClick
 {
     NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_MOUSEPAD];
-    [[np _Body] setValue:[NSNumber numberWithBool:YES] forKey:@"doubleclick"];
+    [np setBool:YES forKey:@"doubleclick"];
     [_device sendPackage:np tag:PACKAGE_TAG_MOUSEPAD];
 }
 - (void) sendMiddleClick
 {
     NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_MOUSEPAD];
-    [[np _Body] setValue:[NSNumber numberWithBool:YES] forKey:@"middleclick"];
+    [np setBool:YES forKey:@"middleclick"];
     [_device sendPackage:np tag:PACKAGE_TAG_MOUSEPAD];
 }
 - (void) sendRightClick
 {
     NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_MOUSEPAD];
-    [[np _Body] setValue:[NSNumber numberWithBool:YES] forKey:@"rightclick"];
+    [np setBool:YES forKey:@"rightclick"];
     [_device sendPackage:np tag:PACKAGE_TAG_MOUSEPAD];
 }
 - (void) sendScrollWithDx:(double)x Dy:(double)y
@@ -127,9 +127,9 @@
     x/=screenSize.width;
     y/=screenSize.height;
     NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_MOUSEPAD];
-    [[np _Body] setValue:[NSNumber numberWithBool:YES] forKey:@"scroll"];
-    [[np _Body] setValue:[NSNumber numberWithDouble:x] forKey:@"dx"];
-    [[np _Body] setValue:[NSNumber numberWithDouble:y] forKey:@"dy"];
+    [np setBool:YES forKey:@"scroll"];
+    [np setDouble:x forKey:@"dx"];
+    [np setDouble:y forKey:@"dy"];
     [_device sendPackage:np tag:PACKAGE_TAG_MOUSEPAD];
 }
 @end

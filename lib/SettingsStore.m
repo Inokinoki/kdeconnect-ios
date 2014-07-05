@@ -39,7 +39,12 @@
 }
 
 - (void)setObject:(id)value forKey:(NSString *)key {
-    [_dict setObject:value forKey:key];
+    if (!value) {
+        [_dict removeObjectForKey:key];
+    }
+    else{
+        [_dict setObject:value forKey:key];
+    }
 }
 
 - (id)objectForKey:(NSString *)key {

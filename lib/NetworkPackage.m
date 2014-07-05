@@ -41,11 +41,11 @@ __strong static NSString* _UUID;
 +(NetworkPackage*) createIdentityPackage
 {
     NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_IDENTITY];
-    [[np _Body] setValue:[NetworkPackage getUUID]forKey:@"deviceId"];
-    [[np _Body] setValue:[UIDevice currentDevice].name forKey:@"deviceName"];
-    [[np _Body] setValue:[NSNumber numberWithInteger:ProtocolVersion] forKey:@"protocolVersion"];
-    [[np _Body] setValue:@"Phone" forKey:@"deviceType"];
-    [[np _Body] setValue:[NSNumber numberWithInteger:1714]  forKey:@"tcpPort"];
+    [np setObject:[NetworkPackage getUUID]forKey:@"deviceId"];
+    [np setObject:[UIDevice currentDevice].name forKey:@"deviceName"];
+    [np setInteger:ProtocolVersion forKey:@"protocolVersion"];
+    [np setObject:@"Phone" forKey:@"deviceType"];
+    [np setInteger:1714 forKey:@"tcpPort"];
     
     return np;
 }
@@ -72,8 +72,8 @@ __strong static NSString* _UUID;
                        publicKeyStr,
                        @"-----END PUBLIC KEY-----"];
     }
-    [[np _Body] setValue:_publicKeyStr forKey:@"publicKey"];
-    [[np _Body] setValue:[NSNumber numberWithBool:true] forKey:@"pair"];
+    [np setObject:_publicKeyStr forKey:@"publicKey"];
+    [np setBool:YES forKey:@"pair"];
 
     return np;
 }
@@ -144,8 +144,8 @@ __strong static NSString* _UUID;
     NSArray* values=[NSArray arrayWithObjects:[self _Id],[self _Type],[self _Body], nil];
     NSMutableDictionary* info=[NSMutableDictionary dictionaryWithObjects:values forKeys:keys];
     if (_Payload) {
-        [info setValue:[NSNumber numberWithLong:(_PayloadSize?_PayloadSize:-1)] forKey:@"payloadSize"];
-        [info setValue:_PayloadTransferInfo forKey:@"payloadTransferInfo"];
+        [info setObject:[NSNumber numberWithLong:(_PayloadSize?_PayloadSize:-1)] forKey:@"payloadSize"];
+        [info setObject:_PayloadTransferInfo forKey:@"payloadTransferInfo"];
     }
     NSError* err=nil;
     NSMutableData* jsonData=[[NSMutableData alloc] initWithData:[NSJSONSerialization dataWithJSONObject:info options:0 error:&err]];
@@ -171,8 +171,8 @@ __strong static NSString* _UUID;
     
     //TO-DO should change for laptop
     if ([np _PayloadSize]==-1) {
-        id temp;
-        long size=(temp=[[np _Body] valueForKey:@"size"])?[temp longValue]:-1;
+        NSInteger temp;
+        long size=(temp=[np integerForKey:@"size"])?temp:-1;
         [np set_PayloadSize:size];
     }
     [np set_PayloadTransferInfo:[info valueForKey:@"payloadTransferInfo"]];
@@ -213,7 +213,7 @@ __strong static NSString* _UUID;
     }
 
     
-    [[np _Body] setValue:encryptedArray forKey:@"data"];
+    [np setObject:encryptedArray forKey:@"data"];
     return np;
 };
 

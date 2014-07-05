@@ -15,6 +15,7 @@
 @property(nonatomic)NSDictionary* _connectedDevices;
 @property(nonatomic)NSDictionary* _rememberedDevices;
 @property(nonatomic)NSDictionary* _visibleDevices;
+@property(nonatomic,weak)NSString* _moreActionDevice;
 @end
 
 @implementation ViewController
@@ -24,6 +25,7 @@
 @synthesize _connectedDevices;
 @synthesize _pairingDevice;
 @synthesize _rememberedDevices;
+@synthesize _moreActionDevice;
 
 - (void)viewDidLoad
 {
@@ -140,6 +142,22 @@
 
 - (void) actionOnDevice:(id)sender
 {
+    UIView* view=sender;
+    while (![view isKindOfClass:[UITableViewCell class]]) {
+        view=[view superview];
+    }
+    UITableViewCell* cell=(id)view;
+    NSIndexPath* indexpath=[_tableView indexPathForCell:cell];
+    switch (indexpath.section) {
+        case 0:
+            _moreActionDevice=[[_connectedDevices allKeys] objectAtIndex:indexpath.row];break;
+        case 1:
+            return;
+        case 2:
+            _moreActionDevice=[[_rememberedDevices allKeys] objectAtIndex:indexpath.row];break;
+        default:
+            break;
+    }
     UIActionSheet *actionSheet = [[UIActionSheet alloc]initWithTitle:@"More Actions"
                                                             delegate:self
                                                    cancelButtonTitle:@"back"
@@ -200,14 +218,13 @@
     NSLog(@"viewcontroller load a cell");
     static NSString *mainListTableId = @"mainListTableId";
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:
-                             mainListTableId];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:mainListTableId];
     if (cell == nil) {
         cell = [[UITableViewCell alloc]
                 initWithStyle:UITableViewCellStyleDefault
                 reuseIdentifier:mainListTableId];
     }
-    
+
     // Set up the cell...
     NSArray* deviceIds;
     switch (indexPath.section) {
@@ -222,17 +239,19 @@
             cell.textLabel.text =[_rememberedDevices valueForKey:[deviceIds objectAtIndex:indexPath.row]];break;
         default:;
     }
-    //accessory button
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeInfoLight];
-    //set the position of the button
-    int height=cell.frame.size.height;
-    height*=0.8;
-    button.frame = CGRectMake(cell.frame.origin.x, cell.frame.origin.y , height, height);
-    button.layer.borderWidth=1;
-    [button addTarget:self action:@selector(actionOnDevice:) forControlEvents:UIControlEventTouchUpInside];
-    button.backgroundColor= [UIColor clearColor];
-    cell.accessoryView=button;
-
+    if (indexPath.section==1){
+        cell.accessoryView=nil;
+    }
+    else{
+        //accessory button
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeInfoLight];
+        //set the position of the button
+        int height=cell.frame.size.height;
+        button.frame = CGRectMake(cell.frame.origin.x, cell.frame.origin.y , height, height);
+        [button addTarget:self action:@selector(actionOnDevice:) forControlEvents:UIControlEventTouchUpInside];
+        button.backgroundColor= [UIColor clearColor];
+        cell.accessoryView=button;
+    }
     return cell;
 }
 
@@ -321,17 +340,17 @@
 #pragma mark -UIActionsheet delegate
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    UITableViewCell *owningCell = (UITableViewCell*)[actionSheet superview];
-    NSString* deviceid=owningCell.textLabel.text;
     if ([[actionSheet title] isEqualToString:@"More Actions"]) {
         switch (buttonIndex) {
             case 0:
-                [[BackgroundService sharedInstance] unpairDevice:deviceid];
+                [[BackgroundService sharedInstance] unpairDevice:_moreActionDevice];
                 break;
             case 1:
             default:
                 break;
         }
     }
+    _moreActionDevice=nil;
+    [self onDeviceListRefreshed];
 }
 @end
