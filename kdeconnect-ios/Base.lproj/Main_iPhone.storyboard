@@ -173,8 +173,10 @@
                                 <rect key="frame" x="18" y="340" width="284" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <connections>
+                                    <action selector="updateVolume:" destination="anI-Xu-3ug" eventType="touchDragOutside" id="7ts-T4-g4i"/>
                                     <action selector="updateVolume:" destination="anI-Xu-3ug" eventType="touchUpInside" id="cQ0-iA-9uG"/>
                                     <action selector="updateVolume:" destination="anI-Xu-3ug" eventType="touchUpOutside" id="nER-FI-6VX"/>
+                                    <action selector="updateVolume:" destination="anI-Xu-3ug" eventType="touchDragInside" id="zcS-US-9yY"/>
                                 </connections>
                             </slider>
                             <pickerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="g2U-aN-mjO">

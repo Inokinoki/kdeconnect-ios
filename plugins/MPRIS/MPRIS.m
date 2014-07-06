@@ -174,9 +174,6 @@
 
 - (void) setPlayer:(NSString*)player
 {
-    if (!_player) {
-        return;
-    }
     if (_player!=player) {
         _player=player;
         _currentSong=nil;
@@ -193,9 +190,6 @@
 
 - (void) requestPlayerStatus
 {
-    if (!_player) {
-        return;
-    }
     NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_MPRIS];
     [np setObject:_player forKey:@"player"];
     [np setBool:YES forKey:@"requestNowPlaying"];

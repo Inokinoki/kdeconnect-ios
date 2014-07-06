@@ -351,6 +351,6 @@
         }
     }
     _moreActionDevice=nil;
-    [self onDeviceListRefreshed];
+    [self onRefresh:nil];
 }
 @end
