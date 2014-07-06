@@ -26,7 +26,6 @@
 - (id) init
 {
     if ((self=[super init])) {
-        _pluginInfo=[[PluginInfo alloc] initWithInfos:@"ClipBoard" displayName:@"ClipBoard" description:@"ClipBoard" enabledByDefault:true];
         _pluginDelegate=nil;
         _device=nil;
         pastboardContents = [UIPasteboard generalPasteboard].string;
@@ -55,6 +54,12 @@
 {
     NSLog(@"ClipBoard plugin get view");
     return nil;
+}
+
++ (PluginInfo*) getPluginInfo
+{
+    return [[PluginInfo alloc] initWithInfos:@"ClipBoard" displayName:@"ClipBoard" description:@"ClipBoard" enabledByDefault:true];
+
 }
 
 - (void) grabClipboard

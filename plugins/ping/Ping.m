@@ -17,14 +17,12 @@
 @implementation Ping
 
 @synthesize _device;
-@synthesize _pluginInfo;
 @synthesize _pluginDelegate;
 @synthesize _view;
 
 - (id) init
 {
     if ((self=[super init])) {
-        _pluginInfo=[[PluginInfo alloc] initWithInfos:@"Ping" displayName:@"Ping" description:@"Ping" enabledByDefault:true];
         _pluginDelegate=nil;
         _device=nil;
         _view=nil;
@@ -73,6 +71,12 @@
     }
     return _view;
 }
+
++ (PluginInfo*) getPluginInfo
+{
+    return [[PluginInfo alloc] initWithInfos:@"Ping" displayName:@"Ping" description:@"Ping" enabledByDefault:true];
+}
+
 
 - (void) sendPing:(id)sender
 {

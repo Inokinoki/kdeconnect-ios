@@ -95,14 +95,6 @@
     }
 }
 
-- (void) pauseDiscovery
-{
-    NSLog(@"bg pause Discovery");
-    for (BaseLinkProvider* lp in _linkProviders) {
-        [lp onPause];
-    }
-}
-
 - (void) stopDiscovery
 {
     NSLog(@"bg stop Discovery");

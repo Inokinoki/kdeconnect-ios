@@ -670,6 +670,72 @@ static SecKeyWrapper * __sharedKeyWrapper = nil;
 	 */
 }
 
+- (NSData*)encryptDataToData:(NSData*)data withPublicKeyRef:(SecKeyRef)publickey
+{
+    NSArray* encryptedArray=[self encryptDataToArray:data withPublicKeyRef:publickey];
+    NSMutableData* encryptedData=[NSMutableData data];
+    for (NSData* d in encryptedArray) {
+        [encryptedData appendData:d];
+    }
+    return encryptedData;
+}
+
+- (NSArray*)encryptDataToArray:(NSData *)data withPublicKeyRef:(SecKeyRef)publickey
+{
+    NSRange range;
+    range.length=SecKeyGetBlockSize(publickey)-11;
+    range.location=0;
+    NSUInteger length=[data length];
+    NSMutableArray* encryptedArray=[NSMutableArray arrayWithCapacity:1];
+    while (length>0) {
+        if (length<range.length) {
+            range.length=length;
+            length=0;
+        }
+        else{
+            length-=range.length;
+        }
+        NSData* chunk=[data subdataWithRange:range];
+        range.location+=range.length;
+        chunk=[self wrapSymmetricKey:chunk keyRef:publickey];
+        [encryptedArray addObject:[chunk base64EncodedStringWithOptions:0]];
+    }
+    return encryptedArray;
+}
+
+- (NSData*)decryptData:(NSData*)data
+{
+    NSMutableArray* encryptedArray=[NSMutableArray array];
+    NSRange range;
+    range.length=SecKeyGetBlockSize([self getPrivateKeyRef]);
+    range.location=0;
+    NSUInteger length=[data length];
+    while (length>0) {
+        if (length<range.length) {
+            range.length=length;
+            length=0;
+        }
+        else{
+            length-=range.length;
+        }
+        NSData* chunk=[data subdataWithRange:range];
+        range.location+=range.length;
+        [encryptedArray addObject:[chunk base64EncodedStringWithOptions:0]];
+    }
+    return [self decryptDataArray:encryptedArray];
+}
+
+- (NSData*)decryptDataArray:(NSArray *)dataArray
+{
+    NSMutableData* decrypted=[NSMutableData data];
+    for (NSString* dataStr in dataArray) {
+        NSData* encryptedData=[[NSData alloc] initWithBase64EncodedString:dataStr options:NSDataBase64DecodingIgnoreUnknownCharacters];
+        NSData* decryptedData=[[SecKeyWrapper sharedWrapper] unwrapSymmetricKey:encryptedData];
+        [decrypted appendData:decryptedData];
+    }
+    return decrypted;
+}
+
 - (SecKeyRef)getPublicKeyRef {
 	OSStatus sanityCheck = noErr;
 	SecKeyRef publicKeyReference = NULL;

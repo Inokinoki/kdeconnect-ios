@@ -15,7 +15,6 @@
 - (void) onStart;
 - (void) onRefresh;
 - (void) onStop;
-- (void) onPause;
 - (void) onNetworkChange;
 - (void) onLinkDestroyed:(BaseLink*)link;
 

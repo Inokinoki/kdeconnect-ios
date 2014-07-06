@@ -38,7 +38,6 @@
 - (id) init
 {
     if ((self=[super init])) {
-        _pluginInfo=[[PluginInfo alloc] initWithInfos:@"MPRIS" displayName:@"MPRIS" description:@"MPRIS" enabledByDefault:true];
         _pluginDelegate=nil;
         _device=nil;
         _view=nil;
@@ -111,6 +110,12 @@
     }
     _deviceViewController=vc;
     return _view;
+}
+
++ (PluginInfo*) getPluginInfo
+{
+    return [[PluginInfo alloc] initWithInfos:@"MPRIS" displayName:@"MPRIS" description:@"MPRIS" enabledByDefault:true];
+
 }
 
 - (void) openPanel:(id)sender

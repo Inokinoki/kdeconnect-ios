@@ -193,26 +193,7 @@ __strong static NSString* _UUID;
 {
     NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_ENCRYPTED];
     NSData* data=[self serialize];
-    NSData* encryptedData=[[SecKeyWrapper sharedWrapper] wrapSymmetricKey:data keyRef:publicKeyRef];
-    NSRange range;
-    range.length=256;
-    range.location=0;
-    NSUInteger length=[encryptedData length];
-    NSMutableArray* encryptedArray=[NSMutableArray arrayWithCapacity:1];
-    while (length>0) {
-        if (length<range.length) {
-            range.length=length;
-            length=0;
-        }
-        else{
-            length-=range.length;
-        }
-        NSData* chunk=[encryptedData subdataWithRange:range];
-        range.location+=range.length;
-        [encryptedArray addObject:[chunk base64EncodedStringWithOptions:0]];
-    }
-
-    
+    NSArray* encryptedArray=[[SecKeyWrapper sharedWrapper] encryptDataToArray:data  withPublicKeyRef:publicKeyRef];
     [np setObject:encryptedArray forKey:@"data"];
     return np;
 };
@@ -223,15 +204,9 @@ __strong static NSString* _UUID;
         return nil;
     }
     NSArray* encryptedDataStrArray=[_Body valueForKey:@"data"];
-    NSMutableData* decryptedBits=[NSMutableData data];
-    for (NSString* dataStr in encryptedDataStrArray) {
-        NSData* encryptedData=[[NSData alloc] initWithBase64EncodedString:dataStr options:NSDataBase64DecodingIgnoreUnknownCharacters];
-        NSData* decryptedData=[[SecKeyWrapper sharedWrapper] unwrapSymmetricKey:encryptedData];
-        [decryptedBits appendData:decryptedData];
-    }
+    NSData* decryptedData=[[SecKeyWrapper sharedWrapper] decryptDataArray:encryptedDataStrArray];
     
-    
-    return [NetworkPackage unserialize:decryptedBits];
+    return [NetworkPackage unserialize:decryptedData];
 };
 
 @end

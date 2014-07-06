@@ -21,9 +21,8 @@
 @property(nonatomic) id _pluginDelegate;
 
 - (BOOL) onDevicePackageReceived:(NetworkPackage*)np;
-- (void) stop;
 - (UIView*) getView:(UIViewController*)vc;
-- (void) sentPercentage:(int)percentage tag:(long)tag;
++ (PluginInfo*) getPluginInfo;
 
 - (void) sendAction:(NSString*)action;
 - (void) setVolume:(NSUInteger)volume;

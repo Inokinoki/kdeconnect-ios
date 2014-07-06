@@ -24,6 +24,7 @@
 #define PACKAGE_TAG_SHARE       7
 #define PACKAGE_TAG_CLIPBOARD   8
 #define PACKAGE_TAG_MOUSEPAD    9
+#define PACKAGE_TAG_BATTERY     10
 
 #define PORT                    1714
 #define ProtocolVersion         5
@@ -37,6 +38,7 @@
 #define PACKAGE_TYPE_SHARE      @"kdeconnect.share"
 #define PACKAGE_TYPE_CLIPBOARD  @"kdeconnect.clipboard"
 #define PACKAGE_TYPE_MOUSEPAD   @"kdeconnect.mousepad"
+#define PACKAGE_TYPE_BATTERY    @"kdeconnect.battery"
 
 #pragma mark -
 

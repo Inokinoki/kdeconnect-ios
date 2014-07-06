@@ -19,7 +19,6 @@
 @implementation Share
 
 @synthesize _device;
-@synthesize _pluginInfo;
 @synthesize _pluginDelegate;
 @synthesize _view;
 @synthesize _deviceViewController;
@@ -28,7 +27,6 @@
 - (id) init
 {
     if ((self=[super init])) {
-        _pluginInfo=[[PluginInfo alloc] initWithInfos:@"Share" displayName:@"Share" description:@"Share" enabledByDefault:true];
         _pluginDelegate=nil;
         _device=nil;
         _view=nil;
@@ -78,6 +76,11 @@
     return _view;
 }
 
++ (PluginInfo*) getPluginInfo
+{
+    return [[PluginInfo alloc] initWithInfos:@"Share" displayName:@"Share" description:@"Share" enabledByDefault:true];
+
+}
 - (void)photoSourceSelect:(id)sender
 {
     UIActionSheet *actionSheet = [[UIActionSheet alloc]initWithTitle:@"Photo Source"

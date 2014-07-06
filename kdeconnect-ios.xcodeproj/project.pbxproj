@@ -33,6 +33,7 @@
 		4E1A82A319657DD700174217 /* MousePad.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E1A82A219657DD700174217 /* MousePad.m */; };
 		4E1A82A619657FF400174217 /* MousePadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E1A82A519657FF400174217 /* MousePadViewController.m */; };
 		4E3038FC1940889900F28091 /* ClipBoard.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E3038FB1940889900F28091 /* ClipBoard.m */; };
+		4E47115F19693B7F00EE5B1D /* Battery.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E47115E19693B7F00EE5B1D /* Battery.m */; };
 		4E49BCA91966661800E8AEB7 /* custumRecognizers.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E49BCA81966661800E8AEB7 /* custumRecognizers.m */; };
 		4E51BBED193FADA7007E74F4 /* Share.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E51BBEC193FADA7007E74F4 /* Share.m */; };
 		4E85B96C1928F9D600EF3C55 /* DeviceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E85B96B1928F9D600EF3C55 /* DeviceViewController.m */; };
@@ -102,6 +103,8 @@
 		4E1A82A519657FF400174217 /* MousePadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MousePadViewController.m; path = plugins/MousePad/MousePadViewController.m; sourceTree = "<group>"; };
 		4E3038FA1940889900F28091 /* ClipBoard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ClipBoard.h; path = plugins/ClipBoard/ClipBoard.h; sourceTree = "<group>"; };
 		4E3038FB1940889900F28091 /* ClipBoard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ClipBoard.m; path = plugins/ClipBoard/ClipBoard.m; sourceTree = "<group>"; };
+		4E47115D19693B7F00EE5B1D /* Battery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Battery.h; path = plugins/Battery/Battery.h; sourceTree = "<group>"; };
+		4E47115E19693B7F00EE5B1D /* Battery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Battery.m; path = plugins/Battery/Battery.m; sourceTree = "<group>"; };
 		4E49BCA71966661800E8AEB7 /* custumRecognizers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = custumRecognizers.h; path = plugins/MousePad/custumRecognizers.h; sourceTree = "<group>"; };
 		4E49BCA81966661800E8AEB7 /* custumRecognizers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = custumRecognizers.m; path = plugins/MousePad/custumRecognizers.m; sourceTree = "<group>"; };
 		4E51BBEB193FADA7007E74F4 /* Share.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Share.h; path = plugins/SHARE/Share.h; sourceTree = "<group>"; };
@@ -306,6 +309,15 @@
 			name = ClipBoard;
 			sourceTree = "<group>";
 		};
+		4E47115C19693B5A00EE5B1D /* Battery */ = {
+			isa = PBXGroup;
+			children = (
+				4E47115D19693B7F00EE5B1D /* Battery.h */,
+				4E47115E19693B7F00EE5B1D /* Battery.m */,
+			);
+			name = Battery;
+			sourceTree = "<group>";
+		};
 		4E51BBEA193F6E96007E74F4 /* SHARE */ = {
 			isa = PBXGroup;
 			children = (
@@ -318,6 +330,7 @@
 		4EC27541191FCE910057AB0E /* plugins */ = {
 			isa = PBXGroup;
 			children = (
+				4E47115C19693B5A00EE5B1D /* Battery */,
 				4E1A82A019657D0800174217 /* MousePad */,
 				4E3038F91940886800F28091 /* ClipBoard */,
 				4E51BBEA193F6E96007E74F4 /* SHARE */,
@@ -500,6 +513,7 @@
 				4E1A82A619657FF400174217 /* MousePadViewController.m in Sources */,
 				4E08A2371913D1780056EEF8 /* NetworkPackage.m in Sources */,
 				4E08A2361913D1780056EEF8 /* Device.m in Sources */,
+				4E47115F19693B7F00EE5B1D /* Battery.m in Sources */,
 				4E08A22D1913D1650056EEF8 /* LanLink.m in Sources */,
 				4E51BBED193FADA7007E74F4 /* Share.m in Sources */,
 				4E08A2281913D1550056EEF8 /* BaseLinkProvider.m in Sources */,

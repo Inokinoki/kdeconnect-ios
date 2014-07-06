@@ -13,12 +13,10 @@
 @interface Share : Plugin <UIImagePickerControllerDelegate,UINavigationControllerDelegate,UIActionSheetDelegate>
 
 @property(nonatomic) Device* _device;
-@property(nonatomic) PluginInfo* _pluginInfo;
 @property(nonatomic) id _pluginDelegate;
 
 - (BOOL) onDevicePackageReceived:(NetworkPackage*)np;
-- (void) stop;
 - (UIView*) getView:(UIViewController*)vc;
 - (void) sentPercentage:(short)percentage tag:(long)tag;
-
++ (PluginInfo*) getPluginInfo;
 @end

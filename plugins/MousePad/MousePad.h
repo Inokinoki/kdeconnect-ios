@@ -15,9 +15,8 @@
 @property(nonatomic) id _pluginDelegate;
 
 - (BOOL) onDevicePackageReceived:(NetworkPackage*)np;
-- (void) stop;
 - (UIView*) getView:(UIViewController*)vc;
-- (void) sentPercentage:(short)percentage tag:(long)tag;
++ (PluginInfo*) getPluginInfo;
 
 - (void) sendPointsWithDx:(double)x Dy:(double) y;
 - (void) sendSingleClick;

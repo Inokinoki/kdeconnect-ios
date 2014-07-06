@@ -28,7 +28,6 @@
 - (id) init
 {
     if ((self=[super init])) {
-        _pluginInfo=[[PluginInfo alloc] initWithInfos:@"MousePad" displayName:@"MousePad" description:@"MousePad" enabledByDefault:true];
         _pluginDelegate=nil;
         _device=nil;
         _view=nil;
@@ -68,6 +67,12 @@
     }
     _deviceViewController=vc;
     return _view;
+}
+
++ (PluginInfo*) getPluginInfo
+{
+    return [[PluginInfo alloc] initWithInfos:@"MousePad" displayName:@"MousePad" description:@"MousePad" enabledByDefault:true];
+
 }
 
 - (void) stop

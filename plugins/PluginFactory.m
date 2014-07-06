@@ -14,6 +14,7 @@
 #import "Share.h"
 #import "ClipBoard.h"
 #import "MousePad.h"
+#import "Battery.h"
 
 @interface PluginFactory()
 @property(nonatomic) NSMutableDictionary* _availablePlugins;
@@ -86,16 +87,13 @@
 - (void) registerPlugins
 {
     NSLog(@"pluginfactory register plugins");
-    Ping* pingPlugin=[[Ping alloc] init];
-    MPRIS* mprisPlugin=[[MPRIS alloc] init];
-    Share* sharePlugin=[[Share alloc] init];
-    ClipBoard* clipboardPlugin=[[ClipBoard alloc] init];
-    MousePad* mousePadPlugin=[[MousePad alloc] init];
-    [_availablePlugins setValue:[Ping class] forKey:[[[pingPlugin _pluginInfo] _pluginName] copy]];
-    [_availablePlugins setValue:[MPRIS class] forKey:[[[mprisPlugin _pluginInfo] _pluginName] copy]];
-    [_availablePlugins setValue:[Share class] forKey:[[[sharePlugin _pluginInfo] _pluginName] copy]];
-    [_availablePlugins setValue:[ClipBoard class] forKey:[[[clipboardPlugin _pluginInfo] _pluginName] copy]];
-    [_availablePlugins setValue:[MousePad class] forKey:[[[mousePadPlugin _pluginInfo] _pluginName] copy]];
+    
+    [_availablePlugins setValue:[Ping class] forKey:[[[Ping getPluginInfo] _pluginName] copy]];
+    [_availablePlugins setValue:[MPRIS class] forKey:[[[MPRIS getPluginInfo] _pluginName] copy]];
+    [_availablePlugins setValue:[Share class] forKey:[[[Share getPluginInfo] _pluginName] copy]];
+    [_availablePlugins setValue:[ClipBoard class] forKey:[[[ClipBoard getPluginInfo] _pluginName] copy]];
+    [_availablePlugins setValue:[MousePad class] forKey:[[[MousePad getPluginInfo] _pluginName] copy]];
+    [_availablePlugins setValue:[Battery class] forKeyPath:[[[Battery getPluginInfo]_pluginName] copy]];
 }
 
 @end

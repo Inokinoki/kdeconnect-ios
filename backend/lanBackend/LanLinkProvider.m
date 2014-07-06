@@ -115,14 +115,6 @@
 
 }
 
-- (void)onPause
-{
-    NSLog(@"lp on pause");
-    [_udpSocket close];
-    [_tcpSocket disconnect];
-    _udpSocket=nil;
-}
-
 - (void) onRefresh
 {
     NSLog(@"lp on refresh");

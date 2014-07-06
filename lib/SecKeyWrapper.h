@@ -112,5 +112,8 @@
 - (SecKeyRef)getPeerPublicKeyRef:(NSString*)peerName;
 - (CFTypeRef)getPersistentKeyRefWithKeyRef:(SecKeyRef)keyRef;
 - (SecKeyRef)getKeyRefWithPersistentKeyRef:(CFTypeRef)persistentRef;
-
+- (NSData*)encryptDataToData:(NSData*)data withPublicKeyRef:(SecKeyRef)publickey;
+- (NSArray*)encryptDataToArray:(NSData *)data withPublicKeyRef:(SecKeyRef)publickey;
+- (NSData*)decryptData:(NSData*)data;
+- (NSData*)decryptDataArray:(NSArray *)dataArray;
 @end
