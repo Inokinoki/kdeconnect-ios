@@ -25,6 +25,8 @@
 #define PACKAGE_TAG_CLIPBOARD   8
 #define PACKAGE_TAG_MOUSEPAD    9
 #define PACKAGE_TAG_BATTERY     10
+#define PACKAGE_TAG_CALENDAR    11
+#define PACKAGE_TAG_REMINDER    12
 
 #define PORT                    1714
 #define ProtocolVersion         5
@@ -39,6 +41,8 @@
 #define PACKAGE_TYPE_CLIPBOARD  @"kdeconnect.clipboard"
 #define PACKAGE_TYPE_MOUSEPAD   @"kdeconnect.mousepad"
 #define PACKAGE_TYPE_BATTERY    @"kdeconnect.battery"
+#define PACKAGE_TYPE_CALENDAR   @"kdeconnect.calendar"
+#define PACKAGE_TYPE_REMINDER   @"kdeconnect.reminder"
 
 #pragma mark -
 

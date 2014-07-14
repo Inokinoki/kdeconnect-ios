@@ -50,12 +50,6 @@
     return false;
 }
 
-- (UIView*) getView:(UIViewController*)vc
-{
-    NSLog(@"ClipBoard plugin get view");
-    return nil;
-}
-
 + (PluginInfo*) getPluginInfo
 {
     return [[PluginInfo alloc] initWithInfos:@"ClipBoard" displayName:@"ClipBoard" description:@"ClipBoard" enabledByDefault:true];

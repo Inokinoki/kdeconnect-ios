@@ -42,17 +42,6 @@
             // -1.0 means battery state is UIDeviceBatteryStateUnknown
             return NO;
         }
-//        switch (currentState) {
-//            case UIDeviceBatteryStateUnplugged:
-//                break;
-//            case UIDeviceBatteryStateCharging:
-//                break;
-//            case UIDeviceBatteryStateFull:
-//                break;
-//            case UIDeviceBatteryStateUnknown:
-//            default:
-//                break;
-//        }
         if (_prePackage!=nil
             && ischarging== [_prePackage boolForKey:@"isCharging"]
             && batteryLevel== [_prePackage integerForKey:@"currentCharge"]
@@ -70,12 +59,6 @@
         return true;
     }
     return false;
-}
-
-- (UIView*) getView:(UIViewController*)vc
-{
-    NSLog(@"Battery plugin get view");
-    return nil;
 }
 
 + (PluginInfo*) getPluginInfo

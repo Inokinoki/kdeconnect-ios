@@ -15,6 +15,7 @@
 #import "ClipBoard.h"
 #import "MousePad.h"
 #import "Battery.h"
+#import "Calendar.h"
 
 @interface PluginFactory()
 @property(nonatomic) NSMutableDictionary* _availablePlugins;
@@ -88,12 +89,13 @@
 {
     NSLog(@"pluginfactory register plugins");
     
-    [_availablePlugins setValue:[Ping class] forKey:[[[Ping getPluginInfo] _pluginName] copy]];
-    [_availablePlugins setValue:[MPRIS class] forKey:[[[MPRIS getPluginInfo] _pluginName] copy]];
-    [_availablePlugins setValue:[Share class] forKey:[[[Share getPluginInfo] _pluginName] copy]];
-    [_availablePlugins setValue:[ClipBoard class] forKey:[[[ClipBoard getPluginInfo] _pluginName] copy]];
-    [_availablePlugins setValue:[MousePad class] forKey:[[[MousePad getPluginInfo] _pluginName] copy]];
-    [_availablePlugins setValue:[Battery class] forKeyPath:[[[Battery getPluginInfo]_pluginName] copy]];
+    [_availablePlugins setValue:[Ping class] forKey:[[Ping getPluginInfo] _pluginName]];
+    [_availablePlugins setValue:[MPRIS class] forKey:[[MPRIS getPluginInfo] _pluginName]];
+    [_availablePlugins setValue:[Share class] forKey:[[Share getPluginInfo] _pluginName]];
+    [_availablePlugins setValue:[ClipBoard class] forKey:[[ClipBoard getPluginInfo] _pluginName]];
+    [_availablePlugins setValue:[MousePad class] forKey:[[MousePad getPluginInfo] _pluginName]];
+    [_availablePlugins setValue:[Battery class] forKeyPath:[[Battery getPluginInfo]_pluginName]];
+    [_availablePlugins setValue:[Calendar class] forKeyPath:[[Calendar getPluginInfo] _pluginName]];
 }
 
 @end

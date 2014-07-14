@@ -33,6 +33,8 @@
 		4E1A82A319657DD700174217 /* MousePad.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E1A82A219657DD700174217 /* MousePad.m */; };
 		4E1A82A619657FF400174217 /* MousePadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E1A82A519657FF400174217 /* MousePadViewController.m */; };
 		4E3038FC1940889900F28091 /* ClipBoard.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E3038FB1940889900F28091 /* ClipBoard.m */; };
+		4E38A3AB196CEB44006AE419 /* Calendar.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E38A3AA196CEB44006AE419 /* Calendar.m */; };
+		4E38A3B0196D2D36006AE419 /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E38A3AF196D2D36006AE419 /* EventKit.framework */; };
 		4E47115F19693B7F00EE5B1D /* Battery.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E47115E19693B7F00EE5B1D /* Battery.m */; };
 		4E49BCA91966661800E8AEB7 /* custumRecognizers.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E49BCA81966661800E8AEB7 /* custumRecognizers.m */; };
 		4E51BBED193FADA7007E74F4 /* Share.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E51BBEC193FADA7007E74F4 /* Share.m */; };
@@ -46,6 +48,7 @@
 		4ECA38301933EE560015C07C /* SecKeyWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ECA382F1933EE560015C07C /* SecKeyWrapper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		4EDD98FA192DAAD700C6AB01 /* MPRISViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EDD98F9192DAAD700C6AB01 /* MPRISViewController.m */; };
 		4EDD98FD192DAAF800C6AB01 /* MPRIS.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EDD98FC192DAAF800C6AB01 /* MPRIS.m */; };
+		4EEB006F19736D4D000A1F69 /* Reminder.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EEB006E19736D4D000A1F69 /* Reminder.m */; };
 		4EF576E9194784D80046213D /* AppSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EF576E8194784D80046213D /* AppSettingViewController.m */; };
 		CDF3929BB4CB40FCA1F80352 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2F71AC6EE495B8966C774 /* libPods.a */; };
 /* End PBXBuildFile section */
@@ -103,6 +106,9 @@
 		4E1A82A519657FF400174217 /* MousePadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MousePadViewController.m; path = plugins/MousePad/MousePadViewController.m; sourceTree = "<group>"; };
 		4E3038FA1940889900F28091 /* ClipBoard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ClipBoard.h; path = plugins/ClipBoard/ClipBoard.h; sourceTree = "<group>"; };
 		4E3038FB1940889900F28091 /* ClipBoard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ClipBoard.m; path = plugins/ClipBoard/ClipBoard.m; sourceTree = "<group>"; };
+		4E38A3A9196CEB44006AE419 /* Calendar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Calendar.h; path = plugins/Calendar/Calendar.h; sourceTree = "<group>"; };
+		4E38A3AA196CEB44006AE419 /* Calendar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Calendar.m; path = plugins/Calendar/Calendar.m; sourceTree = "<group>"; };
+		4E38A3AF196D2D36006AE419 /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
 		4E47115D19693B7F00EE5B1D /* Battery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Battery.h; path = plugins/Battery/Battery.h; sourceTree = "<group>"; };
 		4E47115E19693B7F00EE5B1D /* Battery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Battery.m; path = plugins/Battery/Battery.m; sourceTree = "<group>"; };
 		4E49BCA71966661800E8AEB7 /* custumRecognizers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = custumRecognizers.h; path = plugins/MousePad/custumRecognizers.h; sourceTree = "<group>"; };
@@ -129,6 +135,8 @@
 		4EDD98F9192DAAD700C6AB01 /* MPRISViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MPRISViewController.m; path = plugins/MPRIS/MPRISViewController.m; sourceTree = "<group>"; };
 		4EDD98FB192DAAF800C6AB01 /* MPRIS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MPRIS.h; path = plugins/MPRIS/MPRIS.h; sourceTree = "<group>"; };
 		4EDD98FC192DAAF800C6AB01 /* MPRIS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MPRIS.m; path = plugins/MPRIS/MPRIS.m; sourceTree = "<group>"; };
+		4EEB006D19736D4D000A1F69 /* Reminder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Reminder.h; path = plugins/Reminder/Reminder.h; sourceTree = "<group>"; };
+		4EEB006E19736D4D000A1F69 /* Reminder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Reminder.m; path = plugins/Reminder/Reminder.m; sourceTree = "<group>"; };
 		4EF576E7194784D80046213D /* AppSettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppSettingViewController.h; sourceTree = "<group>"; };
 		4EF576E8194784D80046213D /* AppSettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppSettingViewController.m; sourceTree = "<group>"; };
 		5B2C3C0E2C4C4FB78D606404 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
@@ -139,6 +147,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4E38A3B0196D2D36006AE419 /* EventKit.framework in Frameworks */,
 				4E08A1EA1913CF850056EEF8 /* CoreGraphics.framework in Frameworks */,
 				4E08A1EC1913CF850056EEF8 /* UIKit.framework in Frameworks */,
 				4E08A1E81913CF850056EEF8 /* Foundation.framework in Frameworks */,
@@ -186,6 +195,7 @@
 		4E08A1E61913CF850056EEF8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4E38A3AF196D2D36006AE419 /* EventKit.framework */,
 				4E08A1E71913CF850056EEF8 /* Foundation.framework */,
 				4E08A1E91913CF850056EEF8 /* CoreGraphics.framework */,
 				4E08A1EB1913CF850056EEF8 /* UIKit.framework */,
@@ -309,6 +319,15 @@
 			name = ClipBoard;
 			sourceTree = "<group>";
 		};
+		4E38A3A7196CEA90006AE419 /* Calendar */ = {
+			isa = PBXGroup;
+			children = (
+				4E38A3A9196CEB44006AE419 /* Calendar.h */,
+				4E38A3AA196CEB44006AE419 /* Calendar.m */,
+			);
+			name = Calendar;
+			sourceTree = "<group>";
+		};
 		4E47115C19693B5A00EE5B1D /* Battery */ = {
 			isa = PBXGroup;
 			children = (
@@ -330,6 +349,8 @@
 		4EC27541191FCE910057AB0E /* plugins */ = {
 			isa = PBXGroup;
 			children = (
+				4EEB006C19736D2F000A1F69 /* Reminder */,
+				4E38A3A7196CEA90006AE419 /* Calendar */,
 				4E47115C19693B5A00EE5B1D /* Battery */,
 				4E1A82A019657D0800174217 /* MousePad */,
 				4E3038F91940886800F28091 /* ClipBoard */,
@@ -362,6 +383,15 @@
 				4EDD98FC192DAAF800C6AB01 /* MPRIS.m */,
 			);
 			name = MPRIS;
+			sourceTree = "<group>";
+		};
+		4EEB006C19736D2F000A1F69 /* Reminder */ = {
+			isa = PBXGroup;
+			children = (
+				4EEB006D19736D4D000A1F69 /* Reminder.h */,
+				4EEB006E19736D4D000A1F69 /* Reminder.m */,
+			);
+			name = Reminder;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -511,11 +541,13 @@
 				4E08A2271913D1550056EEF8 /* BaseLink.m in Sources */,
 				4EC27548191FCECD0057AB0E /* Ping.m in Sources */,
 				4E1A82A619657FF400174217 /* MousePadViewController.m in Sources */,
+				4E38A3AB196CEB44006AE419 /* Calendar.m in Sources */,
 				4E08A2371913D1780056EEF8 /* NetworkPackage.m in Sources */,
 				4E08A2361913D1780056EEF8 /* Device.m in Sources */,
 				4E47115F19693B7F00EE5B1D /* Battery.m in Sources */,
 				4E08A22D1913D1650056EEF8 /* LanLink.m in Sources */,
 				4E51BBED193FADA7007E74F4 /* Share.m in Sources */,
+				4EEB006F19736D4D000A1F69 /* Reminder.m in Sources */,
 				4E08A2281913D1550056EEF8 /* BaseLinkProvider.m in Sources */,
 				4E95A1911949954600647948 /* SettingsStore.m in Sources */,
 				4E1A82A319657DD700174217 /* MousePad.m in Sources */,

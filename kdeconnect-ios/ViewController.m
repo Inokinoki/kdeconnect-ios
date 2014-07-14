@@ -344,6 +344,7 @@
         switch (buttonIndex) {
             case 0:
                 [[BackgroundService sharedInstance] unpairDevice:_moreActionDevice];
+                [self onRefresh:nil];
                 break;
             case 1:
             default:
@@ -351,6 +352,5 @@
         }
     }
     _moreActionDevice=nil;
-    [self onRefresh:nil];
 }
 @end
