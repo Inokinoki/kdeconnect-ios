@@ -14,7 +14,8 @@
 @interface Calendar ()
 @property(nonatomic)EKEventStore *_eventStore;
 @property(nonatomic)EKCalendar *_calendar;
-@property(nonatomic)NSMutableArray *_eventsList;
+@property(nonatomic)NSArray *_eventsList;
+@property(nonatomic)NSMutableArray *_invalideUids;
 @end
 
 @implementation Calendar
@@ -24,6 +25,7 @@
 @synthesize _calendar;
 @synthesize _eventsList;
 @synthesize _eventStore;
+@synthesize _invalideUids;
 
 - (id) init
 {
@@ -31,7 +33,8 @@
         _pluginDelegate=nil;
         _device=nil;
         _eventStore = [[EKEventStore alloc] init];
-        _eventsList = [NSMutableArray array];
+        _eventsList = [NSArray array];
+        _invalideUids = [NSMutableArray array];
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(storeChanged:)
                                                     name:EKEventStoreChangedNotification  object:_eventStore];
         [self checkEventStoreAccessForCalendar];
@@ -46,7 +49,13 @@
         if ([np bodyHasKey:@"request"]) {
             //send calender event list
             [self fetchEvents];
-            [self sendCalendar];
+            if ([_eventsList count]==0) {
+                NetworkPackage* np2=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_CALENDAR];
+                [np2 setBool:YES forKey:@"request"];
+                [_device sendPackage:np2 tag:PACKAGE_TAG_CALENDAR];
+            }else{
+                [self sendCalendar];
+            }
         }
         else {
             NSError* err;
@@ -55,37 +64,35 @@
             if ([err.domain isEqualToString:@"iCal parse failed"]) {
                 return true;
             }
-
-            if ([err.domain isEqualToString:@"iCal fix uid"]) {
-                NSString* uid=[[err userInfo] objectForKey:@"uid"];
-                NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_CALENDAR];
-                [np setObject:@"delete" forKey:@"op"];
-                [np setObject:uid forKey:@"uid"];
-                [_device sendPackage:np tag:PACKAGE_TAG_CALENDAR];
-            }
-            if([[np objectForKey:@"op"] isEqualToString:@"add"]){
-                [_eventStore saveEvent:event span:EKSpanThisEvent error:&err];
-                if (err) {
-                    NSLog(@"Calendar plugin:save event error");
-                }
-            }
-            else if ([[np objectForKey:@"op"] isEqualToString:@"delete"]){
+            
+            if ([[np objectForKey:@"op"] isEqualToString:@"delete"]){
                 [_eventStore removeEvent:event span:EKSpanThisEvent error:&err];
                 if (err) {
                     NSLog(@"Calendar plugin:delete event error");
                 }
             }
-            else if ([[np objectForKey:@"op"] isEqualToString:@"modify"]){
-                [_eventStore saveEvent:event span:EKSpanThisEvent error:&err];
-                if (err) {
-                    NSLog(@"Calendar plugin:delete event error");
-                }
-            }
             else if ([[np objectForKey:@"op"] isEqualToString:@"merge"]){
+                
+                if ([err.domain isEqualToString:@"iCal fix uid"]) {
+                    NSString* uid=[[err userInfo] objectForKey:@"uid"];
+                    if (![_invalideUids containsObject:uid]) {
+                        NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_CALENDAR];
+                        [np setObject:@"delete" forKey:@"op"];
+                        [np setObject:uid forKey:@"uid"];
+                        [_device sendPackage:np tag:PACKAGE_TAG_CALENDAR];
+                        [_invalideUids addObject:uid];
+                    }
+                }
+
                 EKEvent* oldEvent=[_eventStore eventWithIdentifier:event.eventIdentifier];
-                if (!oldEvent || ![Calendar event:event isIdenToEvent:oldEvent]) {
+                if (!oldEvent){
                     [_eventStore saveEvent:event span:EKSpanThisEvent error:&err];
-                    return true;
+                }
+                else if (![Calendar event:event isIdenToEvent:oldEvent]){
+                    [_eventStore saveEvent:event span:EKSpanThisEvent error:&err];
+                }
+                else if ( [err.domain isEqualToString: @"iCal peer outdated"]){
+                    [self sendCalendar];
                 }
             }
         }
@@ -173,9 +180,7 @@
                                                                     calendars:calendarArray];
 	
 	// Fetch all events that match the predicate
-	NSMutableArray *events = [NSMutableArray arrayWithArray:[_eventStore eventsMatchingPredicate:predicate]];
-    
-    _eventsList=events;
+	_eventsList =[_eventStore eventsMatchingPredicate:predicate];
 }
 
 - (void) storeChanged:(id) sender
@@ -228,8 +233,10 @@
     NSArray* strArray=[iCal componentsSeparatedByString:@"\n"];
     NSString* uid;
     NSString* summary;
-    NSDate* s_dt;
-    NSDate* e_dt;
+    NSDate* dt_s;
+    NSDate* dt_e;
+    NSDate* dt_created;
+    NSDate* dt_modified;
     NSDateFormatter* df=[[NSDateFormatter alloc] init];
     NSTimeZone *timezone;
     BOOL uid_finished=true;
@@ -254,7 +261,7 @@
                 timezone=[NSTimeZone timeZoneWithName:@"UTC"];
                 [df setTimeZone:timezone];
                 [df setDateFormat:@"yyyyMMdd'T'HHmmss'Z'"];
-                s_dt=[df dateFromString:[split lastObject]];
+                dt_s=[df dateFromString:[split lastObject]];
             }
             else{
                 if (![split[1] isEqualToString:@"TZID"]) {
@@ -264,7 +271,7 @@
                 timezone=[NSTimeZone timeZoneWithName:tz];
                 [df setTimeZone:timezone];
                 [df setDateFormat:@"yyyyMMdd'T'HHmmss"];
-                s_dt=[df dateFromString:[split lastObject]];
+                dt_s=[df dateFromString:[split lastObject]];
             }
         }
         if ([str hasPrefix:@"DTEND"]) {
@@ -273,7 +280,7 @@
                 timezone=[NSTimeZone timeZoneWithName:@"UTC"];
                 [df setTimeZone:timezone];
                 [df setDateFormat:@"yyyyMMdd'T'HHmmss'Z'"];
-                e_dt=[df dateFromString:[split lastObject]];
+                dt_e=[df dateFromString:[split lastObject]];
             }
             else{
                 if (![split[1] isEqualToString:@"TZID"]) {
@@ -283,30 +290,77 @@
                 timezone=[NSTimeZone timeZoneWithName:tz];
                 [df setTimeZone:timezone];
                 [df setDateFormat:@"yyyyMMdd'T'HHmmss"];
-                e_dt=[df dateFromString:[split lastObject]];
+                dt_e=[df dateFromString:[split lastObject]];
+            }
+        }
+        if ([str hasPrefix:@"CREATED"]) {
+            NSArray* split=[str componentsSeparatedByCharactersInSet:set2];
+            if ([str hasSuffix:@"Z"]) {
+                timezone=[NSTimeZone timeZoneWithName:@"UTC"];
+                [df setTimeZone:timezone];
+                [df setDateFormat:@"yyyyMMdd'T'HHmmss'Z'"];
+                dt_created=[df dateFromString:[split lastObject]];
+            }
+            else{
+                if (![split[1] isEqualToString:@"TZID"]) {
+                    continue;
+                }
+                NSString* tz=[split objectAtIndex:[split count]-2];
+                timezone=[NSTimeZone timeZoneWithName:tz];
+                [df setTimeZone:timezone];
+                [df setDateFormat:@"yyyyMMdd'T'HHmmss"];
+                dt_created=[df dateFromString:[split lastObject]];
+            }
+        }
+        if ([str hasPrefix:@"LAST-MODIFIED"]) {
+            NSArray* split=[str componentsSeparatedByCharactersInSet:set2];
+            if ([str hasSuffix:@"Z"]) {
+                timezone=[NSTimeZone timeZoneWithName:@"UTC"];
+                [df setTimeZone:timezone];
+                [df setDateFormat:@"yyyyMMdd'T'HHmmss'Z'"];
+                dt_modified=[df dateFromString:[split lastObject]];
+            }
+            else{
+                if (![split[1] isEqualToString:@"TZID"]) {
+                    continue;
+                }
+                NSString* tz=[split objectAtIndex:[split count]-2];
+                timezone=[NSTimeZone timeZoneWithName:tz];
+                [df setTimeZone:timezone];
+                [df setDateFormat:@"yyyyMMdd'T'HHmmss"];
+                dt_modified=[df dateFromString:[split lastObject]];
             }
         }
     }
-    if (!uid||!summary||!s_dt) {
+    if (!uid||!summary||!dt_s) {
         *err=[[NSError alloc] initWithDomain:@"iCal parse failed" code:0 userInfo:nil];
         return nil;
     }
-    if (!e_dt) {
-        e_dt=[s_dt dateByAddingTimeInterval:3600];
+    if (!dt_e) {
+        dt_e=[dt_e dateByAddingTimeInterval:3600];
     }
     EKEvent* event=[eventstore eventWithIdentifier:uid];
     if (!event) {
         event=[EKEvent eventWithEventStore:eventstore];
         [event setCalendar:[eventstore defaultCalendarForNewEvents]];
-        *err=[[NSError alloc] initWithDomain:@"iCal fix uid" code:1 userInfo:@{@"uid": uid}];
-    }
-    if (![summary isEqualToString:event.title] ||
-        ![s_dt isEqualToDate:event.startDate] ||
-        ![e_dt isEqualToDate:event.endDate]) {
         [event setTitle:summary];
-        [event setStartDate:s_dt];
-        [event setEndDate:e_dt];
+        [event setStartDate:dt_s];
+        [event setEndDate:dt_e];
         [event setCalendar:[eventstore defaultCalendarForNewEvents]];
+        *err=[[NSError alloc] initWithDomain:@"iCal fix uid" code:1 userInfo:@{@"uid": uid}];
+        return event;
+    }
+    if ( (![summary isEqualToString:event.title] ||
+        ![dt_s isEqualToDate:event.startDate] ||
+        ![dt_e isEqualToDate:event.endDate])
+        && [event.lastModifiedDate compare:dt_modified]==NSOrderedAscending) {
+        [event setTitle:summary];
+        [event setStartDate:dt_s];
+        [event setEndDate:dt_e];
+        [event setCalendar:[eventstore defaultCalendarForNewEvents]];
+    }
+    if ([event.lastModifiedDate compare:dt_modified]==NSOrderedDescending) {
+        *err=[[NSError alloc] initWithDomain:@"iCal peer outdated" code:1 userInfo:nil];
     }
     return event;
 }
@@ -320,24 +374,24 @@
     NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
     [df setTimeZone:timeZone];
     [df setDateFormat:@"yyyyMMdd'T'HHmmss'Z'"];
-    NSDate* dstamp=[NSDate dateWithTimeIntervalSinceReferenceDate:[[NSDate date] timeIntervalSinceReferenceDate]];
-    NSDate* sd=[NSDate dateWithTimeIntervalSinceReferenceDate:[event.startDate timeIntervalSinceReferenceDate]];
-    NSDate* ed=[NSDate dateWithTimeIntervalSinceReferenceDate:[event.endDate timeIntervalSinceReferenceDate]];
     NSString* t=event.title;
-    NSString* date_stamp=[df stringFromDate:dstamp];
-    NSString* s_date=[df stringFromDate:sd];
-    NSString* e_date=[df stringFromDate:ed];
+    NSString* dt_stamp=[df stringFromDate:[event creationDate]];
+    NSString* dt_created=[df stringFromDate:[event creationDate]];
+    NSString* dt_modified=[df stringFromDate:[event lastModifiedDate]];
+    NSString* dt_s=[df stringFromDate:[event startDate]];
+    NSString* dt_e=[df stringFromDate:[event endDate]];
     NSMutableString* iCal=[NSMutableString string];
     [iCal appendString:@"BEGIN:VCALENDAR\n"];
     [iCal appendString:@"VERSION:2.0\n"];
     [iCal appendString:@"PRODID:-//kde//kdeconnect-ios v0.1/EN\n"];
     [iCal appendString:@"BEGIN:VEVENT\n"];
-    [iCal appendFormat:@"DTSTAMP:%@\n",date_stamp];
-    [iCal appendFormat:@"CREATED:%@\n",date_stamp];
+    [iCal appendFormat:@"DTSTAMP:%@\n",dt_stamp];
+    [iCal appendFormat:@"CREATED:%@\n",dt_created];
+    [iCal appendFormat:@"LAST_MODIFIED:%@\n",dt_modified];
     [iCal appendFormat:@"UID:%@\n",[event eventIdentifier]];
     [iCal appendFormat:@"SUMMARY:%@\n",t];
-    [iCal appendFormat:@"DTSTART:%@\n",s_date];
-    [iCal appendFormat:@"DTEND:%@\n",e_date];
+    [iCal appendFormat:@"DTSTART:%@\n",dt_s];
+    [iCal appendFormat:@"DTEND:%@\n",dt_e];
     [iCal appendFormat:@"TRANSP:OPAQUE\n"];
     [iCal appendString:@"END:VEVENT\n"];
     [iCal appendString:@"END:VCALENDAR\n"];
