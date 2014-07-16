@@ -30,7 +30,6 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-        [self setSettingsStore:[[SettingsStore alloc] initWithPath:KDECONNECT_GLOBAL_SETTING_FILE_PATH]];
     }
     return self;
 }
@@ -39,7 +38,6 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [self setSettingsStore:[[SettingsStore alloc] initWithPath:KDECONNECT_GLOBAL_SETTING_FILE_PATH]];
     [self.tabBarController setDelegate:self];
 }
 
@@ -66,63 +64,6 @@
     //FIX-ME shouldn't put it here, move to somewhere else
     [[BackgroundService sharedInstance] reloadAllPlugins];
 }
-
-//#pragma mark - UITableView header customization
-//- (CGFloat) settingsViewController:(id<IASKViewController>)settingsViewController
-//                         tableView:(UITableView *)tableView
-//         heightForHeaderForSection:(NSInteger)section
-//{
-//    
-//}
-//- (UIView *) settingsViewController:(id<IASKViewController>)settingsViewController
-//                          tableView:(UITableView *)tableView
-//            viewForHeaderForSection:(NSInteger)section
-//{
-//    
-//}
-//
-//#pragma mark - UITableView cell customization
-//- (CGFloat)tableView:(UITableView*)tableView heightForSpecifier:(IASKSpecifier*)specifier
-//{
-//    
-//}
-//
-//- (UITableViewCell*)tableView:(UITableView*)tableView cellForSpecifier:(IASKSpecifier*)specifier
-//{
-//    
-//}
-//
-//#pragma mark - mail composing customization
-//- (NSString*) settingsViewController:(id<IASKViewController>)settingsViewController
-//         mailComposeBodyForSpecifier:(IASKSpecifier*) specifier
-//{
-//    
-//}
-//
-//- (UIViewController<MFMailComposeViewControllerDelegate>*) settingsViewController:(id<IASKViewController>)settingsViewController
-//                                     viewControllerForMailComposeViewForSpecifier:(IASKSpecifier*) specifier
-//{
-//    
-//}
-//
-//- (void) settingsViewController:(id<IASKViewController>) settingsViewController
-//          mailComposeController:(MFMailComposeViewController*)controller
-//            didFinishWithResult:(MFMailComposeResult)result
-//                          error:(NSError*)error
-//{
-//    
-//}
-//
-//#pragma mark - respond to button taps
-//
-//- (void)settingsViewController:(IASKAppSettingsViewController*)sender buttonTappedForSpecifier:(IASKSpecifier*)specifier
-//{
-//    
-//}
-//- (void)settingsViewController:(IASKAppSettingsViewController*)sender tableView:(UITableView *)tableView didSelectCustomViewSpecifier:(IASKSpecifier*)specifier
-//{
-//    
-//}
 
 /*
 #pragma mark - Navigation

@@ -19,7 +19,6 @@
 #define kSymmetricKeyTag		"org.kde.kdeconnect.symmetrickey"
 
 // file paths
-#define KDECONNECT_GLOBAL_SETTING_FILE_PATH    @"KDEConnectGlobalSettings"
 #define KDECONNECT_REMEMBERED_DEV_FILE_PATH    @"KDEConnectRememberedDevices"
 
 // GCDSingleton
