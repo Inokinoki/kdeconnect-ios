@@ -1,31 +1,33 @@
 //
-//  Calendar.m
+//  Reminder.m
 //  kdeconnect-ios
 //
 //  Created by YANG Qiao on 7/9/14.
 //  Copyright (c) 2014 yangqiao. All rights reserved.
 //
 
-#import "Calendar.h"
+#import "Reminder.h"
 #import "Device.h"
 #import <EventKit/EventKit.h>
 #import <EventKitUI/EventKitUI.h>
 
-@interface Calendar ()
+@interface Reminder ()
 @property(nonatomic)EKEventStore *_eventStore;
 @property(nonatomic)EKCalendar *_calendar;
-@property(nonatomic)NSArray *_eventsList;
+@property(nonatomic)NSArray *_reminderList;
 @property(nonatomic)NSMutableArray *_invalideUids;
+@property(nonatomic)BOOL _requested;
 @end
 
-@implementation Calendar
+@implementation Reminder
 @synthesize _device;
 @synthesize _pluginInfo;
 @synthesize _pluginDelegate;
 @synthesize _calendar;
-@synthesize _eventsList;
+@synthesize _reminderList;
 @synthesize _eventStore;
 @synthesize _invalideUids;
+@synthesize _requested;
 
 - (id) init
 {
@@ -33,8 +35,9 @@
         _pluginDelegate=nil;
         _device=nil;
         _eventStore = [[EKEventStore alloc] init];
-        _eventsList = [NSArray array];
+        _reminderList = [NSArray array];
         _invalideUids = [NSMutableArray array];
+        _requested=false;
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(storeChanged:)
                                                     name:EKEventStoreChangedNotification  object:_eventStore];
         [self checkEventStoreAccessForCalendar];
@@ -44,55 +47,45 @@
 
 - (BOOL) onDevicePackageReceived:(NetworkPackage *)np
 {
-    if ([[np _Type] isEqualToString:PACKAGE_TYPE_CALENDAR]) {
-        NSLog(@"Calendar plugin receive a package");
+    if ([[np _Type] isEqualToString:PACKAGE_TYPE_REMINDER]) {
+        NSLog(@"Reminder plugin receive a package");
         if ([np bodyHasKey:@"request"]) {
-            //send calender event list
-            [self fetchEvents];
-            if ([_eventsList count]==0) {
-                NetworkPackage* np2=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_CALENDAR];
-                [np2 setBool:YES forKey:@"request"];
-                [_device sendPackage:np2 tag:PACKAGE_TAG_CALENDAR];
-            }else{
-                [self sendCalendar];
-            }
+            _requested=true;
         }
         else {
             NSError* err;
-            EKEvent* event=[Calendar retrieveEvent:np withStore:_eventStore error:&err];
+            EKReminder* reminder=[Reminder retrieveEvent:np withStore:_eventStore error:&err];
             
             if ([err.domain isEqualToString:@"iCal parse failed"]) {
                 return true;
             }
-            
+
             if ([[np objectForKey:@"op"] isEqualToString:@"delete"]){
-                [_eventStore removeEvent:event span:EKSpanThisEvent error:&err];
+                [_eventStore removeReminder:reminder commit:YES error:&err];
                 if (err) {
-                    NSLog(@"Calendar plugin:delete event error");
+                    NSLog(@"Reminder plugin:delete reminder error");
                 }
             }
             else if ([[np objectForKey:@"op"] isEqualToString:@"merge"]){
-                
                 if ([err.domain isEqualToString:@"iCal fix uid"]) {
                     NSString* uid=[[err userInfo] objectForKey:@"uid"];
                     if (![_invalideUids containsObject:uid]) {
-                        NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_CALENDAR];
+                        NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_REMINDER];
                         [np setObject:@"delete" forKey:@"op"];
                         [np setObject:uid forKey:@"uid"];
-                        [_device sendPackage:np tag:PACKAGE_TAG_CALENDAR];
+                        [_device sendPackage:np tag:PACKAGE_TAG_REMINDER];
                         [_invalideUids addObject:uid];
                     }
                 }
-
-                EKEvent* oldEvent=[_eventStore eventWithIdentifier:event.eventIdentifier];
-                if (!oldEvent){
-                    [_eventStore saveEvent:event span:EKSpanThisEvent error:&err];
+                EKReminder* oldreminder=[_eventStore calendarItemWithIdentifier:reminder.calendarItemIdentifier];
+                if (!oldreminder){
+                    [_eventStore saveReminder:reminder commit:YES error:&err];
                 }
-                else if (![Calendar event:event isIdenToEvent:oldEvent]){
-                    [_eventStore saveEvent:event span:EKSpanThisEvent error:&err];
+                else if (![Reminder reminder:reminder isIdenToReminder2:oldreminder]){
+                    [_eventStore saveReminder:reminder commit:YES error:&err];
                 }
                 else if ( [err.domain isEqualToString: @"iCal peer outdated"]){
-                    [self sendCalendar];
+                    [self sendReminder];
                 }
             }
         }
@@ -103,27 +96,27 @@
 
 + (PluginInfo*) getPluginInfo
 {
-    return [[PluginInfo alloc] initWithInfos:@"Calendar" displayName:@"Calendar" description:@"Calendar" enabledByDefault:true];
+    return [[PluginInfo alloc] initWithInfos:@"Reminder" displayName:@"Reminder" description:@"Reminder" enabledByDefault:true];
 }
 
 // Check the authorization status of our application for Calendar
 -(void)checkEventStoreAccessForCalendar
 {
-    EKAuthorizationStatus status = [EKEventStore authorizationStatusForEntityType:EKEntityTypeEvent];
+    EKAuthorizationStatus status = [EKEventStore authorizationStatusForEntityType:EKEntityTypeReminder];
     
     switch (status)
     {
-            // Update our UI if the user has granted access to their Calendar
-        case EKAuthorizationStatusAuthorized: [self accessGrantedForCalendar];
+            // Update our UI if the user has granted access to their Reminder
+        case EKAuthorizationStatusAuthorized: [self accessGrantedForReminder];
             break;
-            // Prompt the user for access to Calendar if there is no definitive answer
-        case EKAuthorizationStatusNotDetermined: [self requestCalendarAccess];
+            // Prompt the user for access to Reminder if there is no definitive answer
+        case EKAuthorizationStatusNotDetermined: [self requestReminderAccess];
             break;
-            // Display a message if the user has denied or restricted access to Calendar
+            // Display a message if the user has denied or restricted access to Reminder
         case EKAuthorizationStatusDenied:
         case EKAuthorizationStatusRestricted:
         {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Privacy Warning" message:@"Permission was not granted for Calendar"
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Privacy Warning" message:@"Permission was not granted for calendar"
                                                            delegate:nil
                                                   cancelButtonTitle:@"OK"
                                                   otherButtonTitles:nil];
@@ -135,110 +128,109 @@
     }
 }
 
-// Prompt the user for access to their Calendar
--(void)requestCalendarAccess
+// Prompt the user for access to their Reminder
+-(void)requestReminderAccess
 {
-    [_eventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error)
+    [_eventStore requestAccessToEntityType:EKEntityTypeReminder completion:^(BOOL granted, NSError *error)
      {
          if (granted)
          {
-             [self accessGrantedForCalendar];
+             [self accessGrantedForReminder];
          }
      }];
 }
 
-// This method is called when the user has granted permission to Calendar
--(void)accessGrantedForCalendar
+// This method is called when the user has granted permission to Reminder
+-(void)accessGrantedForReminder
 {
-    // Let's get the default calendar associated with our event store
-    _calendar = _eventStore.defaultCalendarForNewEvents;
+    // Let's get the default calendar associated with our calendar store
+    _calendar = [_eventStore defaultCalendarForNewReminders];
     // Fetch all events happening in the next 24 hours and put them into eventsList
-    [self fetchEvents];
+    [self fetchReminders];
 }
 
-// Fetch all events happening in the next 24 hours
-- (void) fetchEvents
+// Fetch all reminders happening in the next 24 hours
+- (void) fetchReminders
 {
-    NSCalendar *calendar = [NSCalendar currentCalendar];
-    NSDateComponents *components = [calendar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit fromDate:[NSDate date]];
-    NSDate *startDate= [calendar dateFromComponents:components];
+    NSPredicate *predicate = [_eventStore predicateForRemindersInCalendars:nil];
     
-    
-    //Create the end date components
-    NSDateComponents *tomorrowDateComponents = [[NSDateComponents alloc] init];
-    tomorrowDateComponents.day = 2;
-	
-    NSDate *endDate = [[NSCalendar currentCalendar] dateByAddingComponents:tomorrowDateComponents
-                                                                    toDate:startDate
-                                                                   options:0];
-	// We will only search the default calendar for our events
-	NSArray *calendarArray = [NSArray arrayWithObject:_calendar];
-    
-    // Create the predicate
-	NSPredicate *predicate = [_eventStore predicateForEventsWithStartDate:startDate
-                                                                      endDate:endDate
-                                                                    calendars:calendarArray];
-	
-	// Fetch all events that match the predicate
-	_eventsList =[_eventStore eventsMatchingPredicate:predicate];
+    // Fetch all events that match the predicate
+    [_eventStore fetchRemindersMatchingPredicate:predicate completion:^(NSArray *reminders) {
+        _reminderList=reminders;
+        [self fetchCompleted];
+    }];
+}
+
+- (void) fetchCompleted
+{
+    if ([_reminderList count]==0) {
+        NetworkPackage* np2=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_CALENDAR];
+        [np2 setBool:YES forKey:@"request"];
+        [_device sendPackage:np2 tag:PACKAGE_TAG_CALENDAR];
+    }
+    if (_requested) {
+        _requested=false;
+        [self sendReminder];
+    }
 }
 
 - (void) storeChanged:(id) sender
 {
-    [self fetchEvents];
-    [self sendCalendar];
+    _requested=true;
+    [self fetchReminders];
+    
 }
 
-- (void) sendCalendar
+- (void) sendReminder
 {
-    for (EKEvent* e in _eventsList) {
-        NetworkPackage* np=[Calendar createNetworkPackage:e];
+    for (EKReminder* r in _reminderList) {
+        NetworkPackage* np=[Reminder createNetworkPackage:r];
         [np setObject:@"merge" forKey:@"op"];
-        [_device sendPackage:np tag:PACKAGE_TAG_CALENDAR];
+        [_device sendPackage:np tag:PACKAGE_TAG_REMINDER];
     }
 }
 
-+ (BOOL) event:(EKEvent*) event1 isIdenToEvent:(EKEvent*) event2
++ (BOOL) reminder:(EKReminder*) reminder1 isIdenToReminder2:(EKReminder*) reminder2
 {
-    if (![event1.title isEqualToString:event2.title] ||
-        ![event1.startDate isEqualToDate:event2.startDate] ||
-        ![event1.endDate isEqualToDate:event2.endDate]) {
+    if (![reminder1.title isEqualToString:reminder2.title]||
+        ![reminder1.dueDateComponents.date isEqualToDate:reminder2.dueDateComponents.date]) {
         return false;
     }
     return true;
 }
 
-+ (EKEvent*) retrieveEvent:(NetworkPackage*)np withStore:(EKEventStore*) eventstore error:( NSError*__autoreleasing*)err
++ (EKReminder*) retrieveEvent:(NetworkPackage*)np withStore:(EKEventStore*) eventstore error:( NSError*__autoreleasing*)err
 {
-    return [Calendar iCalToEvent:[np objectForKey:@"iCal"] withStore:eventstore error:err];
+    return [Reminder iCalToReminder:[np objectForKey:@"iCal"] withStore:eventstore error:err];
 }
 
-+ (NetworkPackage*) createNetworkPackage: (EKEvent*)event
++ (NetworkPackage*) createNetworkPackage: (EKReminder*)event
 {
-    NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_CALENDAR];
-    NSString* ical=[Calendar EventToiCal:event];
+    NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_REMINDER];
+    NSString* ical=[Reminder reminderToiCal:event];
     if (!ical) {
         return nil;
     }
     [np setObject:ical forKey:@"iCal"];
     return np;
 }
-//TODO we may need a full feature parser / conventor
-+ (EKEvent*) iCalToEvent: (NSString*) iCal withStore:(EKEventStore*) eventstore error:( NSError*__autoreleasing*)err
-{
 
++ (EKReminder*) iCalToReminder: (NSString*) iCal withStore:(EKEventStore*) eventstore error:( NSError*__autoreleasing*)err
+{
+    
     NSCharacterSet* set=[NSCharacterSet characterSetWithCharactersInString:@"\r "];
     NSCharacterSet* set2=[NSCharacterSet characterSetWithCharactersInString:@";:= "];
-
+    
     NSArray* strArray=[iCal componentsSeparatedByString:@"\n"];
     NSString* uid;
     NSString* summary;
-    NSDate* dt_s;
-    NSDate* dt_e;
+    NSDateComponents* dt_due;
+    NSDateComponents* dt_s;
     NSDate* dt_created;
     NSDate* dt_modified;
     NSDateFormatter* df=[[NSDateFormatter alloc] init];
     NSTimeZone *timezone;
+    NSCalendar *calendar = [NSCalendar currentCalendar];
     BOOL uid_finished=true;
     for (NSString* string in strArray) {
         NSString* str=[string stringByTrimmingCharactersInSet:set];
@@ -259,9 +251,9 @@
             NSArray* split=[str componentsSeparatedByCharactersInSet:set2];
             if ([str hasSuffix:@"Z"]) {
                 timezone=[NSTimeZone timeZoneWithName:@"UTC"];
-                [df setTimeZone:timezone];
                 [df setDateFormat:@"yyyyMMdd'T'HHmmss'Z'"];
-                dt_s=[df dateFromString:[split lastObject]];
+                dt_s= [calendar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit|NSHourCalendarUnit|NSMinuteCalendarUnit|NSSecondCalendarUnit
+                                  fromDate:[df dateFromString:[split lastObject]]];
             }
             else{
                 if (![split[1] isEqualToString:@"TZID"]) {
@@ -269,18 +261,19 @@
                 }
                 NSString* tz=[split objectAtIndex:[split count]-2];
                 timezone=[NSTimeZone timeZoneWithName:tz];
-                [df setTimeZone:timezone];
                 [df setDateFormat:@"yyyyMMdd'T'HHmmss"];
-                dt_s=[df dateFromString:[split lastObject]];
+                dt_s= [calendar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit|NSHourCalendarUnit|NSMinuteCalendarUnit|NSSecondCalendarUnit
+                                  fromDate:[df dateFromString:[split lastObject]]];
             }
         }
-        if ([str hasPrefix:@"DTEND"]) {
+        if ([str hasPrefix:@"DUE"]) {
+            //FIX-ME we have timezone convent problems for all.
             NSArray* split=[str componentsSeparatedByCharactersInSet:set2];
             if ([str hasSuffix:@"Z"]) {
                 timezone=[NSTimeZone timeZoneWithName:@"UTC"];
-                [df setTimeZone:timezone];
                 [df setDateFormat:@"yyyyMMdd'T'HHmmss'Z'"];
-                dt_e=[df dateFromString:[split lastObject]];
+                dt_due= [calendar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit|NSHourCalendarUnit|NSMinuteCalendarUnit|NSSecondCalendarUnit
+                                    fromDate:[df dateFromString:[split lastObject]]];
             }
             else{
                 if (![split[1] isEqualToString:@"TZID"]) {
@@ -288,9 +281,9 @@
                 }
                 NSString* tz=[split objectAtIndex:[split count]-2];
                 timezone=[NSTimeZone timeZoneWithName:tz];
-                [df setTimeZone:timezone];
                 [df setDateFormat:@"yyyyMMdd'T'HHmmss"];
-                dt_e=[df dateFromString:[split lastObject]];
+                dt_due= [calendar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit|NSHourCalendarUnit|NSMinuteCalendarUnit|NSSecondCalendarUnit
+                                    fromDate:[df dateFromString:[split lastObject]]];
             }
         }
         if ([str hasPrefix:@"CREATED"]) {
@@ -307,9 +300,13 @@
                 }
                 NSString* tz=[split objectAtIndex:[split count]-2];
                 timezone=[NSTimeZone timeZoneWithName:tz];
-                [df setTimeZone:timezone];
                 [df setDateFormat:@"yyyyMMdd'T'HHmmss"];
                 dt_created=[df dateFromString:[split lastObject]];
+                NSLog(@"%@",dt_created);
+                [df setTimeZone:timezone];
+                dt_created=[df dateFromString:[split lastObject]];
+                NSLog(@"%@",dt_created);
+                
             }
         }
         if ([str hasPrefix:@"LAST-MODIFIED"]) {
@@ -332,69 +329,68 @@
             }
         }
     }
+    //    NSLog(@"%@ %@ %@",dt_due.timeZone,dt_s.timeZone,calendar.timeZone);
+    //    [dt_s setTimeZone:calendar.timeZone];
+    //    [dt_due setTimeZone:calendar.timeZone];
     if (!uid||!summary||!dt_s) {
         *err=[[NSError alloc] initWithDomain:@"iCal parse failed" code:0 userInfo:nil];
         return nil;
     }
-    if (!dt_e) {
-        dt_e=[dt_e dateByAddingTimeInterval:3600];
-    }
-    EKEvent* event=[eventstore eventWithIdentifier:uid];
-    if (!event) {
-        event=[EKEvent eventWithEventStore:eventstore];
-        [event setCalendar:[eventstore defaultCalendarForNewEvents]];
-        [event setTitle:summary];
-        [event setStartDate:dt_s];
-        [event setEndDate:dt_e];
-        [event setCalendar:[eventstore defaultCalendarForNewEvents]];
+    EKReminder* reminder=[eventstore calendarItemWithIdentifier:uid];
+    if (!reminder) {
+        reminder=[EKReminder reminderWithEventStore:eventstore];
+        [reminder setCalendar:[eventstore defaultCalendarForNewReminders]];
+        [reminder setTitle:summary];
+        [reminder setStartDateComponents:dt_s];
+        [reminder setDueDateComponents:dt_due];
         *err=[[NSError alloc] initWithDomain:@"iCal fix uid" code:1 userInfo:@{@"uid": uid}];
-        return event;
+        return reminder;
     }
-    if ( (![summary isEqualToString:event.title] ||
-        ![dt_s isEqualToDate:event.startDate] ||
-        ![dt_e isEqualToDate:event.endDate])
-        && [event.lastModifiedDate compare:dt_modified]==NSOrderedAscending) {
-        [event setTitle:summary];
-        [event setStartDate:dt_s];
-        [event setEndDate:dt_e];
-        [event setCalendar:[eventstore defaultCalendarForNewEvents]];
+    if ( (![reminder.title isEqualToString:summary]||
+        ![reminder.dueDateComponents.date isEqualToDate:dt_due.date])
+          && [reminder.lastModifiedDate compare:dt_modified]==NSOrderedAscending) {
+        [reminder setCalendar:[eventstore defaultCalendarForNewReminders]];
+        [reminder setTitle:summary];
+        [reminder setStartDateComponents:dt_s];
+        [reminder setDueDateComponents:dt_due];
     }
-    if ([event.lastModifiedDate compare:dt_modified]==NSOrderedDescending) {
+    if ([reminder.lastModifiedDate compare:dt_modified]==NSOrderedDescending) {
         *err=[[NSError alloc] initWithDomain:@"iCal peer outdated" code:1 userInfo:nil];
     }
-    return event;
+    return reminder;
 }
 
-+ (NSString*) EventToiCal: (EKEvent*)event
++ (NSString*) reminderToiCal: (EKReminder*)reminder
 {
-    if (!event || [event.title isEqualToString:@""]) {
+    if (!reminder || [reminder.title isEqualToString:@""]) {
         return nil;
     }
     NSDateFormatter* df=[[NSDateFormatter alloc] init];
     NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
     [df setTimeZone:timeZone];
     [df setDateFormat:@"yyyyMMdd'T'HHmmss'Z'"];
-    NSString* t=event.title;
-    NSString* dt_stamp=[df stringFromDate:[event creationDate]];
-    NSString* dt_created=[df stringFromDate:[event creationDate]];
-    NSString* dt_modified=[df stringFromDate:[event lastModifiedDate]];
-    NSString* dt_s=[df stringFromDate:[event startDate]];
-    NSString* dt_e=[df stringFromDate:[event endDate]];
+    NSString* dt_stamp=[df stringFromDate:[NSDate date]];
+    NSString* dt_create=[df stringFromDate:reminder.creationDate];
+    NSString* dt_modified=[df stringFromDate:reminder.lastModifiedDate];
+    NSString* dt_start=[df stringFromDate:reminder.startDateComponents.date];
+    NSString* dt_due=[df stringFromDate:reminder.dueDateComponents.date];
+    NSString* t=reminder.title;
     NSMutableString* iCal=[NSMutableString string];
     [iCal appendString:@"BEGIN:VCALENDAR\n"];
     [iCal appendString:@"VERSION:2.0\n"];
     [iCal appendString:@"PRODID:-//kde//kdeconnect-ios v0.1/EN\n"];
-    [iCal appendString:@"BEGIN:VEVENT\n"];
+    [iCal appendString:@"BEGIN:VTODO\n"];
     [iCal appendFormat:@"DTSTAMP:%@\n",dt_stamp];
-    [iCal appendFormat:@"CREATED:%@\n",dt_created];
-    [iCal appendFormat:@"LAST_MODIFIED:%@\n",dt_modified];
-    [iCal appendFormat:@"UID:%@\n",[event eventIdentifier]];
+    [iCal appendFormat:@"CREATED:%@\n",dt_create];
+    [iCal appendFormat:@"LAST-MODIFIED:%@\n",dt_modified];
+    [iCal appendFormat:@"DUE:%@\n",dt_due];
+    [iCal appendFormat:@"DTSTART:%@\n",dt_start];
+    [iCal appendFormat:@"UID:%@\n",reminder.calendarItemIdentifier];
     [iCal appendFormat:@"SUMMARY:%@\n",t];
-    [iCal appendFormat:@"DTSTART:%@\n",dt_s];
-    [iCal appendFormat:@"DTEND:%@\n",dt_e];
-    [iCal appendFormat:@"TRANSP:OPAQUE\n"];
-    [iCal appendString:@"END:VEVENT\n"];
+    [iCal appendString:@"END:VTODO\n"];
     [iCal appendString:@"END:VCALENDAR\n"];
     return iCal;
 }
+
 @end
+

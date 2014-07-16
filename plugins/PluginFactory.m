@@ -16,6 +16,7 @@
 #import "MousePad.h"
 #import "Battery.h"
 #import "Calendar.h"
+#import "Reminder.h"
 
 @interface PluginFactory()
 @property(nonatomic) NSMutableDictionary* _availablePlugins;
@@ -96,6 +97,7 @@
     [_availablePlugins setValue:[MousePad class] forKey:[[MousePad getPluginInfo] _pluginName]];
     [_availablePlugins setValue:[Battery class] forKeyPath:[[Battery getPluginInfo]_pluginName]];
     [_availablePlugins setValue:[Calendar class] forKeyPath:[[Calendar getPluginInfo] _pluginName]];
+    [_availablePlugins setValue:[Reminder class] forKey:[[Reminder getPluginInfo] _pluginName]];
 }
 
 @end
