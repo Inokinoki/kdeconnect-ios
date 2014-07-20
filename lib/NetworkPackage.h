@@ -27,6 +27,7 @@
 #define PACKAGE_TAG_BATTERY     10
 #define PACKAGE_TAG_CALENDAR    11
 #define PACKAGE_TAG_REMINDER    12
+#define PACKAGE_TAG_CONTACT     13 
 
 #define PORT                    1714
 #define ProtocolVersion         5
@@ -43,6 +44,7 @@
 #define PACKAGE_TYPE_BATTERY    @"kdeconnect.battery"
 #define PACKAGE_TYPE_CALENDAR   @"kdeconnect.calendar"
 #define PACKAGE_TYPE_REMINDER   @"kdeconnect.reminder"
+#define PACKAGE_TYPE_CONTACT    @"kdeconnect.contact"
 
 #pragma mark -
 

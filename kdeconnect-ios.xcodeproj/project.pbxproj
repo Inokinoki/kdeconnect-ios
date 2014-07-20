@@ -29,6 +29,7 @@
 		4E08A2351913D1780056EEF8 /* BackgroundService.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2301913D1780056EEF8 /* BackgroundService.m */; };
 		4E08A2361913D1780056EEF8 /* Device.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2321913D1780056EEF8 /* Device.m */; };
 		4E08A2371913D1780056EEF8 /* NetworkPackage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2341913D1780056EEF8 /* NetworkPackage.m */; };
+		4E0B0CF019772E2300F1412B /* Contact.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E0B0CEF19772E2300F1412B /* Contact.m */; };
 		4E0E321F192B495E001D88CD /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4E0E321E192B495E001D88CD /* Settings.bundle */; };
 		4E1A82A319657DD700174217 /* MousePad.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E1A82A219657DD700174217 /* MousePad.m */; };
 		4E1A82A619657FF400174217 /* MousePadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E1A82A519657FF400174217 /* MousePadViewController.m */; };
@@ -46,6 +47,8 @@
 		4EC750B71967084800785A49 /* KeychainAccessGroups.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4EC750B61967084800785A49 /* KeychainAccessGroups.plist */; };
 		4EC750BC19670A2F00785A49 /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC750BB19670A2F00785A49 /* KeychainItemWrapper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		4ECA38301933EE560015C07C /* SecKeyWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ECA382F1933EE560015C07C /* SecKeyWrapper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		4ED8E711197B7D6500C4D01C /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4ED8E70F197B7D6500C4D01C /* AddressBook.framework */; };
+		4ED8E712197B7D6500C4D01C /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4ED8E710197B7D6500C4D01C /* AddressBookUI.framework */; };
 		4EDD98FA192DAAD700C6AB01 /* MPRISViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EDD98F9192DAAD700C6AB01 /* MPRISViewController.m */; };
 		4EDD98FD192DAAF800C6AB01 /* MPRIS.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EDD98FC192DAAF800C6AB01 /* MPRIS.m */; };
 		4EEB006F19736D4D000A1F69 /* Reminder.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EEB006E19736D4D000A1F69 /* Reminder.m */; };
@@ -99,6 +102,8 @@
 		4E08A2321913D1780056EEF8 /* Device.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Device.m; path = lib/Device.m; sourceTree = "<group>"; };
 		4E08A2331913D1780056EEF8 /* NetworkPackage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NetworkPackage.h; path = lib/NetworkPackage.h; sourceTree = "<group>"; };
 		4E08A2341913D1780056EEF8 /* NetworkPackage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NetworkPackage.m; path = lib/NetworkPackage.m; sourceTree = "<group>"; };
+		4E0B0CEE19772E2300F1412B /* Contact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Contact.h; path = plugins/Contact/Contact.h; sourceTree = "<group>"; };
+		4E0B0CEF19772E2300F1412B /* Contact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Contact.m; path = plugins/Contact/Contact.m; sourceTree = "<group>"; };
 		4E0E321E192B495E001D88CD /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		4E1A82A119657DD700174217 /* MousePad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MousePad.h; path = plugins/MousePad/MousePad.h; sourceTree = "<group>"; };
 		4E1A82A219657DD700174217 /* MousePad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MousePad.m; path = plugins/MousePad/MousePad.m; sourceTree = "<group>"; };
@@ -131,6 +136,8 @@
 		4EC750BB19670A2F00785A49 /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KeychainItemWrapper.m; path = lib/KeychainItemWrapper.m; sourceTree = "<group>"; };
 		4ECA382E1933EE560015C07C /* SecKeyWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SecKeyWrapper.h; path = lib/SecKeyWrapper.h; sourceTree = "<group>"; };
 		4ECA382F1933EE560015C07C /* SecKeyWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SecKeyWrapper.m; path = lib/SecKeyWrapper.m; sourceTree = "<group>"; };
+		4ED8E70F197B7D6500C4D01C /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
+		4ED8E710197B7D6500C4D01C /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
 		4EDD98F8192DAAD700C6AB01 /* MPRISViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MPRISViewController.h; path = plugins/MPRIS/MPRISViewController.h; sourceTree = "<group>"; };
 		4EDD98F9192DAAD700C6AB01 /* MPRISViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MPRISViewController.m; path = plugins/MPRIS/MPRISViewController.m; sourceTree = "<group>"; };
 		4EDD98FB192DAAF800C6AB01 /* MPRIS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MPRIS.h; path = plugins/MPRIS/MPRIS.h; sourceTree = "<group>"; };
@@ -147,6 +154,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4ED8E711197B7D6500C4D01C /* AddressBook.framework in Frameworks */,
+				4ED8E712197B7D6500C4D01C /* AddressBookUI.framework in Frameworks */,
 				4E38A3B0196D2D36006AE419 /* EventKit.framework in Frameworks */,
 				4E08A1EA1913CF850056EEF8 /* CoreGraphics.framework in Frameworks */,
 				4E08A1EC1913CF850056EEF8 /* UIKit.framework in Frameworks */,
@@ -195,6 +204,8 @@
 		4E08A1E61913CF850056EEF8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4ED8E70F197B7D6500C4D01C /* AddressBook.framework */,
+				4ED8E710197B7D6500C4D01C /* AddressBookUI.framework */,
 				4E38A3AF196D2D36006AE419 /* EventKit.framework */,
 				4E08A1E71913CF850056EEF8 /* Foundation.framework */,
 				4E08A1E91913CF850056EEF8 /* CoreGraphics.framework */,
@@ -297,6 +308,15 @@
 			name = backend;
 			sourceTree = "<group>";
 		};
+		4E0B0CED19772E0B00F1412B /* Contact */ = {
+			isa = PBXGroup;
+			children = (
+				4E0B0CEE19772E2300F1412B /* Contact.h */,
+				4E0B0CEF19772E2300F1412B /* Contact.m */,
+			);
+			name = Contact;
+			sourceTree = "<group>";
+		};
 		4E1A82A019657D0800174217 /* MousePad */ = {
 			isa = PBXGroup;
 			children = (
@@ -349,6 +369,7 @@
 		4EC27541191FCE910057AB0E /* plugins */ = {
 			isa = PBXGroup;
 			children = (
+				4E0B0CED19772E0B00F1412B /* Contact */,
 				4EEB006C19736D2F000A1F69 /* Reminder */,
 				4E38A3A7196CEA90006AE419 /* Calendar */,
 				4E47115C19693B5A00EE5B1D /* Battery */,
@@ -545,6 +566,7 @@
 				4E08A2371913D1780056EEF8 /* NetworkPackage.m in Sources */,
 				4E08A2361913D1780056EEF8 /* Device.m in Sources */,
 				4E47115F19693B7F00EE5B1D /* Battery.m in Sources */,
+				4E0B0CF019772E2300F1412B /* Contact.m in Sources */,
 				4E08A22D1913D1650056EEF8 /* LanLink.m in Sources */,
 				4E51BBED193FADA7007E74F4 /* Share.m in Sources */,
 				4EEB006F19736D4D000A1F69 /* Reminder.m in Sources */,

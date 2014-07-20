@@ -7,7 +7,7 @@
 //
 
 #import "PluginFactory.h"
-#import "SettingsStore.h"
+#import "IASKSettingsStoreUserDefaults.h"
 #import "Device.h"
 #import "Ping.h"
 #import "MPRIS.h"
@@ -17,6 +17,7 @@
 #import "Battery.h"
 #import "Calendar.h"
 #import "Reminder.h"
+#import "Contact.h"
 
 @interface PluginFactory()
 @property(nonatomic) NSMutableDictionary* _availablePlugins;
@@ -65,7 +66,7 @@
 
 - (Plugin*) instantiatePluginForDevice:(Device*)device pluginName:(NSString*)pluginName
 {
-    SettingsStore* setting=[[SettingsStore alloc] initWithPath:KDECONNECT_GLOBAL_SETTING_FILE_PATH];
+    IASKSettingsStoreUserDefaults* setting=[[IASKSettingsStoreUserDefaults alloc] init];
     if ([setting objectForKey:pluginName]!=nil && ![setting boolForKey:pluginName]) {
         return nil;
     }
@@ -98,6 +99,7 @@
     [_availablePlugins setValue:[Battery class] forKeyPath:[[Battery getPluginInfo]_pluginName]];
     [_availablePlugins setValue:[Calendar class] forKeyPath:[[Calendar getPluginInfo] _pluginName]];
     [_availablePlugins setValue:[Reminder class] forKey:[[Reminder getPluginInfo] _pluginName]];
+    [_availablePlugins setValue:[Contact class] forKeyPath:[[Contact getPluginInfo]_pluginName]];
 }
 
 @end
