@@ -283,16 +283,6 @@
             [alertDialog show];
             break;
         case 2:
-            //TO-DO use compile macro to load storyboard for iphone or ipad
-            /*
-            vc=[[UIStoryboard storyboardWithName:@"Main_iPhone" bundle:[NSBundle mainBundle]]
-                instantiateViewControllerWithIdentifier:@"DeviceViewController"];
-            deviceId=[[_connectedDevices allKeys]objectAtIndex:indexPath.row];
-            [vc set_deviceId:deviceId];
-            [vc setTitle:[_connectedDevices valueForKey:deviceId]];
-            [self.navigationController pushViewController:vc animated:YES];
-            break;
-             */
         default:;
     }
     [tableView deselectRowAtIndexPath:indexPath animated:YES];

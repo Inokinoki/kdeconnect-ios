@@ -184,8 +184,7 @@
         }
         return;
     }
-    //TO-DO send the data chunk one by one inorder to get the proccess percentage
-    //FIX-ME for some pc , if we send too quickly , they may loose some package
+    //TO-DO send the data chunk one by one in order to get the proccess percentage
     for (NSData* chunk in payloadArray) {
         t=dispatch_time(t, PAYLOAD_SEND_DELAY*NSEC_PER_MSEC);
         dispatch_after(t,_socketQueue, ^(void){

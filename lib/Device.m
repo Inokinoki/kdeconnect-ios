@@ -162,7 +162,6 @@
             return;
         }
         if (wantsPair) {
-            //TO-DO retrieve public key
             NSLog(@"pair request");
             if ((_pairStatus)==Requested) {
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -187,8 +186,6 @@
                     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(requestPairingTimeout:) object:nil];
                 });
             }else if (prevPairStatus==Paired){
-                //TO-DO remove configuration
-                
                 [self unpair];
             }
         }
@@ -223,7 +220,6 @@
 - (void) saveSetting
 {
     //get app document path
-    //TO-DO Type
     SettingsStore* _devSettings=[[SettingsStore alloc] initWithPath:_id];
     [_devSettings setObject:_name forKey:@"name"];
     [_devSettings setObject:[Device Devicetype2Str:_type] forKey:@"type"];

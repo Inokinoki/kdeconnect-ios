@@ -166,7 +166,7 @@
 
 - (void)singleTap:(UITapGestureRecognizer *)recognizer
 {
-//    FIX-ME: everytime when trigger doubleTap, singleTap will be triggered as well
+//    FIX-ME: everytime when trigger doubleTap, singleTap will be triggered as well , which might cause problems
     if ([recognizer state]==UIGestureRecognizerStateRecognized) {
         [_mousePadPlugin sendSingleClick];
     }
