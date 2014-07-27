@@ -18,6 +18,20 @@
     
     [BackgroundService sharedInstance];
     [[BackgroundService sharedInstance] startDiscovery];
+    __block UIBackgroundTaskIdentifier task = [application beginBackgroundTaskWithExpirationHandler:^{
+        NSLog(@"System terminated background task");
+        UILocalNotification* localNotification = [[UILocalNotification alloc] init];
+        localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:0];
+        localNotification.alertBody = @"System terminated background task";
+        localNotification.timeZone = [NSTimeZone defaultTimeZone];
+        [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+        [application endBackgroundTask:task];
+    }];
+    
+    // If the system refuses to allow the task return
+    if (task == UIBackgroundTaskInvalid)    {
+        NSLog(@"System refuses to allow background task");
+    }
     return YES;
 }
 

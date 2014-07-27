@@ -69,7 +69,13 @@ typedef NS_ENUM(NSInteger, DataClass)  {
             if ([[np objectForKey:@"op"] isEqualToString:@"delete"]){
             }
             else if ([[np objectForKey:@"op"] isEqualToString:@"merge"]){
-//                [self mergeContacts:[np objectForKey:@"vcard"]];
+                ABRecordRef record=ABAddressBookGetPersonWithRecordID(_addressbook, [np integerForKey:@"rid"]);
+                if (record) {
+                    //merge
+                }else{
+                    //add
+                    
+                }
             }
         }
         return true;
@@ -120,6 +126,7 @@ typedef NS_ENUM(NSInteger, DataClass)  {
         NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_CONTACT];
         [np setObject:str forKey:@"vcard"];
         [np setObject:@"merge" forKey:@"op"];
+        [np setInteger:ABRecordGetRecordID((__bridge ABRecordRef)(record)) forKey:@"rid"];
         [_device sendPackage:np tag:PACKAGE_TAG_CONTACT];
     }
 }

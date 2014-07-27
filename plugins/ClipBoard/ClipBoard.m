@@ -11,7 +11,6 @@
 #import <AudioToolbox/AudioServices.h>
 @interface ClipBoard()
 {
-    __block UIBackgroundTaskIdentifier task;
     NSString *pastboardContents;
 }
 
@@ -58,26 +57,6 @@
 
 - (void) grabClipboard
 {
-    UIApplication* application=[UIApplication sharedApplication];
-    
-    task = [application beginBackgroundTaskWithExpirationHandler:^{
-        NSLog(@"System terminated background task");
-        UILocalNotification* localNotification = [[UILocalNotification alloc] init];
-        localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:0];
-        localNotification.alertBody = @"System terminated background task";
-        localNotification.timeZone = [NSTimeZone defaultTimeZone];
-        [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
-        AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
-        [application endBackgroundTask:task];
-    }];
-    
-    // If the system refuses to allow the task return
-    if (task == UIBackgroundTaskInvalid)
-    {
-        NSLog(@"System refuses to allow background task");
-        return;
-    }
-    
     // Do the task
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         
@@ -101,8 +80,6 @@
 
 - (void) stop
 {
-    UIApplication* application=[UIApplication sharedApplication];
-    [application endBackgroundTask:task];
 }
 
 - (void) dealloc

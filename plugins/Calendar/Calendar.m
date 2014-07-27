@@ -360,6 +360,7 @@
         [event setCalendar:[eventstore defaultCalendarForNewEvents]];
     }
     if ([event.lastModifiedDate compare:dt_modified]==NSOrderedDescending) {
+        NSLog(@"%@, %@",event.lastModifiedDate,dt_modified);
         *err=[[NSError alloc] initWithDomain:@"iCal peer outdated" code:1 userInfo:nil];
     }
     return event;
