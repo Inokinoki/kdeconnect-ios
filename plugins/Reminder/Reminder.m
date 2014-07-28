@@ -10,6 +10,8 @@
 #import "Device.h"
 #import <EventKit/EventKit.h>
 #import <EventKitUI/EventKitUI.h>
+#import "XBICalendar.h"
+#import "XbICComponent+VTodo.h"
 
 @interface Reminder ()
 @property(nonatomic)EKEventStore *_eventStore;
@@ -217,122 +219,27 @@
 
 + (EKReminder*) iCalToReminder: (NSString*) iCal withStore:(EKEventStore*) eventstore error:( NSError*__autoreleasing*)err
 {
+    XbICVCalendar * vCalendar =  [XbICVCalendar vCalendarFromString:iCal];
+    XbICComponent* xbicvtodo=[vCalendar firstComponentOfKind:ICAL_VTODO_COMPONENT];
     
-    NSCharacterSet* set=[NSCharacterSet characterSetWithCharactersInString:@"\r "];
-    NSCharacterSet* set2=[NSCharacterSet characterSetWithCharactersInString:@";:= "];
     
-    NSArray* strArray=[iCal componentsSeparatedByString:@"\n"];
-    NSString* uid;
-    NSString* summary;
-    NSDateComponents* dt_due;
-    NSDateComponents* dt_s;
-    NSDate* dt_created;
-    NSDate* dt_modified;
-    NSDateFormatter* df=[[NSDateFormatter alloc] init];
-    NSTimeZone *timezone;
-    NSCalendar *calendar = [NSCalendar currentCalendar];
-    BOOL uid_finished=true;
-    for (NSString* string in strArray) {
-        NSString* str=[string stringByTrimmingCharactersInSet:set];
-        if (!uid_finished) {
-            uid=[NSString stringWithFormat:@"%@%@",uid,str];
-            uid_finished=true;
-        }
-        if ([str hasPrefix:@"UID:"]) {
-            uid= [str substringFromIndex:4];
-            if ([str hasSuffix:@":"]) {
-                uid_finished=false;
-            }
-        }
-        if ([str hasPrefix:@"SUMMARY:"]) {
-            summary=[str substringFromIndex:8];
-        }
-        if ([str hasPrefix:@"DTSTART"]) {
-            NSArray* split=[str componentsSeparatedByCharactersInSet:set2];
-            if ([str hasSuffix:@"Z"]) {
-                timezone=[NSTimeZone timeZoneWithName:@"UTC"];
-                [df setDateFormat:@"yyyyMMdd'T'HHmmss'Z'"];
-                dt_s= [calendar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit|NSHourCalendarUnit|NSMinuteCalendarUnit|NSSecondCalendarUnit
-                                  fromDate:[df dateFromString:[split lastObject]]];
-            }
-            else{
-                if (![split[1] isEqualToString:@"TZID"]) {
-                    continue;
-                }
-                NSString* tz=[split objectAtIndex:[split count]-2];
-                timezone=[NSTimeZone timeZoneWithName:tz];
-                [df setDateFormat:@"yyyyMMdd'T'HHmmss"];
-                dt_s= [calendar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit|NSHourCalendarUnit|NSMinuteCalendarUnit|NSSecondCalendarUnit
-                                  fromDate:[df dateFromString:[split lastObject]]];
-            }
-        }
-        if ([str hasPrefix:@"DUE"]) {
-            //FIX-ME we have timezone convent problems for all.
-            NSArray* split=[str componentsSeparatedByCharactersInSet:set2];
-            if ([str hasSuffix:@"Z"]) {
-                timezone=[NSTimeZone timeZoneWithName:@"UTC"];
-                [df setDateFormat:@"yyyyMMdd'T'HHmmss'Z'"];
-                dt_due= [calendar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit|NSHourCalendarUnit|NSMinuteCalendarUnit|NSSecondCalendarUnit
-                                    fromDate:[df dateFromString:[split lastObject]]];
-            }
-            else{
-                if (![split[1] isEqualToString:@"TZID"]) {
-                    continue;
-                }
-                NSString* tz=[split objectAtIndex:[split count]-2];
-                timezone=[NSTimeZone timeZoneWithName:tz];
-                [df setDateFormat:@"yyyyMMdd'T'HHmmss"];
-                dt_due= [calendar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit|NSHourCalendarUnit|NSMinuteCalendarUnit|NSSecondCalendarUnit
-                                    fromDate:[df dateFromString:[split lastObject]]];
-            }
-        }
-        if ([str hasPrefix:@"CREATED"]) {
-            NSArray* split=[str componentsSeparatedByCharactersInSet:set2];
-            if ([str hasSuffix:@"Z"]) {
-                timezone=[NSTimeZone timeZoneWithName:@"UTC"];
-                [df setTimeZone:timezone];
-                [df setDateFormat:@"yyyyMMdd'T'HHmmss'Z'"];
-                dt_created=[df dateFromString:[split lastObject]];
-            }
-            else{
-                if (![split[1] isEqualToString:@"TZID"]) {
-                    continue;
-                }
-                NSString* tz=[split objectAtIndex:[split count]-2];
-                timezone=[NSTimeZone timeZoneWithName:tz];
-                [df setDateFormat:@"yyyyMMdd'T'HHmmss"];
-                dt_created=[df dateFromString:[split lastObject]];
-                NSLog(@"%@",dt_created);
-                [df setTimeZone:timezone];
-                dt_created=[df dateFromString:[split lastObject]];
-                NSLog(@"%@",dt_created);
-                
-            }
-        }
-        if ([str hasPrefix:@"LAST-MODIFIED"]) {
-            NSArray* split=[str componentsSeparatedByCharactersInSet:set2];
-            if ([str hasSuffix:@"Z"]) {
-                timezone=[NSTimeZone timeZoneWithName:@"UTC"];
-                [df setTimeZone:timezone];
-                [df setDateFormat:@"yyyyMMdd'T'HHmmss'Z'"];
-                dt_modified=[df dateFromString:[split lastObject]];
-            }
-            else{
-                if (![split[1] isEqualToString:@"TZID"]) {
-                    continue;
-                }
-                NSString* tz=[split objectAtIndex:[split count]-2];
-                timezone=[NSTimeZone timeZoneWithName:tz];
-                [df setTimeZone:timezone];
-                [df setDateFormat:@"yyyyMMdd'T'HHmmss"];
-                dt_modified=[df dateFromString:[split lastObject]];
-            }
-        }
-    }
-    //    NSLog(@"%@ %@ %@",dt_due.timeZone,dt_s.timeZone,calendar.timeZone);
-    //    [dt_s setTimeZone:calendar.timeZone];
-    //    [dt_due setTimeZone:calendar.timeZone];
-    if (!uid||!summary||!dt_s) {
+    NSString* uid=[xbicvtodo UID];
+    NSString* summary=xbicvtodo.summary;
+    NSDate* dt_s=xbicvtodo.dateStart;
+    NSDate* dt_due=xbicvtodo.dateDue;
+    NSDate* dt_created=xbicvtodo.dateCreated;
+    NSDate* dt_modified=xbicvtodo.dateLastModified;
+    NSNumber* percent=xbicvtodo.percentCompleted;
+    NSCalendar *gregorian = [[NSCalendar alloc]
+                             initWithCalendarIdentifier:NSGregorianCalendar];
+    NSDateComponents* start_dtc=[gregorian components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay|NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:dt_s];
+    [start_dtc setTimeZone:[NSTimeZone localTimeZone]];
+    [start_dtc setCalendar:gregorian];
+    NSDateComponents* due_dtc=[gregorian components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay|NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:dt_due];
+    [due_dtc setTimeZone:[NSTimeZone localTimeZone]];
+    [due_dtc setCalendar:gregorian];
+    
+    if (!uid||!summary||!dt_due) {
         *err=[[NSError alloc] initWithDomain:@"iCal parse failed" code:0 userInfo:nil];
         return nil;
     }
@@ -341,18 +248,18 @@
         reminder=[EKReminder reminderWithEventStore:eventstore];
         [reminder setCalendar:[eventstore defaultCalendarForNewReminders]];
         [reminder setTitle:summary];
-        [reminder setStartDateComponents:dt_s];
-        [reminder setDueDateComponents:dt_due];
+        [reminder setStartDateComponents:start_dtc];
+        [reminder setDueDateComponents:due_dtc];
         *err=[[NSError alloc] initWithDomain:@"iCal fix uid" code:1 userInfo:@{@"uid": uid}];
         return reminder;
     }
     if ( (![reminder.title isEqualToString:summary]||
-        ![reminder.dueDateComponents.date isEqualToDate:dt_due.date])
+        ![reminder.dueDateComponents.date isEqualToDate:due_dtc.date])
           && [reminder.lastModifiedDate compare:dt_modified]==NSOrderedAscending) {
         [reminder setCalendar:[eventstore defaultCalendarForNewReminders]];
         [reminder setTitle:summary];
-        [reminder setStartDateComponents:dt_s];
-        [reminder setDueDateComponents:dt_due];
+        [reminder setStartDateComponents:start_dtc];
+        [reminder setDueDateComponents:due_dtc];
     }
     if ([reminder.lastModifiedDate compare:dt_modified]==NSOrderedDescending) {
         *err=[[NSError alloc] initWithDomain:@"iCal peer outdated" code:1 userInfo:nil];

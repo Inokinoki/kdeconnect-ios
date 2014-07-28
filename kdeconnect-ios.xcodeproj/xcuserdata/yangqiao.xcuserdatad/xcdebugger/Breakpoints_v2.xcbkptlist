@@ -367,8 +367,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "67"
             endingLineNumber = "67"
-            landmarkName = "@implementation Device"
-            landmarkType = "3">
+            landmarkName = "-compareProtocolVersion"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -383,7 +383,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "88"
             endingLineNumber = "88"
-            landmarkName = "-onLinkDestroyed:"
+            landmarkName = "-addLink:baseLink:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -655,7 +655,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "298"
             endingLineNumber = "298"
-            landmarkName = "-unpair"
+            landmarkName = "-requestPairingTimeout:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -671,7 +671,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "312"
             endingLineNumber = "312"
-            landmarkName = "-rejectPairing"
+            landmarkName = "-acceptPairing"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -687,7 +687,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "319"
             endingLineNumber = "319"
-            landmarkName = "-reloadPlugins"
+            landmarkName = "-rejectPairing"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

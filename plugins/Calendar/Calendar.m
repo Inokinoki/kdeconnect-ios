@@ -10,6 +10,7 @@
 #import "Device.h"
 #import <EventKit/EventKit.h>
 #import <EventKitUI/EventKitUI.h>
+#import "XBICalendar.h"
 
 @interface Calendar ()
 @property(nonatomic)EKEventStore *_eventStore;
@@ -226,112 +227,16 @@
 //TODO we may need a full feature parser / conventor
 + (EKEvent*) iCalToEvent: (NSString*) iCal withStore:(EKEventStore*) eventstore error:( NSError*__autoreleasing*)err
 {
+    XbICVCalendar * vCalendar =  [XbICVCalendar vCalendarFromString:iCal];
+    XbICVEvent* xbicvevent=(XbICVEvent*)[vCalendar firstComponentOfKind:ICAL_VEVENT_COMPONENT];
 
-    NSCharacterSet* set=[NSCharacterSet characterSetWithCharactersInString:@"\r "];
-    NSCharacterSet* set2=[NSCharacterSet characterSetWithCharactersInString:@";:= "];
-
-    NSArray* strArray=[iCal componentsSeparatedByString:@"\n"];
-    NSString* uid;
-    NSString* summary;
-    NSDate* dt_s;
-    NSDate* dt_e;
-    NSDate* dt_created;
-    NSDate* dt_modified;
-    NSDateFormatter* df=[[NSDateFormatter alloc] init];
-    NSTimeZone *timezone;
-    BOOL uid_finished=true;
-    for (NSString* string in strArray) {
-        NSString* str=[string stringByTrimmingCharactersInSet:set];
-        if (!uid_finished) {
-            uid=[NSString stringWithFormat:@"%@%@",uid,str];
-            uid_finished=true;
-        }
-        if ([str hasPrefix:@"UID:"]) {
-            uid= [str substringFromIndex:4];
-            if ([str hasSuffix:@":"]) {
-                uid_finished=false;
-            }
-        }
-        if ([str hasPrefix:@"SUMMARY:"]) {
-            summary=[str substringFromIndex:8];
-        }
-        if ([str hasPrefix:@"DTSTART"]) {
-            NSArray* split=[str componentsSeparatedByCharactersInSet:set2];
-            if ([str hasSuffix:@"Z"]) {
-                timezone=[NSTimeZone timeZoneWithName:@"UTC"];
-                [df setTimeZone:timezone];
-                [df setDateFormat:@"yyyyMMdd'T'HHmmss'Z'"];
-                dt_s=[df dateFromString:[split lastObject]];
-            }
-            else{
-                if (![split[1] isEqualToString:@"TZID"]) {
-                    continue;
-                }
-                NSString* tz=[split objectAtIndex:[split count]-2];
-                timezone=[NSTimeZone timeZoneWithName:tz];
-                [df setTimeZone:timezone];
-                [df setDateFormat:@"yyyyMMdd'T'HHmmss"];
-                dt_s=[df dateFromString:[split lastObject]];
-            }
-        }
-        if ([str hasPrefix:@"DTEND"]) {
-            NSArray* split=[str componentsSeparatedByCharactersInSet:set2];
-            if ([str hasSuffix:@"Z"]) {
-                timezone=[NSTimeZone timeZoneWithName:@"UTC"];
-                [df setTimeZone:timezone];
-                [df setDateFormat:@"yyyyMMdd'T'HHmmss'Z'"];
-                dt_e=[df dateFromString:[split lastObject]];
-            }
-            else{
-                if (![split[1] isEqualToString:@"TZID"]) {
-                    continue;
-                }
-                NSString* tz=[split objectAtIndex:[split count]-2];
-                timezone=[NSTimeZone timeZoneWithName:tz];
-                [df setTimeZone:timezone];
-                [df setDateFormat:@"yyyyMMdd'T'HHmmss"];
-                dt_e=[df dateFromString:[split lastObject]];
-            }
-        }
-        if ([str hasPrefix:@"CREATED"]) {
-            NSArray* split=[str componentsSeparatedByCharactersInSet:set2];
-            if ([str hasSuffix:@"Z"]) {
-                timezone=[NSTimeZone timeZoneWithName:@"UTC"];
-                [df setTimeZone:timezone];
-                [df setDateFormat:@"yyyyMMdd'T'HHmmss'Z'"];
-                dt_created=[df dateFromString:[split lastObject]];
-            }
-            else{
-                if (![split[1] isEqualToString:@"TZID"]) {
-                    continue;
-                }
-                NSString* tz=[split objectAtIndex:[split count]-2];
-                timezone=[NSTimeZone timeZoneWithName:tz];
-                [df setTimeZone:timezone];
-                [df setDateFormat:@"yyyyMMdd'T'HHmmss"];
-                dt_created=[df dateFromString:[split lastObject]];
-            }
-        }
-        if ([str hasPrefix:@"LAST-MODIFIED"]) {
-            NSArray* split=[str componentsSeparatedByCharactersInSet:set2];
-            if ([str hasSuffix:@"Z"]) {
-                timezone=[NSTimeZone timeZoneWithName:@"UTC"];
-                [df setTimeZone:timezone];
-                [df setDateFormat:@"yyyyMMdd'T'HHmmss'Z'"];
-                dt_modified=[df dateFromString:[split lastObject]];
-            }
-            else{
-                if (![split[1] isEqualToString:@"TZID"]) {
-                    continue;
-                }
-                NSString* tz=[split objectAtIndex:[split count]-2];
-                timezone=[NSTimeZone timeZoneWithName:tz];
-                [df setTimeZone:timezone];
-                [df setDateFormat:@"yyyyMMdd'T'HHmmss"];
-                dt_modified=[df dateFromString:[split lastObject]];
-            }
-        }
-    }
+    NSString* uid=xbicvevent.UID;
+    NSString* summary=xbicvevent.summary;
+    NSDate* dt_s=xbicvevent.dateStart;
+    NSDate* dt_e=xbicvevent.dateEnd;
+    NSDate* dt_created=xbicvevent.dateCreated;
+    NSDate* dt_modified=xbicvevent.dateLastModified;
+    
     if (!uid||!summary||!dt_s) {
         *err=[[NSError alloc] initWithDomain:@"iCal parse failed" code:0 userInfo:nil];
         return nil;
