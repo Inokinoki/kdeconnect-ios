@@ -9,6 +9,9 @@
 #ifndef kdeconnect_ios_common_h
 #define kdeconnect_ios_common_h
 
+#define isPad (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+#define isPhone (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+
 // keychain related
 #define KEYCHAIN_ID     @"org.kde.kdeconnect-ios"
 #define KECHAIN_GROUP   @"34RXKJTKWE.org.kde.kdeconnect-ios"

@@ -39,6 +39,7 @@
 		4E47115F19693B7F00EE5B1D /* Battery.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E47115E19693B7F00EE5B1D /* Battery.m */; };
 		4E49BCA91966661800E8AEB7 /* custumRecognizers.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E49BCA81966661800E8AEB7 /* custumRecognizers.m */; };
 		4E51BBED193FADA7007E74F4 /* Share.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E51BBEC193FADA7007E74F4 /* Share.m */; };
+		4E7CB6611985F7EA00DEB3B3 /* Pods-acknowledgements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4E7CB6601985F7EA00DEB3B3 /* Pods-acknowledgements.plist */; };
 		4E85B96C1928F9D600EF3C55 /* DeviceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E85B96B1928F9D600EF3C55 /* DeviceViewController.m */; };
 		4E95A1911949954600647948 /* SettingsStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E95A1901949954600647948 /* SettingsStore.m */; };
 		4EC27545191FCEAB0057AB0E /* Plugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC27544191FCEAB0057AB0E /* Plugin.m */; };
@@ -120,6 +121,7 @@
 		4E49BCA81966661800E8AEB7 /* custumRecognizers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = custumRecognizers.m; path = plugins/MousePad/custumRecognizers.m; sourceTree = "<group>"; };
 		4E51BBEB193FADA7007E74F4 /* Share.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Share.h; path = plugins/SHARE/Share.h; sourceTree = "<group>"; };
 		4E51BBEC193FADA7007E74F4 /* Share.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Share.m; path = plugins/SHARE/Share.m; sourceTree = "<group>"; };
+		4E7CB6601985F7EA00DEB3B3 /* Pods-acknowledgements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Pods-acknowledgements.plist"; path = "Pods/Pods-acknowledgements.plist"; sourceTree = SOURCE_ROOT; };
 		4E85B96A1928F9D600EF3C55 /* DeviceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceViewController.h; sourceTree = "<group>"; };
 		4E85B96B1928F9D600EF3C55 /* DeviceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeviceViewController.m; sourceTree = "<group>"; };
 		4E95A18F1949954600647948 /* SettingsStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SettingsStore.h; path = lib/SettingsStore.h; sourceTree = "<group>"; };
@@ -238,6 +240,7 @@
 		4E08A1EE1913CF850056EEF8 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				4E7CB6601985F7EA00DEB3B3 /* Pods-acknowledgements.plist */,
 				4E08A1EF1913CF850056EEF8 /* kdeconnect-ios-Info.plist */,
 				4EC750B61967084800785A49 /* KeychainAccessGroups.plist */,
 				4E08A1F01913CF850056EEF8 /* InfoPlist.strings */,
@@ -497,6 +500,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4EC750B71967084800785A49 /* KeychainAccessGroups.plist in Resources */,
+				4E7CB6611985F7EA00DEB3B3 /* Pods-acknowledgements.plist in Resources */,
 				4E08A1FE1913CF850056EEF8 /* Main_iPad.storyboard in Resources */,
 				4E08A2031913CF850056EEF8 /* Images.xcassets in Resources */,
 				4E0E321F192B495E001D88CD /* Settings.bundle in Resources */,

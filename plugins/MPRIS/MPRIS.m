@@ -121,7 +121,12 @@
 - (void) openPanel:(id)sender
 {
     if (!_mprisViewController) {
-        _mprisViewController=[[UIStoryboard storyboardWithName:@"Main_iPhone" bundle:[NSBundle mainBundle]] instantiateViewControllerWithIdentifier:@"MPRISViewController"];
+        if (isPhone) {
+            _mprisViewController=[[UIStoryboard storyboardWithName:@"Main_iPhone" bundle:[NSBundle mainBundle]] instantiateViewControllerWithIdentifier:@"MPRISViewController"];
+        }
+        if (isPad) {
+            _mprisViewController=[[UIStoryboard storyboardWithName:@"Main_iPad" bundle:[NSBundle mainBundle]] instantiateViewControllerWithIdentifier:@"MPRISViewController"];
+        }
         [_mprisViewController setPlugin:self];
         [_mprisViewController setTitle:@"MPRIS"];
     }

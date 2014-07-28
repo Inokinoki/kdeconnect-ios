@@ -32,7 +32,12 @@
 {
     if ((self=[super init])) {
         _id=deviceId;
-        _type=[Device Str2Devicetype:@"phone"];
+        if (isPhone) {
+            _type=Phone;
+        }
+        if (isPad) {
+            _type=Tablet;
+        }
         _deviceDelegate=deviceDelegate;
         [self loadSetting];
         _links=[NSMutableArray arrayWithCapacity:1];

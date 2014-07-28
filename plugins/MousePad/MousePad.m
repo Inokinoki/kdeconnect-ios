@@ -83,7 +83,12 @@
 - (void) openPad:(id)sender
 {
     if (!_mousePadController) {
-        _mousePadController=[[UIStoryboard storyboardWithName:@"Main_iPhone" bundle:[NSBundle mainBundle]] instantiateViewControllerWithIdentifier:@"MousePadViewController"];
+        if (isPhone) {
+            _mousePadController=[[UIStoryboard storyboardWithName:@"Main_iPhone" bundle:[NSBundle mainBundle]] instantiateViewControllerWithIdentifier:@"MousePadViewController"];
+        }
+        if (isPad) {
+            _mousePadController=[[UIStoryboard storyboardWithName:@"Main_iPad" bundle:[NSBundle mainBundle]] instantiateViewControllerWithIdentifier:@"MousePadViewController"];
+        }
         [_mousePadController setPlugin:self];
         [_mousePadController setTitle:@"Mouse Pad"];
     }

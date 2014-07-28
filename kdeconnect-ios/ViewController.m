@@ -265,8 +265,14 @@
     switch (indexPath.section) {
         case 0:
             //TO-DO use compile macro to load storyboard for iphone or ipad
-            vc=[[UIStoryboard storyboardWithName:@"Main_iPhone" bundle:[NSBundle mainBundle]]
-                instantiateViewControllerWithIdentifier:@"DeviceViewController"];
+            if (isPhone) {
+                vc=[[UIStoryboard storyboardWithName:@"Main_iPhone" bundle:[NSBundle mainBundle]]
+                    instantiateViewControllerWithIdentifier:@"DeviceViewController"];
+            }
+            if (isPad) {
+                vc=[[UIStoryboard storyboardWithName:@"Main_iPad" bundle:[NSBundle mainBundle]]
+                    instantiateViewControllerWithIdentifier:@"DeviceViewController"];   
+            }
             deviceId=[[_connectedDevices allKeys]objectAtIndex:indexPath.row];
             [vc set_deviceId:deviceId];
             [vc setTitle:[_connectedDevices valueForKey:deviceId]];
