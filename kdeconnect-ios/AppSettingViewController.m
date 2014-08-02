@@ -18,7 +18,6 @@
 #import "IASKSpecifier.h"
 #import "IASKSpecifierValuesViewController.h"
 #import "IASKTextField.h"
-#import "VTAcknowledgementsViewController.h"
 @interface AppSettingViewController ()
 
 @end
@@ -39,7 +38,6 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self.tabBarController setDelegate:self];
-    [self setDelegate:self];
 }
 
 - (void)didReceiveMemoryWarning
@@ -58,15 +56,6 @@
     [[BackgroundService sharedInstance] reloadAllPlugins];
 }
 
-#pragma mark - IASKAppSetting Delegate
-- (void)settingsViewController:(id)sender buttonTappedForKey:(NSString*)key
-{
-    if ([key isEqualToString:@"acknowledgements"]) {
-        VTAcknowledgementsViewController *viewController = [VTAcknowledgementsViewController acknowledgementsViewController];
-        viewController.headerText = NSLocalizedString(@"Thanks for these open source softwares", nil); // optional
-        [self.navigationController pushViewController:viewController animated:YES];
-    }
-}
 /*
 #pragma mark - Navigation
 

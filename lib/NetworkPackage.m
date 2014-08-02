@@ -56,12 +56,13 @@ __strong static NSString* _UUID;
     if (!_UUID) {
         NSString* group=@"34RXKJTKWE.org.kde.kdeconnect-ios";
         KeychainItemWrapper* wrapper=[[KeychainItemWrapper alloc] initWithIdentifier:@"org.kde.kdeconnect-ios" accessGroup:group];
-        _UUID=[wrapper objectForKey:(__bridge id)(kSecValueData)];
-        if (!_UUID) {
+//        _UUID=[wrapper objectForKey:(__bridge id)(kSecValueData)];
+//        if (!_UUID) {
             _UUID=[[UIDevice currentDevice].identifierForVendor UUIDString];
             _UUID=[_UUID stringByReplacingOccurrencesOfString:@"-" withString:@""];
+            _UUID=[_UUID stringByReplacingOccurrencesOfString:@"_" withString:@""];
             [wrapper setObject:_UUID forKey:(__bridge id)(kSecValueData)];
-        }
+//        }
     }
     return _UUID;
 }

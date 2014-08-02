@@ -9,18 +9,20 @@
 #import "MRProgress.h"
 #import "DeviceViewController.h"
 #import "BackgroundService.h"
+#import "AppSettingViewController.h"
 #import "IASKSettingsReader.h"
 #import "SettingsStore.h"
+#import "VTAcknowledgementsViewController.h"
 
 @interface DeviceViewController ()
-@property (nonatomic, retain) AppSettingViewController *_appSettingsViewController;
+@property (nonatomic, retain) AppSettingViewController *_AppSettingViewController;
 @property (nonatomic) UIPopoverController* _currentPopoverController;
 @end
 
 @implementation DeviceViewController
 
 @synthesize _deviceId;
-@synthesize _appSettingsViewController;
+@synthesize _AppSettingViewController;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -50,6 +52,10 @@
         preFrame=viewFrame;
         [view setFrame:viewFrame];
         [self.view addSubview:view];
+        NSArray* constraints=[NSLayoutConstraint constraintsWithVisualFormat:@"|-50-[view]-50-|" options:0 metrics:nil views:@{@"view": view}];
+        constraints=[constraints arrayByAddingObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:FORMAT(@"V:[view(%f)]",view.frame.size.height) options:0 metrics:nil views:@{@"view": view}]];
+        view.translatesAutoresizingMaskIntoConstraints=NO;
+        [self.view addConstraints:constraints];
     }
 }
 
@@ -69,10 +75,10 @@
 
 
 - (IBAction)showSettingsModal:(id)sender {
-    UINavigationController *aNavController = [[UINavigationController alloc] initWithRootViewController:self._appSettingsViewController];
+    UINavigationController *aNavController = [[UINavigationController alloc] initWithRootViewController:self._AppSettingViewController];
     //[viewController setShowCreditsFooter:NO];   // Uncomment to not display InAppSettingsKit credits for creators.
     // But we encourage you not to uncomment. Thank you!
-    self._appSettingsViewController.showDoneButton = YES;
+    self._AppSettingViewController.showDoneButton = YES;
     [self presentViewController:aNavController animated:YES completion:nil];
 }
 
@@ -82,8 +88,8 @@
 		return;
 	}
     
-	self._appSettingsViewController.showDoneButton = NO;
-	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:self._appSettingsViewController];
+	self._AppSettingViewController.showDoneButton = NO;
+	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:self._AppSettingViewController];
 	UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:navController];
 	popover.delegate = self;
 	[popover presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionUp animated:NO];
@@ -98,14 +104,14 @@
 	}
 }
 
-- (IASKAppSettingsViewController*)_appSettingsViewController {
-	if (!_appSettingsViewController) {
-		_appSettingsViewController = [[IASKAppSettingsViewController alloc] init];
-		_appSettingsViewController.delegate = self;
-        [_appSettingsViewController setSettingsReader:[[IASKSettingsReader alloc]init]];
-        [_appSettingsViewController setSettingsStore:[[SettingsStore alloc] initWithPath:_deviceId]];
+- (AppSettingViewController*)_AppSettingViewController {
+	if (!_AppSettingViewController) {
+		_AppSettingViewController = [[AppSettingViewController alloc] init];
+		_AppSettingViewController.delegate = self;
+        [_AppSettingViewController setSettingsReader:[[IASKSettingsReader alloc]init]];
+        [_AppSettingViewController setSettingsStore:[[SettingsStore alloc] initWithPath:_deviceId]];
 	}
-	return _appSettingsViewController;
+	return _AppSettingViewController;
 }
 
 #pragma mark - View Lifecycle
@@ -121,8 +127,9 @@
 	self._currentPopoverController = nil;
 }
 
-#pragma mark IASKAppSettingsViewControllerDelegate protocol
-- (void)settingsViewControllerDidEnd:(IASKAppSettingsViewController*)sender {
+#pragma mark AppSettingViewControllerDelegate protocol
+- (void)settingsViewControllerDidEnd:(IASKAppSettingsViewController*)sender
+{
     [self dismissViewControllerAnimated:YES completion:nil];
 	// your code here to reconfigure the app for changed settings
     [[BackgroundService sharedInstance] reloadAllPlugins];
@@ -133,6 +140,15 @@
         [self viewWillAppear:YES];
         [self.view setNeedsDisplay];
     });
+}
+
+- (void)settingsViewController:(IASKAppSettingsViewController*)sender buttonTappedForSpecifier:(IASKSpecifier*)specifier;
+{
+    if ([specifier.key isEqualToString:@"acknowledgements"]) {
+        VTAcknowledgementsViewController *viewController = [VTAcknowledgementsViewController acknowledgementsViewController];
+        viewController.headerText = NSLocalizedString(@"Thanks for these open source softwares", nil); // optional
+        [_AppSettingViewController.navigationController pushViewController:viewController animated:YES];
+    }
 }
 
 /*

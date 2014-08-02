@@ -68,6 +68,11 @@
         [button addTarget:self action:@selector(photoSourceSelect:) forControlEvents:UIControlEventTouchUpInside];
         [_view addSubview:label];
         [_view addSubview:button];
+        NSArray* constraints=[NSLayoutConstraint constraintsWithVisualFormat:@"|-100-[button]-100-|" options:0 metrics:nil views:@{@"button": button}];
+        constraints=[constraints arrayByAddingObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"|-50-[label]" options:0 metrics:nil views:@{@"label": label}]];
+        [_view addConstraints:constraints];
+        label.translatesAutoresizingMaskIntoConstraints=NO;
+        button.translatesAutoresizingMaskIntoConstraints=NO;
     }
     else{
         _view=nil;

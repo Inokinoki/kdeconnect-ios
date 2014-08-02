@@ -53,8 +53,8 @@
 {
     NSLog(@"ping plugin get view");
     if ([_device isReachable]) {
-        _view=[[UIView alloc] initWithFrame:CGRectMake(0,0,400, 60)];
-        UILabel* label=[[UILabel alloc] initWithFrame:CGRectMake(20, 0, 400, 30)];
+        _view=[[UIView alloc] initWithFrame:CGRectMake(0,0,600, 60)];
+        UILabel* label=[[UILabel alloc] initWithFrame:CGRectMake(20, 0, 300, 30)];
         [label setText:@"Ping"];
         UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
         [button setTitle:@"Send Ping to Device" forState:UIControlStateNormal];
@@ -65,6 +65,11 @@
         [button addTarget:self action:@selector(sendPing:) forControlEvents:UIControlEventTouchUpInside];
         [_view addSubview:label];
         [_view addSubview:button];
+        NSArray* constraints=[NSLayoutConstraint constraintsWithVisualFormat:@"|-100-[button]-100-|" options:0 metrics:nil views:@{@"button": button}];
+        constraints=[constraints arrayByAddingObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"|-50-[label]" options:0 metrics:nil views:@{@"label": label}]];
+        [_view addConstraints:constraints];
+        label.translatesAutoresizingMaskIntoConstraints=NO;
+        button.translatesAutoresizingMaskIntoConstraints=NO;
     }
     else{
         _view=nil;
