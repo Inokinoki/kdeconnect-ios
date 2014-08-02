@@ -5,34 +5,34 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>B41D68E5-F50F-464C-81C1-B0F9B254F22F</string>
+	<string>9171FBA4-B3D0-489F-92F5-706F967A89F0</string>
 	<key>IDESourceControlProjectName</key>
 	<string>kdeconnect-ios</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>92406F53-2525-48C4-B0A7-A1F77939921B</key>
-		<string>ssh://git.kde.org/scratch/yangqiao/kdeconnect-ios</string>
+		<key>51C9221D-7B94-4202-8692-CC98CD106DE5</key>
+		<string>kde:scratch/yangqiao/kdeconnect-ios</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>kdeconnect-ios.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>92406F53-2525-48C4-B0A7-A1F77939921B</key>
+		<key>51C9221D-7B94-4202-8692-CC98CD106DE5</key>
 		<string>..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>ssh://git.kde.org/scratch/yangqiao/kdeconnect-ios</string>
+	<string>kde:scratch/yangqiao/kdeconnect-ios</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>110</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>92406F53-2525-48C4-B0A7-A1F77939921B</string>
+	<string>51C9221D-7B94-4202-8692-CC98CD106DE5</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>92406F53-2525-48C4-B0A7-A1F77939921B</string>
+			<string>51C9221D-7B94-4202-8692-CC98CD106DE5</string>
 			<key>IDESourceControlWCCName</key>
 			<string>kdeconnect-ios</string>
 		</dict>

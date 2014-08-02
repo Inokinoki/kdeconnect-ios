@@ -9,6 +9,7 @@
 #import "MPRIS.h"
 #import "MPRISViewController.h"
 #import "device.h"
+#import "NavigationController.h"
 
 @interface MPRIS()
 {
@@ -130,7 +131,7 @@
         [_mprisViewController setPlugin:self];
         [_mprisViewController setTitle:@"MPRIS"];
     }
-    UINavigationController *aNavController = [[UINavigationController alloc] initWithRootViewController:_mprisViewController];
+    NavigationController *aNavController = [[NavigationController alloc] initWithRootViewController:_mprisViewController];
     [_deviceViewController presentViewController:aNavController animated:YES completion:nil];
 }
 

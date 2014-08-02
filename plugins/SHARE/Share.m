@@ -133,16 +133,16 @@
         
         [actionSheet showInView:[UIApplication sharedApplication].keyWindow];
     }
-
-    UIActionSheet *actionSheet = [[UIActionSheet alloc]initWithTitle:@"Image Quality"
-                                                            delegate:self
-                                                   cancelButtonTitle:@"cancel"
-                                              destructiveButtonTitle:nil
-                                                   otherButtonTitles:@"High",@"Medium",@"Low",nil];
-    
-    actionSheet.actionSheetStyle =UIActionSheetStyleAutomatic;
-    [actionSheet showInView:[UIApplication sharedApplication].keyWindow];
-    
+    NSData* imageData=UIImageJPEGRepresentation(_image, 1);
+    NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_SHARE];
+    [np setInteger:[imageData length] forKey:@"size"];
+    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+    [dateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    NSDate *now = [NSDate date];
+    NSString *theDate = [dateFormat stringFromDate:now];
+    [np setObject:FORMAT(@"%@_%@.jpg",[UIDevice currentDevice].name,theDate) forKey:@"filename"];
+    [np set_Payload:imageData];
+    [_device sendPackage:np tag:PACKAGE_TAG_SHARE];
     [picker dismissViewControllerAnimated:YES completion:NULL];
 }
 
@@ -165,34 +165,6 @@
             default:
                 break;
         }
-    }else if([[actionSheet title] isEqualToString:@"Image Quality"]){
-        float quality;
-        switch (buttonIndex) {
-            case 0:
-                quality=1;
-                break;
-            case 1:
-                quality=0.5;
-                break;
-            case 2:
-                quality=0;
-                break;
-            case 3:
-            default:
-                return;
-                break;
-        }
-        
-        NSData* imageData=UIImageJPEGRepresentation(_image, quality);
-        NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_SHARE];
-        [np setInteger:[imageData length] forKey:@"size"];
-        NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-        [dateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-        NSDate *now = [NSDate date];
-        NSString *theDate = [dateFormat stringFromDate:now];
-        [np setObject:FORMAT(@"%@_%@",[UIDevice currentDevice].name,theDate) forKey:@"filename"];
-        [np set_Payload:imageData];
-        [_device sendPackage:np tag:PACKAGE_TAG_SHARE];
     }else if([[actionSheet title] isEqualToString:@"Photo Source"]){
         switch (buttonIndex) {
             case 0:

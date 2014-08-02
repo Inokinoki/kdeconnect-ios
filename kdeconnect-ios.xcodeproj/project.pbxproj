@@ -48,6 +48,7 @@
 		4EC2754B191FD5490057AB0E /* PluginFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC2754A191FD5490057AB0E /* PluginFactory.m */; };
 		4EC750B71967084800785A49 /* KeychainAccessGroups.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4EC750B61967084800785A49 /* KeychainAccessGroups.plist */; };
 		4EC750BC19670A2F00785A49 /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC750BB19670A2F00785A49 /* KeychainItemWrapper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		4EC83856198BC72B00CC08F5 /* NavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC83855198BC72B00CC08F5 /* NavigationController.m */; };
 		4ECA38301933EE560015C07C /* SecKeyWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ECA382F1933EE560015C07C /* SecKeyWrapper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		4ED8E711197B7D6500C4D01C /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4ED8E70F197B7D6500C4D01C /* AddressBook.framework */; };
 		4ED8E712197B7D6500C4D01C /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4ED8E710197B7D6500C4D01C /* AddressBookUI.framework */; };
@@ -139,6 +140,8 @@
 		4EC750B919670A2F00785A49 /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = common.h; path = lib/common.h; sourceTree = "<group>"; };
 		4EC750BA19670A2F00785A49 /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KeychainItemWrapper.h; path = lib/KeychainItemWrapper.h; sourceTree = "<group>"; };
 		4EC750BB19670A2F00785A49 /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KeychainItemWrapper.m; path = lib/KeychainItemWrapper.m; sourceTree = "<group>"; };
+		4EC83854198BC72B00CC08F5 /* NavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavigationController.h; sourceTree = "<group>"; };
+		4EC83855198BC72B00CC08F5 /* NavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavigationController.m; sourceTree = "<group>"; };
 		4ECA382E1933EE560015C07C /* SecKeyWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SecKeyWrapper.h; path = lib/SecKeyWrapper.h; sourceTree = "<group>"; };
 		4ECA382F1933EE560015C07C /* SecKeyWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SecKeyWrapper.m; path = lib/SecKeyWrapper.m; sourceTree = "<group>"; };
 		4ED8E70F197B7D6500C4D01C /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
@@ -226,14 +229,16 @@
 			children = (
 				4E08A1F61913CF850056EEF8 /* AppDelegate.h */,
 				4E08A1F71913CF850056EEF8 /* AppDelegate.m */,
-				4E08A1F91913CF850056EEF8 /* Main_iPhone.storyboard */,
 				4EF576E7194784D80046213D /* AppSettingViewController.h */,
 				4EF576E8194784D80046213D /* AppSettingViewController.m */,
 				4E85B96A1928F9D600EF3C55 /* DeviceViewController.h */,
 				4E85B96B1928F9D600EF3C55 /* DeviceViewController.m */,
+				4E08A1F91913CF850056EEF8 /* Main_iPhone.storyboard */,
 				4E08A1FC1913CF850056EEF8 /* Main_iPad.storyboard */,
 				4E08A1FF1913CF850056EEF8 /* ViewController.h */,
 				4E08A2001913CF850056EEF8 /* ViewController.m */,
+				4EC83854198BC72B00CC08F5 /* NavigationController.h */,
+				4EC83855198BC72B00CC08F5 /* NavigationController.m */,
 				4E08A2021913CF850056EEF8 /* Images.xcassets */,
 				4E08A1EE1913CF850056EEF8 /* Supporting Files */,
 			);
@@ -563,6 +568,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4E3038FC1940889900F28091 /* ClipBoard.m in Sources */,
+				4EC83856198BC72B00CC08F5 /* NavigationController.m in Sources */,
 				4E08A2011913CF850056EEF8 /* ViewController.m in Sources */,
 				4ECA38301933EE560015C07C /* SecKeyWrapper.m in Sources */,
 				4EC750BC19670A2F00785A49 /* KeychainItemWrapper.m in Sources */,

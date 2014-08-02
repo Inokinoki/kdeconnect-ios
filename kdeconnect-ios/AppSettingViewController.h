@@ -8,5 +8,5 @@
 
 #import "IASKAppSettingsViewController.h"
 
-@interface AppSettingViewController : IASKAppSettingsViewController<UITabBarControllerDelegate,IASKSettingsDelegate>
+@interface AppSettingViewController : IASKAppSettingsViewController<IASKSettingsDelegate>
 @end

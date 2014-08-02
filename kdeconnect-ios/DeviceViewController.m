@@ -135,38 +135,6 @@
     });
 }
 
-//- (CGFloat)settingsViewController:(id<IASKViewController>)settingsViewController
-//                        tableView:(UITableView *)tableView
-//        heightForHeaderForSection:(NSInteger)section {
-//		return 55.f;
-//}
-
-//- (UIView *)settingsViewController:(id<IASKViewController>)settingsViewController
-//                         tableView:(UITableView *)tableView
-//           viewForHeaderForSection:(NSInteger)section {
-//
-//        UILabel* label = [[UILabel alloc] initWithFrame:CGRectZero];
-//        label.backgroundColor = [UIColor clearColor];
-//        label.textColor = [UIColor redColor];
-//        label.shadowColor = [UIColor whiteColor];
-//        label.shadowOffset = CGSizeMake(0, 1);
-//        label.numberOfLines = 0;
-//        label.font = [UIFont boldSystemFontOfSize:16.f];
-//        
-//        //figure out the title from settingsbundle
-//        label.text = [settingsViewController.settingsReader titleForSection:section];
-//        return label;
-//}
-//
-//- (CGFloat)tableView:(UITableView*)tableView heightForSpecifier:(IASKSpecifier*)specifier {
-//	return 0;
-//}
-
-//#pragma mark kIASKAppSettingChanged notification
-//- (void)settingDidChange:(NSNotification*)notification {
-//    
-//}
-
 /*
 #pragma mark - Navigation
 

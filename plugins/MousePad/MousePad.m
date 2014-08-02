@@ -9,6 +9,7 @@
 #import "MousePad.h"
 #import "MousePadViewController.h"
 #import "device.h"
+#import "NavigationController.h"
 
 @interface MousePad()
 @property(nonatomic) UIView* _view;
@@ -92,7 +93,7 @@
         [_mousePadController setPlugin:self];
         [_mousePadController setTitle:@"Mouse Pad"];
     }
-    UINavigationController *aNavController = [[UINavigationController alloc] initWithRootViewController:_mousePadController];
+    NavigationController *aNavController = [[NavigationController alloc] initWithRootViewController:_mousePadController];
     [_deviceViewController presentViewController:aNavController animated:YES completion:nil];
 }
 

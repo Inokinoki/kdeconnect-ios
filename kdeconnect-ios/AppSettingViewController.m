@@ -58,20 +58,12 @@
     [[BackgroundService sharedInstance] reloadAllPlugins];
 }
 
-#pragma mark - UITabBarControllerDelegate
-- (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
-{
-    [[super settingsStore] synchronize];
-    //FIX-ME shouldn't put it here, move to somewhere else
-    [[BackgroundService sharedInstance] reloadAllPlugins];
-}
-
 #pragma mark - IASKAppSetting Delegate
 - (void)settingsViewController:(id)sender buttonTappedForKey:(NSString*)key
 {
     if ([key isEqualToString:@"acknowledgements"]) {
         VTAcknowledgementsViewController *viewController = [VTAcknowledgementsViewController acknowledgementsViewController];
-        viewController.headerText = NSLocalizedString(@"We love open source software.", nil); // optional
+        viewController.headerText = NSLocalizedString(@"Thanks for these open source softwares", nil); // optional
         [self.navigationController pushViewController:viewController animated:YES];
     }
 }
