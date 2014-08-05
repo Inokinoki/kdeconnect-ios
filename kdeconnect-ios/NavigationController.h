@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface NavigationController : UINavigationController
-
+@property(nonatomic) bool _enableRotateMask;
 @end

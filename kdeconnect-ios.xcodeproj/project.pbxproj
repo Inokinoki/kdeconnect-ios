@@ -42,6 +42,8 @@
 		4E7CB6611985F7EA00DEB3B3 /* Pods-acknowledgements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4E7CB6601985F7EA00DEB3B3 /* Pods-acknowledgements.plist */; };
 		4E85B96C1928F9D600EF3C55 /* DeviceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E85B96B1928F9D600EF3C55 /* DeviceViewController.m */; };
 		4E95A1911949954600647948 /* SettingsStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E95A1901949954600647948 /* SettingsStore.m */; };
+		4EA77E08199092E3002787B8 /* MyStyleKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EA77E07199092E3002787B8 /* MyStyleKit.m */; };
+		4EA77E0B199095BC002787B8 /* Buttons.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EA77E0A199095BC002787B8 /* Buttons.m */; };
 		4EBC812A19863B8B008FF5A1 /* XbICComponent+VTodo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EBC812919863B8B008FF5A1 /* XbICComponent+VTodo.m */; };
 		4EC27545191FCEAB0057AB0E /* Plugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC27544191FCEAB0057AB0E /* Plugin.m */; };
 		4EC27548191FCECD0057AB0E /* Ping.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC27547191FCECD0057AB0E /* Ping.m */; };
@@ -128,6 +130,10 @@
 		4E85B96B1928F9D600EF3C55 /* DeviceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeviceViewController.m; sourceTree = "<group>"; };
 		4E95A18F1949954600647948 /* SettingsStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SettingsStore.h; path = lib/SettingsStore.h; sourceTree = "<group>"; };
 		4E95A1901949954600647948 /* SettingsStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SettingsStore.m; path = lib/SettingsStore.m; sourceTree = "<group>"; };
+		4EA77E06199092D6002787B8 /* MyStyleKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyStyleKit.h; sourceTree = "<group>"; };
+		4EA77E07199092E3002787B8 /* MyStyleKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyStyleKit.m; sourceTree = "<group>"; };
+		4EA77E09199095BC002787B8 /* Buttons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Buttons.h; path = plugins/MPRIS/Buttons.h; sourceTree = "<group>"; };
+		4EA77E0A199095BC002787B8 /* Buttons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Buttons.m; path = plugins/MPRIS/Buttons.m; sourceTree = "<group>"; };
 		4EBC812819863B8B008FF5A1 /* XbICComponent+VTodo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "XbICComponent+VTodo.h"; path = "plugins/Reminder/XbICComponent+VTodo.h"; sourceTree = "<group>"; };
 		4EBC812919863B8B008FF5A1 /* XbICComponent+VTodo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "XbICComponent+VTodo.m"; path = "plugins/Reminder/XbICComponent+VTodo.m"; sourceTree = "<group>"; };
 		4EC27543191FCEAB0057AB0E /* Plugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Plugin.h; path = plugins/Plugin.h; sourceTree = "<group>"; };
@@ -239,6 +245,8 @@
 				4E08A2001913CF850056EEF8 /* ViewController.m */,
 				4EC83854198BC72B00CC08F5 /* NavigationController.h */,
 				4EC83855198BC72B00CC08F5 /* NavigationController.m */,
+				4EA77E06199092D6002787B8 /* MyStyleKit.h */,
+				4EA77E07199092E3002787B8 /* MyStyleKit.m */,
 				4E08A2021913CF850056EEF8 /* Images.xcassets */,
 				4E08A1EE1913CF850056EEF8 /* Supporting Files */,
 			);
@@ -413,6 +421,8 @@
 				4EDD98F9192DAAD700C6AB01 /* MPRISViewController.m */,
 				4EDD98FB192DAAF800C6AB01 /* MPRIS.h */,
 				4EDD98FC192DAAF800C6AB01 /* MPRIS.m */,
+				4EA77E09199095BC002787B8 /* Buttons.h */,
+				4EA77E0A199095BC002787B8 /* Buttons.m */,
 			);
 			name = MPRIS;
 			sourceTree = "<group>";
@@ -573,6 +583,7 @@
 				4ECA38301933EE560015C07C /* SecKeyWrapper.m in Sources */,
 				4EC750BC19670A2F00785A49 /* KeychainItemWrapper.m in Sources */,
 				4E08A1F81913CF850056EEF8 /* AppDelegate.m in Sources */,
+				4EA77E08199092E3002787B8 /* MyStyleKit.m in Sources */,
 				4EC2754B191FD5490057AB0E /* PluginFactory.m in Sources */,
 				4E08A2271913D1550056EEF8 /* BaseLink.m in Sources */,
 				4EC27548191FCECD0057AB0E /* Ping.m in Sources */,
@@ -593,6 +604,7 @@
 				4E08A22E1913D1650056EEF8 /* LanLinkProvider.m in Sources */,
 				4E08A1F41913CF850056EEF8 /* main.m in Sources */,
 				4E49BCA91966661800E8AEB7 /* custumRecognizers.m in Sources */,
+				4EA77E0B199095BC002787B8 /* Buttons.m in Sources */,
 				4EC27545191FCEAB0057AB0E /* Plugin.m in Sources */,
 				4E85B96C1928F9D600EF3C55 /* DeviceViewController.m in Sources */,
 				4EDD98FD192DAAF800C6AB01 /* MPRIS.m in Sources */,

@@ -8,17 +8,22 @@
 
 #import "NavigationController.h"
 #import "common.h"
+#import "MyStyleKit.h"
+
 @interface NavigationController ()
 
 @end
 
 @implementation NavigationController
 
+@synthesize _enableRotateMask;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        _enableRotateMask=true;
     }
     return self;
 }
@@ -27,6 +32,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [MyStyleKit navbar]}];
 }
 
 - (void)didReceiveMemoryWarning
@@ -38,17 +44,22 @@
 - (BOOL)shouldAutorotate
 {
     UIViewController* currentViewController = self.topViewController;
-    if (isPhone) {
-        NSString* t=currentViewController.title;
-        if ([currentViewController.title isEqualToString:@"Mouse Pad"])
-            return YES;
-        else
-            return NO;
+    if (_enableRotateMask) {
+
+        if (isPhone) {
+            NSString* t=currentViewController.title;
+            if ([currentViewController.title isEqualToString:@"Mouse Pad"])
+                return YES;
+            else
+                return NO;
+        }
+        if (isPad) {
+            
+        }
+        return YES;
     }
-    if (isPad) {
-        
-    }
-    return YES;
+    else
+        return NO;
 }
 
 /*

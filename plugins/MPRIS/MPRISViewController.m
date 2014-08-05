@@ -8,12 +8,18 @@
 
 #import "MPRISViewController.h"
 #import "MPRIS.h"
+#import "Buttons.h"
+#import "MyStyleKit.h"
+
 @interface MPRISViewController ()
 @property (weak, nonatomic) IBOutlet UILabel *_currentText;
 @property (weak, nonatomic) IBOutlet UISlider *_volumeSlider;
-@property (weak, nonatomic) IBOutlet UIButton *_playPause;
+@property (weak, nonatomic) IBOutlet PlayPauseButton *_playPause;
+@property (weak, nonatomic) IBOutlet FollowingButton *_following;
+@property (weak, nonatomic) IBOutlet ForwardButton *_foward;
+@property (weak, nonatomic) IBOutlet PreviousButton *_previous;
+@property (weak, nonatomic) IBOutlet BackButton *_back;
 @property (weak, nonatomic) IBOutlet UIPickerView *_playerPicker;
-@property (weak, nonatomic) IBOutlet UILabel *_currentPlayer;
 @property (nonatomic) MPRIS* _mprisPlugin;
 @property (nonatomic) NSArray* _playerList;
 @property (nonatomic) NSString* _player;
@@ -25,11 +31,14 @@
 @synthesize _volumeSlider;
 @synthesize _currentText;
 @synthesize _playPause;
-@synthesize _currentPlayer;
 @synthesize _playerPicker;
 @synthesize _playerList;
 @synthesize _player;
 @synthesize _mprisPlugin;
+@synthesize _back;
+@synthesize _following;
+@synthesize _foward;
+@synthesize _previous;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -52,6 +61,14 @@
                                                                                 target:self
                                                                                 action:@selector(dismiss:)];
     self.navigationItem.rightBarButtonItem = buttonItem;
+    [_volumeSlider setMinimumTrackTintColor:[MyStyleKit buttonNormal]];
+    [_volumeSlider setNeedsDisplay];
+    [_playPause setTitle:@"" forState:UIControlStateNormal];
+    [_previous setTitle:@"" forState:UIControlStateNormal];
+    [_back setTitle:@"" forState:UIControlStateNormal];
+    [_foward setTitle:@"" forState:UIControlStateNormal];
+    [_following setTitle:@"" forState:UIControlStateNormal];
+    [_playPause setNeedsDisplay];
     [self onPlayerStatusUpdated];
     [self onPlayerListUpdated];
 }
@@ -76,19 +93,13 @@
     NSString* s=[_mprisPlugin getCurrentSong];
     float v=[_mprisPlugin getVolume];
     BOOL isPlaying=[_mprisPlugin isPlaying];
-    NSString* buttonText;
-    if (isPlaying) {
-        buttonText=@"Pause";
-    }
-    else{
-        buttonText=@"Play";
-    }
     dispatch_async(dispatch_get_main_queue(), ^{
-//        NSAttributedString* attributedTitle=[_playPause attributedTitleForState:UIControlStateNormal];
-//        NSMutableAttributedString *mas = [[NSMutableAttributedString alloc] initWithAttributedString:attributedTitle];
-//        [mas.mutableString setString:buttonText];
-//        [_playPause setAttributedTitle:mas forState:UIControlStateNormal];
-        [_playPause setTitle:buttonText forState:UIControlStateNormal];
+        if (isPlaying) {
+            [_playPause setpause];
+        }
+        else{
+            [_playPause setplay];
+        }
         [_currentText setText:s];
         [_volumeSlider setValue:(v/100)];
     });
@@ -114,7 +125,6 @@
     if (!_player) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [_playerPicker reloadAllComponents];
-            [_currentPlayer setText:nil];
             [_currentText setText:nil];
         });
         return;
@@ -122,7 +132,6 @@
     [_mprisPlugin setPlayer:_player];
     dispatch_async(dispatch_get_main_queue(), ^{
         [_playerPicker reloadAllComponents];
-        [_currentPlayer setText:_player];
         [_playerPicker selectRow:[_playerList indexOfObject:_player] inComponent:0 animated:NO];
     });
 }
@@ -195,7 +204,6 @@
     if (_player!=[_playerList objectAtIndex:row]) {
         _player=[_playerList objectAtIndex:row];
         dispatch_async(dispatch_get_main_queue(), ^{
-            [_currentPlayer setText:_player];
             [_currentText setText:[_mprisPlugin getCurrentSong]];
         });
         [_mprisPlugin setPlayer:_player];

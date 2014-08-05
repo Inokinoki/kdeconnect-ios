@@ -14,7 +14,6 @@
 
 @interface Calendar ()
 @property(nonatomic)EKEventStore *_eventStore;
-@property(nonatomic)EKCalendar *_calendar;
 @property(nonatomic)NSArray *_eventsList;
 @property(nonatomic)NSMutableArray *_invalideUids;
 @end
@@ -23,7 +22,6 @@
 @synthesize _device;
 @synthesize _pluginInfo;
 @synthesize _pluginDelegate;
-@synthesize _calendar;
 @synthesize _eventsList;
 @synthesize _eventStore;
 @synthesize _invalideUids;
@@ -50,13 +48,7 @@
         if ([np bodyHasKey:@"request"]) {
             //send calender event list
             [self fetchEvents];
-            if ([_eventsList count]==0) {
-                NetworkPackage* np2=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_CALENDAR];
-                [np2 setBool:YES forKey:@"request"];
-                [_device sendPackage:np2 tag:PACKAGE_TAG_CALENDAR];
-            }else{
-                [self sendCalendar];
-            }
+            [self sendCalendar];
         }
         else {
             NSError* err;
@@ -151,8 +143,6 @@
 // This method is called when the user has granted permission to Calendar
 -(void)accessGrantedForCalendar
 {
-    // Let's get the default calendar associated with our event store
-    _calendar = _eventStore.defaultCalendarForNewEvents;
     // Fetch all events happening in the next 24 hours and put them into eventsList
     [self fetchEvents];
 }
@@ -172,13 +162,11 @@
     NSDate *endDate = [[NSCalendar currentCalendar] dateByAddingComponents:tomorrowDateComponents
                                                                     toDate:startDate
                                                                    options:0];
-	// We will only search the default calendar for our events
-	NSArray *calendarArray = [NSArray arrayWithObject:_calendar];
     
     // Create the predicate
 	NSPredicate *predicate = [_eventStore predicateForEventsWithStartDate:startDate
                                                                       endDate:endDate
-                                                                    calendars:calendarArray];
+                                                                    calendars:nil];
 	
 	// Fetch all events that match the predicate
 	_eventsList =[_eventStore eventsMatchingPredicate:predicate];
@@ -262,7 +250,6 @@
         [event setTitle:summary];
         [event setStartDate:dt_s];
         [event setEndDate:dt_e];
-        [event setCalendar:[eventstore defaultCalendarForNewEvents]];
     }
     if ([event.lastModifiedDate compare:dt_modified]==NSOrderedDescending) {
         NSLog(@"%@, %@",event.lastModifiedDate,dt_modified);

@@ -15,7 +15,6 @@
 
 @interface Reminder ()
 @property(nonatomic)EKEventStore *_eventStore;
-@property(nonatomic)EKCalendar *_calendar;
 @property(nonatomic)NSArray *_reminderList;
 @property(nonatomic)NSMutableArray *_invalideUids;
 @property(nonatomic)BOOL _requested;
@@ -25,7 +24,6 @@
 @synthesize _device;
 @synthesize _pluginInfo;
 @synthesize _pluginDelegate;
-@synthesize _calendar;
 @synthesize _reminderList;
 @synthesize _eventStore;
 @synthesize _invalideUids;
@@ -145,8 +143,6 @@
 // This method is called when the user has granted permission to Reminder
 -(void)accessGrantedForReminder
 {
-    // Let's get the default calendar associated with our calendar store
-    _calendar = [_eventStore defaultCalendarForNewReminders];
     // Fetch all events happening in the next 24 hours and put them into eventsList
     [self fetchReminders];
 }

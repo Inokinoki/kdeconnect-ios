@@ -9,6 +9,7 @@
 #import "DeviceViewController.h"
 #import "ViewController.h"
 #import "MRProgress.h"
+#import "NavigationController.h"
 
 @interface ViewController ()
 @property(nonatomic)NSString* _pairingDevice;
@@ -37,6 +38,8 @@
     [refreshControl addTarget:self action:@selector(onRefresh:) forControlEvents:UIControlEventValueChanged];
     [_tableView addSubview:refreshControl];
     [[BackgroundService sharedInstance] set_backgroundServiceDelegate:self];
+    NavigationController* navc=self.navigationController;
+    [navc set_enableRotateMask:YES];
     [self onDeviceListRefreshed];
 }
 
@@ -46,12 +49,11 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    [self.navigationController setNavigationBarHidden:YES animated:animated];
+    [self setTitle:@"KDEConnect"];
     [super viewWillAppear:animated];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-    [self.navigationController setNavigationBarHidden:NO animated:animated];
     [super viewWillDisappear:animated];
 }
 
@@ -264,7 +266,6 @@
     NSString* deviceId;
     switch (indexPath.section) {
         case 0:
-            //TO-DO use compile macro to load storyboard for iphone or ipad
             if (isPhone) {
                 vc=[[UIStoryboard storyboardWithName:@"Main_iPhone" bundle:[NSBundle mainBundle]]
                     instantiateViewControllerWithIdentifier:@"DeviceViewController"];
@@ -312,7 +313,6 @@
         }
     }
     else if ([[alertView title] isEqualToString:@"Success"]){
-        //TO-DO redirect to device plugins interface
     }
     else if([[alertView title] isEqualToString:@"Incoming Pair Request"]){
         switch (buttonIndex) {

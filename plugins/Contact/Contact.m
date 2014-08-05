@@ -100,9 +100,16 @@ typedef NS_ENUM(NSInteger, DataClass)  {
         [button addTarget:self action:@selector(contactSourceSelect:) forControlEvents:UIControlEventTouchUpInside];
         [_view addSubview:label];
         [_view addSubview:button];
-        NSArray* constraints=[NSLayoutConstraint constraintsWithVisualFormat:@"|-100-[button]-100-|" options:0 metrics:nil views:@{@"button": button}];
-        constraints=[constraints arrayByAddingObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"|-50-[label]" options:0 metrics:nil views:@{@"label": label}]];
-        [_view addConstraints:constraints];
+        if (isPad) {
+            NSArray* constraints=[NSLayoutConstraint constraintsWithVisualFormat:@"|-100-[button]-100-|" options:0 metrics:nil views:@{@"button": button}];
+            constraints=[constraints arrayByAddingObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"|-50-[label]" options:0 metrics:nil views:@{@"label": label}]];
+            [_view addConstraints:constraints];
+        }
+        if (isPhone) {
+            NSArray* constraints=[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[button]-10-|" options:0 metrics:nil views:@{@"button": button}];
+            constraints=[constraints arrayByAddingObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"|-5-[label]" options:0 metrics:nil views:@{@"label": label}]];
+            [_view addConstraints:constraints];
+        }
         label.translatesAutoresizingMaskIntoConstraints=NO;
         button.translatesAutoresizingMaskIntoConstraints=NO;
     }

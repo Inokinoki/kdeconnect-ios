@@ -52,10 +52,18 @@
         preFrame=viewFrame;
         [view setFrame:viewFrame];
         [self.view addSubview:view];
-        NSArray* constraints=[NSLayoutConstraint constraintsWithVisualFormat:@"|-50-[view]-50-|" options:0 metrics:nil views:@{@"view": view}];
-        constraints=[constraints arrayByAddingObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:FORMAT(@"V:[view(%f)]",view.frame.size.height) options:0 metrics:nil views:@{@"view": view}]];
-        view.translatesAutoresizingMaskIntoConstraints=NO;
-        [self.view addConstraints:constraints];
+        if (isPad) {
+            NSArray* constraints=[NSLayoutConstraint constraintsWithVisualFormat:@"|-50-[view]-50-|" options:0 metrics:nil views:@{@"view": view}];
+            constraints=[constraints arrayByAddingObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:FORMAT(@"V:[view(%f)]",view.frame.size.height) options:0 metrics:nil views:@{@"view": view}]];
+            view.translatesAutoresizingMaskIntoConstraints=NO;
+            [self.view addConstraints:constraints];
+        }
+        if (isPhone) {
+            NSArray* constraints=[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[view]-10-|" options:0 metrics:nil views:@{@"view": view}];
+            constraints=[constraints arrayByAddingObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:FORMAT(@"V:[view(%f)]",view.frame.size.height) options:0 metrics:nil views:@{@"view": view}]];
+            view.translatesAutoresizingMaskIntoConstraints=NO;
+            [self.view addConstraints:constraints];
+        }
     }
 }
 

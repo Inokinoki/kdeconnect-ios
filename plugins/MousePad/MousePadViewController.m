@@ -9,6 +9,11 @@
 #import "MousePadViewController.h"
 #import "MousePad.h"
 #import "custumRecognizers.h"
+#import "MYIntroductionPanel.h"
+#import "MYBlurIntroductionView.h"
+#import "MyStyleKit.h"
+#import "common.h"
+#import "NavigationController.h"
 
 @interface MousePadViewController ()
 {
@@ -46,6 +51,8 @@
                                                                                 target:self
                                                                                 action:@selector(dismiss:)];
     self.navigationItem.rightBarButtonItem = buttonItem;
+    UIBarButtonItem *buttonItem2 = [[UIBarButtonItem alloc] initWithTitle:@"Help" style:UIBarButtonItemStylePlain target:self action:@selector(openHelp:)];
+    self.navigationItem.leftBarButtonItem = buttonItem2;
     [self.view setMultipleTouchEnabled:YES];
     
     _singleTapRecognizer=[[UITapGestureRecognizer alloc]
@@ -84,6 +91,68 @@
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
+
+- (IBAction)openHelp:(id)sender
+{
+    NSArray *panels;
+    if (isPad) {
+        MYIntroductionPanel *panel1 = [[MYIntroductionPanel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) title:@"Mouse Pad Usage Introduction" description:@"Here is a basic introduction which would show you how to use the mouse pad with different guestures" image:[MyStyleKit imageOfMousePadIntro]];
+        //Add panels to an array
+        panels= @[panel1];
+    }
+    
+    if (isPhone) {
+        MYIntroductionPanel *panel1 = [[MYIntroductionPanel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) title:@"Mouse Pad Usage Introduction" description:@"Here is a basic introduction which would show you how to use the mouse pad with different guestures" image:[MyStyleKit imageOfMousePadIntro1Small]];
+        MYIntroductionPanel *panel2 = [[MYIntroductionPanel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) title:@"Mouse Pad Usage Introduction" description:@"Here is a basic introduction which would show you how to use the mouse pad with different guestures" image:[MyStyleKit imageOfMousePadIntro2Small]];
+        MYIntroductionPanel *panel3 = [[MYIntroductionPanel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) title:@"Mouse Pad Usage Introduction" description:@"Here is a basic introduction which would show you how to use the mouse pad with different guestures" image:[MyStyleKit imageOfMousePadIntro3Small]];
+        MYIntroductionPanel *panel4 = [[MYIntroductionPanel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) title:@"Mouse Pad Usage Introduction" description:@"Here is a basic introduction which would show you how to use the mouse pad with different guestures" image:[MyStyleKit imageOfMousePadIntro4Small]];
+        //Add panels to an array
+        panels= @[panel1,panel2,panel3,panel4];
+    }
+    //Create the introduction view and set its delegate
+    MYBlurIntroductionView *introductionView = [[MYBlurIntroductionView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    introductionView.delegate = self;
+
+    [introductionView setBackgroundColor:[MyStyleKit intro]];
+    //introductionView.LanguageDirection = MYLanguageDirectionRightToLeft;
+    
+    //Build the introduction with desired panels
+    [introductionView buildIntroductionWithPanels:panels];
+    
+    //Add the introduction to your view
+    [self.view addSubview:introductionView];
+    
+    NavigationController* navc = self.navigationController;
+    [navc setNavigationBarHidden:YES animated:YES];
+    [navc set_enableRotateMask:NO];
+}
+
+#pragma mark - MYIntroduction Delegate
+
+-(void)introduction:(MYBlurIntroductionView *)introductionView didChangeToPanel:(MYIntroductionPanel *)panel withIndex:(NSInteger)panelIndex{
+    NSLog(@"Introduction did change to panel %d", panelIndex);
+    if (panelIndex == 0) {
+        [introductionView setBackgroundColor:[MyStyleKit intro]];
+    }
+    else if (panelIndex == 1){
+        [introductionView setBackgroundColor:[MyStyleKit intro1]];
+    }
+    else if (panelIndex == 2){
+        [introductionView setBackgroundColor:[MyStyleKit intro2]];
+    }
+    else if (panelIndex == 3){
+        [introductionView setBackgroundColor:[MyStyleKit intro3]];
+    }
+}
+
+-(void)introduction:(MYBlurIntroductionView *)introductionView didFinishWithType:(MYFinishType)finishType {
+    NSLog(@"Introduction did finish");
+    NavigationController* navc = self.navigationController;
+    [navc setNavigationBarHidden:NO animated:YES];
+    [navc set_enableRotateMask:YES];
+}
+
+
 
 #pragma mark Gestions
 
@@ -193,48 +262,6 @@
         [_mousePadPlugin sendRightClick];
     }
 }
-
-#pragma mark Gestion Recognizer Delegates
-
-//// called when a gesture recognizer attempts to transition out of UIGestureRecognizerStatePossible. returning NO causes it to transition to UIGestureRecognizerStateFailed
-//- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
-//{
-//    return YES;
-//}
-//
-//// called when the recognition of one of gestureRecognizer or otherGestureRecognizer would be blocked by the other
-//// return YES to allow both to recognize simultaneously. the default implementation returns NO (by default no two gestures can be recognized simultaneously)
-////
-//// note: returning YES is guaranteed to allow simultaneous recognition. returning NO is not guaranteed to prevent simultaneous recognition, as the other gesture's delegate may return YES
-//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
-//{
-//    return YES;
-//}
-//
-//// called once per attempt to recognize, so failure requirements can be determined lazily and may be set up between recognizers across view hierarchies
-//// return YES to set up a dynamic failure requirement between gestureRecognizer and otherGestureRecognizer
-////
-//// note: returning YES is guaranteed to set up the failure requirement. returning NO does not guarantee that there will not be a failure requirement as the other gesture's counterpart delegate or subclass methods may return YES
-//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer NS_AVAILABLE_IOS(7_0)
-//{
-//    return NO;
-//}
-//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer NS_AVAILABLE_IOS(7_0)
-//{
-//    BOOL is=gestureRecognizer==_longpressRecognizer && otherGestureRecognizer==_scrollRecognizer;
-//    UIGestureRecognizerState stat=[_scrollRecognizer state];
-//    if(gestureRecognizer==_longpressRecognizer && otherGestureRecognizer==_scrollRecognizer && [_scrollRecognizer state]==UIGestureRecognizerStateChanged){
-//        return YES;
-//    }
-//    return NO;
-//}
-//
-//// called before touchesBegan:withEvent: is called on the gesture recognizer for a new touch. return NO to prevent the gesture recognizer from seeing this touch
-//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
-//{
-//    return YES;
-//}
-
 
 /*
 #pragma mark - Navigation
