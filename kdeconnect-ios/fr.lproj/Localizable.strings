@@ -40,7 +40,7 @@
 "Incoming pair request from device: %@ " = "Incoming pair request from device: %@ ";
 
 /* No comment provided by engineer. */
-"middle click intro" = "Middle Click\n\nUse two fingers to tap once";
+"middle click intro" = "middle click intro";
 
 /* No comment provided by engineer. */
 "More Actions" = "More Actions";
@@ -49,10 +49,10 @@
 "Mouse Pad" = "Mouse Pad";
 
 /* No comment provided by engineer. */
-"Mouse pad intro description" = "Here is a brief introduction which will show you how to control your device using this mouse pad";
+"Mouse pad intro description" = "Mouse pad intro description";
 
 /* No comment provided by engineer. */
-"Mouse pad intro title" = "Mouse Pad Usage Introduction ";
+"Mouse pad intro title" = "Mouse pad intro title";
 
 /* No comment provided by engineer. */
 "MousePad" = "MousePad";
@@ -88,6 +88,9 @@
 "Permission was not granted for addressbook" = "Permission was not granted for addressbook";
 
 /* No comment provided by engineer. */
+"Permission was not granted for Calendar" = "Permission was not granted for Calendar";
+
+/* No comment provided by engineer. */
 "Photo From Camera" = "Photo From Camera";
 
 /* No comment provided by engineer. */
@@ -112,7 +115,7 @@
 "Reminder" = "Reminder";
 
 /* No comment provided by engineer. */
-"right Click intro" = "Right Click\n\nUse one finger to tap and hold for a while";
+"right Click intro" = "right Click intro";
 
 /* No comment provided by engineer. */
 "Save" = "Save";
@@ -121,7 +124,7 @@
 "Settings" = "Settings";
 
 /* No comment provided by engineer. */
-"scroll intro" = "Scroll\n\n Use two fingers to move vertically or horizontally";
+"scroll intro" = "scroll intro";
 
 /* No comment provided by engineer. */
 "Select local contact" = "Select local contact";
@@ -145,7 +148,7 @@
 "received a photo from:%@" = "received a photo from:%@";
 
 /* No comment provided by engineer. */
-"left click intro" = "Single/Double left click\n\n Use one finger to tap once/twice";
+"left click intro" = "left click intro";
 
 /* No comment provided by engineer. */
 "Success" = "Success";
@@ -167,4 +170,3 @@
 
 /* No comment provided by engineer. */
 "Yes" = "Yes";
-

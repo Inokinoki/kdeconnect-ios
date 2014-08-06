@@ -33,6 +33,7 @@
 		4E1A82A319657DD700174217 /* MousePad.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E1A82A219657DD700174217 /* MousePad.m */; };
 		4E1A82A619657FF400174217 /* MousePadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E1A82A519657FF400174217 /* MousePadViewController.m */; };
 		4E3038FC1940889900F28091 /* ClipBoard.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E3038FB1940889900F28091 /* ClipBoard.m */; };
+		4E3871A61992355800752925 /* SplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E3871A51992355800752925 /* SplitViewController.m */; };
 		4E38A3AB196CEB44006AE419 /* Calendar.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E38A3AA196CEB44006AE419 /* Calendar.m */; };
 		4E38A3B0196D2D36006AE419 /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E38A3AF196D2D36006AE419 /* EventKit.framework */; };
 		4E44F5E819920042002B1AAF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4E44F5EA19920042002B1AAF /* Localizable.strings */; };
@@ -130,6 +131,9 @@
 		4E1A82A519657FF400174217 /* MousePadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MousePadViewController.m; path = plugins/MousePad/MousePadViewController.m; sourceTree = "<group>"; };
 		4E3038FA1940889900F28091 /* ClipBoard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ClipBoard.h; path = plugins/ClipBoard/ClipBoard.h; sourceTree = "<group>"; };
 		4E3038FB1940889900F28091 /* ClipBoard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ClipBoard.m; path = plugins/ClipBoard/ClipBoard.m; sourceTree = "<group>"; };
+		4E3871A41992355800752925 /* SplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SplitViewController.h; sourceTree = "<group>"; };
+		4E3871A51992355800752925 /* SplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplitViewController.m; sourceTree = "<group>"; };
+		4E3871A719923FB000752925 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4E38A3A9196CEB44006AE419 /* Calendar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Calendar.h; path = plugins/Calendar/Calendar.h; sourceTree = "<group>"; };
 		4E38A3AA196CEB44006AE419 /* Calendar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Calendar.m; path = plugins/Calendar/Calendar.m; sourceTree = "<group>"; };
 		4E38A3AF196D2D36006AE419 /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
@@ -269,6 +273,8 @@
 				4EC83855198BC72B00CC08F5 /* NavigationController.m */,
 				4EA77E06199092D6002787B8 /* MyStyleKit.h */,
 				4EA77E07199092E3002787B8 /* MyStyleKit.m */,
+				4E3871A41992355800752925 /* SplitViewController.h */,
+				4E3871A51992355800752925 /* SplitViewController.m */,
 				4E08A2021913CF850056EEF8 /* Images.xcassets */,
 				4E44F5EA19920042002B1AAF /* Localizable.strings */,
 				4E08A1EE1913CF850056EEF8 /* Supporting Files */,
@@ -621,6 +627,7 @@
 				4EA77E08199092E3002787B8 /* MyStyleKit.m in Sources */,
 				4EC2754B191FD5490057AB0E /* PluginFactory.m in Sources */,
 				4E08A2271913D1550056EEF8 /* BaseLink.m in Sources */,
+				4E3871A61992355800752925 /* SplitViewController.m in Sources */,
 				4EC27548191FCECD0057AB0E /* Ping.m in Sources */,
 				4E1A82A619657FF400174217 /* MousePadViewController.m in Sources */,
 				4E38A3AB196CEB44006AE419 /* Calendar.m in Sources */,
@@ -709,6 +716,7 @@
 				4E44F5E919920042002B1AAF /* en */,
 				4E44F5F219920A79002B1AAF /* zh-Hans */,
 				4E44F5F519921586002B1AAF /* Base */,
+				4E3871A719923FB000752925 /* fr */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";

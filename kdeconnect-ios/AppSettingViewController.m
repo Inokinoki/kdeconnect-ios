@@ -37,7 +37,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [self.tabBarController setDelegate:self];
+    [self setTitle:NSLocalizedString(@"Settings",nil)];
 }
 
 - (void)didReceiveMemoryWarning

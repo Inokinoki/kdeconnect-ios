@@ -14,6 +14,7 @@
 #import "SettingsStore.h"
 #import "VTAcknowledgementsViewController.h"
 #import "MyStyleKit.h"
+#import "SplitViewController.h"
 
 @interface DeviceViewController ()
 @property (nonatomic, retain) AppSettingViewController *_AppSettingViewController;
@@ -38,15 +39,27 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.splitViewController.delegate = self;
     UIBarButtonItem* buttonItem=[[UIBarButtonItem alloc] initWithImage:[MyStyleKit imageOfGear] style:UIBarButtonItemStylePlain target:self action:@selector(showSettingsModal:)];
     self.navigationItem.rightBarButtonItem = buttonItem;
-    [self loadPluginsViews];
+    [self reloadPluginsViews];
 }
 
-- (void) loadPluginsViews
+- (void) updateView
+{
+    [self reloadPluginsViews];
+    [self.view setNeedsDisplay];
+}
+
+- (void) reloadPluginsViews
 {
     NSArray* viewlist=[[BackgroundService sharedInstance] getDevicePluginViews:_deviceId viewController:self];
     CGRect preFrame=CGRectMake(0, 64, 0, 0);
+    NSArray *subviews = [self.view subviews];
+    for (int i=0; i<[subviews count]; i++)
+    {
+        [[subviews objectAtIndex:i] removeFromSuperview];
+    }
     for (UIView* view in viewlist) {
         CGRect viewFrame=view.frame;
         viewFrame.origin.y+=(preFrame.origin.y+preFrame.size.height);
@@ -54,7 +67,7 @@
         [view setFrame:viewFrame];
         [self.view addSubview:view];
         if (isPad) {
-            NSArray* constraints=[NSLayoutConstraint constraintsWithVisualFormat:@"|-50-[view]-50-|" options:0 metrics:nil views:@{@"view": view}];
+            NSArray* constraints=[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[view]-10-|" options:0 metrics:nil views:@{@"view": view}];
             constraints=[constraints arrayByAddingObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:FORMAT(@"V:[view(%f)]",view.frame.size.height) options:0 metrics:nil views:@{@"view": view}]];
             view.translatesAutoresizingMaskIntoConstraints=NO;
             [self.view addConstraints:constraints];
@@ -72,7 +85,7 @@
 {
     NSLog(@"device vc on device lost");
     dispatch_async(dispatch_get_main_queue(), ^(){
-        [self viewDidLoad];
+        [self.view setNeedsDisplay];
     });
 }
 
@@ -156,6 +169,13 @@
         viewController.headerText = NSLocalizedString(@"Thanks for these open source softwares", nil); // optional
         [_AppSettingViewController.navigationController pushViewController:viewController animated:YES];
     }
+}
+
+#pragma mark -UISplitViewControllerDelegate
+
+- (BOOL)splitViewController:(UISplitViewController *)svc shouldHideViewController:(UIViewController *)vc inOrientation:(UIInterfaceOrientation)orientation NS_AVAILABLE_IOS(5_0)
+{
+    return NO;
 }
 
 /*

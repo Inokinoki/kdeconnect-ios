@@ -128,8 +128,12 @@
     _rememberedDevices  =[list valueForKey:@"remembered"];
     _connectedDevices   =[list valueForKey:@"connected"];
     _visibleDevices     =[list valueForKey:@"visible"];
-    
+    DeviceViewController* dvc=self.splitViewController.viewControllers.lastObject;
     dispatch_async(dispatch_get_main_queue(), ^{
+        if (dvc._deviceId && ![[_connectedDevices allKeys] containsObject:dvc._deviceId]) {
+            dvc._deviceId=nil;
+            [dvc updateView];
+        }
         [_tableView reloadData];
         [_tableView reloadSectionIndexTitles];
     });
@@ -269,18 +273,21 @@
     NSString* deviceId;
     switch (indexPath.section) {
         case 0:
+            deviceId=[[_connectedDevices allKeys]objectAtIndex:indexPath.row];
             if (isPhone) {
                 vc=[[UIStoryboard storyboardWithName:@"Main_iPhone" bundle:[NSBundle mainBundle]]
                     instantiateViewControllerWithIdentifier:@"DeviceViewController"];
+                [vc set_deviceId:deviceId];
+                [vc setTitle:[_connectedDevices valueForKey:deviceId]];
+                [self.navigationController pushViewController:vc animated:YES];
             }
             if (isPad) {
-                vc=[[UIStoryboard storyboardWithName:@"Main_iPad" bundle:[NSBundle mainBundle]]
-                    instantiateViewControllerWithIdentifier:@"DeviceViewController"];   
+                
+                vc=self.splitViewController.viewControllers.lastObject;
+                [vc set_deviceId:deviceId];
+                [vc updateView];
             }
-            deviceId=[[_connectedDevices allKeys]objectAtIndex:indexPath.row];
-            [vc set_deviceId:deviceId];
-            [vc setTitle:[_connectedDevices valueForKey:deviceId]];
-            [self.navigationController pushViewController:vc animated:YES];
+            
             break;
         case 1:
             _pairingDevice=[[_visibleDevices allKeys]objectAtIndex:indexPath.row];

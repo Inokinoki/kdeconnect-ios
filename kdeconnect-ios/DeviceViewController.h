@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "AppSettingViewController.h"
-@interface DeviceViewController : UIViewController<IASKSettingsDelegate,UITextViewDelegate>
+@interface DeviceViewController : UIViewController<IASKSettingsDelegate,UITextViewDelegate,UISplitViewControllerDelegate>
 
 @property(nonatomic)NSString* _deviceId;
 
+- (void) updateView;
 @end

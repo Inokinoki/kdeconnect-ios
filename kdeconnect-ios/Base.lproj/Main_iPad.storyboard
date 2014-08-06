@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="m9D-WK-gbu">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="HcS-2x-tMW">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
@@ -18,7 +18,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HXd-cn-RDV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1796" y="-62"/>
+            <point key="canvasLocation" x="-708" y="-454"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
@@ -29,17 +29,11 @@
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="KDE Connect" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X1h-DD-dc3">
-                                <rect key="frame" x="20" y="20" width="728" height="46"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" translatesAutoresizingMaskIntoConstraints="NO" id="PNi-dL-5IE">
-                                <rect key="frame" x="20" y="74" width="728" height="928"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" translatesAutoresizingMaskIntoConstraints="NO" id="PNi-dL-5IE">
+                                <rect key="frame" x="20" y="0.0" width="280" height="830"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
@@ -50,9 +44,10 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="PNi-dL-5IE" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="8gB-UT-ewq"/>
                             <constraint firstItem="PNi-dL-5IE" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20" id="99U-3b-uE6"/>
-                            <constraint firstItem="PNi-dL-5IE" firstAttribute="top" secondItem="X1h-DD-dc3" secondAttribute="bottom" constant="10" id="JUC-as-oGL"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="PNi-dL-5IE" secondAttribute="bottom" constant="20" id="LlJ-XI-lf5"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="PNi-dL-5IE" secondAttribute="bottom" constant="22" id="wFt-sr-RLj"/>
                             <constraint firstAttribute="trailing" secondItem="PNi-dL-5IE" secondAttribute="trailing" constant="20" id="zmv-iB-Y0z"/>
                         </constraints>
                     </view>
@@ -63,7 +58,21 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-823" y="-62"/>
+            <point key="canvasLocation" x="265" y="-454"/>
+        </scene>
+        <!--Split View Controller-->
+        <scene sceneID="M9U-TG-28U">
+            <objects>
+                <splitViewController storyboardIdentifier="SplitViewController" id="HcS-2x-tMW" customClass="SplitViewController" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <connections>
+                        <segue destination="m9D-WK-gbu" kind="relationship" relationship="masterViewController" id="Ret-iS-gIy"/>
+                        <segue destination="OMP-3Z-Vzt" kind="relationship" relationship="detailViewController" id="1Ot-Dv-CgO"/>
+                    </connections>
+                </splitViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="EFb-xG-2pz" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1867" y="112"/>
         </scene>
         <!--Device View Controller-->
         <scene sceneID="baZ-3y-TPK">
@@ -81,7 +90,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9yk-T3-0lS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1802" y="1266"/>
+            <point key="canvasLocation" x="-714" y="874"/>
         </scene>
         <!--MPRIS View Controller-->
         <scene sceneID="gLR-7k-flb">
@@ -221,7 +230,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bAN-tM-hXN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-859" y="1254"/>
+            <point key="canvasLocation" x="229" y="862"/>
         </scene>
         <!--Mouse Pad View Controller-->
         <scene sceneID="5HQ-oH-kmk">
@@ -239,7 +248,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VSj-sR-uB5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="53" y="1254"/>
+            <point key="canvasLocation" x="1141" y="862"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
