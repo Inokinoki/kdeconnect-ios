@@ -3,7 +3,7 @@
 //  kdeconnect-ios
 //
 //  Created by yangqiao on 5/22/14.
-//  Copyright (c) 2014 yangqiao. All rights reserved.
+//  
 //
 
 #import "MPRIS.h"
@@ -91,13 +91,12 @@
 
 - (UIView*) getView:(UIViewController*)vc
 {
-    NSLog(@"mpris get view");
     if ([_device isReachable]) {
         _view=[[UIView alloc] initWithFrame:CGRectMake(0,0,400, 60)];
         UILabel* label=[[UILabel alloc] initWithFrame:CGRectMake(20, 0, 400, 30)];
-        [label setText:@"MPRIS"];
+        [label setText:NSLocalizedString(@"MPRIS",nil)];
         UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [button setTitle:@"Open MPRIS Panel" forState:UIControlStateNormal];
+        [button setTitle:NSLocalizedString(@"Open MPRIS Panel",nil) forState:UIControlStateNormal];
         button.frame= CGRectMake(0, 30, 300, 30);
         button.layer.borderWidth=1;
         button.layer.cornerRadius=10.0;
@@ -127,7 +126,7 @@
 
 + (PluginInfo*) getPluginInfo
 {
-    return [[PluginInfo alloc] initWithInfos:@"MPRIS" displayName:@"MPRIS" description:@"MPRIS" enabledByDefault:true];
+    return [[PluginInfo alloc] initWithInfos:NSLocalizedString(@"MPRIS",nil) displayName:NSLocalizedString(@"MPRIS",nil) description:NSLocalizedString(@"MPRIS",nil) enabledByDefault:true];
 
 }
 
@@ -141,7 +140,7 @@
             _mprisViewController=[[UIStoryboard storyboardWithName:@"Main_iPad" bundle:[NSBundle mainBundle]] instantiateViewControllerWithIdentifier:@"MPRISViewController"];
         }
         [_mprisViewController setPlugin:self];
-        [_mprisViewController setTitle:@"MPRIS"];
+        [_mprisViewController setTitle:NSLocalizedString(@"MPRIS",nil)];
     }
     NavigationController *aNavController = [[NavigationController alloc] initWithRootViewController:_mprisViewController];
     [_deviceViewController presentViewController:aNavController animated:YES completion:nil];

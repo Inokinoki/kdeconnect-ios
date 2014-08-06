@@ -3,7 +3,7 @@
 //  kdeconnect-ios
 //
 //  Created by yangqiao on 5/2/14.
-//  Copyright (c) 2014 yangqiao. All rights reserved.
+//  
 //
 
 #import "AppDelegate.h"
@@ -22,7 +22,7 @@
         NSLog(@"System terminated background task");
         UILocalNotification* localNotification = [[UILocalNotification alloc] init];
         localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:0];
-        localNotification.alertBody = @"System terminated background task";
+        localNotification.alertBody = NSLocalizedString(@"System terminated background task",nil);
         localNotification.timeZone = [NSTimeZone defaultTimeZone];
         [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
         [application endBackgroundTask:task];

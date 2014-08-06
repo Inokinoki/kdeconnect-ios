@@ -41,6 +41,10 @@
 + (void)drawMousePadIntro2Small;
 + (void)drawMousePadIntro3Small;
 + (void)drawMousePadIntro4Small;
++ (void)drawGear;
++ (void)drawGearHighlighted;
++ (void)drawMore;
++ (void)drawMoreHighlighted;
 
 // Generated Images
 + (UIImage*)imageOfPlay;
@@ -60,5 +64,9 @@
 + (UIImage*)imageOfMousePadIntro2Small;
 + (UIImage*)imageOfMousePadIntro3Small;
 + (UIImage*)imageOfMousePadIntro4Small;
++ (UIImage*)imageOfGear;
++ (UIImage*)imageOfGearHighlighted;
++ (UIImage*)imageOfMore;
++ (UIImage*)imageOfMoreHighlighted;
 
 @end

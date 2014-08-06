@@ -39,6 +39,10 @@ static UIImage* _imageOfMousePadIntro1Small = nil;
 static UIImage* _imageOfMousePadIntro2Small = nil;
 static UIImage* _imageOfMousePadIntro3Small = nil;
 static UIImage* _imageOfMousePadIntro4Small = nil;
+static UIImage* _imageOfGear= nil;
+static UIImage* _imageOfGearHighlighted= nil;
+static UIImage* _imageOfMore= nil;
+static UIImage* _imageOfMoreHighlighted= nil;
 
 #pragma mark Initialization
 
@@ -47,7 +51,7 @@ static UIImage* _imageOfMousePadIntro4Small = nil;
     // Colors Initialization
     _navbar = [UIColor colorWithRed: 0.109 green: 0.452 blue: 1 alpha: 0.995];
     _buttonNormal = [UIColor colorWithRed: 0 green: 0.693 blue: 1 alpha: 1];
-    _buttonHighlighted = [UIColor colorWithRed: 0 green: 0.693 blue: 1 alpha: 0.456];
+    _buttonHighlighted = [UIColor colorWithRed: 0 green: 0.693 blue: 1 alpha: 0.26];
     _intro = [UIColor colorWithRed:90.0f/255.0f green:175.0f/255.0f blue:113.0f/255.0f alpha:0.65];
     _intro1 = [UIColor colorWithRed: 1 green: 0.774 blue: 0.134 alpha: 0.65];
     _intro2 = [UIColor colorWithRed: 0.134 green: 0.806 blue: 1 alpha: 0.65];
@@ -83,6 +87,8 @@ static UIImage* _imageOfMousePadIntro4Small = nil;
     [bezierPath closePath];
     bezierPath.lineJoinStyle = kCGLineJoinRound;
     
+    [MyStyleKit.buttonNormal setFill];
+    [bezierPath fill];
     [MyStyleKit.buttonNormal setStroke];
     bezierPath.lineWidth = 3;
     [bezierPath stroke];
@@ -100,6 +106,8 @@ static UIImage* _imageOfMousePadIntro4Small = nil;
     [bezierPath closePath];
     bezierPath.lineJoinStyle = kCGLineJoinRound;
     
+    [MyStyleKit.buttonHighlighted setFill];
+    [bezierPath fill];
     [MyStyleKit.buttonHighlighted setStroke];
     bezierPath.lineWidth = 3;
     [bezierPath stroke];
@@ -386,7 +394,7 @@ static UIImage* _imageOfMousePadIntro4Small = nil;
     
     NSDictionary* text2FontAttributes = @{NSFontAttributeName: [UIFont systemFontOfSize: 20], NSForegroundColorAttributeName: UIColor.whiteColor, NSParagraphStyleAttributeName: text2Style};
     
-    [@"Right Click\n\nUse one figer to tap once and hold for a short time" drawInRect: text2Rect withAttributes: text2FontAttributes];
+    [NSLocalizedString(@"right Click intro",nil) drawInRect: text2Rect withAttributes: text2FontAttributes];
     
     
     //// Text 3 Drawing
@@ -396,7 +404,7 @@ static UIImage* _imageOfMousePadIntro4Small = nil;
     
     NSDictionary* text3FontAttributes = @{NSFontAttributeName: [UIFont systemFontOfSize: 20], NSForegroundColorAttributeName: UIColor.whiteColor, NSParagraphStyleAttributeName: text3Style};
     
-    [@"Single/Double Left Click\n\nUse one finger to tap once/twice" drawInRect: text3Rect withAttributes: text3FontAttributes];
+    [NSLocalizedString(@"left click intro",nil) drawInRect: text3Rect withAttributes: text3FontAttributes];
     
     
     //// Text 4 Drawing
@@ -406,7 +414,7 @@ static UIImage* _imageOfMousePadIntro4Small = nil;
     
     NSDictionary* text4FontAttributes = @{NSFontAttributeName: [UIFont systemFontOfSize: 20], NSForegroundColorAttributeName: UIColor.whiteColor, NSParagraphStyleAttributeName: text4Style};
     
-    [@"Middle Click\n\nUse two fingers to tap once" drawInRect: text4Rect withAttributes: text4FontAttributes];
+    [NSLocalizedString(@"middle click intro",nil) drawInRect: text4Rect withAttributes: text4FontAttributes];
     
     //// Text Drawing
     CGRect textRect = CGRectMake(350, 233, 216, 118);
@@ -415,7 +423,7 @@ static UIImage* _imageOfMousePadIntro4Small = nil;
     
     NSDictionary* textFontAttributes = @{NSFontAttributeName: [UIFont systemFontOfSize: 20], NSForegroundColorAttributeName: UIColor.whiteColor, NSParagraphStyleAttributeName: textStyle};
     
-    [@"Scroll\n\nUse two fingers to touch and move vertically or horizontally" drawInRect: textRect withAttributes: textFontAttributes];
+    [NSLocalizedString(@"scroll intro",nil) drawInRect: textRect withAttributes: textFontAttributes];
     
 }
 
@@ -429,7 +437,7 @@ static UIImage* _imageOfMousePadIntro4Small = nil;
     
     NSDictionary* text3FontAttributes = @{NSFontAttributeName: [UIFont systemFontOfSize: 20], NSForegroundColorAttributeName: UIColor.whiteColor, NSParagraphStyleAttributeName: text3Style};
     
-    [@"Single/Double Left Click\n\nUse one finger to tap once/twice" drawInRect: text3Rect withAttributes: text3FontAttributes];
+    [NSLocalizedString(@"left click intro",nil) drawInRect: text3Rect withAttributes: text3FontAttributes];
 
 }
 
@@ -443,7 +451,7 @@ static UIImage* _imageOfMousePadIntro4Small = nil;
     
     NSDictionary* text2FontAttributes = @{NSFontAttributeName: [UIFont systemFontOfSize: 20], NSForegroundColorAttributeName: UIColor.whiteColor, NSParagraphStyleAttributeName: text2Style};
     
-    [@"Right Click\n\nUse one figer to tap once and hold for a short time" drawInRect: text2Rect withAttributes: text2FontAttributes];
+    [NSLocalizedString(@"right Click intro",nil) drawInRect: text2Rect withAttributes: text2FontAttributes];
     
 }
 
@@ -456,7 +464,7 @@ static UIImage* _imageOfMousePadIntro4Small = nil;
     
     NSDictionary* text4FontAttributes = @{NSFontAttributeName: [UIFont systemFontOfSize: 20], NSForegroundColorAttributeName: UIColor.whiteColor, NSParagraphStyleAttributeName: text4Style};
     
-    [@"Middle Click\n\nUse two fingers to tap once" drawInRect: text4Rect withAttributes: text4FontAttributes];
+    [NSLocalizedString(@"middle click intro",nil) drawInRect: text4Rect withAttributes: text4FontAttributes];
     
 }
 
@@ -469,7 +477,155 @@ static UIImage* _imageOfMousePadIntro4Small = nil;
     
     NSDictionary* textFontAttributes = @{NSFontAttributeName: [UIFont systemFontOfSize: 20], NSForegroundColorAttributeName: UIColor.whiteColor, NSParagraphStyleAttributeName: textStyle};
     
-    [@"Scroll\n\nUse two fingers to touch and move vertically or horizontally" drawInRect: textRect withAttributes: textFontAttributes];
+    [NSLocalizedString(@"scroll intro",nil) drawInRect: textRect withAttributes: textFontAttributes];
+}
+
++ (void)drawGear;
+{
+    
+    UIBezierPath* bezierPath = UIBezierPath.bezierPath;
+    [bezierPath moveToPoint: CGPointMake(20, 2)];
+    [bezierPath addLineToPoint: CGPointMake(22.71, 2.18)];
+    [bezierPath addLineToPoint: CGPointMake(23.87, 6.04)];
+    [bezierPath addCurveToPoint: CGPointMake(28.8, 8.32) controlPoint1: CGPointMake(24.46, 7.96) controlPoint2: CGPointMake(26.92, 9.11)];
+    [bezierPath addLineToPoint: CGPointMake(32.52, 6.77)];
+    [bezierPath addLineToPoint: CGPointMake(34.31, 8.82)];
+    [bezierPath addLineToPoint: CGPointMake(32.41, 12.37)];
+    [bezierPath addCurveToPoint: CGPointMake(34.28, 17.47) controlPoint1: CGPointMake(31.45, 14.14) controlPoint2: CGPointMake(32.39, 16.69)];
+    [bezierPath addLineToPoint: CGPointMake(38, 19)];
+    [bezierPath addLineToPoint: CGPointMake(37.82, 21.71)];
+    [bezierPath addLineToPoint: CGPointMake(33.96, 22.87)];
+    [bezierPath addCurveToPoint: CGPointMake(31.68, 27.8) controlPoint1: CGPointMake(32.04, 23.46) controlPoint2: CGPointMake(30.89, 25.92)];
+    [bezierPath addLineToPoint: CGPointMake(33.23, 31.52)];
+    [bezierPath addLineToPoint: CGPointMake(31.18, 33.31)];
+    [bezierPath addLineToPoint: CGPointMake(27.63, 31.41)];
+    [bezierPath addCurveToPoint: CGPointMake(22.53, 33.28) controlPoint1: CGPointMake(25.86, 30.45) controlPoint2: CGPointMake(23.31, 31.39)];
+    [bezierPath addLineToPoint: CGPointMake(21, 37)];
+    [bezierPath addLineToPoint: CGPointMake(18.29, 36.82)];
+    [bezierPath addLineToPoint: CGPointMake(17.13, 32.96)];
+    [bezierPath addCurveToPoint: CGPointMake(12.2, 30.68) controlPoint1: CGPointMake(16.54, 31.04) controlPoint2: CGPointMake(14.08, 29.89)];
+    [bezierPath addLineToPoint: CGPointMake(8.48, 32.23)];
+    [bezierPath addLineToPoint: CGPointMake(6.69, 30.18)];
+    [bezierPath addLineToPoint: CGPointMake(8.59, 26.63)];
+    [bezierPath addCurveToPoint: CGPointMake(6.72, 21.53) controlPoint1: CGPointMake(9.55, 24.86) controlPoint2: CGPointMake(8.61, 22.31)];
+    [bezierPath addLineToPoint: CGPointMake(3, 20)];
+    [bezierPath addLineToPoint: CGPointMake(3.18, 17.29)];
+    [bezierPath addLineToPoint: CGPointMake(7.04, 16.13)];
+    [bezierPath addCurveToPoint: CGPointMake(9.32, 11.2) controlPoint1: CGPointMake(8.96, 15.54) controlPoint2: CGPointMake(10.11, 13.08)];
+    [bezierPath addLineToPoint: CGPointMake(7.77, 7.48)];
+    [bezierPath addLineToPoint: CGPointMake(9.82, 5.69)];
+    [bezierPath addLineToPoint: CGPointMake(13.37, 7.59)];
+    [bezierPath addCurveToPoint: CGPointMake(18.47, 5.72) controlPoint1: CGPointMake(15.14, 8.55) controlPoint2: CGPointMake(17.69, 7.61)];
+    [bezierPath addLineToPoint: CGPointMake(20, 2)];
+    [bezierPath addLineToPoint: CGPointMake(20, 2)];
+    [bezierPath closePath];
+    [bezierPath moveToPoint: CGPointMake(20.36, 11.47)];
+    [bezierPath addCurveToPoint: CGPointMake(11.68, 19.63) controlPoint1: CGPointMake(15.57, 11.47) controlPoint2: CGPointMake(11.68, 15.12)];
+    [bezierPath addCurveToPoint: CGPointMake(20.36, 27.8) controlPoint1: CGPointMake(11.68, 24.14) controlPoint2: CGPointMake(15.57, 27.8)];
+    [bezierPath addCurveToPoint: CGPointMake(29.04, 19.63) controlPoint1: CGPointMake(25.15, 27.8) controlPoint2: CGPointMake(29.04, 24.14)];
+    [bezierPath addCurveToPoint: CGPointMake(20.36, 11.47) controlPoint1: CGPointMake(29.04, 15.12) controlPoint2: CGPointMake(25.15, 11.47)];
+    [bezierPath closePath];
+    [MyStyleKit.buttonNormal setStroke];
+    bezierPath.lineWidth = 1;
+    [bezierPath stroke];
+}
+
++ (void)drawGearHighlighted;
+{
+    
+    UIBezierPath* bezierPath = UIBezierPath.bezierPath;
+    [bezierPath moveToPoint: CGPointMake(20, 2)];
+    [bezierPath addLineToPoint: CGPointMake(22.71, 2.18)];
+    [bezierPath addLineToPoint: CGPointMake(23.87, 6.04)];
+    [bezierPath addCurveToPoint: CGPointMake(28.8, 8.32) controlPoint1: CGPointMake(24.46, 7.96) controlPoint2: CGPointMake(26.92, 9.11)];
+    [bezierPath addLineToPoint: CGPointMake(32.52, 6.77)];
+    [bezierPath addLineToPoint: CGPointMake(34.31, 8.82)];
+    [bezierPath addLineToPoint: CGPointMake(32.41, 12.37)];
+    [bezierPath addCurveToPoint: CGPointMake(34.28, 17.47) controlPoint1: CGPointMake(31.45, 14.14) controlPoint2: CGPointMake(32.39, 16.69)];
+    [bezierPath addLineToPoint: CGPointMake(38, 19)];
+    [bezierPath addLineToPoint: CGPointMake(37.82, 21.71)];
+    [bezierPath addLineToPoint: CGPointMake(33.96, 22.87)];
+    [bezierPath addCurveToPoint: CGPointMake(31.68, 27.8) controlPoint1: CGPointMake(32.04, 23.46) controlPoint2: CGPointMake(30.89, 25.92)];
+    [bezierPath addLineToPoint: CGPointMake(33.23, 31.52)];
+    [bezierPath addLineToPoint: CGPointMake(31.18, 33.31)];
+    [bezierPath addLineToPoint: CGPointMake(27.63, 31.41)];
+    [bezierPath addCurveToPoint: CGPointMake(22.53, 33.28) controlPoint1: CGPointMake(25.86, 30.45) controlPoint2: CGPointMake(23.31, 31.39)];
+    [bezierPath addLineToPoint: CGPointMake(21, 37)];
+    [bezierPath addLineToPoint: CGPointMake(18.29, 36.82)];
+    [bezierPath addLineToPoint: CGPointMake(17.13, 32.96)];
+    [bezierPath addCurveToPoint: CGPointMake(12.2, 30.68) controlPoint1: CGPointMake(16.54, 31.04) controlPoint2: CGPointMake(14.08, 29.89)];
+    [bezierPath addLineToPoint: CGPointMake(8.48, 32.23)];
+    [bezierPath addLineToPoint: CGPointMake(6.69, 30.18)];
+    [bezierPath addLineToPoint: CGPointMake(8.59, 26.63)];
+    [bezierPath addCurveToPoint: CGPointMake(6.72, 21.53) controlPoint1: CGPointMake(9.55, 24.86) controlPoint2: CGPointMake(8.61, 22.31)];
+    [bezierPath addLineToPoint: CGPointMake(3, 20)];
+    [bezierPath addLineToPoint: CGPointMake(3.18, 17.29)];
+    [bezierPath addLineToPoint: CGPointMake(7.04, 16.13)];
+    [bezierPath addCurveToPoint: CGPointMake(9.32, 11.2) controlPoint1: CGPointMake(8.96, 15.54) controlPoint2: CGPointMake(10.11, 13.08)];
+    [bezierPath addLineToPoint: CGPointMake(7.77, 7.48)];
+    [bezierPath addLineToPoint: CGPointMake(9.82, 5.69)];
+    [bezierPath addLineToPoint: CGPointMake(13.37, 7.59)];
+    [bezierPath addCurveToPoint: CGPointMake(18.47, 5.72) controlPoint1: CGPointMake(15.14, 8.55) controlPoint2: CGPointMake(17.69, 7.61)];
+    [bezierPath addLineToPoint: CGPointMake(20, 2)];
+    [bezierPath addLineToPoint: CGPointMake(20, 2)];
+    [bezierPath closePath];
+    [bezierPath moveToPoint: CGPointMake(20.36, 11.47)];
+    [bezierPath addCurveToPoint: CGPointMake(11.68, 19.63) controlPoint1: CGPointMake(15.57, 11.47) controlPoint2: CGPointMake(11.68, 15.12)];
+    [bezierPath addCurveToPoint: CGPointMake(20.36, 27.8) controlPoint1: CGPointMake(11.68, 24.14) controlPoint2: CGPointMake(15.57, 27.8)];
+    [bezierPath addCurveToPoint: CGPointMake(29.04, 19.63) controlPoint1: CGPointMake(25.15, 27.8) controlPoint2: CGPointMake(29.04, 24.14)];
+    [bezierPath addCurveToPoint: CGPointMake(20.36, 11.47) controlPoint1: CGPointMake(29.04, 15.12) controlPoint2: CGPointMake(25.15, 11.47)];
+    [bezierPath closePath];
+    [MyStyleKit.buttonHighlighted setStroke];
+    bezierPath.lineWidth = 1;
+    [bezierPath stroke];
+}
+
++ (void)drawMore;
+{
+    
+    //// Oval Drawing
+    UIBezierPath* ovalPath = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(6.5, 17.5, 5, 5)];
+    [MyStyleKit.buttonNormal setStroke];
+    ovalPath.lineWidth = 1;
+    [ovalPath stroke];
+    
+    
+    //// Oval 2 Drawing
+    UIBezierPath* oval2Path = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(17.5, 17.5, 5, 5)];
+    [MyStyleKit.buttonNormal setStroke];
+    oval2Path.lineWidth = 1;
+    [oval2Path stroke];
+    
+    
+    //// Oval 3 Drawing
+    UIBezierPath* oval3Path = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(28.5, 17.5, 5, 5)];
+    [MyStyleKit.buttonNormal setStroke];
+    oval3Path.lineWidth = 1;
+    [oval3Path stroke];
+}
+
++ (void)drawMoreHighlighted;
+{
+    
+    //// Oval Drawing
+    UIBezierPath* ovalPath = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(6.5, 17.5, 5, 5)];
+    [MyStyleKit.buttonHighlighted setStroke];
+    ovalPath.lineWidth = 1;
+    [ovalPath stroke];
+    
+    
+    //// Oval 2 Drawing
+    UIBezierPath* oval2Path = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(17.5, 17.5, 5, 5)];
+    [MyStyleKit.buttonHighlighted setStroke];
+    oval2Path.lineWidth = 1;
+    [oval2Path stroke];
+    
+    
+    //// Oval 3 Drawing
+    UIBezierPath* oval3Path = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(28.5, 17.5, 5, 5)];
+    [MyStyleKit.buttonHighlighted setStroke];
+    oval3Path.lineWidth = 1;
+    [oval3Path stroke];
 }
 
 #pragma mark Generated Images
@@ -580,7 +736,7 @@ static UIImage* _imageOfMousePadIntro4Small = nil;
     return _imageOfBackHighlighted;
 }
 
-+ (UIImage*)imageOfPrevious
++ (UIImage*)imageOfPrevious;
 {
     if (_imageOfPrevious)
         return _imageOfPrevious;
@@ -593,7 +749,7 @@ static UIImage* _imageOfMousePadIntro4Small = nil;
     return _imageOfPrevious;
 }
 
-+ (UIImage*)imageOfPreviousHighlighted
++ (UIImage*)imageOfPreviousHighlighted;
 {
     if (_imageOfPreviousHighlighted)
         return _imageOfPreviousHighlighted;
@@ -606,7 +762,7 @@ static UIImage* _imageOfMousePadIntro4Small = nil;
     return _imageOfPreviousHighlighted;
 }
 
-+ (UIImage*)imageOfFollowing
++ (UIImage*)imageOfFollowing;
 {
     if (_imageOfFollowing)
         return _imageOfFollowing;
@@ -619,7 +775,7 @@ static UIImage* _imageOfMousePadIntro4Small = nil;
     return _imageOfFollowing;
 }
 
-+ (UIImage*)imageOfFollowingHighlighted
++ (UIImage*)imageOfFollowingHighlighted;
 {
     if (_imageOfFollowingHighlighted)
         return _imageOfFollowingHighlighted;
@@ -632,7 +788,7 @@ static UIImage* _imageOfMousePadIntro4Small = nil;
     return _imageOfFollowingHighlighted;
 }
 
-+ (UIImage*)imageOfMousePadIntro
++ (UIImage*)imageOfMousePadIntro;
 {
     if (_imageOfMousePadIntro)
         return _imageOfMousePadIntro;
@@ -697,4 +853,55 @@ static UIImage* _imageOfMousePadIntro4Small = nil;
     return _imageOfMousePadIntro4Small;
 }
 
++ (UIImage*)imageOfGear;
+{
+    if (_imageOfGear)
+        return _imageOfGear;
+    
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(40, 40), NO, 0.0f);
+    [MyStyleKit drawGear];
+    _imageOfGear = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return _imageOfGear;
+}
+
++ (UIImage*)imageOfGearHighlighted;
+{
+    if (_imageOfGearHighlighted)
+        return _imageOfGearHighlighted;
+    
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(40, 40), NO, 0.0f);
+    [MyStyleKit drawGearHighlighted];
+    _imageOfGearHighlighted = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return _imageOfGearHighlighted;
+}
+
++ (UIImage*)imageOfMore;
+{
+    if (_imageOfMore)
+        return _imageOfMore;
+    
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(40, 40), NO, 0.0f);
+    [MyStyleKit drawMore];
+    _imageOfMore = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return _imageOfMore;
+}
+
++ (UIImage*)imageOfMoreHighlighted;
+{
+    if (_imageOfMoreHighlighted)
+        return _imageOfMoreHighlighted;
+    
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(40, 40), NO, 0.0f);
+    [MyStyleKit drawMoreHighlighted];
+    _imageOfMoreHighlighted = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return _imageOfMoreHighlighted;
+}
 @end

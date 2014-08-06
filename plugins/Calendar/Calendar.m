@@ -3,7 +3,7 @@
 //  kdeconnect-ios
 //
 //  Created by YANG Qiao on 7/9/14.
-//  Copyright (c) 2014 yangqiao. All rights reserved.
+//  
 //
 
 #import "Calendar.h"
@@ -96,7 +96,7 @@
 
 + (PluginInfo*) getPluginInfo
 {
-    return [[PluginInfo alloc] initWithInfos:@"Calendar" displayName:@"Calendar" description:@"Calendar" enabledByDefault:true];
+    return [[PluginInfo alloc] initWithInfos:NSLocalizedString(@"Calendar",nil) displayName:NSLocalizedString(@"Calendar",nil) description:NSLocalizedString(@"Calendar",nil) enabledByDefault:true];
 }
 
 // Check the authorization status of our application for Calendar
@@ -116,9 +116,9 @@
         case EKAuthorizationStatusDenied:
         case EKAuthorizationStatusRestricted:
         {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Privacy Warning" message:@"Permission was not granted for Calendar"
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Privacy Warning",nil) message:NSLocalizedString(@"Permission was not granted for Calendar",nil)
                                                            delegate:nil
-                                                  cancelButtonTitle:@"OK"
+                                                  cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                                   otherButtonTitles:nil];
             [alert show];
         }
@@ -212,7 +212,7 @@
     [np setObject:ical forKey:@"iCal"];
     return np;
 }
-//TODO we may need a full feature parser / conventor
+
 + (EKEvent*) iCalToEvent: (NSString*) iCal withStore:(EKEventStore*) eventstore error:( NSError*__autoreleasing*)err
 {
     XbICVCalendar * vCalendar =  [XbICVCalendar vCalendarFromString:iCal];
@@ -230,7 +230,7 @@
         return nil;
     }
     if (!dt_e) {
-        dt_e=[dt_e dateByAddingTimeInterval:3600];
+        //all day event
     }
     EKEvent* event=[eventstore eventWithIdentifier:uid];
     if (!event) {
@@ -284,7 +284,9 @@
     [iCal appendFormat:@"UID:%@\n",[event eventIdentifier]];
     [iCal appendFormat:@"SUMMARY:%@\n",t];
     [iCal appendFormat:@"DTSTART:%@\n",dt_s];
-    [iCal appendFormat:@"DTEND:%@\n",dt_e];
+    if (!event.allDay) {
+        [iCal appendFormat:@"DTEND:%@\n",dt_e];
+    }
     [iCal appendFormat:@"TRANSP:OPAQUE\n"];
     [iCal appendString:@"END:VEVENT\n"];
     [iCal appendString:@"END:VCALENDAR\n"];

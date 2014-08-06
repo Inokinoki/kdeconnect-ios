@@ -1,0 +1,164 @@
+/* 
+  Localizable.strings
+  kdeconnect-ios
+
+  Created by YANG Qiao on 8/6/14.
+  
+*/
+
+/* No comment provided by engineer. */
+"%@: Ping!" = "%@: Ping!";
+
+/* No comment provided by engineer. */
+"All local contacts" = "所有本地通讯录";
+
+/* No comment provided by engineer. */
+"Battery" = "电池状态";
+
+/* No comment provided by engineer. */
+"Calendar" = "日历";
+
+/* No comment provided by engineer. */
+"Cancel" = "取消";
+
+/* No comment provided by engineer. */
+"connected devices" = "已连接设备";
+
+/* No comment provided by engineer. */
+"Contact" = "通讯录";
+
+/* No comment provided by engineer. */
+"Discard" = "放弃";
+
+/* No comment provided by engineer. */
+"Help" ="帮助";
+
+/* No comment provided by engineer. */
+"Incoming Pair Request" = "配对请求";
+
+/* No comment provided by engineer. */
+"Incoming pair request from device: %@ " = "收到配对请求来自: %@ ";
+
+/* No comment provided by engineer. */
+"middle click intro" = "中键\n\n用两只手指同时点击屏幕";
+
+/* No comment provided by engineer. */
+"More Actions" = "更多操作";
+
+/* No comment provided by engineer. */
+"Mouse Pad" = "触控板";
+
+/* No comment provided by engineer. */
+"Mouse pad intro description" = "以下是简短的触控板使用方式的介绍";
+
+/* No comment provided by engineer. */
+"Mouse pad intro title" = "触控板使用介绍";
+
+/* No comment provided by engineer. */
+"MousePad" = "触控板";
+
+/* No comment provided by engineer. */
+"MPRIS" = "多媒体控制器";
+
+/* No comment provided by engineer. */
+"No" = "否";
+
+/* No comment provided by engineer. */
+"OK" = "好的";
+
+/* No comment provided by engineer. */
+"Open MPRIS Panel" = "打开多媒体控制器";
+
+/* No comment provided by engineer. */
+"open touch pad" = "打开触摸板";
+
+/* No comment provided by engineer. */
+"Pair" = "配对";
+
+/* No comment provided by engineer. */
+"pair device: %@ ?" = "配对设备: %@ ?";
+
+/* No comment provided by engineer. */
+"Pair Request" = "配对请求";
+
+/* No comment provided by engineer. */
+"Pairing" = "正在配对";
+
+/* No comment provided by engineer. */
+"Photo From Camera" = "从相机";
+
+/* No comment provided by engineer. */
+"Photo From Library" = "从照片库";
+
+/* No comment provided by engineer. */
+"Photo Source" = "照片来源";
+
+/* No comment provided by engineer. */
+"Ping" = "Ping";
+
+/* No comment provided by engineer. */
+"Privacy Warning" = "隐私警告";
+
+/* No comment provided by engineer. */
+"Rejected" = "被对方拒绝";
+
+/* No comment provided by engineer. */
+"remembered devices" = "已配对设备";
+
+/* No comment provided by engineer. */
+"Reminder" = "待办事项";
+
+/* No comment provided by engineer. */
+"right Click intro" = "右键\n\n用一只手指点击并保持一小段时间";
+
+/* No comment provided by engineer. */
+"Save" = "保存";
+
+/* No comment provided by engineer. */
+"scroll intro" = "滚动翻页\n\n用两只手指在屏幕上平行滑动";
+
+/* No comment provided by engineer. */
+"Select local contact" = "选择本地通讯录";
+
+/* No comment provided by engineer. */
+"Send Contact" = "发送通讯录";
+
+/* No comment provided by engineer. */
+"Send contacts to Device" = "发送通讯录";
+
+/* No comment provided by engineer. */
+"Send Ping to Device" = "向设备发送 Ping";
+
+/* No comment provided by engineer. */
+"Share" = "分享";
+
+/* No comment provided by engineer. */
+"Share photo" = "分享照片";
+
+/* No comment provided by engineer. */
+"received a photo from:%@" = "收到一张照片来自:%@";
+
+/* No comment provided by engineer. */
+"left click intro" = "左键单击／双击\n\n 用一只手指点击一次／两次";
+
+/* No comment provided by engineer. */
+"Success" = "成功";
+
+/* No comment provided by engineer. */
+"System terminated background task" = "系统终止后台任务";
+
+/* No comment provided by engineer. */
+"Thanks for these open source softwares" = "感谢这些开源项目";
+
+/* No comment provided by engineer. */
+"Time out" = "超时";
+
+/* No comment provided by engineer. */
+"Unpair" = "取消配对";
+
+/* No comment provided by engineer. */
+"visible devices" = "可见设备";
+
+/* No comment provided by engineer. */
+"Yes" = "是";
+

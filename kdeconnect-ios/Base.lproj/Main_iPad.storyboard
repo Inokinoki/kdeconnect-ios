@@ -81,7 +81,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9yk-T3-0lS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1330" y="1538"/>
+            <point key="canvasLocation" x="-1802" y="1266"/>
         </scene>
         <!--MPRIS View Controller-->
         <scene sceneID="gLR-7k-flb">
@@ -178,7 +178,6 @@
                                         </connections>
                                     </button>
                                 </subviews>
-                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <constraints>
                                     <constraint firstAttribute="centerY" secondItem="NOO-WR-R72" secondAttribute="centerY" id="2k6-kx-bnq"/>
                                     <constraint firstAttribute="centerY" secondItem="G4a-uw-Ogf" secondAttribute="centerY" id="2z1-vE-KsG"/>
@@ -222,7 +221,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bAN-tM-hXN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-387" y="1526"/>
+            <point key="canvasLocation" x="-859" y="1254"/>
         </scene>
         <!--Mouse Pad View Controller-->
         <scene sceneID="5HQ-oH-kmk">
@@ -240,7 +239,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VSj-sR-uB5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="525" y="1526"/>
+            <point key="canvasLocation" x="53" y="1254"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

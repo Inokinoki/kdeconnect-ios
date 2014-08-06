@@ -3,7 +3,7 @@
 //  kdeconnect-ios
 //
 //  Created by YANG Qiao on 7/17/14.
-//  Copyright (c) 2014 yangqiao. All rights reserved.
+//  
 //
 
 #import "Contact.h"
@@ -85,14 +85,13 @@ typedef NS_ENUM(NSInteger, DataClass)  {
 
 - (UIView*) getView:(UIViewController*)vc
 {
-    NSLog(@"ping plugin get view");
     if ([_device isReachable]) {
 
         _view=[[UIView alloc] initWithFrame:CGRectMake(0,0,400, 60)];
         UILabel* label=[[UILabel alloc] initWithFrame:CGRectMake(20, 0, 400, 30)];
-        [label setText:@"Contact"];
+        [label setText:NSLocalizedString(@"Contact",nil)];
         UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [button setTitle:@"Send contacts to Device" forState:UIControlStateNormal];
+        [button setTitle:NSLocalizedString(@"Send contacts to Device",nil) forState:UIControlStateNormal];
         button.frame= CGRectMake(0, 30, 300, 30);
         button.layer.borderWidth=1;
         button.layer.cornerRadius=10.0;
@@ -122,7 +121,7 @@ typedef NS_ENUM(NSInteger, DataClass)  {
 
 + (PluginInfo*) getPluginInfo
 {
-    return [[PluginInfo alloc] initWithInfos:@"Contact" displayName:@"Contact" description:@"Contact" enabledByDefault:true];
+    return [[PluginInfo alloc] initWithInfos:NSLocalizedString(@"Contact",nil) displayName:NSLocalizedString(@"Contact",nil) description:NSLocalizedString(@"Contact",nil) enabledByDefault:true];
 }
 
 - (void) updateAddressBook
@@ -168,9 +167,9 @@ typedef NS_ENUM(NSInteger, DataClass)  {
         case kABAuthorizationStatusRestricted:
         case kABAuthorizationStatusDenied:
         {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Privacy Warning" message:@"Permission was not granted for addressbook"
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Privacy Warning",nil) message:NSLocalizedString(@"Permission was not granted for addressbook",nil)
                                                            delegate:nil
-                                                  cancelButtonTitle:@"OK"
+                                                  cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                                   otherButtonTitles:nil];
             [alert show];
         }
@@ -225,11 +224,12 @@ void handleAddressBookChange(ABAddressBookRef addressBook, CFDictionaryRef info,
 
 - (void)contactSourceSelect:(id)sender
 {
-    UIActionSheet *actionSheet = [[UIActionSheet alloc]initWithTitle:@"Send Contact"
+    UIActionSheet *actionSheet = [[UIActionSheet alloc]initWithTitle:NSLocalizedString(@"Send Contact",nil)
                                                             delegate:self
-                                                   cancelButtonTitle:@"cancel"
+                                                   cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
                                               destructiveButtonTitle:nil
-                                                   otherButtonTitles:@"All local contacts",@"Select local contact",nil];
+                                                   otherButtonTitles:NSLocalizedString(@"All local contacts",nil),
+                                  NSLocalizedString(@"Select local contact",nil),nil];
     
     actionSheet.actionSheetStyle =UIActionSheetStyleAutomatic;
     
@@ -249,7 +249,7 @@ void handleAddressBookChange(ABAddressBookRef addressBook, CFDictionaryRef info,
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     ABPeoplePickerNavigationController *picker =[[ABPeoplePickerNavigationController alloc] init];
-    if([[actionSheet title] isEqualToString:@"Send Contact"]){
+    if([[actionSheet title] isEqualToString:NSLocalizedString(@"Send Contact",nil)]){
         switch (buttonIndex) {
             case 0:
                 [self updateAddressBook];

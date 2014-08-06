@@ -3,7 +3,7 @@
 //  kdeconnect-ios
 //
 //  Created by yangqiao on 5/18/14.
-//  Copyright (c) 2014 yangqiao. All rights reserved.
+//  
 //
 
 #import "MRProgress.h"
@@ -13,6 +13,7 @@
 #import "IASKSettingsReader.h"
 #import "SettingsStore.h"
 #import "VTAcknowledgementsViewController.h"
+#import "MyStyleKit.h"
 
 @interface DeviceViewController ()
 @property (nonatomic, retain) AppSettingViewController *_AppSettingViewController;
@@ -37,7 +38,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    UIBarButtonItem* buttonItem=[[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStylePlain target:self action:@selector(showSettingsModal:)];
+    UIBarButtonItem* buttonItem=[[UIBarButtonItem alloc] initWithImage:[MyStyleKit imageOfGear] style:UIBarButtonItemStylePlain target:self action:@selector(showSettingsModal:)];
     self.navigationItem.rightBarButtonItem = buttonItem;
     [self loadPluginsViews];
 }
@@ -105,9 +106,7 @@
 }
 
 - (void)awakeFromNib {
-//	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingDidChange:) name:kIASKAppSettingChanged object:nil];
-    
-	if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+	if (isPad) {
 		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(showSettingsPopover:)];
 	}
 }

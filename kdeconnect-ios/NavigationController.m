@@ -3,7 +3,7 @@
 //  kdeconnect-ios
 //
 //  Created by YANG Qiao on 8/1/14.
-//  Copyright (c) 2014 yangqiao. All rights reserved.
+//  
 //
 
 #import "NavigationController.h"
@@ -48,7 +48,7 @@
 
         if (isPhone) {
             NSString* t=currentViewController.title;
-            if ([currentViewController.title isEqualToString:@"Mouse Pad"])
+            if ([currentViewController.title isEqualToString:NSLocalizedString(@"Mouse Pad",nil)])
                 return YES;
             else
                 return NO;

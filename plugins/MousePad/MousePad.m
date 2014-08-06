@@ -3,7 +3,7 @@
 //  kdeconnect-ios
 //
 //  Created by YANG Qiao on 7/3/14.
-//  Copyright (c) 2014 yangqiao. All rights reserved.
+//  
 //
 
 #import "MousePad.h"
@@ -48,13 +48,12 @@
 
 - (UIView*) getView:(UIViewController*)vc
 {
-    NSLog(@"mouse pad plugin get view");
     if ([_device isReachable]) {
         _view=[[UIView alloc] initWithFrame:CGRectMake(0,0,400, 60)];
         UILabel* label=[[UILabel alloc] initWithFrame:CGRectMake(20, 0, 400, 30)];
-        [label setText:@"Mouse Pad"];
+        [label setText:NSLocalizedString(@"Mouse Pad",nil)];
         UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [button setTitle:@"open touch pad" forState:UIControlStateNormal];
+        [button setTitle:NSLocalizedString(@"open touch pad",nil) forState:UIControlStateNormal];
         button.frame= CGRectMake(0, 30, 300, 30);
         button.layer.borderWidth=1;
         button.layer.cornerRadius=10.0;
@@ -84,7 +83,7 @@
 
 + (PluginInfo*) getPluginInfo
 {
-    return [[PluginInfo alloc] initWithInfos:@"MousePad" displayName:@"MousePad" description:@"MousePad" enabledByDefault:true];
+    return [[PluginInfo alloc] initWithInfos:NSLocalizedString(@"MousePad",nil) displayName:NSLocalizedString(@"MousePad",nil) description:NSLocalizedString(@"MousePad",nil) enabledByDefault:true];
 
 }
 
@@ -103,7 +102,7 @@
             _mousePadController=[[UIStoryboard storyboardWithName:@"Main_iPad" bundle:[NSBundle mainBundle]] instantiateViewControllerWithIdentifier:@"MousePadViewController"];
         }
         [_mousePadController setPlugin:self];
-        [_mousePadController setTitle:@"Mouse Pad"];
+        [_mousePadController setTitle:NSLocalizedString(@"Mouse Pad",nil)];
     }
     NavigationController *aNavController = [[NavigationController alloc] initWithRootViewController:_mousePadController];
     [_deviceViewController presentViewController:aNavController animated:YES completion:nil];

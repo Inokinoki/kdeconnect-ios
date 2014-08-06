@@ -3,7 +3,7 @@
 //  kdeconnect-ios
 //
 //  Created by YANG Qiao on 6/4/14.
-//  Copyright (c) 2014 yangqiao. All rights reserved.
+//  
 //
 
 #import "Share.h"
@@ -42,7 +42,7 @@
         UIImageWriteToSavedPhotosAlbum(image,nil,nil,nil);
         UILocalNotification* localNotification = [[UILocalNotification alloc] init];
         localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:0];
-        localNotification.alertBody = FORMAT(@"Share:received a photo from:%@",[_device _name]);
+        localNotification.alertBody = FORMAT(NSLocalizedString(@"received a photo from:%@",nil),[_device _name]);
         localNotification.timeZone = [NSTimeZone defaultTimeZone];
         localNotification.soundName= UILocalNotificationDefaultSoundName;
         [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
@@ -54,13 +54,12 @@
 
 - (UIView*) getView:(UIViewController*)vc
 {
-    NSLog(@"share plugin get view");
     if ([_device isReachable]) {
         _view=[[UIView alloc] initWithFrame:CGRectMake(0,0,400, 60)];
         UILabel* label=[[UILabel alloc] initWithFrame:CGRectMake(20, 0, 400, 30)];
-        [label setText:@"Share"];
+        [label setText:NSLocalizedString(@"Share",nil)];
         UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [button setTitle:@"Share photo" forState:UIControlStateNormal];
+        [button setTitle:NSLocalizedString(@"Share photo",nil) forState:UIControlStateNormal];
         button.layer.borderWidth=1;
         button.layer.cornerRadius=10.0;
         button.layer.borderColor=[[UIColor grayColor] CGColor];
@@ -90,16 +89,18 @@
 
 + (PluginInfo*) getPluginInfo
 {
-    return [[PluginInfo alloc] initWithInfos:@"Share" displayName:@"Share" description:@"Share" enabledByDefault:true];
+    return [[PluginInfo alloc] initWithInfos:NSLocalizedString(@"Share",nil) displayName:NSLocalizedString(@"Share",nil) description:NSLocalizedString(@"Share",nil) enabledByDefault:true];
 
 }
 - (void)photoSourceSelect:(id)sender
 {
-    UIActionSheet *actionSheet = [[UIActionSheet alloc]initWithTitle:@"Photo Source"
-                                                            delegate:self
-                                                   cancelButtonTitle:@"cancel"
-                                              destructiveButtonTitle:nil
-                                                   otherButtonTitles:@"Photo From Camera",@"Photo From Library",nil];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc]
+                                  initWithTitle:NSLocalizedString(@"Photo Source",nil)
+                                  delegate:self
+                                  cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
+                                  destructiveButtonTitle:nil
+                                  otherButtonTitles:NSLocalizedString(@"Photo From Camera",nil),
+                                  NSLocalizedString(@"Photo From Library",nil),nil];
     
     actionSheet.actionSheetStyle =UIActionSheetStyleAutomatic;
     
@@ -135,11 +136,12 @@
     }
     else{
         //photo taken
-        UIActionSheet *actionSheet = [[UIActionSheet alloc]initWithTitle:@"Save"
-                                                                delegate:self
-                                                       cancelButtonTitle:nil
-                                                  destructiveButtonTitle:@"Discard"
-                                                       otherButtonTitles:@"Save",nil];
+        UIActionSheet *actionSheet = [[UIActionSheet alloc]
+                                      initWithTitle:NSLocalizedString(@"Save",nil)
+                                      delegate:self
+                                      cancelButtonTitle:nil
+                                      destructiveButtonTitle:NSLocalizedString(@"Discard",nil)
+                                      otherButtonTitles:NSLocalizedString(@"Save",nil),nil];
         
         actionSheet.actionSheetStyle =UIActionSheetStyleAutomatic;
         
@@ -165,7 +167,7 @@
 #pragma mark UIActionsheet delegate
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if ([[actionSheet title] isEqualToString:@"Save"]) {
+    if ([[actionSheet title] isEqualToString:NSLocalizedString(@"Save",nil)]) {
         switch (buttonIndex) {
             case 0:
                 
@@ -177,7 +179,7 @@
             default:
                 break;
         }
-    }else if([[actionSheet title] isEqualToString:@"Photo Source"]){
+    }else if([[actionSheet title] isEqualToString:NSLocalizedString(@"Photo Source",nil)]){
         switch (buttonIndex) {
             case 0:
                 [self sharePhotoFromCamera];

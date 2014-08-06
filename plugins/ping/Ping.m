@@ -3,7 +3,7 @@
 //  kdeconnect-ios
 //
 //  Created by yangqiao on 5/11/14.
-//  Copyright (c) 2014 yangqiao. All rights reserved.
+//  
 //
 
 #import "Ping.h"
@@ -38,7 +38,7 @@
         // local notification
         UILocalNotification* localNotification = [[UILocalNotification alloc] init];
         localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:0];
-        localNotification.alertBody = FORMAT(@"%@: Ping!",[_device _name]);
+        localNotification.alertBody = FORMAT(NSLocalizedString(@"%@: Ping!",nil),[_device _name]);
         localNotification.timeZone = [NSTimeZone defaultTimeZone];
         localNotification.soundName=UILocalNotificationDefaultSoundName;
         localNotification.applicationIconBadgeNumber+=1;
@@ -51,13 +51,12 @@
 
 - (UIView*) getView:(UIViewController*)vc
 {
-    NSLog(@"ping plugin get view");
     if ([_device isReachable]) {
         _view=[[UIView alloc] initWithFrame:CGRectMake(0,0,600, 60)];
         UILabel* label=[[UILabel alloc] initWithFrame:CGRectMake(20, 0, 300, 30)];
-        [label setText:@"Ping"];
+        [label setText:NSLocalizedString(@"Ping",nil)];
         UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [button setTitle:@"Send Ping to Device" forState:UIControlStateNormal];
+        [button setTitle:NSLocalizedString(@"Send Ping to Device",nil) forState:UIControlStateNormal];
         button.frame= CGRectMake(0, 30, 300, 30);
         button.layer.borderWidth=1;
         button.layer.cornerRadius=10.0;
@@ -86,7 +85,7 @@
 
 + (PluginInfo*) getPluginInfo
 {
-    return [[PluginInfo alloc] initWithInfos:@"Ping" displayName:@"Ping" description:@"Ping" enabledByDefault:true];
+    return [[PluginInfo alloc] initWithInfos:NSLocalizedString(@"Ping",nil) displayName:NSLocalizedString(@"Ping",nil) description:NSLocalizedString(@"Ping",nil) enabledByDefault:true];
 }
 
 

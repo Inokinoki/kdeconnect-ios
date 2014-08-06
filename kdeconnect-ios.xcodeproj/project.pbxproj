@@ -30,17 +30,19 @@
 		4E08A2361913D1780056EEF8 /* Device.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2321913D1780056EEF8 /* Device.m */; };
 		4E08A2371913D1780056EEF8 /* NetworkPackage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2341913D1780056EEF8 /* NetworkPackage.m */; };
 		4E0B0CF019772E2300F1412B /* Contact.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E0B0CEF19772E2300F1412B /* Contact.m */; };
-		4E0E321F192B495E001D88CD /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4E0E321E192B495E001D88CD /* Settings.bundle */; };
 		4E1A82A319657DD700174217 /* MousePad.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E1A82A219657DD700174217 /* MousePad.m */; };
 		4E1A82A619657FF400174217 /* MousePadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E1A82A519657FF400174217 /* MousePadViewController.m */; };
 		4E3038FC1940889900F28091 /* ClipBoard.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E3038FB1940889900F28091 /* ClipBoard.m */; };
 		4E38A3AB196CEB44006AE419 /* Calendar.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E38A3AA196CEB44006AE419 /* Calendar.m */; };
 		4E38A3B0196D2D36006AE419 /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E38A3AF196D2D36006AE419 /* EventKit.framework */; };
+		4E44F5E819920042002B1AAF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4E44F5EA19920042002B1AAF /* Localizable.strings */; };
+		4E44F5ED199204E5002B1AAF /* Localizable.strings in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4E44F5EA19920042002B1AAF /* Localizable.strings */; };
 		4E47115F19693B7F00EE5B1D /* Battery.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E47115E19693B7F00EE5B1D /* Battery.m */; };
 		4E49BCA91966661800E8AEB7 /* custumRecognizers.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E49BCA81966661800E8AEB7 /* custumRecognizers.m */; };
 		4E51BBED193FADA7007E74F4 /* Share.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E51BBEC193FADA7007E74F4 /* Share.m */; };
 		4E7CB6611985F7EA00DEB3B3 /* Pods-acknowledgements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4E7CB6601985F7EA00DEB3B3 /* Pods-acknowledgements.plist */; };
 		4E85B96C1928F9D600EF3C55 /* DeviceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E85B96B1928F9D600EF3C55 /* DeviceViewController.m */; };
+		4E86279619921FFC00375B62 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4E86279519921FFC00375B62 /* Settings.bundle */; };
 		4E95A1911949954600647948 /* SettingsStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E95A1901949954600647948 /* SettingsStore.m */; };
 		4EA77E08199092E3002787B8 /* MyStyleKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EA77E07199092E3002787B8 /* MyStyleKit.m */; };
 		4EA77E0B199095BC002787B8 /* Buttons.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EA77E0A199095BC002787B8 /* Buttons.m */; };
@@ -70,6 +72,19 @@
 			remoteInfo = "kdeconnect-ios";
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		4E44F5EC199204C5002B1AAF /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+				4E44F5ED199204E5002B1AAF /* Localizable.strings in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		48E2F71AC6EE495B8966C774 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -109,7 +124,6 @@
 		4E08A2341913D1780056EEF8 /* NetworkPackage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NetworkPackage.m; path = lib/NetworkPackage.m; sourceTree = "<group>"; };
 		4E0B0CEE19772E2300F1412B /* Contact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Contact.h; path = plugins/Contact/Contact.h; sourceTree = "<group>"; };
 		4E0B0CEF19772E2300F1412B /* Contact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Contact.m; path = plugins/Contact/Contact.m; sourceTree = "<group>"; };
-		4E0E321E192B495E001D88CD /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		4E1A82A119657DD700174217 /* MousePad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MousePad.h; path = plugins/MousePad/MousePad.h; sourceTree = "<group>"; };
 		4E1A82A219657DD700174217 /* MousePad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MousePad.m; path = plugins/MousePad/MousePad.m; sourceTree = "<group>"; };
 		4E1A82A419657FF400174217 /* MousePadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MousePadViewController.h; path = plugins/MousePad/MousePadViewController.h; sourceTree = "<group>"; };
@@ -119,6 +133,13 @@
 		4E38A3A9196CEB44006AE419 /* Calendar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Calendar.h; path = plugins/Calendar/Calendar.h; sourceTree = "<group>"; };
 		4E38A3AA196CEB44006AE419 /* Calendar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Calendar.m; path = plugins/Calendar/Calendar.m; sourceTree = "<group>"; };
 		4E38A3AF196D2D36006AE419 /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
+		4E44F5E919920042002B1AAF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		4E44F5F019920A68002B1AAF /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		4E44F5F119920A68002B1AAF /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		4E44F5F219920A79002B1AAF /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		4E44F5F319920A79002B1AAF /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		4E44F5F419920A79002B1AAF /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		4E44F5F519921586002B1AAF /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4E47115D19693B7F00EE5B1D /* Battery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Battery.h; path = plugins/Battery/Battery.h; sourceTree = "<group>"; };
 		4E47115E19693B7F00EE5B1D /* Battery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Battery.m; path = plugins/Battery/Battery.m; sourceTree = "<group>"; };
 		4E49BCA71966661800E8AEB7 /* custumRecognizers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = custumRecognizers.h; path = plugins/MousePad/custumRecognizers.h; sourceTree = "<group>"; };
@@ -128,6 +149,7 @@
 		4E7CB6601985F7EA00DEB3B3 /* Pods-acknowledgements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Pods-acknowledgements.plist"; path = "Pods/Pods-acknowledgements.plist"; sourceTree = SOURCE_ROOT; };
 		4E85B96A1928F9D600EF3C55 /* DeviceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceViewController.h; sourceTree = "<group>"; };
 		4E85B96B1928F9D600EF3C55 /* DeviceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeviceViewController.m; sourceTree = "<group>"; };
+		4E86279519921FFC00375B62 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		4E95A18F1949954600647948 /* SettingsStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SettingsStore.h; path = lib/SettingsStore.h; sourceTree = "<group>"; };
 		4E95A1901949954600647948 /* SettingsStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SettingsStore.m; path = lib/SettingsStore.m; sourceTree = "<group>"; };
 		4EA77E06199092D6002787B8 /* MyStyleKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyStyleKit.h; sourceTree = "<group>"; };
@@ -194,7 +216,7 @@
 		4E08A1DB1913CF850056EEF8 = {
 			isa = PBXGroup;
 			children = (
-				4E0E321E192B495E001D88CD /* Settings.bundle */,
+				4E86279519921FFC00375B62 /* Settings.bundle */,
 				4EC27541191FCE910057AB0E /* plugins */,
 				4E08A2211913D12B0056EEF8 /* backend */,
 				4E08A21F1913D0CF0056EEF8 /* lib */,
@@ -248,6 +270,7 @@
 				4EA77E06199092D6002787B8 /* MyStyleKit.h */,
 				4EA77E07199092E3002787B8 /* MyStyleKit.m */,
 				4E08A2021913CF850056EEF8 /* Images.xcassets */,
+				4E44F5EA19920042002B1AAF /* Localizable.strings */,
 				4E08A1EE1913CF850056EEF8 /* Supporting Files */,
 			);
 			path = "kdeconnect-ios";
@@ -450,6 +473,7 @@
 				4E08A1E11913CF850056EEF8 /* Frameworks */,
 				4E08A1E21913CF850056EEF8 /* Resources */,
 				D48E30206BE04BD8A5566DC8 /* Copy Pods Resources */,
+				4E44F5EC199204C5002B1AAF /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -489,6 +513,14 @@
 				TargetAttributes = {
 					4E08A1E31913CF850056EEF8 = {
 						DevelopmentTeam = 34RXKJTKWE;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 0;
+							};
+							com.apple.iCloud = {
+								enabled = 0;
+							};
+						};
 					};
 					4E08A2071913CF850056EEF8 = {
 						TestTargetID = 4E08A1E31913CF850056EEF8;
@@ -502,6 +534,8 @@
 			knownRegions = (
 				en,
 				Base,
+				fr,
+				"zh-Hans",
 			);
 			mainGroup = 4E08A1DB1913CF850056EEF8;
 			productRefGroup = 4E08A1E51913CF850056EEF8 /* Products */;
@@ -519,11 +553,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4E86279619921FFC00375B62 /* Settings.bundle in Resources */,
 				4EC750B71967084800785A49 /* KeychainAccessGroups.plist in Resources */,
 				4E7CB6611985F7EA00DEB3B3 /* Pods-acknowledgements.plist in Resources */,
 				4E08A1FE1913CF850056EEF8 /* Main_iPad.storyboard in Resources */,
 				4E08A2031913CF850056EEF8 /* Images.xcassets in Resources */,
-				4E0E321F192B495E001D88CD /* Settings.bundle in Resources */,
+				4E44F5E819920042002B1AAF /* Localizable.strings in Resources */,
 				4E08A1FB1913CF850056EEF8 /* Main_iPhone.storyboard in Resources */,
 				4E08A1F21913CF850056EEF8 /* InfoPlist.strings in Resources */,
 			);
@@ -636,6 +671,8 @@
 			isa = PBXVariantGroup;
 			children = (
 				4E08A1F11913CF850056EEF8 /* en */,
+				4E44F5F019920A68002B1AAF /* fr */,
+				4E44F5F319920A79002B1AAF /* zh-Hans */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -660,8 +697,20 @@
 			isa = PBXVariantGroup;
 			children = (
 				4E08A2131913CF860056EEF8 /* en */,
+				4E44F5F119920A68002B1AAF /* fr */,
+				4E44F5F419920A79002B1AAF /* zh-Hans */,
 			);
 			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		4E44F5EA19920042002B1AAF /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4E44F5E919920042002B1AAF /* en */,
+				4E44F5F219920A79002B1AAF /* zh-Hans */,
+				4E44F5F519921586002B1AAF /* Base */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

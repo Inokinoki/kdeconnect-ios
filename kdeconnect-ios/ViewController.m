@@ -3,13 +3,14 @@
 //  kdeconnect-ios
 //
 //  Created by yangqiao on 5/2/14.
-//  Copyright (c) 2014 yangqiao. All rights reserved.
+//  
 //
 
 #import "DeviceViewController.h"
 #import "ViewController.h"
 #import "MRProgress.h"
 #import "NavigationController.h"
+#import "MyStyleKit.h"
 
 @interface ViewController ()
 @property(nonatomic)NSString* _pairingDevice;
@@ -40,6 +41,10 @@
     [[BackgroundService sharedInstance] set_backgroundServiceDelegate:self];
     NavigationController* navc=self.navigationController;
     [navc set_enableRotateMask:YES];
+    UIBarButtonItem *buttonItemr = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
+                                                                                target:self
+                                                                                action:@selector(onRefresh:)];
+    self.navigationItem.rightBarButtonItem = buttonItemr;
     [self onDeviceListRefreshed];
 }
 
@@ -62,11 +67,11 @@
     _pairingDevice=deviceID;
     dispatch_async(dispatch_get_main_queue(), ^{
         [[[UIAlertView alloc]
-          initWithTitle:@"Incoming Pair Request"
-          message:FORMAT(@"Incoming pair request from device: %@ ",[_visibleDevices valueForKey:deviceID])
+          initWithTitle:NSLocalizedString(@"Incoming Pair Request",nil)
+          message:FORMAT(NSLocalizedString(@"Incoming pair request from device: %@ ",nil),[_visibleDevices valueForKey:deviceID])
           delegate:self
-          cancelButtonTitle:@"Cancel"
-          otherButtonTitles:@"Pair",nil] show];
+          cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
+          otherButtonTitles:NSLocalizedString(@"Pair",nil),nil] show];
     });
 }
 
@@ -74,7 +79,7 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         MRProgressOverlayView* progview=[MRProgressOverlayView overlayForView:self.view];
-        [progview setTitleLabelText:@"Time out"];
+        [progview setTitleLabelText:NSLocalizedString(@"Time out",nil)];
         [progview setMode:MRProgressOverlayViewModeCross];
         dispatch_time_t dismissTime = dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC);
         dispatch_after(dismissTime, dispatch_get_main_queue(), ^(void){
@@ -88,7 +93,7 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         MRProgressOverlayView* progview=[MRProgressOverlayView overlayForView:self.view];
-        [progview setTitleLabelText:@"Success"];
+        [progview setTitleLabelText:NSLocalizedString(@"Success",nil)];
         [progview setMode:MRProgressOverlayViewModeCheckmark];
         dispatch_time_t dismissTime = dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC);
         dispatch_after(dismissTime, dispatch_get_main_queue(), ^(void){
@@ -105,7 +110,7 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         MRProgressOverlayView* progview=[MRProgressOverlayView overlayForView:self.view];
-        [progview setTitleLabelText:@"Rejected"];
+        [progview setTitleLabelText:NSLocalizedString(@"Rejected",nil)];
         [progview setMode:MRProgressOverlayViewModeCross];
         dispatch_time_t dismissTime = dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC);
         dispatch_after(dismissTime, dispatch_get_main_queue(), ^(void){
@@ -118,7 +123,6 @@
 
 - (void) onDeviceListRefreshed
 {
-    NSLog(@"viewcontroller onDeviceListRefreshed");
     BackgroundService* bg=[BackgroundService sharedInstance] ;
     NSDictionary* list=[bg getDevicesLists];
     _rememberedDevices  =[list valueForKey:@"remembered"];
@@ -133,12 +137,13 @@
 
 - (void) onRefresh:(id)sender
 {
-    NSLog(@"viewcontroller onRefresh");
     [[BackgroundService sharedInstance] refreshDiscovery];
     dispatch_time_t dismissTime = dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC);
     dispatch_after(dismissTime, dispatch_get_main_queue(), ^(void){
         [self onDeviceListRefreshed];
-        [sender endRefreshing];
+        if ([sender isKindOfClass:[UIRefreshControl class]]) {
+            [sender endRefreshing];
+        }
     });
 }
 
@@ -160,11 +165,12 @@
         default:
             break;
     }
-    UIActionSheet *actionSheet = [[UIActionSheet alloc]initWithTitle:@"More Actions"
-                                                            delegate:self
-                                                   cancelButtonTitle:@"back"
-                                              destructiveButtonTitle:nil
-                                                   otherButtonTitles:@"Unpair",nil];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc]
+                                  initWithTitle:NSLocalizedString(@"More Actions",nil)
+                                  delegate:self
+                                  cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
+                                  destructiveButtonTitle:nil
+                                  otherButtonTitles:NSLocalizedString(@"Unpair",nil),nil];
     actionSheet.actionSheetStyle =UIActionSheetStyleAutomatic;
     [actionSheet showInView:[UIApplication sharedApplication].keyWindow];
 }
@@ -174,7 +180,6 @@
 //return number of sections
 - (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
 {
-    NSLog(@"viewcontroller nb of section");
     NSUInteger count=[_rememberedDevices count];
     if (!count) {
         return 2;
@@ -185,7 +190,6 @@
 //return row count
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSLog(@"viewcontroller nb of rows");
     switch (section) {
         case 0:
             return [_connectedDevices count];
@@ -201,14 +205,13 @@
 //return section name
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    NSLog(@"viewcontroller section name");
     switch (section) {
         case 0:
-            return @"connected device";
+            return NSLocalizedString(@"connected devices",nil);
         case 1:
-            return @"visible devices";
+            return NSLocalizedString(@"visible devices",nil)  ;
         case 2:
-            return @"remembered devices";
+            return NSLocalizedString(@"remembered devices",nil);
         default:
             return @"";
     }
@@ -217,7 +220,6 @@
 //redraw a row
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"viewcontroller load a cell");
     static NSString *mainListTableId = @"mainListTableId";
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:mainListTableId];
@@ -246,7 +248,9 @@
     }
     else{
         //accessory button
-        UIButton *button = [UIButton buttonWithType:UIButtonTypeInfoLight];
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+        [button setImage:[MyStyleKit imageOfMore] forState:UIControlStateNormal];
+        [button setImage:[MyStyleKit imageOfMoreHighlighted] forState:UIControlStateHighlighted];
         //set the position of the button
         int height=cell.frame.size.height;
         button.frame = CGRectMake(cell.frame.origin.x, cell.frame.origin.y , height, height);
@@ -260,7 +264,6 @@
 //selete a row
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"viewcontroller row selected");
     UIAlertView* alertDialog;
     DeviceViewController* vc;
     NSString* deviceId;
@@ -282,11 +285,11 @@
         case 1:
             _pairingDevice=[[_visibleDevices allKeys]objectAtIndex:indexPath.row];
             alertDialog=[[UIAlertView alloc]
-                         initWithTitle:@"Pair Request"
-                         message:FORMAT(@"pair device: %@ ?",[_visibleDevices valueForKey:_pairingDevice])
+                         initWithTitle:NSLocalizedString(@"Pair Request",nil)
+                         message:FORMAT(NSLocalizedString(@"pair device: %@ ?",nil),[_visibleDevices valueForKey:_pairingDevice])
                          delegate:self
-                         cancelButtonTitle:@"No"
-                         otherButtonTitles:@"Yes", nil];
+                         cancelButtonTitle:NSLocalizedString(@"No",nil)
+                         otherButtonTitles:NSLocalizedString(@"Yes",nil), nil];
             [alertDialog show];
             break;
         case 2:
@@ -298,7 +301,7 @@
 //alertedialog
 - (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if ([[alertView title] isEqualToString:@"Pair Request"]) {
+    if ([[alertView title] isEqualToString:NSLocalizedString(@"Pair Request",nil)]) {
         switch (buttonIndex) {
             case 0:
                 _pairingDevice=nil;
@@ -306,15 +309,15 @@
             case 1:
                 [[BackgroundService sharedInstance] pairDevice:_pairingDevice];
                 [[MRProgressOverlayView showOverlayAddedTo:self.view animated:YES]
-                 setTitleLabelText:@"Pairing"];
+                 setTitleLabelText:NSLocalizedString(@"Pairing",nil)];
                 break;
             default:
                 break;
         }
     }
-    else if ([[alertView title] isEqualToString:@"Success"]){
+    else if ([[alertView title] isEqualToString:NSLocalizedString(@"Success",nil)]){
     }
-    else if([[alertView title] isEqualToString:@"Incoming Pair Request"]){
+    else if([[alertView title] isEqualToString:NSLocalizedString(@"Incoming Pair Request",nil)]){
         switch (buttonIndex) {
             case 0:
                 break;
@@ -327,6 +330,7 @@
     }
 }
 
+
 #pragma mark - UITabBarControllerDelegate
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
 {
@@ -336,7 +340,7 @@
 #pragma mark -UIActionsheet delegate
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if ([[actionSheet title] isEqualToString:@"More Actions"]) {
+    if ([[actionSheet title] isEqualToString:NSLocalizedString(@"More Actions",nil)]) {
         switch (buttonIndex) {
             case 0:
                 [[BackgroundService sharedInstance] unpairDevice:_moreActionDevice];

@@ -3,7 +3,7 @@
 //  kdeconnect-ios
 //
 //  Created by YANG Qiao on 7/3/14.
-//  Copyright (c) 2014 yangqiao. All rights reserved.
+//  
 //
 
 #import "MousePadViewController.h"
@@ -51,7 +51,7 @@
                                                                                 target:self
                                                                                 action:@selector(dismiss:)];
     self.navigationItem.rightBarButtonItem = buttonItem;
-    UIBarButtonItem *buttonItem2 = [[UIBarButtonItem alloc] initWithTitle:@"Help" style:UIBarButtonItemStylePlain target:self action:@selector(openHelp:)];
+    UIBarButtonItem *buttonItem2 = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Help",nil) style:UIBarButtonItemStylePlain target:self action:@selector(openHelp:)];
     self.navigationItem.leftBarButtonItem = buttonItem2;
     [self.view setMultipleTouchEnabled:YES];
     
@@ -96,16 +96,16 @@
 {
     NSArray *panels;
     if (isPad) {
-        MYIntroductionPanel *panel1 = [[MYIntroductionPanel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) title:@"Mouse Pad Usage Introduction" description:@"Here is a basic introduction which would show you how to use the mouse pad with different guestures" image:[MyStyleKit imageOfMousePadIntro]];
+        MYIntroductionPanel *panel1 =[[MYIntroductionPanel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) title:NSLocalizedString(@"Mouse pad intro title",nil) description:NSLocalizedString(@"Mouse pad intro description",nil) image:[MyStyleKit imageOfMousePadIntro]];
         //Add panels to an array
         panels= @[panel1];
     }
     
     if (isPhone) {
-        MYIntroductionPanel *panel1 = [[MYIntroductionPanel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) title:@"Mouse Pad Usage Introduction" description:@"Here is a basic introduction which would show you how to use the mouse pad with different guestures" image:[MyStyleKit imageOfMousePadIntro1Small]];
-        MYIntroductionPanel *panel2 = [[MYIntroductionPanel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) title:@"Mouse Pad Usage Introduction" description:@"Here is a basic introduction which would show you how to use the mouse pad with different guestures" image:[MyStyleKit imageOfMousePadIntro2Small]];
-        MYIntroductionPanel *panel3 = [[MYIntroductionPanel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) title:@"Mouse Pad Usage Introduction" description:@"Here is a basic introduction which would show you how to use the mouse pad with different guestures" image:[MyStyleKit imageOfMousePadIntro3Small]];
-        MYIntroductionPanel *panel4 = [[MYIntroductionPanel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) title:@"Mouse Pad Usage Introduction" description:@"Here is a basic introduction which would show you how to use the mouse pad with different guestures" image:[MyStyleKit imageOfMousePadIntro4Small]];
+        MYIntroductionPanel *panel1 = [[MYIntroductionPanel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) title:NSLocalizedString(@"Mouse pad intro title",nil) description:NSLocalizedString(@"Mouse pad intro description",nil) image:[MyStyleKit imageOfMousePadIntro1Small]];
+        MYIntroductionPanel *panel2 = [[MYIntroductionPanel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) title:nil description:nil image:[MyStyleKit imageOfMousePadIntro2Small]];
+        MYIntroductionPanel *panel3 = [[MYIntroductionPanel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) title:nil description:nil image:[MyStyleKit imageOfMousePadIntro3Small]];
+        MYIntroductionPanel *panel4 = [[MYIntroductionPanel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) title:nil description:nil image:[MyStyleKit imageOfMousePadIntro4Small]];
         //Add panels to an array
         panels= @[panel1,panel2,panel3,panel4];
     }

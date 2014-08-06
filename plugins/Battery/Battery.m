@@ -3,7 +3,7 @@
 //  kdeconnect-ios
 //
 //  Created by YANG Qiao on 7/6/14.
-//  Copyright (c) 2014 yangqiao. All rights reserved.
+//  
 //
 
 #import "Battery.h"
@@ -63,7 +63,7 @@
 
 + (PluginInfo*) getPluginInfo
 {
-    return [[PluginInfo alloc] initWithInfos:@"Battery" displayName:@"Battery" description:@"Battery" enabledByDefault:true];
+    return [[PluginInfo alloc] initWithInfos:NSLocalizedString(@"Battery",nil) displayName:NSLocalizedString(@"Battery",nil) description:NSLocalizedString(@"Battery",nil) enabledByDefault:true];
 }
 
 @end

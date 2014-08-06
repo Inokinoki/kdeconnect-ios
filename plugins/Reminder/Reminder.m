@@ -3,7 +3,7 @@
 //  kdeconnect-ios
 //
 //  Created by YANG Qiao on 7/9/14.
-//  Copyright (c) 2014 yangqiao. All rights reserved.
+//  
 //
 
 #import "Reminder.h"
@@ -96,7 +96,7 @@
 
 + (PluginInfo*) getPluginInfo
 {
-    return [[PluginInfo alloc] initWithInfos:@"Reminder" displayName:@"Reminder" description:@"Reminder" enabledByDefault:true];
+    return [[PluginInfo alloc] initWithInfos:NSLocalizedString(@"Reminder",nil) displayName:NSLocalizedString(@"Reminder",nil) description:NSLocalizedString(@"Reminder",nil) enabledByDefault:true];
 }
 
 // Check the authorization status of our application for Calendar
@@ -116,9 +116,9 @@
         case EKAuthorizationStatusDenied:
         case EKAuthorizationStatusRestricted:
         {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Privacy Warning" message:@"Permission was not granted for calendar"
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Privacy Warning",nil) message:NSLocalizedString(@"Permission was not granted for Calendar",nil)
                                                            delegate:nil
-                                                  cancelButtonTitle:@"OK"
+                                                  cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                                   otherButtonTitles:nil];
             [alert show];
         }

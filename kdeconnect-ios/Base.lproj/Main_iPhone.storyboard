@@ -32,7 +32,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" translatesAutoresizingMaskIntoConstraints="NO" id="sU3-sk-Mhe">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" translatesAutoresizingMaskIntoConstraints="NO" id="sU3-sk-Mhe">
                                 <rect key="frame" x="20" y="0.0" width="280" height="548"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -57,6 +57,8 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="sU3-sk-Mhe" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="20" id="Nn8-p9-i6L"/>
+                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="sU3-sk-Mhe" secondAttribute="bottom" constant="20" id="anW-cv-QZ1"/>
+                            <constraint firstItem="sU3-sk-Mhe" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" id="azI-GR-WX4"/>
                             <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="sU3-sk-Mhe" secondAttribute="bottom" constant="20" id="mMC-Ki-Hqj"/>
                             <constraint firstAttribute="trailing" secondItem="sU3-sk-Mhe" secondAttribute="trailing" constant="20" id="x2d-3K-TmC"/>
                         </constraints>
@@ -163,7 +165,6 @@
                                         </connections>
                                     </button>
                                 </subviews>
-                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <constraints>
                                     <constraint firstAttribute="centerY" secondItem="lor-xX-vD2" secondAttribute="centerY" id="JCf-Vb-0ON"/>
                                     <constraint firstAttribute="centerY" secondItem="To8-Ym-cNM" secondAttribute="centerY" id="PyO-lr-1HI"/>
