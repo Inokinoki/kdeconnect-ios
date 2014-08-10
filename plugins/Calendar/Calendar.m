@@ -191,7 +191,8 @@
 {
     if (![event1.title isEqualToString:event2.title] ||
         ![event1.startDate isEqualToDate:event2.startDate] ||
-        ![event1.endDate isEqualToDate:event2.endDate]) {
+        ![event1.endDate isEqualToDate:event2.endDate] ||
+        event1.allDay!=event2.allDay) {
         return false;
     }
     return true;
@@ -224,13 +225,13 @@
     NSDate* dt_e=xbicvevent.dateEnd;
     NSDate* dt_created=xbicvevent.dateCreated;
     NSDate* dt_modified=xbicvevent.dateLastModified;
+    BOOL allDay=!dt_e ||
+                ([dt_e isEqualToDate:[dt_s dateByAddingTimeInterval:24*3600]]
+                 );
     
     if (!uid||!summary||!dt_s) {
         *err=[[NSError alloc] initWithDomain:@"iCal parse failed" code:0 userInfo:nil];
         return nil;
-    }
-    if (!dt_e) {
-        //all day event
     }
     EKEvent* event=[eventstore eventWithIdentifier:uid];
     if (!event) {
@@ -238,8 +239,13 @@
         [event setCalendar:[eventstore defaultCalendarForNewEvents]];
         [event setTitle:summary];
         [event setStartDate:dt_s];
-        [event setEndDate:dt_e];
+        if (!allDay) {
+            [event setEndDate:dt_e];
+        }else{
+            [event setEndDate:dt_s];
+        }
         [event setCalendar:[eventstore defaultCalendarForNewEvents]];
+        [event setAllDay:allDay];
         *err=[[NSError alloc] initWithDomain:@"iCal fix uid" code:1 userInfo:@{@"uid": uid}];
         return event;
     }
@@ -248,13 +254,20 @@
         ![dt_e isEqualToDate:event.endDate])
         && [event.lastModifiedDate compare:dt_modified]==NSOrderedAscending) {
         [event setTitle:summary];
+        [event setAllDay:allDay];
         [event setStartDate:dt_s];
-        [event setEndDate:dt_e];
+        if (!allDay) {
+            [event setEndDate:dt_e];
+        }else{
+            [event setEndDate:dt_s];
+        }
+        
     }
     if ([event.lastModifiedDate compare:dt_modified]==NSOrderedDescending) {
         NSLog(@"%@, %@",event.lastModifiedDate,dt_modified);
         *err=[[NSError alloc] initWithDomain:@"iCal peer outdated" code:1 userInfo:nil];
     }
+    
     return event;
 }
 
@@ -271,8 +284,6 @@
     NSString* dt_stamp=[df stringFromDate:[event creationDate]];
     NSString* dt_created=[df stringFromDate:[event creationDate]];
     NSString* dt_modified=[df stringFromDate:[event lastModifiedDate]];
-    NSString* dt_s=[df stringFromDate:[event startDate]];
-    NSString* dt_e=[df stringFromDate:[event endDate]];
     NSMutableString* iCal=[NSMutableString string];
     [iCal appendString:@"BEGIN:VCALENDAR\n"];
     [iCal appendString:@"VERSION:2.0\n"];
@@ -283,8 +294,20 @@
     [iCal appendFormat:@"LAST_MODIFIED:%@\n",dt_modified];
     [iCal appendFormat:@"UID:%@\n",[event eventIdentifier]];
     [iCal appendFormat:@"SUMMARY:%@\n",t];
-    [iCal appendFormat:@"DTSTART:%@\n",dt_s];
-    if (!event.allDay) {
+    if (event.allDay) {
+        NSDateFormatter* df2=[[NSDateFormatter alloc] init];
+        NSTimeZone *timeZone = [NSTimeZone localTimeZone];
+        [df setTimeZone:timeZone];
+        [df setDateFormat:@"yyyyMMdd"];
+        NSString* dt_s=[df stringFromDate:event.startDate];
+        NSString* dt_e=[df stringFromDate:event.endDate];
+        [iCal appendFormat:@"DTSTART;VALUE=DATE:%@\n",dt_s];
+        [iCal appendFormat:@"DTEND;VALUE=DATE:%@\n",dt_e];
+    }
+    else{
+        NSString* dt_s=[df stringFromDate:event.startDate];
+        NSString* dt_e=[df stringFromDate:event.endDate];
+        [iCal appendFormat:@"DTSTART:%@\n",dt_s];
         [iCal appendFormat:@"DTEND:%@\n",dt_e];
     }
     [iCal appendFormat:@"TRANSP:OPAQUE\n"];
