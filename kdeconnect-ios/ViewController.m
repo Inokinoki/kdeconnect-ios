@@ -102,7 +102,7 @@
         _pairingDevice=nil;
         [self onDeviceListRefreshed];
     });
-    NSLog(@"viewcontroller onPairSuccess");
+    //NSLog(@"viewcontroller onPairSuccess");
 
 }
 
@@ -118,7 +118,7 @@
         });
         _pairingDevice=nil;
     });
-    NSLog(@"viewcontroller onPairRejected");
+    //NSLog(@"viewcontroller onPairRejected");
 }
 
 - (void) onDeviceListRefreshed

@@ -57,7 +57,7 @@
 - (BOOL) onDevicePackageReceived:(NetworkPackage *)np
 {
     if ([[np _Type] isEqualToString:PACKAGE_TYPE_MPRIS]) {
-        NSLog(@"mpris receive a package");
+        //NSLog(@"mpris receive a package");
         if ([np bodyHasKey:@"nowPlaying"]||[np bodyHasKey:@"volume"]||[np bodyHasKey:@"isPlaying"]) {
             if ([[np objectForKey:@"player"] isEqualToString:_player]) {
                 if ([np bodyHasKey:@"nowPlaying"]) {

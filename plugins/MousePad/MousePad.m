@@ -40,7 +40,7 @@
 - (BOOL) onDevicePackageReceived:(NetworkPackage *)np
 {
     if ([[np _Type] isEqualToString:PACKAGE_TYPE_PING]) {
-        NSLog(@"mouse pad receive a package");
+        //NSLog(@"mouse pad receive a package");
         return true;
     }
     return false;

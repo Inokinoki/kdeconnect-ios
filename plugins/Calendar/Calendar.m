@@ -16,6 +16,8 @@
 @property(nonatomic)EKEventStore *_eventStore;
 @property(nonatomic)NSArray *_eventsList;
 @property(nonatomic)NSMutableArray *_invalideUids;
+@property(nonatomic)BOOL _shouldSend;
+@property(nonatomic)BOOL _isProcessing;
 @end
 
 @implementation Calendar
@@ -25,6 +27,8 @@
 @synthesize _eventsList;
 @synthesize _eventStore;
 @synthesize _invalideUids;
+@synthesize _shouldSend;
+@synthesize _isProcessing;
 
 - (id) init
 {
@@ -34,6 +38,8 @@
         _eventStore = [[EKEventStore alloc] init];
         _eventsList = [NSArray array];
         _invalideUids = [NSMutableArray array];
+        _shouldSend=false;
+        _isProcessing=false;
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(storeChanged:)
                                                     name:EKEventStoreChangedNotification  object:_eventStore];
         [self checkEventStoreAccessForCalendar];
@@ -44,13 +50,33 @@
 - (BOOL) onDevicePackageReceived:(NetworkPackage *)np
 {
     if ([[np _Type] isEqualToString:PACKAGE_TYPE_CALENDAR]) {
-        NSLog(@"Calendar plugin receive a package");
+        //NSLog(@"Calendar plugin receive a package");
         if ([np bodyHasKey:@"request"]) {
             //send calender event list
             [self fetchEvents];
+            if ([_eventsList count]==0) {
+                NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_CALENDAR];
+                [np setBool:YES forKey:@"request"];
+                [_device sendPackage:np tag:PACKAGE_TAG_CALENDAR];
+            }
+            _shouldSend=true;
             [self sendCalendar];
         }
         else {
+            if ([ [np objectForKey:@"status"] isEqualToString:@"begin"]) {
+                _isProcessing=true;
+                return true;
+            }
+            else if ([ [np objectForKey:@"status"] isEqualToString:@"end"] ) {
+                _isProcessing=false;
+                [self fetchEvents];
+                [self sendCalendar];
+                return true;
+            }
+            else{
+                _isProcessing=true;
+            }
+            
             NSError* err;
             EKEvent* event=[Calendar retrieveEvent:np withStore:_eventStore error:&err];
             
@@ -59,13 +85,9 @@
             }
             
             if ([[np objectForKey:@"op"] isEqualToString:@"delete"]){
-                [_eventStore removeEvent:event span:EKSpanThisEvent error:&err];
-                if (err) {
-                    NSLog(@"Calendar plugin:delete event error");
-                }
+                [_eventStore removeEvent:event span:nil commit:YES error:&err];
             }
             else if ([[np objectForKey:@"op"] isEqualToString:@"merge"]){
-                
                 if ([err.domain isEqualToString:@"iCal fix uid"]) {
                     NSString* uid=[[err userInfo] objectForKey:@"uid"];
                     if (![_invalideUids containsObject:uid]) {
@@ -76,16 +98,12 @@
                         [_invalideUids addObject:uid];
                     }
                 }
-
+                
                 EKEvent* oldEvent=[_eventStore eventWithIdentifier:event.eventIdentifier];
-                if (!oldEvent){
-                    [_eventStore saveEvent:event span:EKSpanThisEvent error:&err];
-                }
-                else if (![Calendar event:event isIdenToEvent:oldEvent]){
-                    [_eventStore saveEvent:event span:EKSpanThisEvent error:&err];
-                }
-                else if ( [err.domain isEqualToString: @"iCal peer outdated"]){
-                    [self sendCalendar];
+                if (!oldEvent ||
+                    ![Calendar event:event isIdenToEvent:oldEvent]){
+                    [_eventStore saveEvent:event span:nil commit:YES error:&err];
+                    _shouldSend=true;
                 }
             }
         }
@@ -157,7 +175,7 @@
     
     //Create the end date components
     NSDateComponents *tomorrowDateComponents = [[NSDateComponents alloc] init];
-    tomorrowDateComponents.day = 2;
+    tomorrowDateComponents.day = 6;
 	
     NSDate *endDate = [[NSCalendar currentCalendar] dateByAddingComponents:tomorrowDateComponents
                                                                     toDate:startDate
@@ -174,28 +192,40 @@
 
 - (void) storeChanged:(id) sender
 {
+    _shouldSend=true;
     [self fetchEvents];
     [self sendCalendar];
 }
 
 - (void) sendCalendar
 {
+    if ( _isProcessing || !_shouldSend)
+        return;
+    
+    NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_CALENDAR];
+    [np setObject:@"merge" forKey:@"op"];
+    [np setObject:@"begin" forKey:@"status"];
+    [_device sendPackage:np tag:PACKAGE_TAG_CALENDAR];
     for (EKEvent* e in _eventsList) {
         NetworkPackage* np=[Calendar createNetworkPackage:e];
         [np setObject:@"merge" forKey:@"op"];
+        [np setObject:@"proccess" forKey:@"status"];
         [_device sendPackage:np tag:PACKAGE_TAG_CALENDAR];
     }
+    NetworkPackage* np2=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_CALENDAR];
+    [np setObject:@"merge" forKey:@"op"];
+    [np setObject:@"end" forKey:@"status"];
+    [_device sendPackage:np tag:PACKAGE_TAG_CALENDAR];
+    _shouldSend=false;
+
 }
 
 + (BOOL) event:(EKEvent*) event1 isIdenToEvent:(EKEvent*) event2
 {
-    if (![event1.title isEqualToString:event2.title] ||
-        ![event1.startDate isEqualToDate:event2.startDate] ||
-        ![event1.endDate isEqualToDate:event2.endDate] ||
-        event1.allDay!=event2.allDay) {
-        return false;
-    }
-    return true;
+    return [event1.title isEqualToString:event2.title] &&
+        [event1.startDate isEqualToDate:event2.startDate] &&
+        [event1.endDate isEqualToDate:event2.endDate] &&
+        event1.allDay ==event2.allDay;
 }
 
 + (EKEvent*) retrieveEvent:(NetworkPackage*)np withStore:(EKEventStore*) eventstore error:( NSError*__autoreleasing*)err
@@ -211,6 +241,7 @@
         return nil;
     }
     [np setObject:ical forKey:@"iCal"];
+    [np setObject:event.eventIdentifier forKey:@"uid"];
     return np;
 }
 
@@ -226,8 +257,8 @@
     NSDate* dt_created=xbicvevent.dateCreated;
     NSDate* dt_modified=xbicvevent.dateLastModified;
     BOOL allDay=!dt_e ||
-                ([dt_e isEqualToDate:[dt_s dateByAddingTimeInterval:24*3600]]
-                 );
+                ([dt_e isEqualToDate:[dt_s dateByAddingTimeInterval:24*3600]]) ||
+                ([dt_e isEqualToDate:[dt_s dateByAddingTimeInterval:24*3600-1]]);
     
     if (!uid||!summary||!dt_s) {
         *err=[[NSError alloc] initWithDomain:@"iCal parse failed" code:0 userInfo:nil];
@@ -259,13 +290,13 @@
         if (!allDay) {
             [event setEndDate:dt_e];
         }else{
-            [event setEndDate:dt_s];
+            if ([dt_e compare:dt_s]!=NSOrderedDescending) {
+                [event setEndDate:dt_s];
+            }
+            else{
+                [event setEndDate:[dt_e dateByAddingTimeInterval:-24*3600]];
+            }
         }
-        
-    }
-    if ([event.lastModifiedDate compare:dt_modified]==NSOrderedDescending) {
-        NSLog(@"%@, %@",event.lastModifiedDate,dt_modified);
-        *err=[[NSError alloc] initWithDomain:@"iCal peer outdated" code:1 userInfo:nil];
     }
     
     return event;

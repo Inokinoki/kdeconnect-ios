@@ -60,7 +60,7 @@ typedef NS_ENUM(NSInteger, DataClass)  {
 - (BOOL) onDevicePackageReceived:(NetworkPackage *)np
 {
     if ([[np _Type] isEqualToString:PACKAGE_TYPE_CONTACT]) {
-        NSLog(@"Contact plugin receive a package");
+        //NSLog(@"Contact plugin receive a package");
         if ([np bodyHasKey:@"request"]) {
             [self updateAddressBook];
             [self sendAddressBook];

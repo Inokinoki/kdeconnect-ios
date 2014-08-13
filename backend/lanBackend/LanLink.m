@@ -53,7 +53,7 @@
         [_socket performBlock:^{
             [_socket enableBackgroundingOnSocket];
         }];
-        NSLog(@"LanLink:lanlink for device:%@ created",_deviceId);
+        //NSLog(@"LanLink:lanlink for device:%@ created",_deviceId);
         [_socket readDataToData:[GCDAsyncSocket LFData] withTimeout:-1 tag:PACKAGE_TAG_NORMAL];
         _pendingRSockets=[NSMutableArray arrayWithCapacity:1];
         _pendingLSockets=[NSMutableArray arrayWithCapacity:1];
@@ -67,9 +67,9 @@
 
 - (BOOL) sendPackage:(NetworkPackage *)np tag:(long)tag
 {
-    NSLog(@"llink send package");
+    //NSLog(@"llink send package");
     if (![_socket isConnected]) {
-        NSLog(@"LanLink: Device:%@ disconnected",_deviceId);
+        //NSLog(@"LanLink: Device:%@ disconnected",_deviceId);
         return false;
     }
     
@@ -90,7 +90,7 @@
         while (![socket acceptOnPort:_payloadPort error:&err]) {
             _payloadPort++;
             if (_payloadPort>1764) {
-                NSLog(@"LanLink send payload failed as no port available");
+                //NSLog(@"LanLink send payload failed as no port available");
                 return false;
             }
         }
@@ -127,7 +127,7 @@
 
 - (void) loadPublicKey
 {
-    NSLog(@"load Public key for %@",_deviceId);
+    //NSLog(@"load Public key for %@",_deviceId);
     if (_pendingPairNP) {
         NSData* publicKeyBits=[_pendingPairNP retrievePublicKeyBits];
         [[SecKeyWrapper sharedWrapper] removePeerPublicKey:_deviceId];
@@ -137,7 +137,7 @@
 
 - (void) removePublicKey
 {
-    NSLog(@"remove Public key for %@",_deviceId);
+    //NSLog(@"remove Public key for %@",_deviceId);
     [[SecKeyWrapper sharedWrapper] removePeerPublicKey:_deviceId];
 }
 
@@ -150,7 +150,7 @@
         [_linkDelegate onLinkDestroyed:self];
     }
     _pendingPairNP=nil;
-    NSLog(@"LanLink: Device:%@ disconnected",_deviceId);
+    //NSLog(@"LanLink: Device:%@ disconnected",_deviceId);
 }
 
 #pragma mark TCP delegate
@@ -166,7 +166,7 @@
  **/
 - (void)socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket
 {
-	NSLog(@"Lanlink: didAcceptNewSocket");
+	//NSLog(@"Lanlink: didAcceptNewSocket");
     NSMutableArray* payloadArray;
     @synchronized(_pendingLSockets){
         //TO-DO should use a single sock for listing and send payload with newSocket
@@ -201,7 +201,7 @@
 
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port
 {
-    NSLog(@"Lanlink did connect to payload host, begin recieving data");
+    //NSLog(@"Lanlink did connect to payload host, begin recieving data");
     @synchronized(_pendingRSockets){
     NSUInteger index=[_pendingRSockets indexOfObject:sock];
     [sock readDataToLength:[[_pendingPayloadNP objectAtIndex:index] _PayloadSize] withTimeout:-1 tag:PACKAGE_TAG_PAYLOAD];
@@ -229,7 +229,7 @@
         [_linkDelegate onPackageReceived:np];
         return;
     }
-    NSLog(@"llink did read data");
+    //NSLog(@"llink did read data");
     //BUG even if we read with a seperator LFData , it's still possible to receive several data package together. So we split the string and retrieve the package
     [_socket readDataToData:[GCDAsyncSocket LFData] withTimeout:-1 tag:PACKAGE_TAG_NORMAL];
     NSString * jsonStr=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
@@ -237,7 +237,7 @@
     for (NSString* dataStr in packageArray) {
         NetworkPackage* np=[NetworkPackage unserialize:[dataStr dataUsingEncoding:NSUTF8StringEncoding]];
         if (_linkDelegate && np) {
-            NSLog(@"llink did read data:\n%@",dataStr);
+            //NSLog(@"llink did read data:\n%@",dataStr);
             if ([[np _Type] isEqualToString:PACKAGE_TYPE_PAIR]) {
                 _pendingPairNP=np;
             }
@@ -253,7 +253,7 @@
                 NSError* error=nil;
                 uint16_t tcpPort=[[[np _PayloadTransferInfo] valueForKey:@"port"] unsignedIntValue];
                 if (![socket connectToHost:[sock connectedHost] onPort:tcpPort error:&error]){
-                    NSLog(@"Lanlink connect to payload host failed");
+                    //NSLog(@"Lanlink connect to payload host failed");
                 }
                 return;
             }
@@ -267,12 +267,12 @@
  **/
 - (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag
 {
-    NSLog(@"llink didWriteData");
+    //NSLog(@"llink didWriteData");
     if (_linkDelegate) {
         [_linkDelegate onSendSuccess:tag];
     }
     if (tag==PACKAGE_TAG_PAYLOAD) {
-        NSLog(@"llink payload sendpk");
+        //NSLog(@"llink payload sendpk");
     }
     
 }
@@ -337,7 +337,7 @@
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err
 {
     if ([_pendingRSockets containsObject:sock]) {
-        NSLog(@"llink payload socket disconnected");
+        //NSLog(@"llink payload socket disconnected");
         @synchronized(_pendingRSockets){
             NSUInteger index=[_pendingRSockets indexOfObject:sock];
             [_pendingRSockets removeObjectAtIndex:index];
@@ -345,7 +345,7 @@
         }
     }
     if (_linkDelegate&&(sock==_socket)) {
-        NSLog(@"llink socket did disconnect");
+        //NSLog(@"llink socket did disconnect");
         [_linkDelegate onLinkDestroyed:self];
     }
     

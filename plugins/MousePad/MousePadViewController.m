@@ -130,7 +130,7 @@
 #pragma mark - MYIntroduction Delegate
 
 -(void)introduction:(MYBlurIntroductionView *)introductionView didChangeToPanel:(MYIntroductionPanel *)panel withIndex:(NSInteger)panelIndex{
-    NSLog(@"Introduction did change to panel %d", panelIndex);
+    //NSLog(@"Introduction did change to panel %d", panelIndex);
     if (panelIndex == 0) {
         [introductionView setBackgroundColor:[MyStyleKit intro]];
     }
@@ -146,7 +146,7 @@
 }
 
 -(void)introduction:(MYBlurIntroductionView *)introductionView didFinishWithType:(MYFinishType)finishType {
-    NSLog(@"Introduction did finish");
+    //NSLog(@"Introduction did finish");
     NavigationController* navc = self.navigationController;
     [navc setNavigationBarHidden:NO animated:YES];
     [navc set_enableRotateMask:YES];

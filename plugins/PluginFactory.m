@@ -71,7 +71,7 @@
         return nil;
     }
 
-    NSLog(@"pluginfactory instatiate plugin for device");
+    //NSLog(@"pluginfactory instatiate plugin for device");
     Class pluginClass=[_availablePlugins valueForKey:pluginName];
     Plugin* plugin;
     if (pluginClass) {
@@ -83,13 +83,13 @@
 
 - (NSArray*) getAvailablePlugins
 {
-    NSLog(@"pluginfactory get available plugins");
+    //NSLog(@"pluginfactory get available plugins");
     return [_availablePlugins allKeys];
 }
 
 - (void) registerPlugins
 {
-    NSLog(@"pluginfactory register plugins");
+    //NSLog(@"pluginfactory register plugins");
     
     [_availablePlugins setValue:[Ping class] forKey:[[Ping getPluginInfo] _pluginName]];
     [_availablePlugins setValue:[MPRIS class] forKey:[[MPRIS getPluginInfo] _pluginName]];

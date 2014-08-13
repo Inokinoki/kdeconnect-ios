@@ -37,7 +37,7 @@
 - (BOOL) onDevicePackageReceived:(NetworkPackage *)np
 {
     if ([[np _Type] isEqualToString:PACKAGE_TYPE_SHARE]) {
-        NSLog(@"share plugin receive a package");
+        //NSLog(@"share plugin receive a package");
         UIImage* image=[UIImage imageWithData:[np _Payload]];
         UIImageWriteToSavedPhotosAlbum(image,nil,nil,nil);
         UILocalNotification* localNotification = [[UILocalNotification alloc] init];

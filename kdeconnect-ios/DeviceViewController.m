@@ -83,7 +83,7 @@
 
 - (void) onDeviceLost
 {
-    NSLog(@"device vc on device lost");
+    //NSLog(@"device vc on device lost");
     dispatch_async(dispatch_get_main_queue(), ^(){
         [self.view setNeedsDisplay];
     });

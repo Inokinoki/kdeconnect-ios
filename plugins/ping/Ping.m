@@ -33,7 +33,7 @@
 - (BOOL) onDevicePackageReceived:(NetworkPackage *)np
 {
     if ([[np _Type] isEqualToString:PACKAGE_TYPE_PING]) {
-        NSLog(@"ping plugin receive a package");
+        //NSLog(@"ping plugin receive a package");
         
         // local notification
         UILocalNotification* localNotification = [[UILocalNotification alloc] init];
@@ -92,10 +92,10 @@
 - (void) sendPing:(id)sender
 {
     if (!_device) {
-        NSLog(@"no registered device");
+        //NSLog(@"no registered device");
         return;
     }
-    NSLog(@"send ping to %@",[_device _id]);
+    //NSLog(@"send ping to %@",[_device _id]);
     NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_PING];
     [_device sendPackage:np tag:PACKAGE_TAG_PING];
 }

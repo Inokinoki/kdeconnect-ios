@@ -17,7 +17,8 @@
 @property(nonatomic)EKEventStore *_eventStore;
 @property(nonatomic)NSArray *_reminderList;
 @property(nonatomic)NSMutableArray *_invalideUids;
-@property(nonatomic)BOOL _requested;
+@property(nonatomic)BOOL _shouldSend;
+@property(nonatomic)BOOL _isProcessing;
 @end
 
 @implementation Reminder
@@ -27,7 +28,8 @@
 @synthesize _reminderList;
 @synthesize _eventStore;
 @synthesize _invalideUids;
-@synthesize _requested;
+@synthesize _shouldSend;
+@synthesize _isProcessing;
 
 - (id) init
 {
@@ -37,7 +39,8 @@
         _eventStore = [[EKEventStore alloc] init];
         _reminderList = [NSArray array];
         _invalideUids = [NSMutableArray array];
-        _requested=false;
+        _shouldSend=false;
+        _isProcessing=false;
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(storeChanged:)
                                                     name:EKEventStoreChangedNotification  object:_eventStore];
         [self checkEventStoreAccessForCalendar];
@@ -48,11 +51,25 @@
 - (BOOL) onDevicePackageReceived:(NetworkPackage *)np
 {
     if ([[np _Type] isEqualToString:PACKAGE_TYPE_REMINDER]) {
-        NSLog(@"Reminder plugin receive a package");
+        //NSLog(@"Reminder plugin receive a package");
         if ([np bodyHasKey:@"request"]) {
-            _requested=true;
+            _shouldSend=true;
+            [self fetchReminders];
         }
         else {
+            if ([ [np objectForKey:@"status"] isEqualToString:@"begin"]) {
+                _isProcessing=true;
+                return true;
+            }
+            else if ([ [np objectForKey:@"status"] isEqualToString:@"end"] ) {
+                _isProcessing=false;
+                [self fetchReminders]; 
+                return true;
+            }
+            else{
+                _isProcessing=true;
+            }
+
             NSError* err;
             EKReminder* reminder=[Reminder retrieveEvent:np withStore:_eventStore error:&err];
             
@@ -62,9 +79,6 @@
 
             if ([[np objectForKey:@"op"] isEqualToString:@"delete"]){
                 [_eventStore removeReminder:reminder commit:YES error:&err];
-                if (err) {
-                    NSLog(@"Reminder plugin:delete reminder error");
-                }
             }
             else if ([[np objectForKey:@"op"] isEqualToString:@"merge"]){
                 if ([err.domain isEqualToString:@"iCal fix uid"]) {
@@ -77,15 +91,12 @@
                         [_invalideUids addObject:uid];
                     }
                 }
+                
                 EKReminder* oldreminder=[_eventStore calendarItemWithIdentifier:reminder.calendarItemIdentifier];
-                if (!oldreminder){
+                if (!oldreminder ||
+                    ![Reminder reminder:reminder isIdenToReminder2:oldreminder] ){
                     [_eventStore saveReminder:reminder commit:YES error:&err];
-                }
-                else if (![Reminder reminder:reminder isIdenToReminder2:oldreminder]){
-                    [_eventStore saveReminder:reminder commit:YES error:&err];
-                }
-                else if ( [err.domain isEqualToString: @"iCal peer outdated"]){
-                    [self sendReminder];
+                    _shouldSend=true;
                 }
             }
         }
@@ -143,14 +154,14 @@
 // This method is called when the user has granted permission to Reminder
 -(void)accessGrantedForReminder
 {
-    // Fetch all events happening in the next 24 hours and put them into eventsList
     [self fetchReminders];
 }
 
-// Fetch all reminders happening in the next 24 hours
+// Fetch all reminders
 - (void) fetchReminders
 {
-    NSPredicate *predicate = [_eventStore predicateForRemindersInCalendars:nil];
+    // Create the predicate
+	NSPredicate *predicate = [_eventStore predicateForRemindersInCalendars:nil];
     
     // Fetch all events that match the predicate
     [_eventStore fetchRemindersMatchingPredicate:predicate completion:^(NSArray *reminders) {
@@ -166,35 +177,44 @@
         [np2 setBool:YES forKey:@"request"];
         [_device sendPackage:np2 tag:PACKAGE_TAG_CALENDAR];
     }
-    if (_requested) {
-        _requested=false;
+    if (_shouldSend) {
         [self sendReminder];
     }
 }
 
 - (void) storeChanged:(id) sender
 {
-    _requested=true;
+    _shouldSend=true;
     [self fetchReminders];
-    
 }
 
 - (void) sendReminder
 {
+    if ( _isProcessing || !_shouldSend)
+        return;
+    
+    NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_REMINDER];
+    [np setObject:@"merge" forKey:@"op"];
+    [np setObject:@"begin" forKey:@"status"];
+    [_device sendPackage:np tag:PACKAGE_TAG_REMINDER];
     for (EKReminder* r in _reminderList) {
         NetworkPackage* np=[Reminder createNetworkPackage:r];
         [np setObject:@"merge" forKey:@"op"];
+        [np setObject:@"proccess" forKey:@"status"];
         [_device sendPackage:np tag:PACKAGE_TAG_REMINDER];
     }
+    NetworkPackage* np2=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_REMINDER];
+    [np setObject:@"merge" forKey:@"op"];
+    [np setObject:@"end" forKey:@"status"];
+    [_device sendPackage:np tag:PACKAGE_TAG_REMINDER];
+    _shouldSend=false;
 }
 
 + (BOOL) reminder:(EKReminder*) reminder1 isIdenToReminder2:(EKReminder*) reminder2
 {
-    if (![reminder1.title isEqualToString:reminder2.title]||
-        ![reminder1.dueDateComponents.date isEqualToDate:reminder2.dueDateComponents.date]) {
-        return false;
-    }
-    return true;
+    return [reminder1.title isEqualToString:reminder2.title] &&
+            [reminder1.dueDateComponents.date isEqualToDate:reminder2.dueDateComponents.date]&&
+            [reminder1 isCompleted]==[reminder2 isCompleted];
 }
 
 + (EKReminder*) retrieveEvent:(NetworkPackage*)np withStore:(EKEventStore*) eventstore error:( NSError*__autoreleasing*)err
@@ -202,14 +222,15 @@
     return [Reminder iCalToReminder:[np objectForKey:@"iCal"] withStore:eventstore error:err];
 }
 
-+ (NetworkPackage*) createNetworkPackage: (EKReminder*)event
++ (NetworkPackage*) createNetworkPackage: (EKReminder*)reminder
 {
     NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_REMINDER];
-    NSString* ical=[Reminder reminderToiCal:event];
+    NSString* ical=[Reminder reminderToiCal:reminder];
     if (!ical) {
         return nil;
     }
     [np setObject:ical forKey:@"iCal"];
+    [np setObject:reminder.calendarItemIdentifier forKey:@"uid"];
     return np;
 }
 
@@ -225,6 +246,7 @@
     NSDate* dt_due=xbicvtodo.dateDue;
     NSDate* dt_created=xbicvtodo.dateCreated;
     NSDate* dt_modified=xbicvtodo.dateLastModified;
+    NSDate* dt_completed=xbicvtodo.completed;
     NSNumber* percent=xbicvtodo.percentCompleted;
     NSCalendar *gregorian = [[NSCalendar alloc]
                              initWithCalendarIdentifier:NSGregorianCalendar];
@@ -235,7 +257,7 @@
     [due_dtc setTimeZone:[NSTimeZone localTimeZone]];
     [due_dtc setCalendar:gregorian];
     
-    if (!uid||!summary||!dt_due) {
+    if (!uid||!summary) {
         *err=[[NSError alloc] initWithDomain:@"iCal parse failed" code:0 userInfo:nil];
         return nil;
     }
@@ -246,19 +268,32 @@
         [reminder setTitle:summary];
         [reminder setStartDateComponents:start_dtc];
         [reminder setDueDateComponents:due_dtc];
+        if (dt_completed) {
+            [reminder setCompleted:YES];
+            [reminder setCompletionDate:dt_completed];
+        }
+        else{
+            [reminder setCompleted:NO];
+        }
         *err=[[NSError alloc] initWithDomain:@"iCal fix uid" code:1 userInfo:@{@"uid": uid}];
         return reminder;
     }
-    if ( (![reminder.title isEqualToString:summary]||
-        ![reminder.dueDateComponents.date isEqualToDate:due_dtc.date])
-          && [reminder.lastModifiedDate compare:dt_modified]==NSOrderedAscending) {
-        [reminder setCalendar:[eventstore defaultCalendarForNewReminders]];
-        [reminder setTitle:summary];
-        [reminder setStartDateComponents:start_dtc];
-        [reminder setDueDateComponents:due_dtc];
-    }
-    if ([reminder.lastModifiedDate compare:dt_modified]==NSOrderedDescending) {
-        *err=[[NSError alloc] initWithDomain:@"iCal peer outdated" code:1 userInfo:nil];
+    if ( ![reminder.title isEqualToString:summary]||
+        ![reminder.dueDateComponents.date isEqualToDate:due_dtc.date] ||
+        reminder.completed == !dt_completed) {
+        if ([reminder.lastModifiedDate compare:dt_modified]==NSOrderedAscending) {
+            [reminder setCalendar:[eventstore defaultCalendarForNewReminders]];
+            [reminder setTitle:summary];
+            [reminder setStartDateComponents:start_dtc];
+            [reminder setDueDateComponents:due_dtc];
+            if (dt_completed) {
+                [reminder setCompleted:YES];
+                [reminder setCompletionDate:dt_completed];
+            }
+            else{
+                [reminder setCompleted:NO];
+            }
+        }
     }
     return reminder;
 }
@@ -277,6 +312,7 @@
     NSString* dt_modified=[df stringFromDate:reminder.lastModifiedDate];
     NSString* dt_start=[df stringFromDate:reminder.startDateComponents.date];
     NSString* dt_due=[df stringFromDate:reminder.dueDateComponents.date];
+    NSString* dt_completed=[df stringFromDate:reminder.completionDate];
     NSString* t=reminder.title;
     NSMutableString* iCal=[NSMutableString string];
     [iCal appendString:@"BEGIN:VCALENDAR\n"];
@@ -290,6 +326,9 @@
     [iCal appendFormat:@"DTSTART:%@\n",dt_start];
     [iCal appendFormat:@"UID:%@\n",reminder.calendarItemIdentifier];
     [iCal appendFormat:@"SUMMARY:%@\n",t];
+    if (reminder.completed) {
+        [iCal appendFormat:@"COMPLETED:%@\n",dt_completed];
+    }
     [iCal appendString:@"END:VTODO\n"];
     [iCal appendString:@"END:VCALENDAR\n"];
     return iCal;

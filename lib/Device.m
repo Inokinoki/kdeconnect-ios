@@ -72,9 +72,9 @@
 
 - (void) addLink:(NetworkPackage*)np baseLink:(BaseLink*)Link
 {
-    NSLog(@"add link to %@",_id);
+    //NSLog(@"add link to %@",_id);
     if (_protocolVersion!=[np integerForKey:@"protocolVersion"]) {
-        NSLog(@"using different protocol version");
+        //NSLog(@"using different protocol version");
     }
     [_links addObject:Link];
     _id=[np objectForKey:@"deviceId"];
@@ -82,7 +82,7 @@
     _type=[Device Str2Devicetype:[np objectForKey:@"deviceType"]];
     [Link set_linkDelegate:self];
     if ([_links count]==1) {
-        NSLog(@"one link available");
+        //NSLog(@"one link available");
         if (_deviceDelegate) {
             [_deviceDelegate onDeviceReachableStatusChanged:self];
         }
@@ -91,12 +91,12 @@
 
 - (void) onLinkDestroyed:(BaseLink *)link
 {
-    NSLog(@"device on link destroyed");
+    //NSLog(@"device on link destroyed");
     [_links removeObject:link];
-    NSLog(@"remove link ; %lu remaining", (unsigned long)[_links count]);
+    //NSLog(@"remove link ; %lu remaining", (unsigned long)[_links count]);
     
     if ([_links count]==0) {
-        NSLog(@"no available link");
+        //NSLog(@"no available link");
         if (_deviceDelegate) {
             [_deviceDelegate onDeviceReachableStatusChanged:self];
             [_plugins removeAllObjects];
@@ -110,7 +110,7 @@
 
 - (BOOL) sendPackage:(NetworkPackage *)np tag:(long)tag
 {
-    NSLog(@"device send package");
+    //NSLog(@"device send package");
     if (![[np _Type] isEqualToString:PACKAGE_TYPE_PAIR]) {
         for (BaseLink* link in _links) {
             if ([link sendPackageEncypted:np tag:tag]) {
@@ -130,7 +130,7 @@
 
 - (void) onSendSuccess:(long)tag
 {
-    NSLog(@"device on send success");
+    //NSLog(@"device on send success");
     if (tag==PACKAGE_TAG_PAIR) {
         if (_pairStatus==RequestedByPeer) {
             [self setAsPaired];
@@ -145,14 +145,14 @@
 
 - (void) onPackageReceived:(NetworkPackage*)np
 {
-    NSLog(@"device on package received");
+    //NSLog(@"device on package received");
     if ([[np _Type] isEqualToString:PACKAGE_TYPE_PAIR]) {
-        NSLog(@"Pair package received");
+        //NSLog(@"Pair package received");
         BOOL wantsPair=[np boolForKey:@"pair"];
         if (wantsPair==[self isPaired]) {
-            NSLog(@"already done, paired:%d",wantsPair);
+            //NSLog(@"already done, paired:%d",wantsPair);
             if (_pairStatus==Requested) {
-                NSLog(@"canceled by other peer");
+                //NSLog(@"canceled by other peer");
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(requestPairingTimeout:) object:nil];
                 });
@@ -167,7 +167,7 @@
             return;
         }
         if (wantsPair) {
-            NSLog(@"pair request");
+            //NSLog(@"pair request");
             if ((_pairStatus)==Requested) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(requestPairingTimeout:) object:nil];
@@ -182,11 +182,11 @@
             }
         }
         else{
-            NSLog(@"unpair request");
+            //NSLog(@"unpair request");
             PairStatus prevPairStatus=_pairStatus;
             _pairStatus=NotPaired;
             if (prevPairStatus==Requested) {
-                NSLog(@"canceled by other peer");
+                //NSLog(@"canceled by other peer");
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(requestPairingTimeout:) object:nil];
                 });
@@ -195,13 +195,13 @@
             }
         }
     }else if ([self isPaired]){
-        NSLog(@"recieved a plugin package :%@",[np _Type]);
+        //NSLog(@"recieved a plugin package :%@",[np _Type]);
         for (Plugin* plugin in [_plugins allValues]) {
             [plugin onDevicePackageReceived:np];
         }
         
     }else{
-        NSLog(@"not paired, ignore packages, unpair the device");
+        //NSLog(@"not paired, ignore packages, unpair the device");
         [self unpair];
     }
 }
@@ -246,7 +246,7 @@
 - (void) setAsPaired
 {
     _pairStatus=Paired;
-    NSLog(@"paired with %@",_name);
+    //NSLog(@"paired with %@",_name);
     [self saveSetting];
     if (_deviceDelegate) {
         [_deviceDelegate onDevicePairSuccess:self];
@@ -259,22 +259,22 @@
 - (void) requestPairing
 {
     if (![self isReachable]) {
-        NSLog(@"device failed:not reachable");
+        //NSLog(@"device failed:not reachable");
         return;
     }
     if (_pairStatus==Paired) {
-        NSLog(@"device failed:already paired");
+        //NSLog(@"device failed:already paired");
         return;
     }
     if (_pairStatus==Requested) {
-        NSLog(@"device failed:already requested");
+        //NSLog(@"device failed:already requested");
         return;
     }
     if (_pairStatus==RequestedByPeer) {
-        NSLog(@"device accept pair request");
+        //NSLog(@"device accept pair request");
     }
     else{
-        NSLog(@"device request pairing");
+        //NSLog(@"device request pairing");
         _pairStatus=Requested;
         dispatch_async(dispatch_get_main_queue(), ^{
             [self performSelector:@selector(requestPairingTimeout:) withObject:nil afterDelay:PAIR_TIMMER_TIMEOUT];
@@ -286,10 +286,10 @@
 
 - (void) requestPairingTimeout:(id)sender
 {
-    NSLog(@"device request pairing timeout");
+    //NSLog(@"device request pairing timeout");
     if (_pairStatus==Requested) {
         _pairStatus=NotPaired;
-        NSLog(@"pairing timeout");
+        //NSLog(@"pairing timeout");
         if (_deviceDelegate) {
             [_deviceDelegate onDevicePairTimeout:self];
         }
@@ -299,7 +299,7 @@
 
 - (void) unpair
 {
-    NSLog(@"device unpair");
+    //NSLog(@"device unpair");
     _pairStatus=NotPaired;
     NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_PAIR];
     [np setBool:false forKey:@"pair"];
@@ -308,14 +308,14 @@
 
 - (void) acceptPairing
 {
-    NSLog(@"device accepted pair request");
+    //NSLog(@"device accepted pair request");
     NetworkPackage* np=[NetworkPackage createPublicKeyPackage];
     [self sendPackage:np tag:PACKAGE_TAG_PAIR];
 }
 
 - (void) rejectPairing
 {
-    NSLog(@"device rejected pair request ");
+    //NSLog(@"device rejected pair request ");
     [self unpair];
 }
 
@@ -325,7 +325,7 @@
     if (![self isReachable]) {
         return;
     }
-    NSLog(@"device reload plugins");
+    //NSLog(@"device reload plugins");
     [_failedPlugins removeAllObjects];
     PluginFactory* pluginFactory=[PluginFactory sharedInstance];
     NSArray* pluginNames=[pluginFactory getAvailablePlugins];

@@ -56,26 +56,26 @@
 
 - (void)setupSocket
 {
-    NSLog(@"lp setup socket");
+    //NSLog(@"lp setup socket");
     NSError* err;
     _tcpSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:socketQueue];
     _udpSocket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:socketQueue];
     [_udpSocket enableBroadcast:true error:&err];
     if (![_udpSocket bindToPort:PORT error:&err]) {
-        NSLog(@"udp bind error");
+        //NSLog(@"udp bind error");
     }
 }
 
 - (void)onStart
 {
-    NSLog(@"lp onstart");
+    //NSLog(@"lp onstart");
     [self setupSocket];
     NSError* err;
     if (![_udpSocket beginReceiving:&err]) {
-        NSLog(@"LanLinkProvider:UDP socket start error");
+        //NSLog(@"LanLinkProvider:UDP socket start error");
         return;
     }
-    NSLog(@"LanLinkProvider:UDP socket start");
+    //NSLog(@"LanLinkProvider:UDP socket start");
     if (![_tcpSocket isConnected]) {
         while (![_tcpSocket acceptOnPort:_tcpPort error:&err]) {
             _tcpPort++;
@@ -85,19 +85,19 @@
         }
     }
     
-    NSLog(@"LanLinkProvider:setup tcp socket on port %d",_tcpPort);
+    //NSLog(@"LanLinkProvider:setup tcp socket on port %d",_tcpPort);
     
     //Introduce myself , UDP broadcasting my id package
     NetworkPackage* np=[NetworkPackage createIdentityPackage];
     [np setInteger:_tcpPort forKey:@"tcpPort"];
     NSData* data=[np serialize];
-    NSLog(@"sending:%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+    //NSLog(@"sending:%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
 	[_udpSocket sendData:data  toHost:@"255.255.255.255" port:PORT withTimeout:-1 tag:UDPBROADCAST_TAG];
 }
 
 - (void)onStop
 {
-    NSLog(@"lp onstop");
+    //NSLog(@"lp onstop");
     [_udpSocket close];
     [_tcpSocket disconnect];
     for (GCDAsyncSocket* socket in _pendingSockets) {
@@ -117,7 +117,7 @@
 
 - (void) onRefresh
 {
-    NSLog(@"lp on refresh");
+    //NSLog(@"lp on refresh");
     if (![_tcpSocket isConnected]) {
         [self onNetworkChange];
         return;
@@ -126,14 +126,14 @@
         NetworkPackage* np=[NetworkPackage createIdentityPackage];
         [np setInteger:_tcpPort forKey:@"tcpPort"];
         NSData* data=[np serialize];
-        NSLog(@"sending:%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+        //NSLog(@"sending:%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
         [_udpSocket sendData:data toHost:@"255.255.255.255" port:PORT withTimeout:-1 tag:UDPBROADCAST_TAG];
     }
 }
 
 - (void)onNetworkChange
 {
-    NSLog(@"lp on networkchange");
+    //NSLog(@"lp on networkchange");
     [self onStop];
     [self onStart];
 }
@@ -141,7 +141,7 @@
 
 - (void) onLinkDestroyed:(BaseLink*)link
 {
-    NSLog(@"lp on linkdestroyed");
+    //NSLog(@"lp on linkdestroyed");
     if (link==[_connectedLinks objectForKey:[link _deviceId]]) {
         [_connectedLinks removeObjectForKey:[link _deviceId]];
     }
@@ -155,13 +155,13 @@
 //a new device is introducing itself to me
 - (void)udpSocket:(GCDAsyncUdpSocket *)sock didReceiveData:(NSData *)data fromAddress:(NSData *)address withFilterContext:(id)filterContext
 {
-    NSLog(@"lp receive udp package");
+    //NSLog(@"lp receive udp package");
 	NetworkPackage* np = [NetworkPackage unserialize:data];
-    NSLog(@"linkprovider:received a udp package from %@",[np objectForKey:@"deviceName"]);
+    //NSLog(@"linkprovider:received a udp package from %@",[np objectForKey:@"deviceName"]);
     //not id package
     
     if (![[np _Type] isEqualToString:PACKAGE_TYPE_IDENTITY]){
-        NSLog(@"LanLinkProvider:expecting an id package");
+        //NSLog(@"LanLinkProvider:expecting an id package");
         return;
     }
     
@@ -169,7 +169,7 @@
     NetworkPackage* np2=[NetworkPackage createIdentityPackage];
     NSString* myId=[[np2 _Body] valueForKey:@"deviceId"];
     if ([[np objectForKey:@"deviceId"] isEqualToString:myId]){
-        NSLog(@"Ignore my own id package");
+        //NSLog(@"Ignore my own id package");
         return;
     }
     
@@ -180,21 +180,21 @@
         return;
     }
     
-    NSLog(@"LanLinkProvider:id package received, creating link and a TCP connection socket");
+    //NSLog(@"LanLinkProvider:id package received, creating link and a TCP connection socket");
     GCDAsyncSocket* socket=[[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:socketQueue];
     uint16_t tcpPort=[np integerForKey:@"tcpPort"];
     
     NSError* error=nil;
     if (![socket connectToHost:host onPort:tcpPort error:&error]) {
-        NSLog(@"LanLinkProvider:tcp connection error");
-        NSLog(@"try reverse connection");
+        //NSLog(@"LanLinkProvider:tcp connection error");
+        //NSLog(@"try reverse connection");
         [[np2 _Body] setValue:[[NSNumber alloc ] initWithUnsignedInt:_tcpPort] forKey:@"tcpPort"];
         NSData* data=[np serialize];
-        NSLog(@"%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+        //NSLog(@"%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
         [_udpSocket sendData:data toHost:@"255.255.255.255" port:PORT withTimeout:-1 tag:UDPBROADCAST_TAG];
         return;
     }
-    NSLog(@"connecting");
+    //NSLog(@"connecting");
     
     //add to pending connection list
     @synchronized(_pendingNps)
@@ -217,7 +217,7 @@
  **/
 - (void)socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket
 {
-	NSLog(@"TCP server: didAcceptNewSocket");
+	//NSLog(@"TCP server: didAcceptNewSocket");
     [_pendingSockets addObject:newSocket];
     long index=[_pendingSockets indexOfObject:newSocket];
     //retrieve id package
@@ -233,7 +233,7 @@
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port
 {
     [sock setDelegate:nil];
-    NSLog(@"tcp socket didConnectToHost");
+    //NSLog(@"tcp socket didConnectToHost");
     
     
     //create LanLink and inform the background
@@ -263,14 +263,14 @@
  **/
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
-    NSLog(@"lp tcp socket didReadData");
-    NSLog(@"%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+    //NSLog(@"lp tcp socket didReadData");
+    //NSLog(@"%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
     NSString * jsonStr=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     NSArray* packageArray=[jsonStr componentsSeparatedByString:@"\n"];
     for (NSString* dataStr in packageArray) {
         NetworkPackage* np=[NetworkPackage unserialize:[dataStr dataUsingEncoding:NSUTF8StringEncoding]];
         if (![[np _Type] isEqualToString:PACKAGE_TYPE_IDENTITY]) {
-            NSLog(@"lp expecting an id package");
+            //NSLog(@"lp expecting an id package");
             return;
         }
         
@@ -341,9 +341,9 @@
  **/
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err
 {
-    NSLog(@"tcp socket did Disconnect");
+    //NSLog(@"tcp socket did Disconnect");
     if (sock==_tcpSocket) {
-        NSLog(@"tcp server disconnected");
+        //NSLog(@"tcp server disconnected");
         _tcpSocket=nil;
     }
     else
