@@ -63,7 +63,7 @@
 
 + (PluginInfo*) getPluginInfo
 {
-    return [[PluginInfo alloc] initWithInfos:NSLocalizedString(@"Battery",nil) displayName:NSLocalizedString(@"Battery",nil) description:NSLocalizedString(@"Battery",nil) enabledByDefault:true];
+    return [[PluginInfo alloc] initWithInfos:@"Battery" displayName:NSLocalizedString(@"Battery",nil) description:NSLocalizedString(@"Battery",nil) enabledByDefault:true];
 }
 
 @end

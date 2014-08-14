@@ -121,7 +121,7 @@ typedef NS_ENUM(NSInteger, DataClass)  {
 
 + (PluginInfo*) getPluginInfo
 {
-    return [[PluginInfo alloc] initWithInfos:NSLocalizedString(@"Contact",nil) displayName:NSLocalizedString(@"Contact",nil) description:NSLocalizedString(@"Contact",nil) enabledByDefault:true];
+    return [[PluginInfo alloc] initWithInfos:@"Contact" displayName:NSLocalizedString(@"Contact",nil) description:NSLocalizedString(@"Contact",nil) enabledByDefault:true];
 }
 
 - (void) updateAddressBook

@@ -107,7 +107,7 @@
 
 + (PluginInfo*) getPluginInfo
 {
-    return [[PluginInfo alloc] initWithInfos:NSLocalizedString(@"Reminder",nil) displayName:NSLocalizedString(@"Reminder",nil) description:NSLocalizedString(@"Reminder",nil) enabledByDefault:true];
+    return [[PluginInfo alloc] initWithInfos:@"Reminder" displayName:NSLocalizedString(@"Reminder",nil) description:NSLocalizedString(@"Reminder",nil) enabledByDefault:true];
 }
 
 // Check the authorization status of our application for Calendar

@@ -15,6 +15,7 @@
 #import "VTAcknowledgementsViewController.h"
 #import "MyStyleKit.h"
 #import "SplitViewController.h"
+#import "NavigationController.h"
 
 @interface DeviceViewController ()
 @property (nonatomic, retain) AppSettingViewController *_AppSettingViewController;
@@ -97,7 +98,7 @@
 
 
 - (IBAction)showSettingsModal:(id)sender {
-    UINavigationController *aNavController = [[UINavigationController alloc] initWithRootViewController:self._AppSettingViewController];
+    NavigationController *aNavController = [[NavigationController alloc] initWithRootViewController:self._AppSettingViewController];
     //[viewController setShowCreditsFooter:NO];   // Uncomment to not display InAppSettingsKit credits for creators.
     // But we encourage you not to uncomment. Thank you!
     self._AppSettingViewController.showDoneButton = YES;

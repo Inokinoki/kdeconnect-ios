@@ -37,7 +37,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [self setTitle:NSLocalizedString(@"Settings",nil)];
+    [self setTitle:NSLocalizedString(@"Plugin Settings",nil)];
 }
 
 - (void)didReceiveMemoryWarning

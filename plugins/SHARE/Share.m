@@ -89,7 +89,7 @@
 
 + (PluginInfo*) getPluginInfo
 {
-    return [[PluginInfo alloc] initWithInfos:NSLocalizedString(@"Share",nil) displayName:NSLocalizedString(@"Share",nil) description:NSLocalizedString(@"Share",nil) enabledByDefault:true];
+    return [[PluginInfo alloc] initWithInfos:@"Share" displayName:NSLocalizedString(@"Share",nil) description:NSLocalizedString(@"Share",nil) enabledByDefault:true];
 
 }
 - (void)photoSourceSelect:(id)sender

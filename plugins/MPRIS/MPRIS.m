@@ -126,7 +126,7 @@
 
 + (PluginInfo*) getPluginInfo
 {
-    return [[PluginInfo alloc] initWithInfos:NSLocalizedString(@"MPRIS",nil) displayName:NSLocalizedString(@"MPRIS",nil) description:NSLocalizedString(@"MPRIS",nil) enabledByDefault:true];
+    return [[PluginInfo alloc] initWithInfos:@"MPRIS" displayName:NSLocalizedString(@"MPRIS",nil) description:NSLocalizedString(@"MPRIS",nil) enabledByDefault:true];
 
 }
 

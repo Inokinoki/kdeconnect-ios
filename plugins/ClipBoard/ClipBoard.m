@@ -51,7 +51,7 @@
 
 + (PluginInfo*) getPluginInfo
 {
-    return [[PluginInfo alloc] initWithInfos:@"ClipBoard" displayName:@"ClipBoard" description:@"ClipBoard" enabledByDefault:true];
+    return [[PluginInfo alloc] initWithInfos:@"ClipBoard" displayName:NSLocalizedString(@"ClipBoard",nil) description:NSLocalizedString(@"ClipBoard",nil) enabledByDefault:true];
 
 }
 

@@ -63,12 +63,12 @@
 #else
 	#define LOGGING_FACILITY(X, Y)	\
 				if (!(X)) {			\
-					//NSLog(Y);		\
-				}					
+					NSLog(Y);		\
+				}
 
 	#define LOGGING_FACILITY1(X, Y, Z)	\
 				if (!(X)) {				\
-					//NSLog(Y, Z);		\
+					NSLog(Y, Z);		\
 				}						
 #endif
 

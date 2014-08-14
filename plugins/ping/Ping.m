@@ -85,7 +85,7 @@
 
 + (PluginInfo*) getPluginInfo
 {
-    return [[PluginInfo alloc] initWithInfos:NSLocalizedString(@"Ping",nil) displayName:NSLocalizedString(@"Ping",nil) description:NSLocalizedString(@"Ping",nil) enabledByDefault:true];
+    return [[PluginInfo alloc] initWithInfos:@"Ping" displayName:NSLocalizedString(@"Ping",nil) description:NSLocalizedString(@"Ping",nil) enabledByDefault:true];
 }
 
 

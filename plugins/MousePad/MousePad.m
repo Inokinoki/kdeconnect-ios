@@ -83,7 +83,7 @@
 
 + (PluginInfo*) getPluginInfo
 {
-    return [[PluginInfo alloc] initWithInfos:NSLocalizedString(@"MousePad",nil) displayName:NSLocalizedString(@"MousePad",nil) description:NSLocalizedString(@"MousePad",nil) enabledByDefault:true];
+    return [[PluginInfo alloc] initWithInfos:@"MousePad" displayName:NSLocalizedString(@"MousePad",nil) description:NSLocalizedString(@"MousePad",nil) enabledByDefault:true];
 
 }
 
