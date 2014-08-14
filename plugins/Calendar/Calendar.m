@@ -256,9 +256,13 @@
     NSDate* dt_e=xbicvevent.dateEnd;
     NSDate* dt_created=xbicvevent.dateCreated;
     NSDate* dt_modified=xbicvevent.dateLastModified;
+    NSCalendar* calendar=[[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    [calendar setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
+    NSDateComponents* component_s=[calendar components:(NSDayCalendarUnit|NSHourCalendarUnit|NSMinuteCalendarUnit|NSSecondCalendarUnit)  fromDate:dt_s];
+    NSDateComponents* component_e=[calendar components:(NSDayCalendarUnit|NSHourCalendarUnit|NSMinuteCalendarUnit|NSSecondCalendarUnit)  fromDate:dt_e];
     BOOL allDay=!dt_e ||
-                ([dt_e isEqualToDate:[dt_s dateByAddingTimeInterval:24*3600]]) ||
-                ([dt_e isEqualToDate:[dt_s dateByAddingTimeInterval:24*3600-1]]);
+    (component_s.hour==0 && component_s.minute==0 && component_s.second==0
+     && component_e.hour==0 && component_e.minute==0 && component_e.second==0);
     
     if (!uid||!summary||!dt_s) {
         *err=[[NSError alloc] initWithDomain:@"iCal parse failed" code:0 userInfo:nil];
@@ -331,7 +335,7 @@
         [df setTimeZone:timeZone];
         [df setDateFormat:@"yyyyMMdd"];
         NSString* dt_s=[df stringFromDate:event.startDate];
-        NSString* dt_e=[df stringFromDate:event.endDate];
+        NSString* dt_e=[df stringFromDate:[event.endDate dateByAddingTimeInterval:24*3600]];
         [iCal appendFormat:@"DTSTART;VALUE=DATE:%@\n",dt_s];
         [iCal appendFormat:@"DTEND;VALUE=DATE:%@\n",dt_e];
     }
