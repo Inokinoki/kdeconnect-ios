@@ -39,6 +39,8 @@ typedef NS_ENUM(NSUInteger, DeviceType)
 @property(readonly,nonatomic) DeviceType _type;
 @property(readonly,nonatomic) NSInteger _protocolVersion;
 @property(readonly,nonatomic) PairStatus _pairStatus;
+@property(readonly,nonatomic) NSArray* _supportedIncomingInterfaces;
+@property(readonly,nonatomic) NSArray* _supportedOutgoingInterfaces;
 @property(nonatomic) id _deviceDelegate;
 
 - (Device*) init:(NSString*)deviceId setDelegate:(id)deviceDelegate;

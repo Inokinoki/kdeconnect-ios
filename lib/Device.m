@@ -27,6 +27,8 @@
 @synthesize _links;
 @synthesize _plugins;
 @synthesize _failedPlugins;
+@synthesize _supportedIncomingInterfaces;
+@synthesize _supportedOutgoingInterfaces;
 
 - (Device*) init:(NSString*)deviceId setDelegate:(id)deviceDelegate
 {
@@ -53,6 +55,8 @@
         _id=[np objectForKey:@"deviceId"];
         _type=[Device Str2Devicetype:[np objectForKey:@"deviceType"]];
         _name=[np objectForKey:@"deviceName"];
+        _supportedIncomingInterfaces=[np objectForKey:@"SupportedIncomingInterfaces"];
+        _supportedOutgoingInterfaces=[np objectForKey:@"SupportedOutgoingInterfaces"];
         _links=[NSMutableArray arrayWithCapacity:1];
         _plugins=[NSMutableDictionary dictionaryWithCapacity:1];
         _failedPlugins=[NSMutableArray arrayWithCapacity:1];
@@ -80,6 +84,9 @@
     _id=[np objectForKey:@"deviceId"];
     _name=[np objectForKey:@"deviceName"];
     _type=[Device Str2Devicetype:[np objectForKey:@"deviceType"]];
+    _supportedIncomingInterfaces=[[np objectForKey:@"SupportedIncomingInterfaces"] componentsSeparatedByString:@","];
+    _supportedOutgoingInterfaces=[[np objectForKey:@"SupportedOutgoingInterfaces"] componentsSeparatedByString:@","];
+    [self saveSetting];
     [Link set_linkDelegate:self];
     if ([_links count]==1) {
         //NSLog(@"one link available");
@@ -219,7 +226,8 @@
     _type=[Device Str2Devicetype:[_devSettings objectForKey:@"type"]];
     _pairStatus=Paired;
     _protocolVersion=[_devSettings integerForKey:@"protocolVersion"];
-    //            _type=[dict valueForKey:@"type"];
+    _supportedIncomingInterfaces=[_devSettings objectForKey:@"SupportedIncomingInterfaces"];
+    _supportedOutgoingInterfaces=[_devSettings objectForKey:@"SupportedOutgoingInterfaces"];
 }
 
 - (void) saveSetting
@@ -229,6 +237,8 @@
     [_devSettings setObject:_name forKey:@"name"];
     [_devSettings setObject:[Device Devicetype2Str:_type] forKey:@"type"];
     [_devSettings setInteger:_protocolVersion forKey:@"protocolVersion"];
+    [_devSettings setObject:_supportedIncomingInterfaces forKey:@"SupportedIncomingInterfaces"];
+    [_devSettings setObject:_supportedOutgoingInterfaces forKey:@"SupportedOutgoingInterfaces"];
     [_devSettings synchronize];
 }
 

@@ -37,7 +37,6 @@
 #define PACKAGE_TYPE_PAIR       @"kdeconnect.pair"
 #define PACKAGE_TYPE_PING       @"kdeconnect.ping"
 #define PACKAGE_TYPE_MPRIS      @"kdeconnect.mpris"
-#define PACKAGE_TYPE_TELEPHONY  @"kdeconnect.telephony"
 #define PACKAGE_TYPE_SHARE      @"kdeconnect.share"
 #define PACKAGE_TYPE_CLIPBOARD  @"kdeconnect.clipboard"
 #define PACKAGE_TYPE_MOUSEPAD   @"kdeconnect.mousepad"

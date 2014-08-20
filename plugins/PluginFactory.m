@@ -70,7 +70,7 @@
     if ([setting objectForKey:pluginName]!=nil && ![setting boolForKey:pluginName]) {
         return nil;
     }
-
+    
     //NSLog(@"pluginfactory instatiate plugin for device");
     Class pluginClass=[_availablePlugins valueForKey:pluginName];
     Plugin* plugin;
@@ -100,6 +100,29 @@
     [_availablePlugins setValue:[Calendar class] forKeyPath:[[Calendar getPluginInfo] _pluginName]];
     [_availablePlugins setValue:[Reminder class] forKey:[[Reminder getPluginInfo] _pluginName]];
     [_availablePlugins setValue:[Contact class] forKeyPath:[[Contact getPluginInfo]_pluginName]];
+}
+
+- (NSArray*) getSupportedIncomingInterfaces
+{
+    return @[PACKAGE_TYPE_CALENDAR,
+             PACKAGE_TYPE_CLIPBOARD,
+             PACKAGE_TYPE_PING,
+             PACKAGE_TYPE_REMINDER,
+             PACKAGE_TYPE_SHARE,
+             PACKAGE_TYPE_CONTACT];
+}
+
+- (NSArray*) getSupportedOutgoingInterfaces
+{
+    return @[PACKAGE_TYPE_PING,
+             PACKAGE_TYPE_MPRIS,
+             PACKAGE_TYPE_SHARE,
+             PACKAGE_TYPE_CLIPBOARD,
+             PACKAGE_TYPE_MOUSEPAD,
+             PACKAGE_TYPE_BATTERY,
+             PACKAGE_TYPE_CALENDAR,
+             PACKAGE_TYPE_REMINDER,
+             PACKAGE_TYPE_CONTACT];
 }
 
 @end

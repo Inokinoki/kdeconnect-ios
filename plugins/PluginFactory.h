@@ -21,7 +21,8 @@
 + (id) sharedInstance;
 - (Plugin*) instantiatePluginForDevice:(Device*)device pluginName:(NSString*)pluginName;
 - (NSArray*) getAvailablePlugins;
-
+- (NSArray*) getSupportedIncomingInterfaces;
+- (NSArray*) getSupportedOutgoingInterfaces;
 @end
 
 

@@ -9,6 +9,7 @@
 #import "NetworkPackage.h"
 #import "SecKeyWrapper.h"
 #import "KeychainItemWrapper.h"
+#import "PluginFactory.h"
 
 #define LFDATA [NSData dataWithBytes:"\x0D\x0A" length:2]
 
@@ -46,7 +47,11 @@ __strong static NSString* _UUID;
     [np setInteger:ProtocolVersion forKey:@"protocolVersion"];
     [np setObject:@"Phone" forKey:@"deviceType"];
     [np setInteger:1714 forKey:@"tcpPort"];
-    
+    [np setObject:[[[PluginFactory sharedInstance] getSupportedIncomingInterfaces] componentsJoinedByString:@","] forKey:@"SupportedIncomingInterfaces"];
+    [np setObject:[[[PluginFactory sharedInstance] getSupportedOutgoingInterfaces] componentsJoinedByString:@"," ] forKey:@"SupportedOutgoingInterfaces"];
+//    [np setObject:[[PluginFactory sharedInstance] getSupportedIncomingInterfaces] forKey:@"SupportedIncomingInterfaces"];
+//    [np setObject:[[PluginFactory sharedInstance] getSupportedOutgoingInterfaces] forKey:@"SupportedOutgoingInterfaces"];
+//    
     return np;
 }
 
@@ -56,13 +61,13 @@ __strong static NSString* _UUID;
     if (!_UUID) {
         NSString* group=@"34RXKJTKWE.org.kde.kdeconnect-ios";
         KeychainItemWrapper* wrapper=[[KeychainItemWrapper alloc] initWithIdentifier:@"org.kde.kdeconnect-ios" accessGroup:group];
-//        _UUID=[wrapper objectForKey:(__bridge id)(kSecValueData)];
-//        if (!_UUID) {
+        _UUID=[wrapper objectForKey:(__bridge id)(kSecValueData)];
+        if (!_UUID) {
             _UUID=[[UIDevice currentDevice].identifierForVendor UUIDString];
             _UUID=[_UUID stringByReplacingOccurrencesOfString:@"-" withString:@""];
             _UUID=[_UUID stringByReplacingOccurrencesOfString:@"_" withString:@""];
             [wrapper setObject:_UUID forKey:(__bridge id)(kSecValueData)];
-//        }
+        }
     }
     return _UUID;
 }
