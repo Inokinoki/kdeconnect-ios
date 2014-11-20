@@ -10,29 +10,29 @@
 	<string>kdeconnect-ios</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>51C9221D-7B94-4202-8692-CC98CD106DE5</key>
+		<key>01B4A95FD39FDDB5C156003E5B19A5FAF9EE8D22</key>
 		<string>kde:scratch/yangqiao/kdeconnect-ios</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>kdeconnect-ios.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>51C9221D-7B94-4202-8692-CC98CD106DE5</key>
+		<key>01B4A95FD39FDDB5C156003E5B19A5FAF9EE8D22</key>
 		<string>..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>kde:scratch/yangqiao/kdeconnect-ios</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>51C9221D-7B94-4202-8692-CC98CD106DE5</string>
+	<string>01B4A95FD39FDDB5C156003E5B19A5FAF9EE8D22</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>51C9221D-7B94-4202-8692-CC98CD106DE5</string>
+			<string>01B4A95FD39FDDB5C156003E5B19A5FAF9EE8D22</string>
 			<key>IDESourceControlWCCName</key>
 			<string>kdeconnect-ios</string>
 		</dict>
