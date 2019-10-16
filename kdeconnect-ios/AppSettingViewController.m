@@ -24,7 +24,6 @@
 #import "IASKSettingsReader.h"
 #import "IASKPSSliderSpecifierViewCell.h"
 #import "IASKPSTextFieldSpecifierViewCell.h"
-#import "IASKPSTitleValueSpecifierViewCell.h"
 #import "IASKSwitch.h"
 #import "IASKSlider.h"
 #import "IASKSpecifier.h"
