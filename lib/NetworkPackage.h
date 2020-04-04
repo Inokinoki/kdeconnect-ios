@@ -41,8 +41,11 @@
 #define PACKAGE_TAG_REMINDER    12
 #define PACKAGE_TAG_CONTACT     13 
 
-#define PORT                    1714
-#define ProtocolVersion         5
+#define UDP_PORT                1716
+#define PORT                    1716    /* Fallback */
+#define MIN_TCP_PORT            1716
+#define MAX_TCP_PORT            1764
+#define ProtocolVersion         7
 
 #define PACKAGE_TYPE_IDENTITY   @"kdeconnect.identity"
 #define PACKAGE_TYPE_ENCRYPTED  @"kdeconnect.encrypted"
@@ -61,7 +64,7 @@
 
 @interface NetworkPackage : NSObject
 
-@property(nonatomic) NSString* _Id;
+@property(nonatomic) NSNumber *_Id;
 @property(nonatomic) NSString *_Type;
 @property(nonatomic) NSMutableDictionary *_Body;
 @property(nonatomic) NSData *_Payload;

@@ -23,7 +23,7 @@
 #import "KeychainItemWrapper.h"
 #import "PluginFactory.h"
 
-#define LFDATA [NSData dataWithBytes:"\x0D\x0A" length:2]
+#define LFDATA [NSData dataWithBytes:"\x0A" length:1]
 
 __strong static NSString* _publicKeyStr;
 __strong static NSString* _UUID;
@@ -35,7 +35,7 @@ __strong static NSString* _UUID;
 {
     if ((self=[super init]))
     {
-        _Id=[[NSNumber numberWithLong:[[NSDate date] timeIntervalSince1970]] stringValue];
+        _Id=[NSNumber numberWithLong:[[NSDate date] timeIntervalSince1970]];
         _Type=type;
         _Body=[NSMutableDictionary dictionary];
         _publicKeyStr=nil;
@@ -54,13 +54,13 @@ __strong static NSString* _UUID;
 +(NetworkPackage*) createIdentityPackage
 {
     NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_IDENTITY];
-    [np setObject:[NetworkPackage getUUID]forKey:@"deviceId"];
+    [np setObject:[NetworkPackage getUUID] forKey:@"deviceId"];
     [np setObject:[UIDevice currentDevice].name forKey:@"deviceName"];
     [np setInteger:ProtocolVersion forKey:@"protocolVersion"];
-    [np setObject:@"Phone" forKey:@"deviceType"];
-    [np setInteger:1714 forKey:@"tcpPort"];
-    [np setObject:[[[PluginFactory sharedInstance] getSupportedIncomingInterfaces] componentsJoinedByString:@","] forKey:@"SupportedIncomingInterfaces"];
-    [np setObject:[[[PluginFactory sharedInstance] getSupportedOutgoingInterfaces] componentsJoinedByString:@"," ] forKey:@"SupportedOutgoingInterfaces"];
+    [np setObject:@"phone" forKey:@"deviceType"];
+    [np setInteger:1716 forKey:@"tcpPort"];
+    [np setObject:[[PluginFactory sharedInstance] getSupportedIncomingInterfaces] forKey:@"incomingCapabilities"];
+    [np setObject:[[PluginFactory sharedInstance] getSupportedOutgoingInterfaces] forKey:@"outgoingCapabilities"];
 //    [np setObject:[[PluginFactory sharedInstance] getSupportedIncomingInterfaces] forKey:@"SupportedIncomingInterfaces"];
 //    [np setObject:[[PluginFactory sharedInstance] getSupportedOutgoingInterfaces] forKey:@"SupportedOutgoingInterfaces"];
 //    
@@ -81,7 +81,8 @@ __strong static NSString* _UUID;
             [wrapper setObject:_UUID forKey:(__bridge id)(kSecValueData)];
         }
     }
-    return _UUID;
+    NSLog(@"UUID: %@\n", _UUID);
+    return @"abcdefinoki";
 }
 
 + (NetworkPackage*) createPublicKeyPackage

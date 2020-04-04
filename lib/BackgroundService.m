@@ -93,7 +93,7 @@
 
 - (void) startDiscovery
 {
-    //NSLog(@"bg start Discovery");
+    NSLog(@"bg start Discovery");
     for (BaseLinkProvider* lp in _linkProviders) {
         [lp onStart];
     }
