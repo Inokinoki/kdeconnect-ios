@@ -71,18 +71,18 @@ __strong static NSString* _UUID;
 + (NSString*) getUUID
 {
     if (!_UUID) {
-        NSString* group=@"34RXKJTKWE.org.kde.kdeconnect-ios";
+        NSString* group=@"Q9HDHY97NW.org.kde.kdeconnect-ios";
         KeychainItemWrapper* wrapper=[[KeychainItemWrapper alloc] initWithIdentifier:@"org.kde.kdeconnect-ios" accessGroup:group];
         _UUID=[wrapper objectForKey:(__bridge id)(kSecValueData)];
-        if (!_UUID) {
-            _UUID=[[UIDevice currentDevice].identifierForVendor UUIDString];
+        if (!_UUID || [_UUID length] < 1) {
+            _UUID=[[[UIDevice currentDevice] identifierForVendor] UUIDString];
             _UUID=[_UUID stringByReplacingOccurrencesOfString:@"-" withString:@""];
             _UUID=[_UUID stringByReplacingOccurrencesOfString:@"_" withString:@""];
-            [wrapper setObject:_UUID forKey:(__bridge id)(kSecValueData)];
+            // [wrapper setObject:_UUID forKey:(__bridge id)(kSecValueData)];
         }
     }
-    NSLog(@"UUID: %@\n", _UUID);
-    return @"abcdefinoki";
+    NSLog(@"Get UUID %@", _UUID);
+    return _UUID;
 }
 
 + (NetworkPackage*) createPublicKeyPackage
@@ -191,6 +191,8 @@ __strong static NSString* _UUID;
     [np set_Body:[info valueForKey:@"body"]];
     [np set_PayloadSize:[[info valueForKey:@"payloadSize"]longValue]];
     [np set_PayloadTransferInfo:[info valueForKey:@"payloadTransferInfo"]];
+    
+    // NSLog(@"Parsed id: %@, type: %@", [info valueForKey:@"id"], [info valueForKey:@"type"]);
     
     //TO-DO should change for laptop
     if ([np _PayloadSize]==-1) {

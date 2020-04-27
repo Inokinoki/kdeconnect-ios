@@ -72,7 +72,9 @@
     NSError* err;
     _tcpSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:socketQueue];
     _udpSocket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:socketQueue];
-    [_udpSocket enableBroadcast:true error:&err];
+    if (![_udpSocket enableBroadcast:true error:&err]) {
+        NSLog(@"udp listen broadcast error");
+    }
     if (![_udpSocket bindToPort:UDP_PORT error:&err]) {
         NSLog(@"udp bind error");
     }
@@ -189,6 +191,7 @@
     NSString* host;
     [GCDAsyncUdpSocket getHost:&host port:nil fromAddress:address];
     if ([host hasPrefix:@"::ffff:"]) {
+        NSLog(@"Ignore packet");
         return;
     }
     
@@ -207,6 +210,10 @@
         return;
     }
     NSLog(@"connecting");
+    
+    //NetworkPackage *inp = [NetworkPackage createIdentityPackage];
+    //NSData *inpData = [inp serialize];
+    //[socket writeData:inpData withTimeout:0 tag:PACKAGE_TAG_IDENTITY];
     
     //add to pending connection list
     @synchronized(_pendingNps)
@@ -234,7 +241,6 @@
     long index=[_pendingSockets indexOfObject:newSocket];
     //retrieve id package
     [newSocket readDataToData:[GCDAsyncSocket LFData] withTimeout:-1 tag:index];
-
 }
 
 /**
@@ -245,7 +251,7 @@
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port
 {
     [sock setDelegate:nil];
-    //NSLog(@"tcp socket didConnectToHost");
+    NSLog(@"tcp socket didConnectToHost %@", host);
     
     
     //create LanLink and inform the background
@@ -265,8 +271,106 @@
         [_linkProviderDelegate onConnectionReceived:np link:link];
     }
     [oldlink disconnect];
+    
+    /* Start TLS */
+    // NSMutableDictionary *settings = [[NSMutableDictionary alloc] init];
+    // [settings setObject:[NSNumber numberWithBool:YES]
+    //             forKey:GCDAsyncSocketManuallyEvaluateTrust];
+    // [settings setObject: (id)kCFBooleanFalse forKey: (__bridge NSString *)kCFStreamSSLValidatesCertificateChain];
+    // [sock startTLS: settings];
+    // NSLog(@"Start TLS");
+    
     np=[NetworkPackage createIdentityPackage];
     [sock writeData:[np serialize] withTimeout:-1 tag:PACKAGE_TAG_IDENTITY];
+    NSLog(@"End Send my identity package");
+    
+    
+    // Start TLS
+    /*
+    NSDictionary *tlsSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
+                                 (id)kCFStreamSocketSecurityLevelNegotiatedSSL, (id)kCFStreamSSLLevel,
+                                 (id)kCFBooleanFalse, (id)kCFStreamSSLAllowsExpiredCertificates,
+                                 (id)kCFBooleanFalse, (id)kCFStreamSSLAllowsExpiredRoots,
+                                 (id)kCFBooleanTrue, (id)kCFStreamSSLAllowsAnyRoot,
+                                 (id)kCFBooleanFalse, (id)kCFStreamSSLValidatesCertificateChain,
+                                 nil];
+    [sock startTLS: tlsSettings];
+    NSLog(@"Start Client TLS");
+     */
+    
+    // Declare any Carbon variables we may create
+    // We do this here so it's easier to compare to the bottom of this method where we release them all
+    /*
+     SecKeychainRef keychain = NULL;
+    SecIdentitySearchRef searchRef = NULL;
+    
+    NSMutableArray *certificates = [[NSMutableArray alloc] init];
+    
+    SecKeychainCopyDefault(&keychain);
+    SecIdentitySearchCreate(keychain, CSSM_KEYUSE_ANY, &searchRef);
+    
+    SecIdentityRef currentIdentityRef = NULL;
+    while (searchRef && (SecIdentitySearchCopyNext(searchRef, &currentIdentityRef) != errSecItemNotFound)) {
+        // Extract the private key from the identity, and examine it to see if it will work for us
+        SecKeyRef privateKeyRef = NULL;
+        SecIdentityCopyPrivateKey(currentIdentityRef, &privateKeyRef);
+        
+        if (privateKeyRef) {
+            SecItemAttr itemAttributes[] = {kSecKeyPrintName};
+            
+            SecExternalFormat externalFormats[] = {kSecFormatUnknown};
+            
+            int itemAttributesSize  = sizeof(itemAttributes) / sizeof(*itemAttributes);
+            int externalFormatsSize = sizeof(externalFormats) / sizeof(*externalFormats);
+            NSAssert(itemAttributesSize == externalFormatsSize, @"Arrays must have identical counts!");
+            
+            SecKeychainAttributeInfo info = {itemAttributesSize, (void *)&itemAttributes, (void *)&externalFormats};
+            
+            SecKeychainAttributeList *privateKeyAttributeList = NULL;
+            SecKeychainItemCopyAttributesAndData((SecKeychainItemRef)privateKeyRef,
+                                                 &info, NULL, &privateKeyAttributeList, NULL, NULL);
+            
+            if (privateKeyAttributeList) {
+//                SecKeychainAttribute nameAttribute = privateKeyAttributeList->attr[0];
+                
+//                NSString *name = [[[NSString alloc] initWithBytes:nameAttribute.data
+//                                                           length:(nameAttribute.length)
+//                                                         encoding:NSUTF8StringEncoding] autorelease];
+                
+                //                NSLog(@"name is %@", name);
+                
+                // Ugly Hack
+                // For some reason, name sometimes contains odd characters at the end of it
+                // I'm not sure why, and I don't know of a proper fix, thus the use of the hasPrefix: method
+//                if ([name hasPrefix:@"eVue"])
+//                {
+                    // It's possible for there to be more than one private key with the above prefix
+                    // But we're only allowed to have one identity, so we make sure to only add one to the array
+                    if ([certificates count] == 0) {
+                        [certificates addObject:(id)currentIdentityRef];
+                    }
+//                }
+                
+                SecKeychainItemFreeAttributesAndData(privateKeyAttributeList, NULL);
+            }
+            
+            CFRelease(privateKeyRef);
+        }
+        
+        CFRelease(currentIdentityRef);
+    }
+    
+    if(keychain)  CFRelease(keychain);
+    if(searchRef) CFRelease(searchRef);
+    
+    tls1 = [[NSDictionary alloc] initWithObjectsAndKeys:
+            (id)kCFStreamSocketSecurityLevelNegotiatedSSL, (id)kCFStreamSSLLevel,
+            certificates, (id)kCFStreamSSLCertificates,
+            (id)kCFBooleanTrue, (id)kCFStreamSSLIsServer,
+            nil];
+    
+    [certificates release];
+     */
 }
 
 /**
@@ -275,20 +379,35 @@
  **/
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
-    //NSLog(@"lp tcp socket didReadData");
-    //NSLog(@"%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+    NSLog(@"lp tcp socket didReadData");
+    NSLog(@"%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
     NSString * jsonStr=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     NSArray* packageArray=[jsonStr componentsSeparatedByString:@"\n"];
     for (NSString* dataStr in packageArray) {
+        if ([dataStr length] <= 0) continue;
+
         NetworkPackage* np=[NetworkPackage unserialize:[dataStr dataUsingEncoding:NSUTF8StringEncoding]];
         if (![[np _Type] isEqualToString:PACKAGE_TYPE_IDENTITY]) {
-            //NSLog(@"lp expecting an id package");
+            NSLog(@"lp expecting an id package %@", [np _Type]);
             return;
         }
         
         [sock setDelegate:nil];
         [_pendingSockets removeObject:sock];
         NSString* deviceId=[np objectForKey:@"deviceId"];
+        
+        /* TLS */
+        NSDictionary *tlsSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
+             (id)kCFStreamSocketSecurityLevelNegotiatedSSL, (id)kCFStreamSSLLevel,
+             (id)kCFBooleanFalse,       (id)kCFStreamSSLAllowsExpiredCertificates,  /* Disallowed expired certificate   */
+             (id)kCFBooleanFalse,       (id)kCFStreamSSLAllowsExpiredRoots,         /* Disallowed expired Roots CA      */
+             (id)kCFBooleanTrue,        (id)kCFStreamSSLAllowsAnyRoot,              /* Allow any root CA                */
+             (id)kCFBooleanFalse,       (id)kCFStreamSSLValidatesCertificateChain,  /* Do not validate all              */
+             (id)deviceId,              (id)kCFStreamSSLPeerName,                   /* Set peer name to the one we received */
+             nil];
+        [sock startTLS: tlsSettings];
+        NSLog(@"Start Client TLS");
+        
         LanLink* oldlink;
         if ([[_connectedLinks allKeys] containsObject:deviceId]) {
             oldlink=[_connectedLinks objectForKey:deviceId];

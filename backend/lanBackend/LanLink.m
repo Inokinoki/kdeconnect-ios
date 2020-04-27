@@ -85,6 +85,8 @@
         return false;
     }
     
+    // return [self sendPackageEncypted:np tag:tag];
+    
     NSData* data=[np serialize];
     [_socket writeData:data withTimeout:-1 tag:tag];
     //TO-DO return true only when send successfully
@@ -101,7 +103,7 @@
         NSError* err;
         while (![socket acceptOnPort:_payloadPort error:&err]) {
             _payloadPort++;
-            if (_payloadPort>1764) {
+            if (_payloadPort>MAX_TCP_PORT) {
                 //NSLog(@"LanLink send payload failed as no port available");
                 return false;
             }
@@ -178,7 +180,17 @@
  **/
 - (void)socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket
 {
-	//NSLog(@"Lanlink: didAcceptNewSocket");
+    /* Start Server TLS */
+    NSDictionary *tlsSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
+                                 (id)kCFStreamSocketSecurityLevelNegotiatedSSL, (id)kCFStreamSSLLevel,
+                                 (id)kCFBooleanFalse, (id)kCFStreamSSLAllowsExpiredCertificates,
+                                 (id)kCFBooleanFalse, (id)kCFStreamSSLAllowsExpiredRoots,
+                                 (id)kCFBooleanTrue, (id)kCFStreamSSLAllowsAnyRoot,
+                                 (id)kCFBooleanFalse, (id)kCFStreamSSLValidatesCertificateChain, nil];
+    [newSocket startTLS: tlsSettings];
+    NSLog(@"Start TLS");
+    
+    NSLog(@"Lanlink: didAcceptNewSocket");
     NSMutableArray* payloadArray;
     @synchronized(_pendingLSockets){
         //TO-DO should use a single sock for listing and send payload with newSocket
@@ -213,11 +225,28 @@
 
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port
 {
-    //NSLog(@"Lanlink did connect to payload host, begin recieving data");
-    @synchronized(_pendingRSockets){
-    NSUInteger index=[_pendingRSockets indexOfObject:sock];
-    [sock readDataToLength:[[_pendingPayloadNP objectAtIndex:index] _PayloadSize] withTimeout:-1 tag:PACKAGE_TAG_PAYLOAD];
-    }
+    NSLog(@"Lanlink did connect to payload host, begin recieving data");
+    
+    /* Start Client TLS */
+    NSDictionary *tlsSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
+                                 (id)kCFStreamSocketSecurityLevelNegotiatedSSL, (id)kCFStreamSSLLevel,
+                                 (id)kCFBooleanFalse, (id)kCFStreamSSLAllowsExpiredCertificates,
+                                 (id)kCFBooleanFalse, (id)kCFStreamSSLAllowsExpiredRoots,
+                                 (id)kCFBooleanTrue, (id)kCFStreamSSLAllowsAnyRoot,
+                                 (id)kCFBooleanFalse, (id)kCFStreamSSLValidatesCertificateChain,
+                                 nil];
+    [sock startTLS: tlsSettings];
+    NSLog(@"Start Client TLS");
+    
+    NetworkPackage *np = [NetworkPackage createIdentityPackage];
+    NSData *data = [np serialize];
+    
+    [sock writeData:data withTimeout:0 tag:PACKAGE_TAG_IDENTITY];
+    
+    // @synchronized(_pendingRSockets){
+    //    NSUInteger index=[_pendingRSockets indexOfObject:sock];
+    //    [sock readDataToLength:[[_pendingPayloadNP objectAtIndex:index] _PayloadSize] withTimeout:-1 tag:PACKAGE_TAG_PAYLOAD];
+    //}
 }
 
 /**
@@ -241,7 +270,7 @@
         [_linkDelegate onPackageReceived:np];
         return;
     }
-    //NSLog(@"llink did read data");
+    NSLog(@"llink did read data");
     //BUG even if we read with a seperator LFData , it's still possible to receive several data package together. So we split the string and retrieve the package
     [_socket readDataToData:[GCDAsyncSocket LFData] withTimeout:-1 tag:PACKAGE_TAG_NORMAL];
     NSString * jsonStr=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
@@ -265,7 +294,7 @@
                 NSError* error=nil;
                 uint16_t tcpPort=[[[np _PayloadTransferInfo] valueForKey:@"port"] unsignedIntValue];
                 if (![socket connectToHost:[sock connectedHost] onPort:tcpPort error:&error]){
-                    //NSLog(@"Lanlink connect to payload host failed");
+                    NSLog(@"Lanlink connect to payload host failed");
                 }
                 return;
             }
