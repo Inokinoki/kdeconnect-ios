@@ -51,6 +51,7 @@
 #import <Security/Security.h>
 #import <CommonCrypto/CommonDigest.h>
 #import <CommonCrypto/CommonCryptor.h>
+#import "SCCSR.h"   /* For CSR */
 
 /* Begin global declarations */
 
@@ -83,12 +84,14 @@
 	SecKeyRef publicKeyRef;
 	SecKeyRef privateKeyRef;
 	NSData * symmetricKeyRef;
+    NSData * certificate;
 }
 
 @property (nonatomic, retain) NSData * publicTag;
 @property (nonatomic, retain) NSData * privateTag;
 @property (nonatomic, retain) NSData * symmetricTag;
 @property (nonatomic, retain) NSData * symmetricKeyRef;
+@property (nonatomic, retain) NSData * certificate;
 
 + (SecKeyWrapper *)sharedWrapper;
 - (void)generateKeyPair:(NSUInteger)keySize;
@@ -109,6 +112,7 @@
 - (NSData *)getPublicKeyBits;
 - (NSString *) getRSAPublicKeyAsBase64;
 - (SecKeyRef)getPrivateKeyRef;
+- (NSData *)getPrivateKeyBits;
 - (SecKeyRef)getPeerPublicKeyRef:(NSString*)peerName;
 - (CFTypeRef)getPersistentKeyRefWithKeyRef:(SecKeyRef)keyRef;
 - (SecKeyRef)getKeyRefWithPersistentKeyRef:(CFTypeRef)persistentRef;
@@ -116,4 +120,6 @@
 - (NSArray*)encryptDataToArray:(NSData *)data withPublicKeyRef:(SecKeyRef)publickey;
 - (NSData*)decryptData:(NSData*)data;
 - (NSData*)decryptDataArray:(NSArray *)dataArray;
+- (NSData*)getCertificate;
+- (BOOL)generateCertificate;
 @end

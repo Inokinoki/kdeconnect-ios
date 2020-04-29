@@ -50,6 +50,8 @@
 #import "SecKeyWrapper.h"
 #import <Security/Security.h>
 
+#include "X509CertificateHelper.h"
+
 @implementation SecKeyWrapper
 
 @synthesize publicTag, privateTag, symmetricTag, symmetricKeyRef;
@@ -843,6 +845,31 @@ static SecKeyWrapper * __sharedKeyWrapper = nil;
 	return privateKeyReference;
 }
 
+- (NSData *)getPrivateKeyBits {
+    OSStatus sanityCheck = noErr;
+    NSData * privateKeyBits = nil;
+    
+    NSMutableDictionary * queryPrivateKey = [[NSMutableDictionary alloc] init];
+        
+    // Set the private key query dictionary.
+    [queryPrivateKey setObject:(id)kSecClassKey forKey:(id)kSecClass];
+    [queryPrivateKey setObject:privateTag forKey:(id)kSecAttrApplicationTag];
+    [queryPrivateKey setObject:(id)kSecAttrKeyTypeRSA forKey:(id)kSecAttrKeyType];
+    [queryPrivateKey setObject:[NSNumber numberWithBool:YES] forKey:(id)kSecReturnData];
+        
+    // Get the key bits.
+    sanityCheck = SecItemCopyMatching((CFDictionaryRef)queryPrivateKey, (CFTypeRef *)&privateKeyBits);
+        
+    if (sanityCheck != noErr)
+    {
+        privateKeyBits = nil;
+    }
+        
+    [queryPrivateKey release];
+    
+    return privateKeyBits;
+}
+
 - (NSData *)getSymmetricKeyBytes {
 	OSStatus sanityCheck = noErr;
 	NSData * symmetricKeyReturn = nil;
@@ -990,6 +1017,104 @@ size_t encodeLength(unsigned char * buf, size_t length) {
 	if (publicKeyRef) CFRelease(publicKeyRef);
 	if (privateKeyRef) CFRelease(privateKeyRef);
     [super dealloc];
+}
+
+- (NSData*)getCertificate {
+    return certificate;
+}
+
+- (BOOL)generateCertificate {
+    /*SCCSR * csr = [[SCCSR alloc] init];
+    
+    csr.commonName = @"inokiphone";
+    csr.countryName = @"KDECnnectCountry";
+    csr.organizationName = @"KDE";
+    csr.organizationalUnitName = @"KDEConnect";
+    csr.subjectDER = nil;
+     */
+    
+    //certificate = [csr build:[self getPublicKeyBits] privateKey:[self getPrivateKeyRef]];
+    //NSLog(@"Certificate: %@", certificate);
+    
+    //NSString *pem = @"MIIDJDCCAgwCCQDXNZ5EcwJADzANBgkqhkiG9w0BAQsFADBUMQwwCgYDVQQKDANLREUxEzARBgNVBAsMCktERUNvbm5lY3QxLzAtBgNVBAMMJl9hMjBlNTc5YV9jMWQ1XzRkMDlfODQyYl80MjQ1ZTRkMTM3OGJfMB4XDTE5MDgyMjE3MjQwNloXDTI5MDgxOTE3MjQwNlowVDEMMAoGA1UECgwDS0RFMRMwEQYDVQQLDApLREVDb25uZWN0MS8wLQYDVQQDDCZfYTIwZTU3OWFfYzFkNV80ZDA5Xzg0MmJfNDI0NWU0ZDEzNzhiXzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOQYgkZ04F6kx6Tc1+4ZP3Rr0vPzvRnXY6WeYD9c1EkIjxl/9XkGBGQ2yTq5kzio0DtlTbAPR3l1FYED8qNMwC+WRLPCaS2UPQ9emuPFj07+Dg1qgFyOL3pT26RenQpTB4LjzeXz9KdDB8LLxpaJzNxKM7ls7UdkiDNU/bfwa+T9g62JhGUXtMJUiU0nVR4xEu6fh46QvpPvJ0CvBSbodv+NnnfNm2yzpDqBf0bIlFgUwN/RqoW3u/KsZXnfRMHwxcwYY+4z4cGkRZxjnjAk3j8xqaJi1FHXPw7ONddDuo82Qd/qEX1fU7ZVQWgC1aXte2W1xPU98nVw5cQO8a80yjkCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEA3IFP7ideKNwNIZipd3wtkGBqGyr3WHwYGwzXoO/MooNToVZHzAcRQTZknqj6NvBgj8OpwxNkqUQJd0BIjQTxqDS9QCYlQ1QqngVvrCnE9SetgtTBsREj7Ki5LL9uurJUDJhq6mwk7x/+LLTmYURCvrr7bAgdzy2tyr5GNQOdDNy9TZxOH3ZeZ0uRf54qFTalu+3wDKSxsNvca/cLZiIv1H3Kvv8eP48vCnXQXaTuBKwKIjsqgppuzUqvAz4B5EEmyueZhM+KyhRB8yvaZcZI+LlgIps5zyi/t21gW6ha7lrcTA5NYUshrXwjjb5z936nX+cGhbFaE+P3H99PmnHB5Q==";
+    NSData *privateKeyBits = [self getPrivateKeyBits];
+    generateX509Certificate([privateKeyBits bytes], [privateKeyBits length]);
+    
+    /*NSString *pem = @"MIICmDCCAYACAQAwUzEZMBcGA1UEBgwQS0RFQ25uZWN0Q291bnRyeTEMMAoGA1UECgwDS0RFMRMwEQYDVQQLDApLREVDb25uZWN0MRMwEQYDVQQDDAppbm9raXBob25lMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqIBtTdjLgqBJi2n2+tfFv0w6FT8OFyQ66mKBTv+Ah4HQB34MmjBTvoFUdGRavjELRqmqEPhmlxso5jMMp1eIVT6e/tP08bWTUzvMxQxVz3ELwLLOI2e0g8nb6qk+hiEX2SXdLosWw7Bn+WKUosltpfUIukJxz2RgLH+ygg7gqMzONI5yP/RyGRzC7Y0d2QiMkQ1rmYjOdAR5YS1wMDXiqIZ8ycs5LSyZAu2FEgotQbm8LLjoOn+t8mDPztvVwcE3h3m28eGFULKoLB8NaXqNI+kNwwSXsZe020FxwXpO6dwvbjCHQ1mqEpj/aQAYgJ2snh7yQ+M2POccxRaNbDdX1wIDAQABoAAwDQYJKoZIhvcNAQEFBQADggEBAD/MwPA3JN+iMJutweR7qR6PxrDnoPcA/gaIxXpysoaOPz1cQwG6DmfUxKa0cTARubC0o2DI65gafYaaeQ3qIWoc1JvcoJSsYNuz/oEzh1sN0ycasLaoc1hDxRZhmFIzAICcOPf12FP4h5Jz24i4rmfDeQ6U8izpa/Vb0kxV68upaVniiiugwi9xS8tZYktgpTL04V1ECh59ZqRpRIxwmWgtzltEUdJwjgxjZr6fEFRW7Do5XLcc8/tv6NEOrusPZPeLsadqj4FBAthnBe5U9fyjAM6ZIj73KOSLvDUEU9s6FQcqO7UfQzkl6931E3/vfN5njwZKOe2ffL8VeFXSItY=";
+
+    // remove header, footer and newlines from pem string
+
+    NSData *certData = [[NSData alloc] initWithBase64EncodedString: pem options: NSDataBase64DecodingIgnoreUnknownCharacters];
+    
+    NSLog(@"%@", certData);
+    
+    SecCertificateRef cert = SecCertificateCreateWithData(nil, (__bridge CFDataRef) certData);
+    if( cert != NULL ) {
+        CFStringRef certSummary = SecCertificateCopySubjectSummary(cert);
+        NSString* summaryString = [[NSString alloc] initWithString:(__bridge NSString*)certSummary];
+        NSLog(@"CERT SUMMARY: %@", summaryString);
+        CFRelease(certSummary);
+    } else {
+        NSLog(@"1111 *** ERROR *** trying to create the SSL certificate from data, but failed");
+    }
+    
+    NSDictionary *addquery = @{
+        (id)kSecValueRef:   (__bridge id)cert,
+        (id)kSecClass:      (id)kSecClassCertificate,
+        (id)kSecAttrLabel:  @"kdeconnect_cert"
+    };
+    
+    OSStatus status = SecItemAdd((__bridge CFDictionaryRef)addquery, NULL);
+    if (status != errSecSuccess) {
+        NSLog(@"Store not OK");
+    } else {
+        NSLog(@"Store OK");
+    }
+    
+    NSMutableDictionary * certificateAttr = [[NSMutableDictionary alloc] init];
+    /*
+     attributes
+     A dictionary that describes the item to add. A typical attributes dictionary consists of:
+
+     The item's class. Different attributes and behaviors apply to different classes of items. You use the kSecClass key with a suitable value to tell keychain services whether the data you want to store represents a password, a certificate, a cryptographic key, or something else. See Item Class Keys and Values.
+
+     The data. Use the kSecValueData key to indicate the data you want to store. Keychain services takes care of encrypting this data if the item is secret, namely when it’s one of the password types or involves a private key.
+
+     Optional attributes. Include attribute keys that allow you to find the item later and that indicate how the data should be used or shared. You may add any number of attributes, although many are specific to a particular class of item. See Item Attribute Keys and Values for the complete list.
+
+     Optional return types. Include one or more return type keys to indicate what data, if any, you want returned upon successful completion. You often ignore the return data from a SecItemAdd call, in which case no return value key is needed. See Item Return Result Keys for more information.
+
+     result
+     On return, a reference to the newly added items. The exact type of the result is based on the values supplied in attributes, as discussed in Item Return Result Keys. Pass nil if you don’t need the result. Otherwise, your app becomes responsible for releasing the referenced object.
+     */
+    /*
+    OSStatus sanityCheck = noErr;
+    
+    
+    // https://en.it1352.com/article/24487823a1f24d32b75b08549abbc0df.html
+   /* SecCertificateRef _certificate = SecCertificateCreateWithData(kCFAllocatorMalloc, (__bridge CFDataRef)certificate);
+    //LOGGING_FACILITY1( _certificate!=NULL, @"Error create cert %@", _certificate);
+    if( _certificate != NULL ) {
+        CFStringRef certSummary = SecCertificateCopySubjectSummary(_certificate);
+        NSString* summaryString = [[NSString alloc] initWithString:(__bridge NSString*)certSummary];
+        NSLog(@"CERT SUMMARY: %@", summaryString);
+        CFRelease(certSummary);
+    } else {
+        NSLog(@" *** ERROR *** trying to create the SSL certificate from data, but failed");
+    }
+    */
+    /*[certificateAttr setObject:(id)kSecClassCertificate forKey:(id)kSecClass];
+    [certificateAttr setObject:(id)cert forKey:(id)kSecValueData];
+    [certificateAttr setObject:(id)kSecAttrAccessibleAlwaysThisDeviceOnly forKey:(id)kSecAttrAccessible];
+    [certificateAttr setObject:(id)@"kdeconnect_cert" forKey:(id)kSecAttrLabel];
+    
+    sanityCheck = SecItemAdd((CFDictionaryRef)certificateAttr, NULL);
+    */
+//LOGGING_FACILITY1( sanityCheck == noErr, @"Error adding certificate, OSStatus == %d.", sanityCheck );
+    //[certificateAttr release];
+    
+    //[csr release];
+    return YES;
 }
 
 #endif

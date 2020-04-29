@@ -22,9 +22,11 @@
 #import "GCDAsyncUdpSocket.h"
 #import "GCDAsyncSocket.h"
 #import "NetworkPackage.h"
+#import "SecKeyWrapper.h"
 
 #import <Security/Security.h>
 #import <Security/SecItem.h>
+#import <Security/SecTrust.h>
 #import <CommonCrypto/CommonDigest.h>
 #import <CommonCrypto/CommonCryptor.h>
 
@@ -37,6 +39,8 @@
 @property(nonatomic) GCDAsyncSocket* _tcpSocket;
 @property(nonatomic) NSMutableArray* _pendingSockets;
 @property(nonatomic) NSMutableArray* _pendingNps;
+@property(nonatomic) NSData * _certificate;
+@property(nonatomic) NSString * _certificateRequestPEM;
 @end
 
 @implementation LanLinkProvider
@@ -47,6 +51,8 @@
 @synthesize _pendingSockets;
 @synthesize _tcpSocket;
 @synthesize _udpSocket;
+@synthesize _certificate;
+@synthesize _certificateRequestPEM;
 
 - (LanLinkProvider*) initWithDelegate:(id)linkProviderDelegate
 {
@@ -63,6 +69,12 @@
         _linkProviderDelegate=linkProviderDelegate;
         socketQueue=dispatch_queue_create("com.kde.org.kdeconnect.socketqueue", NULL);
     }
+    
+    _certificate = [[SecKeyWrapper sharedWrapper] getCertificate];
+    NSLog(@"Confirm Certificate: %@", _certificate);
+    NSString *certificateRequestB64 = [_certificate base64EncodedStringWithOptions: 0];
+    
+    _certificateRequestPEM = [NSString stringWithFormat:@"-----BEGIN CERTIFICATE REQUEST-----\\n%@\\n-----END CERTIFICATE REQUEST-----\\n", certificateRequestB64];
     return self;
 }
 
@@ -396,14 +408,84 @@
         [_pendingSockets removeObject:sock];
         NSString* deviceId=[np objectForKey:@"deviceId"];
         
+        /*
+         NSMutableDictionary *sslSettings = [[NSMutableDictionary alloc] init];
+         NSData *pkcs12data = [[NSData alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"client" ofType:@"bks"]];
+         CFDataRef inPKCS12Data = (CFDataRef)CFBridgingRetain(pkcs12data);
+         CFStringRef password = CFSTR("YOUR PASSWORD");
+         const void *keys[] = { kSecImportExportPassphrase };
+         const void *values[] = { password };
+         CFDictionaryRef options = CFDictionaryCreate(NULL, keys, values, 1, NULL, NULL);
+
+         CFArrayRef items = CFArrayCreate(NULL, 0, 0, NULL);
+
+         OSStatus securityError = SecPKCS12Import(inPKCS12Data, options, &items);
+         CFRelease(options);
+         CFRelease(password);
+
+         if(securityError == errSecSuccess)
+             NSLog(@"Success opening p12 certificate.");
+
+         CFDictionaryRef identityDict = CFArrayGetValueAtIndex(items, 0);
+         SecIdentityRef myIdent = (SecIdentityRef)CFDictionaryGetValue(identityDict,
+                                                                       kSecImportItemIdentity);
+
+         SecIdentityRef  certArray[1] = { myIdent };
+         CFArrayRef myCerts = CFArrayCreate(NULL, (void *)certArray, 1, NULL);
+
+         [sslSettings setObject:(id)CFBridgingRelease(myCerts) forKey:(NSString *)kCFStreamSSLCertificates];
+         [sslSettings setObject:NSStreamSocketSecurityLevelNegotiatedSSL forKey:(NSString *)kCFStreamSSLLevel];
+         [sslSettings setObject:(id)kCFBooleanTrue forKey:(NSString *)kCFStreamSSLAllowsAnyRoot];
+         [sslSettings setObject:@"CONNECTION ADDRESS" forKey:(NSString *)kCFStreamSSLPeerName];
+         [sock startTLS:sslSettings];
+         */
+        
+        NSLog(@"PEM: %@", _certificateRequestPEM);
+        
+        SecCertificateRef certificate = SecCertificateCreateWithData(kCFAllocatorMalloc, (__bridge CFDataRef)_certificate);
+        // if (status != errSecSuccess) { NSLog(@"Error when generate identity"); }
+        
+        SecIdentityRef identity = NULL;
+        //OSStatus copyStatus = SecIdentityCreateWithCertificate(NULL, certificate, &identity);
+        
+        NSMutableDictionary * identityAttr = [[NSMutableDictionary alloc] init];
+        [identityAttr setObject:(id)kSecClassIdentity forKey:(id)kSecClass];
+        OSStatus sanityCheck = SecItemCopyMatching((CFDictionaryRef) identityAttr, (CFTypeRef *)&identity);
+        NSLog(@"Sanity Checkout %@ %@", sanityCheck == errSecItemNotFound ? @"errSecItemNotFound":@"Other", identity);
+        
+        NSString *pem = @"MIIDJDCCAgwCCQDXNZ5EcwJADzANBgkqhkiG9w0BAQsFADBUMQwwCgYDVQQKDANLREUxEzARBgNVBAsMCktERUNvbm5lY3QxLzAtBgNVBAMMJl9hMjBlNTc5YV9jMWQ1XzRkMDlfODQyYl80MjQ1ZTRkMTM3OGJfMB4XDTE5MDgyMjE3MjQwNloXDTI5MDgxOTE3MjQwNlowVDEMMAoGA1UECgwDS0RFMRMwEQYDVQQLDApLREVDb25uZWN0MS8wLQYDVQQDDCZfYTIwZTU3OWFfYzFkNV80ZDA5Xzg0MmJfNDI0NWU0ZDEzNzhiXzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOQYgkZ04F6kx6Tc1+4ZP3Rr0vPzvRnXY6WeYD9c1EkIjxl/9XkGBGQ2yTq5kzio0DtlTbAPR3l1FYED8qNMwC+WRLPCaS2UPQ9emuPFj07+Dg1qgFyOL3pT26RenQpTB4LjzeXz9KdDB8LLxpaJzNxKM7ls7UdkiDNU/bfwa+T9g62JhGUXtMJUiU0nVR4xEu6fh46QvpPvJ0CvBSbodv+NnnfNm2yzpDqBf0bIlFgUwN/RqoW3u/KsZXnfRMHwxcwYY+4z4cGkRZxjnjAk3j8xqaJi1FHXPw7ONddDuo82Qd/qEX1fU7ZVQWgC1aXte2W1xPU98nVw5cQO8a80yjkCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEA3IFP7ideKNwNIZipd3wtkGBqGyr3WHwYGwzXoO/MooNToVZHzAcRQTZknqj6NvBgj8OpwxNkqUQJd0BIjQTxqDS9QCYlQ1QqngVvrCnE9SetgtTBsREj7Ki5LL9uurJUDJhq6mwk7x/+LLTmYURCvrr7bAgdzy2tyr5GNQOdDNy9TZxOH3ZeZ0uRf54qFTalu+3wDKSxsNvca/cLZiIv1H3Kvv8eP48vCnXQXaTuBKwKIjsqgppuzUqvAz4B5EEmyueZhM+KyhRB8yvaZcZI+LlgIps5zyi/t21gW6ha7lrcTA5NYUshrXwjjb5z936nX+cGhbFaE+P3H99PmnHB5Q==";
+
+        // remove header, footer and newlines from pem string
+
+        NSData *certData = [[NSData alloc] initWithBase64EncodedString: pem options: NSDataBase64DecodingIgnoreUnknownCharacters];
+        
+        NSLog(@"%@", certData);
+        
+        SecCertificateRef cert = SecCertificateCreateWithData(nil, (__bridge CFDataRef) certData);
+        if( cert != NULL ) {
+            CFStringRef certSummary = SecCertificateCopySubjectSummary(cert);
+            NSString* summaryString = [[NSString alloc] initWithString:(__bridge NSString*)certSummary];
+            NSLog(@"CERT SUMMARY: %@", summaryString);
+            CFRelease(certSummary);
+        } else {
+            NSLog(@"1111 *** ERROR *** trying to create the SSL certificate from data, but failed");
+        }
+        
+        //SecIdentityCreate(kCFAllocatorDefault, cert, [[SecKeyWrapper sharedWrapper] getPrivateKeyRef]);
+        
+        NSArray *myCerts = [[NSArray alloc] initWithObjects: (__bridge id)identity, (__bridge id) cert, nil];
+        //NSArray *certs = [[NSArray alloc] initWithObjects:(__bridge id)identityRef, (__bridge id)caRef, nil];
         /* TLS */
         NSDictionary *tlsSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
              (id)kCFStreamSocketSecurityLevelNegotiatedSSL, (id)kCFStreamSSLLevel,
-             (id)kCFBooleanFalse,       (id)kCFStreamSSLAllowsExpiredCertificates,  /* Disallowed expired certificate   */
-             (id)kCFBooleanFalse,       (id)kCFStreamSSLAllowsExpiredRoots,         /* Disallowed expired Roots CA      */
-             (id)kCFBooleanTrue,        (id)kCFStreamSSLAllowsAnyRoot,              /* Allow any root CA                */
+             //(id)kCFBooleanFalse,       (id)kCFStreamSSLAllowsExpiredCertificates,  /* Disallowed expired certificate   */
+             //(id)kCFBooleanFalse,       (id)kCFStreamSSLAllowsExpiredRoots,         /* Disallowed expired Roots CA      */
+             //(id)kCFBooleanTrue,        (id)kCFStreamSSLAllowsAnyRoot,              /* Allow any root CA                */
              (id)kCFBooleanFalse,       (id)kCFStreamSSLValidatesCertificateChain,  /* Do not validate all              */
              (id)deviceId,              (id)kCFStreamSSLPeerName,                   /* Set peer name to the one we received */
+             // (id)[[SecKeyWrapper sharedWrapper] getPrivateKeyRef], (id),
+             (id)myCerts, (id)kCFStreamSSLCertificates,
+             (id)[NSNumber numberWithInt:0],       (id)kCFStreamSSLIsServer,
              nil];
         [sock startTLS: tlsSettings];
         NSLog(@"Start Client TLS");
