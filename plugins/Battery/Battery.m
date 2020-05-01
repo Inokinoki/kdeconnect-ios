@@ -45,7 +45,7 @@
 
 - (BOOL) onDevicePackageReceived:(NetworkPackage *)np
 {
-    if ([[np _Type] isEqualToString:PACKAGE_TYPE_BATTERY]) {
+    if ([[np _Type] isEqualToString:PACKAGE_TYPE_BATTERY_REQUEST]) {
         //NSLog(@"Battery plugin receive a package");
         int batteryLevel = [UIDevice currentDevice].batteryLevel*100;
         UIDeviceBatteryState currentState = [UIDevice currentDevice].batteryState;
