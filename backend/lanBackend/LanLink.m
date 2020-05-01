@@ -25,6 +25,8 @@
 #define PAYLOAD_PORT 1739
 #define PAYLOAD_SEND_DELAY 0 //ns
 
+#import "X509CertificateHelper.h"
+
 @interface LanLink()
 {
     uint16_t _payloadPort;
@@ -44,7 +46,6 @@
 
 @synthesize _deviceId;
 @synthesize _linkDelegate;
-@synthesize _publicKey;
 @synthesize _pendingLSockets;
 @synthesize _pendingPairNP;
 @synthesize _pendingPayloadNP;
@@ -60,7 +61,6 @@
         _deviceId=deviceid;
         _linkDelegate=linkdelegate;
         _pendingPairNP=nil;
-        _publicKey=[[SecKeyWrapper sharedWrapper] getPeerPublicKeyRef:_deviceId];
         [_socket setDelegate:self];
         [_socket performBlock:^{
             [_socket enableBackgroundingOnSocket];
@@ -79,80 +79,18 @@
 
 - (BOOL) sendPackage:(NetworkPackage *)np tag:(long)tag
 {
-    //NSLog(@"llink send package");
+    NSLog(@"llink send package");
     if (![_socket isConnected]) {
-        //NSLog(@"LanLink: Device:%@ disconnected",_deviceId);
+        NSLog(@"LanLink: Device:%@ disconnected",_deviceId);
         return false;
     }
-    
-    // return [self sendPackageEncypted:np tag:tag];
     
     NSData* data=[np serialize];
     [_socket writeData:data withTimeout:-1 tag:tag];
     //TO-DO return true only when send successfully
+    NSLog(@"%@", [NSString stringWithUTF8String:[data bytes]]);
+    
     return true;
-}
-
-- (BOOL) sendPackageEncypted:(NetworkPackage *)np tag:(long)tag
-{
-    if ([np _Payload]) {
-        GCDAsyncSocket* socket=[[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:_socketQueue];
-        [socket performBlock:^{
-            [_socket enableBackgroundingOnSocket];
-        }];
-        NSError* err;
-        while (![socket acceptOnPort:_payloadPort error:&err]) {
-            _payloadPort++;
-            if (_payloadPort>MAX_TCP_PORT) {
-                //NSLog(@"LanLink send payload failed as no port available");
-                return false;
-            }
-        }
-        [np set_PayloadTransferInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:_payloadPort] forKey:@"port"]];
-        
-        NSMutableArray* payloadArray=[NSMutableArray arrayWithCapacity:1];
-        NSRange range;
-        NSData* payload=[np _Payload];
-        NSUInteger length=[payload length];
-        range.location=0;
-        range.length=4096;
-        while (length>0) {
-            if (length<range.length) {
-                range.length=length;
-                length=0;
-            }
-            else{
-                length-=range.length;
-            }
-            NSMutableData* chunk=[NSMutableData dataWithData:[payload subdataWithRange:range]];
-            [payloadArray addObject:chunk];
-            range.location+=range.length;
-        }
-        
-        @synchronized(_pendingLSockets)
-        {
-            [_pendingLSockets addObject:socket];
-            [_pendingPayloads addObject:payloadArray];
-        }
-    }
-    NetworkPackage* encryptedPackage=[np encryptWithPublicKeyRef:_publicKey];
-    return [self sendPackage:encryptedPackage tag:PACKAGE_TAG_ENCRYPTED];
-}
-
-- (void) loadPublicKey
-{
-    //NSLog(@"load Public key for %@",_deviceId);
-    if (_pendingPairNP) {
-        NSData* publicKeyBits=[_pendingPairNP retrievePublicKeyBits];
-        [[SecKeyWrapper sharedWrapper] removePeerPublicKey:_deviceId];
-        _publicKey=[[SecKeyWrapper sharedWrapper] addPeerRSAPublicKey:_deviceId keyBits:publicKeyBits];
-    }
-}
-
-- (void) removePublicKey
-{
-    //NSLog(@"remove Public key for %@",_deviceId);
-    [[SecKeyWrapper sharedWrapper] removePeerPublicKey:_deviceId];
 }
 
 - (void) disconnect
@@ -164,7 +102,7 @@
         [_linkDelegate onLinkDestroyed:self];
     }
     _pendingPairNP=nil;
-    //NSLog(@"LanLink: Device:%@ disconnected",_deviceId);
+    NSLog(@"LanLink: Device:%@ disconnected",_deviceId);
 }
 
 #pragma mark TCP delegate
@@ -228,15 +166,15 @@
     NSLog(@"Lanlink did connect to payload host, begin recieving data");
     
     /* Start Client TLS */
-    NSDictionary *tlsSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
+    /*NSDictionary *tlsSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
                                  (id)kCFStreamSocketSecurityLevelNegotiatedSSL, (id)kCFStreamSSLLevel,
                                  (id)kCFBooleanFalse, (id)kCFStreamSSLAllowsExpiredCertificates,
                                  (id)kCFBooleanFalse, (id)kCFStreamSSLAllowsExpiredRoots,
                                  (id)kCFBooleanTrue, (id)kCFStreamSSLAllowsAnyRoot,
                                  (id)kCFBooleanFalse, (id)kCFStreamSSLValidatesCertificateChain,
-                                 nil];
-    [sock startTLS: tlsSettings];
-    NSLog(@"Start Client TLS");
+                                 nil];*/
+    //[sock startTLS: tlsSettings];
+    //NSLog(@"Start Client TLS");
     
     NetworkPackage *np = [NetworkPackage createIdentityPackage];
     NSData *data = [np serialize];
@@ -274,6 +212,7 @@
     //BUG even if we read with a seperator LFData , it's still possible to receive several data package together. So we split the string and retrieve the package
     [_socket readDataToData:[GCDAsyncSocket LFData] withTimeout:-1 tag:PACKAGE_TAG_NORMAL];
     NSString * jsonStr=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSLog(@"%@", jsonStr);
     NSArray* packageArray=[jsonStr componentsSeparatedByString:@"\n"];
     for (NSString* dataStr in packageArray) {
         NetworkPackage* np=[NetworkPackage unserialize:[dataStr dataUsingEncoding:NSUTF8StringEncoding]];
@@ -281,9 +220,6 @@
             //NSLog(@"llink did read data:\n%@",dataStr);
             if ([[np _Type] isEqualToString:PACKAGE_TYPE_PAIR]) {
                 _pendingPairNP=np;
-            }
-            if ([[np _Type] isEqualToString:PACKAGE_TYPE_ENCRYPTED]) {
-                np=[np decrypt];
             }
             if ([np _PayloadTransferInfo]) {
                 GCDAsyncSocket* socket=[[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:_socketQueue];
@@ -401,6 +337,70 @@
     
 }
 
+- (void)socketDidSecure:(GCDAsyncSocket *)sock
+{
+    NSLog(@"Connection is secure");
+}
 
+- (void)socket:(GCDAsyncSocket *)sock didReceiveTrust:(SecTrustRef)trust completionHandler:(void (^)(BOOL shouldTrustPeer))completionHandler
+{
+    /*
+    OSStatus status = -1;
+    SecTrustResultType result = kSecTrustResultDeny;
+
+    SecCertificateRef cert2UseRef = NULL;
+    NSDictionary *queryCert = @{
+        (id)kSecClass: (id)kSecClassCertificate,
+        (id)kSecAttrLabel: @CERT_TAG,
+        (id)kSecReturnRef:  (id)kCFBooleanTrue
+    };
+    OSStatus copyStatus = SecItemCopyMatching((CFDictionaryRef) queryCert, (CFTypeRef *) &cert2UseRef);
+    if (copyStatus != errSecSuccess) {
+        NSLog(@"Error get Certificate");
+    } else {
+        NSLog(@"Certificate OK, %@", cert2UseRef);
+    }
+    
+    const void *ref[] = {cert2UseRef};
+    CFArrayRef ary = CFArrayCreate(NULL, ref, 1, NULL);
+
+    status = SecTrustSetAnchorCertificates(trust, ary);
+    
+    //SecTrustSetAnchorCertificates(trust, ary);
+    //status = SecTrustSetAnchorCertificatesOnly(trust, YES);
+    NSLog(@"TrustStatus: %d", status);
+    
+    status = SecTrustEvaluate(trust, &result);
+    NSLog(@"TrustStatus: %d %u", status, result);
+
+    if ((status == noErr && (result == kSecTrustResultProceed || result == kSecTrustResultUnspecified)))
+    {*/
+        completionHandler(YES);
+
+        NSLog(@"Receive Certificate, Trust it");
+    /*}
+    else
+    {
+        CFArrayRef arrayRefTrust = SecTrustCopyProperties(trust);
+        NSLog(@"error in connection occured\n%@", arrayRefTrust);
+
+        completionHandler(YES);
+    }*/
+    /* TODO: Validate name */
+    // completionHandler(YES);
+}
+
+- (BOOL)socketShouldManuallyEvaluateTrust:(GCDAsyncSocket *)sock
+{
+    NSLog(@"Should Evaluate Certificate");
+    return YES;
+}
+
+- (BOOL)socket:(GCDAsyncSocket *)sock shouldTrustPeer:(SecTrustRef)trust
+{
+    NSLog(@"Trust Certificate from %@", [sock connectedHost]);
+    return YES;
+}
 
 @end
+

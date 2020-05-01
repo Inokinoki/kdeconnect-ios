@@ -52,13 +52,15 @@
 #define PACKAGE_TYPE_PAIR       @"kdeconnect.pair"
 #define PACKAGE_TYPE_PING       @"kdeconnect.ping"
 #define PACKAGE_TYPE_MPRIS      @"kdeconnect.mpris"
-#define PACKAGE_TYPE_SHARE      @"kdeconnect.share"
+#define PACKAGE_TYPE_SHARE      @"kdeconnect.share.request"
 #define PACKAGE_TYPE_CLIPBOARD  @"kdeconnect.clipboard"
-#define PACKAGE_TYPE_MOUSEPAD   @"kdeconnect.mousepad"
+#define PACKAGE_TYPE_MOUSEPAD   @"kdeconnect.mousepad.request"
 #define PACKAGE_TYPE_BATTERY    @"kdeconnect.battery"
 #define PACKAGE_TYPE_CALENDAR   @"kdeconnect.calendar"
 #define PACKAGE_TYPE_REMINDER   @"kdeconnect.reminder"
 #define PACKAGE_TYPE_CONTACT    @"kdeconnect.contact"
+
+#define PACKAGE_TYPE_BATTERY_REQUEST    @"kdeconnect.battery.request"
 
 #pragma mark -
 
@@ -73,8 +75,7 @@
 
 - (NetworkPackage*) initWithType:(NSString*)type;
 + (NetworkPackage*) createIdentityPackage;
-+ (NetworkPackage*) createPublicKeyPackage;
-- (NSData*) retrievePublicKeyBits;
++ (NetworkPackage*) createPairPackage;
 
 - (BOOL) bodyHasKey:(NSString*)key;
 - (void)setBool:(BOOL)value      forKey:(NSString*)key;
@@ -91,10 +92,5 @@
 #pragma mark Serialize
 - (NSData*) serialize;
 + (NetworkPackage*) unserialize:(NSData*)data;
-
-#pragma mark Encyption
-- (BOOL) isEncrypted;
-- (NetworkPackage*) encryptWithPublicKeyRef:(SecKeyRef)publicKeyRef;
-- (NetworkPackage*) decrypt;
 
 @end

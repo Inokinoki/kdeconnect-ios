@@ -84,14 +84,13 @@
 	SecKeyRef publicKeyRef;
 	SecKeyRef privateKeyRef;
 	NSData * symmetricKeyRef;
-    NSData * certificate;
+    SecCertificateRef certificateRef;
 }
 
 @property (nonatomic, retain) NSData * publicTag;
 @property (nonatomic, retain) NSData * privateTag;
 @property (nonatomic, retain) NSData * symmetricTag;
 @property (nonatomic, retain) NSData * symmetricKeyRef;
-@property (nonatomic, retain) NSData * certificate;
 
 + (SecKeyWrapper *)sharedWrapper;
 - (void)generateKeyPair:(NSUInteger)keySize;
@@ -120,6 +119,6 @@
 - (NSArray*)encryptDataToArray:(NSData *)data withPublicKeyRef:(SecKeyRef)publickey;
 - (NSData*)decryptData:(NSData*)data;
 - (NSData*)decryptDataArray:(NSArray *)dataArray;
-- (NSData*)getCertificate;
+- (SecCertificateRef)getCertificate;
 - (BOOL)generateCertificate;
 @end

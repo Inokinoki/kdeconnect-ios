@@ -9,6 +9,13 @@
 #ifndef X509CertificateHelper_h
 #define X509CertificateHelper_h
 
-void generateX509Certificate(const unsigned char *privateKey, unsigned long privateKeyLength);
+#define CERT_TAG    "kdeconnect_cert"
+
+@interface X509CertificateHelper : NSObject
+
+- (void) generateX509Certificate: (const unsigned char *)privateKey length: (unsigned long) privateKeyLength;
+- (void) deleteX509Certificate;
+
+@end
 
 #endif /* X509CertificateHelper_h */

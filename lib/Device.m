@@ -132,7 +132,7 @@
     //NSLog(@"device send package");
     if (![[np _Type] isEqualToString:PACKAGE_TYPE_PAIR]) {
         for (BaseLink* link in _links) {
-            if ([link sendPackageEncypted:np tag:tag]) {
+            if ([link sendPackage:np tag:tag]) {
                 return true;
             }
         }
@@ -274,7 +274,6 @@
         [_deviceDelegate onDevicePairSuccess:self];
     }
     for (BaseLink* link in _links) {
-        [link loadPublicKey];
     }
 }
 
@@ -302,7 +301,7 @@
             [self performSelector:@selector(requestPairingTimeout:) withObject:nil afterDelay:PAIR_TIMMER_TIMEOUT];
         });
     }
-    NetworkPackage* np=[NetworkPackage createPublicKeyPackage];
+    NetworkPackage* np=[NetworkPackage createPairPackage];
     [self sendPackage:np tag:PACKAGE_TAG_PAIR];
 }
 
@@ -331,7 +330,7 @@
 - (void) acceptPairing
 {
     //NSLog(@"device accepted pair request");
-    NetworkPackage* np=[NetworkPackage createPublicKeyPackage];
+    NetworkPackage* np=[NetworkPackage createPairPackage];
     [self sendPackage:np tag:PACKAGE_TAG_PAIR];
 }
 

@@ -21,6 +21,8 @@
 #import "AppDelegate.h"
 #import "BackgroundService.h"
 
+#import <UserNotifications/UserNotifications.h>
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -31,7 +33,7 @@
     [BackgroundService sharedInstance];
     [[BackgroundService sharedInstance] startDiscovery];
     __block UIBackgroundTaskIdentifier task = [application beginBackgroundTaskWithExpirationHandler:^{
-        //NSLog(@"System terminated background task");
+        NSLog(@"System terminated background task");
         UILocalNotification* localNotification = [[UILocalNotification alloc] init];
         localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:0];
         localNotification.alertBody = NSLocalizedString(@"System terminated background task",nil);
@@ -40,10 +42,38 @@
         [application endBackgroundTask:task];
     }];
     
+    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+    [center requestAuthorizationWithOptions: UNAuthorizationOptionAlert
+                          completionHandler: ^(BOOL authorized, NSError * _Nullable __strong error) {
+        if (authorized) {
+            /*
+            UILocalNotification* localNotification = [[UILocalNotification alloc] init];
+            localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:0];
+            localNotification.alertBody = NSLocalizedString(@"System notification test",nil);
+            localNotification.timeZone = [NSTimeZone defaultTimeZone];
+            [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+             */
+            NSLog(@"Notification is allowed");
+        }
+    }];
+    
+    
     // If the system refuses to allow the task return
     if (task == UIBackgroundTaskInvalid)    {
         //NSLog(@"System refuses to allow background task");
     }
+    
+    center = [UNUserNotificationCenter currentNotificationCenter];
+
+    UNMutableNotificationContent *content = [[UNMutableNotificationContent alloc] init];
+    content.title = @"Late wake up call";
+    content.body = @"The early bird catches the worm, but the second mouse gets the cheese.";
+    content.categoryIdentifier = @"alert";
+    content.sound = [UNNotificationSound defaultSound];
+    
+    UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier: @"KDEConnectTest" content:content trigger:[UNTimeIntervalNotificationTrigger triggerWithTimeInterval:20 repeats:NO]];
+    [center addNotificationRequest:request withCompletionHandler:nil];
+    
     return YES;
 }
 

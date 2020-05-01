@@ -304,24 +304,24 @@ static SecKeyWrapper * __sharedKeyWrapper = nil;
 	[symmetricKeyAttr release];
 }
 
-- (SecKeyRef)addPeerPublicKey:(NSString *)peerName keyBits:(NSData *)publicKey {
+- (SecCertificateRef)addPeerCertificate:(NSString *)peerName keyBits:(NSData *)certificate {
 	OSStatus sanityCheck = noErr;
-	SecKeyRef peerKeyRef = NULL;
+	SecCertificateRef peerCertificateRef = NULL;
 	CFTypeRef persistPeer = NULL;
 	
 	LOGGING_FACILITY( peerName != nil, @"Peer name parameter is nil." );
-	LOGGING_FACILITY( publicKey != nil, @"Public key parameter is nil." );
+	LOGGING_FACILITY( certificate != nil, @"Certificate parameter is nil." );
 	
 	NSData * peerTag = [[NSData alloc] initWithBytes:(const void *)[peerName UTF8String] length:[peerName length]];
-	NSMutableDictionary * peerPublicKeyAttr = [[NSMutableDictionary alloc] init];
+	NSMutableDictionary * peerCertificateAttr = [[NSMutableDictionary alloc] init];
 	
-	[peerPublicKeyAttr setObject:(id)kSecClassKey forKey:(id)kSecClass];
-	[peerPublicKeyAttr setObject:(id)kSecAttrKeyTypeRSA forKey:(id)kSecAttrKeyType];
-	[peerPublicKeyAttr setObject:peerTag forKey:(id)kSecAttrApplicationTag];
-	[peerPublicKeyAttr setObject:publicKey forKey:(id)kSecValueData];
-	[peerPublicKeyAttr setObject:[NSNumber numberWithBool:YES] forKey:(id)kSecReturnPersistentRef];
+	[peerCertificateAttr setObject:(id)kSecClassCertificate forKey:(id)kSecClass];
+	[peerCertificateAttr setObject:(id)kSecAttrKeyTypeRSA forKey:(id)kSecAttrKeyType];
+	[peerCertificateAttr setObject:peerTag forKey:(id)kSecAttrApplicationTag];
+	[peerCertificateAttr setObject:certificate forKey:(id)kSecValueData];
+	[peerCertificateAttr setObject:[NSNumber numberWithBool:YES] forKey:(id)kSecReturnPersistentRef];
 	
-	sanityCheck = SecItemAdd((CFDictionaryRef) peerPublicKeyAttr, (CFTypeRef *)&persistPeer);
+	sanityCheck = SecItemAdd((CFDictionaryRef) peerCertificateAttr, (CFTypeRef *)&persistPeer);
 	
 	// The nice thing about persistent references is that you can write their value out to disk and
 	// then use them later. I don't do that here but it certainly can make sense for other situations
@@ -330,23 +330,23 @@ static SecKeyWrapper * __sharedKeyWrapper = nil;
 	// Also take a look at SecKeyWrapper's methods (CFTypeRef)getPersistentKeyRefWithKeyRef:(SecKeyRef)key
 	// & (SecKeyRef)getKeyRefWithPersistentKeyRef:(CFTypeRef)persistentRef.
 	
-	LOGGING_FACILITY1( sanityCheck == noErr || sanityCheck == errSecDuplicateItem, @"Problem adding the peer public key to the keychain, OSStatus == %d.", sanityCheck );
+	LOGGING_FACILITY1( sanityCheck == noErr || sanityCheck == errSecDuplicateItem, @"Problem adding the peer Certificate to the keychain, OSStatus == %d.", sanityCheck );
 	
 	if (persistPeer) {
-		peerKeyRef = [self getKeyRefWithPersistentKeyRef:persistPeer];
+		peerCertificateRef = [self getKeyRefWithPersistentKeyRef:persistPeer];
 	} else {
-		[peerPublicKeyAttr removeObjectForKey:(id)kSecValueData];
-		[peerPublicKeyAttr setObject:[NSNumber numberWithBool:YES] forKey:(id)kSecReturnRef];
+		[peerCertificateAttr removeObjectForKey:(id)kSecValueData];
+		[peerCertificateAttr setObject:[NSNumber numberWithBool:YES] forKey:(id)kSecReturnRef];
 		// Let's retry a different way.
-		sanityCheck = SecItemCopyMatching((CFDictionaryRef) peerPublicKeyAttr, (CFTypeRef *)&peerKeyRef);
+		sanityCheck = SecItemCopyMatching((CFDictionaryRef) peerCertificateAttr, (CFTypeRef *)&peerCertificateRef);
 	}
 	
-	LOGGING_FACILITY1( sanityCheck == noErr && peerKeyRef != NULL, @"Problem acquiring reference to the public key, OSStatus == %d.", sanityCheck );
+	LOGGING_FACILITY1( sanityCheck == noErr && peerCertificateRef != NULL, @"Problem acquiring reference to the Certificate, OSStatus == %d.", sanityCheck );
 	
 	[peerTag release];
-	[peerPublicKeyAttr release];
+	[peerCertificateAttr release];
 	if (persistPeer) CFRelease(persistPeer);
-	return peerKeyRef;
+	return peerCertificateRef;
 }
 
 - (SecKeyRef)addPeerRSAPublicKey:(NSString *)peerName keyBits:(NSData *)publicKey {
@@ -358,24 +358,24 @@ static SecKeyWrapper * __sharedKeyWrapper = nil;
 }
 
 
-- (void)removePeerPublicKey:(NSString *)peerName {
+- (void)removePeerCertificate:(NSString *)peerName {
 	OSStatus sanityCheck = noErr;
 	
 	LOGGING_FACILITY( peerName != nil, @"Peer name parameter is nil." );
 	
 	NSData * peerTag = [[NSData alloc] initWithBytes:(const void *)[peerName UTF8String] length:[peerName length]];
-	NSMutableDictionary * peerPublicKeyAttr = [[NSMutableDictionary alloc] init];
+	NSMutableDictionary * peerCertificateAttr = [[NSMutableDictionary alloc] init];
 	
-	[peerPublicKeyAttr setObject:(id)kSecClassKey forKey:(id)kSecClass];
-	[peerPublicKeyAttr setObject:(id)kSecAttrKeyTypeRSA forKey:(id)kSecAttrKeyType];
-	[peerPublicKeyAttr setObject:peerTag forKey:(id)kSecAttrApplicationTag];
+	[peerCertificateAttr setObject:(id)kSecClassCertificate forKey:(id)kSecClass];
+	[peerCertificateAttr setObject:(id)kSecAttrKeyTypeRSA forKey:(id)kSecAttrKeyType];
+	[peerCertificateAttr setObject:peerTag forKey:(id)kSecAttrApplicationTag];
 	
-	sanityCheck = SecItemDelete((CFDictionaryRef) peerPublicKeyAttr);
+	sanityCheck = SecItemDelete((CFDictionaryRef) peerCertificateAttr);
 	
-	LOGGING_FACILITY1( sanityCheck == noErr || sanityCheck == errSecItemNotFound, @"Problem deleting the peer public key to the keychain, OSStatus == %d.", sanityCheck );
+	LOGGING_FACILITY1( sanityCheck == noErr || sanityCheck == errSecItemNotFound, @"Problem deleting the peer Certificate to the keychain, OSStatus == %d.", sanityCheck );
 	
 	[peerTag release];
-	[peerPublicKeyAttr release];
+	[peerCertificateAttr release];
 }
 
 - (NSData *)wrapSymmetricKey:(NSData *)symmetricKey keyRef:(SecKeyRef)publicKey {
@@ -919,23 +919,23 @@ static SecKeyWrapper * __sharedKeyWrapper = nil;
 	return persistentRef;
 }
 
-- (SecKeyRef)getKeyRefWithPersistentKeyRef:(CFTypeRef)persistentRef {
+- (SecCertificateRef)getCertificateRefWithPersistentCertificateRef:(CFTypeRef)persistentRef {
 	OSStatus sanityCheck = noErr;
-	SecKeyRef keyRef = NULL;
+	SecCertificateRef certificateRef = NULL;
 	
 	LOGGING_FACILITY(persistentRef != NULL, @"persistentRef object cannot be NULL." );
 	
 	NSMutableDictionary * queryKey = [[NSMutableDictionary alloc] init];
 	
-	// Set the SecKeyRef query dictionary.
+	// Set the SecCertificateRef query dictionary.
 	[queryKey setObject:(id)persistentRef forKey:(id)kSecValuePersistentRef];
 	[queryKey setObject:[NSNumber numberWithBool:YES] forKey:(id)kSecReturnRef];
 	
-	// Get the persistent key reference.
-	sanityCheck = SecItemCopyMatching((CFDictionaryRef)queryKey, (CFTypeRef *)&keyRef);
+	// Get the persistent key reference.public
+	sanityCheck = SecItemCopyMatching((CFDictionaryRef)queryKey, (CFTypeRef *)&certificateRef);
 	[queryKey release];
 	
-	return keyRef;
+	return certificateRef;
 }
 
 
@@ -1019,8 +1019,32 @@ size_t encodeLength(unsigned char * buf, size_t length) {
     [super dealloc];
 }
 
-- (NSData*)getCertificate {
-    return certificate;
+- (SecCertificateRef)getCertificate {
+    OSStatus sanityCheck = noErr;
+    SecCertificateRef certificateReference = NULL;
+    
+    if (privateKeyRef == NULL) {
+        NSDictionary * queryCert = @{
+            (id)kSecClass:                  (id)kSecClassCertificate,
+            (id)kSecAttrLabel:              @CERT_TAG,
+            (id)kSecReturnRef:              [NSNumber numberWithBool:YES],
+            (id)kSecReturnPersistentRef:    [NSNumber numberWithBool:YES]
+        };
+
+        // Get the key.
+        sanityCheck = SecItemCopyMatching((CFDictionaryRef)queryCert, (CFTypeRef *)&certificateReference);
+        
+        if (sanityCheck != noErr)
+        {
+            certificateReference = NULL;
+        }
+        
+        [queryCert release];
+    } else {
+        certificateReference = certificateRef;
+    }
+    
+    return certificateReference;
 }
 
 - (BOOL)generateCertificate {
@@ -1037,9 +1061,12 @@ size_t encodeLength(unsigned char * buf, size_t length) {
     //NSLog(@"Certificate: %@", certificate);
     
     //NSString *pem = @"MIIDJDCCAgwCCQDXNZ5EcwJADzANBgkqhkiG9w0BAQsFADBUMQwwCgYDVQQKDANLREUxEzARBgNVBAsMCktERUNvbm5lY3QxLzAtBgNVBAMMJl9hMjBlNTc5YV9jMWQ1XzRkMDlfODQyYl80MjQ1ZTRkMTM3OGJfMB4XDTE5MDgyMjE3MjQwNloXDTI5MDgxOTE3MjQwNlowVDEMMAoGA1UECgwDS0RFMRMwEQYDVQQLDApLREVDb25uZWN0MS8wLQYDVQQDDCZfYTIwZTU3OWFfYzFkNV80ZDA5Xzg0MmJfNDI0NWU0ZDEzNzhiXzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOQYgkZ04F6kx6Tc1+4ZP3Rr0vPzvRnXY6WeYD9c1EkIjxl/9XkGBGQ2yTq5kzio0DtlTbAPR3l1FYED8qNMwC+WRLPCaS2UPQ9emuPFj07+Dg1qgFyOL3pT26RenQpTB4LjzeXz9KdDB8LLxpaJzNxKM7ls7UdkiDNU/bfwa+T9g62JhGUXtMJUiU0nVR4xEu6fh46QvpPvJ0CvBSbodv+NnnfNm2yzpDqBf0bIlFgUwN/RqoW3u/KsZXnfRMHwxcwYY+4z4cGkRZxjnjAk3j8xqaJi1FHXPw7ONddDuo82Qd/qEX1fU7ZVQWgC1aXte2W1xPU98nVw5cQO8a80yjkCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEA3IFP7ideKNwNIZipd3wtkGBqGyr3WHwYGwzXoO/MooNToVZHzAcRQTZknqj6NvBgj8OpwxNkqUQJd0BIjQTxqDS9QCYlQ1QqngVvrCnE9SetgtTBsREj7Ki5LL9uurJUDJhq6mwk7x/+LLTmYURCvrr7bAgdzy2tyr5GNQOdDNy9TZxOH3ZeZ0uRf54qFTalu+3wDKSxsNvca/cLZiIv1H3Kvv8eP48vCnXQXaTuBKwKIjsqgppuzUqvAz4B5EEmyueZhM+KyhRB8yvaZcZI+LlgIps5zyi/t21gW6ha7lrcTA5NYUshrXwjjb5z936nX+cGhbFaE+P3H99PmnHB5Q==";
-    NSData *privateKeyBits = [self getPrivateKeyBits];
-    generateX509Certificate([privateKeyBits bytes], [privateKeyBits length]);
     
+    NSData *privateKeyBits = [self getPrivateKeyBits];
+    X509CertificateHelper *helper = [[X509CertificateHelper alloc] init];
+    [helper generateX509Certificate: [privateKeyBits bytes] length: [privateKeyBits length]];
+    [privateKeyBits release];
+    [helper release];
     /*NSString *pem = @"MIICmDCCAYACAQAwUzEZMBcGA1UEBgwQS0RFQ25uZWN0Q291bnRyeTEMMAoGA1UECgwDS0RFMRMwEQYDVQQLDApLREVDb25uZWN0MRMwEQYDVQQDDAppbm9raXBob25lMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqIBtTdjLgqBJi2n2+tfFv0w6FT8OFyQ66mKBTv+Ah4HQB34MmjBTvoFUdGRavjELRqmqEPhmlxso5jMMp1eIVT6e/tP08bWTUzvMxQxVz3ELwLLOI2e0g8nb6qk+hiEX2SXdLosWw7Bn+WKUosltpfUIukJxz2RgLH+ygg7gqMzONI5yP/RyGRzC7Y0d2QiMkQ1rmYjOdAR5YS1wMDXiqIZ8ycs5LSyZAu2FEgotQbm8LLjoOn+t8mDPztvVwcE3h3m28eGFULKoLB8NaXqNI+kNwwSXsZe020FxwXpO6dwvbjCHQ1mqEpj/aQAYgJ2snh7yQ+M2POccxRaNbDdX1wIDAQABoAAwDQYJKoZIhvcNAQEFBQADggEBAD/MwPA3JN+iMJutweR7qR6PxrDnoPcA/gaIxXpysoaOPz1cQwG6DmfUxKa0cTARubC0o2DI65gafYaaeQ3qIWoc1JvcoJSsYNuz/oEzh1sN0ycasLaoc1hDxRZhmFIzAICcOPf12FP4h5Jz24i4rmfDeQ6U8izpa/Vb0kxV68upaVniiiugwi9xS8tZYktgpTL04V1ECh59ZqRpRIxwmWgtzltEUdJwjgxjZr6fEFRW7Do5XLcc8/tv6NEOrusPZPeLsadqj4FBAthnBe5U9fyjAM6ZIj73KOSLvDUEU9s6FQcqO7UfQzkl6931E3/vfN5njwZKOe2ffL8VeFXSItY=";
 
     // remove header, footer and newlines from pem string
@@ -1116,7 +1143,6 @@ size_t encodeLength(unsigned char * buf, size_t length) {
     //[csr release];
     return YES;
 }
-
 #endif
 
 @end

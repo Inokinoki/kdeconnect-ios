@@ -41,15 +41,18 @@
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
+    NSLog(@"Open Device View");
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        NSLog(@"Open Device View");
     }
     return self;
 }
 
 - (void)viewDidLoad
 {
+    NSLog(@"Open Device View did load");
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.splitViewController.delegate = self;
@@ -67,6 +70,9 @@
 - (void) reloadPluginsViews
 {
     NSArray* viewlist=[[BackgroundService sharedInstance] getDevicePluginViews:_deviceId viewController:self];
+    NSLog(@"View List %@", viewlist);
+    
+    viewlist = [viewlist subarrayWithRange: NSMakeRange(1, 1)];
     CGRect preFrame=CGRectMake(0, 64, 0, 0);
     NSArray *subviews = [self.view subviews];
     for (int i=0; i<[subviews count]; i++)
@@ -74,6 +80,7 @@
         [[subviews objectAtIndex:i] removeFromSuperview];
     }
     for (UIView* view in viewlist) {
+        NSLog(@"View List %@", view);
         CGRect viewFrame=view.frame;
         viewFrame.origin.y+=(preFrame.origin.y+preFrame.size.height);
         preFrame=viewFrame;

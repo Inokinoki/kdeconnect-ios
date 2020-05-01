@@ -67,6 +67,7 @@
 - (UIView*) getView:(UIViewController*)vc
 {
     if ([_device isReachable]) {
+        NSLog(@"Create view");
         _view=[[UIView alloc] initWithFrame:CGRectMake(0,0,400, 60)];
         UILabel* label=[[UILabel alloc] initWithFrame:CGRectMake(20, 0, 400, 30)];
         [label setText:NSLocalizedString(@"Share",nil)];
@@ -106,17 +107,47 @@
 }
 - (void)photoSourceSelect:(id)sender
 {
-    UIActionSheet *actionSheet = [[UIActionSheet alloc]
+    NSLog(@"Create photoSourceSelect view");
+    /*UIActionSheet *actionSheet = [[UIActionSheet alloc]
                                   initWithTitle:NSLocalizedString(@"Photo Source",nil)
                                   delegate:self
                                   cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
                                   destructiveButtonTitle:nil
                                   otherButtonTitles:NSLocalizedString(@"Photo From Camera",nil),
                                   NSLocalizedString(@"Photo From Library",nil),nil];
+    */
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Photo Source",nil)
+                                   message:@""
+                                   preferredStyle:UIAlertControllerStyleAlert];
     
-    actionSheet.actionSheetStyle =UIActionSheetStyleAutomatic;
+    UIAlertAction* fromCameraAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Photo From Camera",nil)
+                                    style:UIAlertActionStyleDefault
+                                    handler:^(UIAlertAction * action) { [self sharePhotoFromCamera]; }];
+    [alert addAction:fromCameraAction];
     
-    [actionSheet showInView:[UIApplication sharedApplication].keyWindow];
+    UIAlertAction* fromLibraryAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Photo From Library",nil)
+                                    style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * action) { [self sharePhotoFromLibrary]; }];
+    [alert addAction:fromLibraryAction];
+    
+    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",nil)
+                                    style:UIAlertActionStyleDefault
+                                    handler:^(UIAlertAction * action) {}];
+    [alert addAction:cancelAction];
+    
+    //actionSheet.actionSheetStyle = UIActionSheetStyleAutomatic;
+    
+    UIWindow *keyWindow;
+    NSArray *windows = [[UIApplication sharedApplication]windows];
+    for (UIWindow *window in windows) {
+        if (window.isKeyWindow) {
+            keyWindow = window;
+            break;
+        }
+    }
+    
+    // [actionSheet showInView: keyWindow];
+    [[keyWindow rootViewController] presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)sharePhotoFromCamera
@@ -168,6 +199,8 @@
     NSString *theDate = [dateFormat stringFromDate:now];
     [np setObject:FORMAT(@"%@_%@.jpg",[UIDevice currentDevice].name,theDate) forKey:@"filename"];
     [np set_Payload:imageData];
+    NSLog(@"%@", imageData);
+    NSLog(@"%@", [NSString stringWithUTF8String: [[np serialize] bytes]]);
     [_device sendPackage:np tag:PACKAGE_TAG_SHARE];
     [picker dismissViewControllerAnimated:YES completion:NULL];
 }

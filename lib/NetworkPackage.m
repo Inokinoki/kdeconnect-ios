@@ -25,7 +25,6 @@
 
 #define LFDATA [NSData dataWithBytes:"\x0A" length:1]
 
-__strong static NSString* _publicKeyStr;
 __strong static NSString* _UUID;
 
 #pragma mark Implementation
@@ -38,7 +37,6 @@ __strong static NSString* _UUID;
         _Id=[NSNumber numberWithLong:[[NSDate date] timeIntervalSince1970]];
         _Type=type;
         _Body=[NSMutableDictionary dictionary];
-        _publicKeyStr=nil;
     }
     return self;
 }
@@ -85,31 +83,12 @@ __strong static NSString* _UUID;
     return _UUID;
 }
 
-+ (NetworkPackage*) createPublicKeyPackage
++ (NetworkPackage*) createPairPackage
 {
     NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_PAIR];
-    if (!_publicKeyStr) {
-        NSString* publicKeyStr=[[SecKeyWrapper sharedWrapper] getRSAPublicKeyAsBase64];
-        _publicKeyStr=[NSString stringWithFormat:@"%@\n%@\n%@\n",
-                       @"-----BEGIN PUBLIC KEY-----",
-                       publicKeyStr,
-                       @"-----END PUBLIC KEY-----"];
-    }
-    [np setObject:_publicKeyStr forKey:@"publicKey"];
     [np setBool:YES forKey:@"pair"];
 
     return np;
-}
-
-- (NSData*) retrievePublicKeyBits
-{
-    NSString* publickeyStr=[_Body valueForKey:@"publicKey"];
-    NSArray* strArray=[publickeyStr componentsSeparatedByString:@"\n"];
-    NSRange keyRange;
-    keyRange.location=1;
-    keyRange.length=[strArray count]-3;
-    publickeyStr=[[strArray subarrayWithRange:keyRange] componentsJoinedByString:@"\n"];
-    return [[NSData alloc] initWithBase64EncodedString:publickeyStr options:NSDataBase64DecodingIgnoreUnknownCharacters];
 }
 
 //
@@ -168,7 +147,7 @@ __strong static NSString* _UUID;
     NSMutableDictionary* info=[NSMutableDictionary dictionaryWithObjects:values forKeys:keys];
     if (_Payload) {
         [info setObject:[NSNumber numberWithLong:(_PayloadSize?_PayloadSize:-1)] forKey:@"payloadSize"];
-        [info setObject:_PayloadTransferInfo forKey:@"payloadTransferInfo"];
+        [info setObject: _PayloadTransferInfo == nil ? @{} : _PayloadTransferInfo forKey:@"payloadTransferInfo"];
     }
     NSError* err=nil;
     NSMutableData* jsonData=[[NSMutableData alloc] initWithData:[NSJSONSerialization dataWithJSONObject:info options:0 error:&err]];
@@ -207,31 +186,5 @@ __strong static NSString* _UUID;
     }
     return np;
 }
-
-#pragma mark Encyption
-- (BOOL) isEncrypted
-{
-    return [_Type isEqual:PACKAGE_TYPE_ENCRYPTED];
-};
-
-- (NetworkPackage*) encryptWithPublicKeyRef:(SecKeyRef)publicKeyRef
-{
-    NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_ENCRYPTED];
-    NSData* data=[self serialize];
-    NSArray* encryptedArray=[[SecKeyWrapper sharedWrapper] encryptDataToArray:data  withPublicKeyRef:publicKeyRef];
-    [np setObject:encryptedArray forKey:@"data"];
-    return np;
-};
-
-- (NetworkPackage*) decrypt
-{
-    if (![_Type isEqualToString:PACKAGE_TYPE_ENCRYPTED]) {
-        return nil;
-    }
-    NSArray* encryptedDataStrArray=[_Body valueForKey:@"data"];
-    NSData* decryptedData=[[SecKeyWrapper sharedWrapper] decryptDataArray:encryptedDataStrArray];
-    
-    return [NetworkPackage unserialize:decryptedData];
-};
 
 @end

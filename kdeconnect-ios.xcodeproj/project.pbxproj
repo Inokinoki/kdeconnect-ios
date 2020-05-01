@@ -7,6 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1423432224575E9F00EF7AAB /* SCCSR.m in Sources */ = {isa = PBXBuildFile; fileRef = 1423432124575E9F00EF7AAB /* SCCSR.m */; };
+		1423432424576ED000EF7AAB /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1423432324576ED000EF7AAB /* CFNetwork.framework */; };
+		1432AFAD244DA378009B86EC /* GenerateCertificate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1432AFAC244DA378009B86EC /* GenerateCertificate.m */; };
+		1454C52B2458D41900FD5074 /* CertificateHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1454C52A2458D41900FD5074 /* CertificateHelper.swift */; };
+		1454C52D2458D4B300FD5074 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1454C52C2458D4B300FD5074 /* Security.framework */; };
+		1454C52F245904C200FD5074 /* X509CertificateHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1454C52E245904C200FD5074 /* X509CertificateHelper.m */; };
+		1454C561245C2E1200FD5074 /* CertificateUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 1454C55F245C2E1200FD5074 /* CertificateUtils.m */; };
+		1454C564245C2F6700FD5074 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1454C562245C2F6700FD5074 /* Configuration.swift */; };
+		1454C565245C2F6700FD5074 /* CertificateUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1454C563245C2F6700FD5074 /* CertificateUtils.swift */; };
+		14566528245C4ADC0011392A /* rsaPrivate.p12 in Resources */ = {isa = PBXBuildFile; fileRef = 14566527245C4ADC0011392A /* rsaPrivate.p12 */; };
 		4E08A1E81913CF850056EEF8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E08A1E71913CF850056EEF8 /* Foundation.framework */; };
 		4E08A1EA1913CF850056EEF8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E08A1E91913CF850056EEF8 /* CoreGraphics.framework */; };
 		4E08A1EC1913CF850056EEF8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E08A1EB1913CF850056EEF8 /* UIKit.framework */; };
@@ -86,6 +96,22 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1423432024575E9E00EF7AAB /* SCCSR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCCSR.h; path = lib/SCCSR.h; sourceTree = "<group>"; };
+		1423432124575E9F00EF7AAB /* SCCSR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCCSR.m; path = lib/SCCSR.m; sourceTree = "<group>"; };
+		1423432324576ED000EF7AAB /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		1432AFAC244DA378009B86EC /* GenerateCertificate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = GenerateCertificate.m; path = lib/GenerateCertificate.m; sourceTree = "<group>"; };
+		1454C5292458D41900FD5074 /* kdeconnect-ios-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "kdeconnect-ios-Bridging-Header.h"; sourceTree = "<group>"; };
+		1454C52A2458D41900FD5074 /* CertificateHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CertificateHelper.swift; path = lib/CertificateHelper.swift; sourceTree = "<group>"; };
+		1454C52C2458D4B300FD5074 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		1454C52E245904C200FD5074 /* X509CertificateHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = X509CertificateHelper.m; path = lib/X509CertificateHelper.m; sourceTree = "<group>"; };
+		1454C5312459055B00FD5074 /* X509CertificateHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = X509CertificateHelper.h; path = lib/X509CertificateHelper.h; sourceTree = "<group>"; };
+		1454C532245B1F1200FD5074 /* Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Header.h; path = lib/Header.h; sourceTree = "<group>"; };
+		1454C55F245C2E1200FD5074 /* CertificateUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CertificateUtils.m; sourceTree = "<group>"; };
+		1454C560245C2E1200FD5074 /* CertificateUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CertificateUtils.h; sourceTree = "<group>"; };
+		1454C562245C2F6700FD5074 /* Configuration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
+		1454C563245C2F6700FD5074 /* CertificateUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CertificateUtils.swift; sourceTree = "<group>"; };
+		14566527245C4ADC0011392A /* rsaPrivate.p12 */ = {isa = PBXFileReference; lastKnownFileType = file; path = rsaPrivate.p12; sourceTree = "<group>"; };
+		14DE5B55244AF00900F7A8C0 /* kdeconnect-ios.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "kdeconnect-ios.entitlements"; sourceTree = "<group>"; };
 		1D62E728E21D599443294128 /* libPods-kdeconnect-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-kdeconnect-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		48E2F71AC6EE495B8966C774 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E08A1E41913CF850056EEF8 /* kdeconnect-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "kdeconnect-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -195,6 +221,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1454C52D2458D4B300FD5074 /* Security.framework in Frameworks */,
+				1423432424576ED000EF7AAB /* CFNetwork.framework in Frameworks */,
 				4ED8E711197B7D6500C4D01C /* AddressBook.framework in Frameworks */,
 				4ED8E712197B7D6500C4D01C /* AddressBookUI.framework in Frameworks */,
 				4E38A3B0196D2D36006AE419 /* EventKit.framework in Frameworks */,
@@ -218,9 +246,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1454C55E245C23EC00FD5074 /* utils */ = {
+			isa = PBXGroup;
+			children = (
+				1454C563245C2F6700FD5074 /* CertificateUtils.swift */,
+				1454C562245C2F6700FD5074 /* Configuration.swift */,
+				1454C560245C2E1200FD5074 /* CertificateUtils.h */,
+				1454C55F245C2E1200FD5074 /* CertificateUtils.m */,
+			);
+			path = utils;
+			sourceTree = "<group>";
+		};
 		4E08A1DB1913CF850056EEF8 = {
 			isa = PBXGroup;
 			children = (
+				14566527245C4ADC0011392A /* rsaPrivate.p12 */,
+				1454C55E245C23EC00FD5074 /* utils */,
 				4E6A6221199C569D009FCCD9 /* InAppSettings.bundle */,
 				4EC27541191FCE910057AB0E /* plugins */,
 				4E08A2211913D12B0056EEF8 /* backend */,
@@ -246,6 +287,8 @@
 		4E08A1E61913CF850056EEF8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1454C52C2458D4B300FD5074 /* Security.framework */,
+				1423432324576ED000EF7AAB /* CFNetwork.framework */,
 				4ED8E70F197B7D6500C4D01C /* AddressBook.framework */,
 				4ED8E710197B7D6500C4D01C /* AddressBookUI.framework */,
 				4E38A3AF196D2D36006AE419 /* EventKit.framework */,
@@ -262,6 +305,7 @@
 		4E08A1ED1913CF850056EEF8 /* kdeconnect-ios */ = {
 			isa = PBXGroup;
 			children = (
+				14DE5B55244AF00900F7A8C0 /* kdeconnect-ios.entitlements */,
 				4E08A1F61913CF850056EEF8 /* AppDelegate.h */,
 				4E08A1F71913CF850056EEF8 /* AppDelegate.m */,
 				4EF576E7194784D80046213D /* AppSettingViewController.h */,
@@ -319,6 +363,8 @@
 		4E08A21F1913D0CF0056EEF8 /* lib */ = {
 			isa = PBXGroup;
 			children = (
+				1423432024575E9E00EF7AAB /* SCCSR.h */,
+				1423432124575E9F00EF7AAB /* SCCSR.m */,
 				4EC750B919670A2F00785A49 /* common.h */,
 				4EC750BA19670A2F00785A49 /* KeychainItemWrapper.h */,
 				4EC750BB19670A2F00785A49 /* KeychainItemWrapper.m */,
@@ -332,6 +378,12 @@
 				4E08A2321913D1780056EEF8 /* Device.m */,
 				4E08A2331913D1780056EEF8 /* NetworkPackage.h */,
 				4E08A2341913D1780056EEF8 /* NetworkPackage.m */,
+				1432AFAC244DA378009B86EC /* GenerateCertificate.m */,
+				1454C52A2458D41900FD5074 /* CertificateHelper.swift */,
+				1454C5292458D41900FD5074 /* kdeconnect-ios-Bridging-Header.h */,
+				1454C5312459055B00FD5074 /* X509CertificateHelper.h */,
+				1454C52E245904C200FD5074 /* X509CertificateHelper.m */,
+				1454C532245B1F1200FD5074 /* Header.h */,
 			);
 			name = lib;
 			sourceTree = "<group>";
@@ -532,7 +584,9 @@
 				ORGANIZATIONNAME = yangqiao;
 				TargetAttributes = {
 					4E08A1E31913CF850056EEF8 = {
-						DevelopmentTeam = 34RXKJTKWE;
+						DevelopmentTeam = GMJNW6P6DV;
+						LastSwiftMigration = 1130;
+						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 0;
@@ -580,6 +634,7 @@
 				4E08A1FE1913CF850056EEF8 /* Main_iPad.storyboard in Resources */,
 				4E08A2031913CF850056EEF8 /* Images.xcassets in Resources */,
 				4E44F5E819920042002B1AAF /* Localizable.strings in Resources */,
+				14566528245C4ADC0011392A /* rsaPrivate.p12 in Resources */,
 				4E08A1FB1913CF850056EEF8 /* Main_iPhone.storyboard in Resources */,
 				4E08A1F21913CF850056EEF8 /* InfoPlist.strings in Resources */,
 			);
@@ -650,7 +705,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-kdeconnect-ios/Pods-kdeconnect-ios-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-kdeconnect-ios/Pods-kdeconnect-ios-resources.sh",
 				"${PODS_CONFIGURATION_BUILD_DIR}/InAppSettingsKit/InAppSettingsKit.bundle",
 				"${PODS_ROOT}/VTAcknowledgementsViewController/VTAcknowledgementsViewController.bundle",
 			);
@@ -661,7 +716,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-kdeconnect-ios/Pods-kdeconnect-ios-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-kdeconnect-ios/Pods-kdeconnect-ios-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -677,24 +732,31 @@
 				4ECA38301933EE560015C07C /* SecKeyWrapper.m in Sources */,
 				4EC750BC19670A2F00785A49 /* KeychainItemWrapper.m in Sources */,
 				4E08A1F81913CF850056EEF8 /* AppDelegate.m in Sources */,
+				1454C564245C2F6700FD5074 /* Configuration.swift in Sources */,
 				4EA77E08199092E3002787B8 /* MyStyleKit.m in Sources */,
+				1454C52F245904C200FD5074 /* X509CertificateHelper.m in Sources */,
 				4EC2754B191FD5490057AB0E /* PluginFactory.m in Sources */,
+				1454C565245C2F6700FD5074 /* CertificateUtils.swift in Sources */,
 				4E08A2271913D1550056EEF8 /* BaseLink.m in Sources */,
 				4E3871A61992355800752925 /* SplitViewController.m in Sources */,
 				4EC27548191FCECD0057AB0E /* Ping.m in Sources */,
 				4E1A82A619657FF400174217 /* MousePadViewController.m in Sources */,
+				1423432224575E9F00EF7AAB /* SCCSR.m in Sources */,
 				4E38A3AB196CEB44006AE419 /* Calendar.m in Sources */,
 				4E08A2371913D1780056EEF8 /* NetworkPackage.m in Sources */,
+				1454C52B2458D41900FD5074 /* CertificateHelper.swift in Sources */,
 				4E08A2361913D1780056EEF8 /* Device.m in Sources */,
 				4EBC812A19863B8B008FF5A1 /* XbICComponent+VTodo.m in Sources */,
 				4E47115F19693B7F00EE5B1D /* Battery.m in Sources */,
 				4E0B0CF019772E2300F1412B /* Contact.m in Sources */,
+				1432AFAD244DA378009B86EC /* GenerateCertificate.m in Sources */,
 				4E08A22D1913D1650056EEF8 /* LanLink.m in Sources */,
 				4E51BBED193FADA7007E74F4 /* Share.m in Sources */,
 				4EEB006F19736D4D000A1F69 /* Reminder.m in Sources */,
 				4E08A2281913D1550056EEF8 /* BaseLinkProvider.m in Sources */,
 				4E95A1911949954600647948 /* SettingsStore.m in Sources */,
 				4E1A82A319657DD700174217 /* MousePad.m in Sources */,
+				1454C561245C2E1200FD5074 /* CertificateUtils.m in Sources */,
 				4EF576E9194784D80046213D /* AppSettingViewController.m in Sources */,
 				4E08A22E1913D1650056EEF8 /* LanLinkProvider.m in Sources */,
 				4E08A1F41913CF850056EEF8 /* main.m in Sources */,
@@ -855,13 +917,25 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "kdeconnect-ios/kdeconnect-ios.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = GMJNW6P6DV;
+				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "kdeconnect-ios/kdeconnect-ios-Prefix.pch";
 				INFOPLIST_FILE = "kdeconnect-ios/kdeconnect-ios-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = org.kde.kdeconnect;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "kdeconnect-ios-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -873,13 +947,24 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "kdeconnect-ios/kdeconnect-ios.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = PLM89SJ3LJ;
+				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "kdeconnect-ios/kdeconnect-ios-Prefix.pch";
 				INFOPLIST_FILE = "kdeconnect-ios/kdeconnect-ios-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.kde.kdeconnect-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "kdeconnect-ios-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -888,6 +973,7 @@
 		4E08A21D1913CF860056EEF8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/kdeconnect-ios.app/kdeconnect-ios";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -910,6 +996,7 @@
 		4E08A21E1913CF860056EEF8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/kdeconnect-ios.app/kdeconnect-ios";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",

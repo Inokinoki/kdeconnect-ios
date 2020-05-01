@@ -285,13 +285,16 @@
     NSString* deviceId;
     switch (indexPath.section) {
         case 0:
+            NSLog(@"Clicked device");
             deviceId=[[_connectedDevices allKeys]objectAtIndex:indexPath.row];
             if (isPhone) {
                 vc=[[UIStoryboard storyboardWithName:@"Main_iPhone" bundle:[NSBundle mainBundle]]
                     instantiateViewControllerWithIdentifier:@"DeviceViewController"];
                 [vc set_deviceId:deviceId];
                 [vc setTitle:[_connectedDevices valueForKey:deviceId]];
+                NSLog(@"Open Device View 1");
                 [self.navigationController pushViewController:vc animated:YES];
+                NSLog(@"Open Device View 2");
             }
             if (isPad) {
                 
