@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1423432224575E9F00EF7AAB /* SCCSR.m in Sources */ = {isa = PBXBuildFile; fileRef = 1423432124575E9F00EF7AAB /* SCCSR.m */; };
 		1423432424576ED000EF7AAB /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1423432324576ED000EF7AAB /* CFNetwork.framework */; };
+		143017C9245DA087007F369D /* kdeconnectconfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 143017C8245DA087007F369D /* kdeconnectconfig.m */; };
 		1432AFAD244DA378009B86EC /* GenerateCertificate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1432AFAC244DA378009B86EC /* GenerateCertificate.m */; };
 		1454C52B2458D41900FD5074 /* CertificateHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1454C52A2458D41900FD5074 /* CertificateHelper.swift */; };
 		1454C52D2458D4B300FD5074 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1454C52C2458D4B300FD5074 /* Security.framework */; };
@@ -96,9 +96,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1423432024575E9E00EF7AAB /* SCCSR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCCSR.h; path = lib/SCCSR.h; sourceTree = "<group>"; };
-		1423432124575E9F00EF7AAB /* SCCSR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCCSR.m; path = lib/SCCSR.m; sourceTree = "<group>"; };
 		1423432324576ED000EF7AAB /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		143017C8245DA087007F369D /* kdeconnectconfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = kdeconnectconfig.m; sourceTree = "<group>"; };
+		143017CA245DA0A9007F369D /* kdeconnectconfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = kdeconnectconfig.h; sourceTree = "<group>"; };
 		1432AFAC244DA378009B86EC /* GenerateCertificate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = GenerateCertificate.m; path = lib/GenerateCertificate.m; sourceTree = "<group>"; };
 		1454C5292458D41900FD5074 /* kdeconnect-ios-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "kdeconnect-ios-Bridging-Header.h"; sourceTree = "<group>"; };
 		1454C52A2458D41900FD5074 /* CertificateHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CertificateHelper.swift; path = lib/CertificateHelper.swift; sourceTree = "<group>"; };
@@ -194,9 +194,9 @@
 		4EC27549191FD5490057AB0E /* PluginFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PluginFactory.h; path = plugins/PluginFactory.h; sourceTree = "<group>"; };
 		4EC2754A191FD5490057AB0E /* PluginFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PluginFactory.m; path = plugins/PluginFactory.m; sourceTree = "<group>"; };
 		4EC750B61967084800785A49 /* KeychainAccessGroups.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = KeychainAccessGroups.plist; sourceTree = "<group>"; };
-		4EC750B919670A2F00785A49 /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = common.h; path = lib/common.h; sourceTree = "<group>"; };
-		4EC750BA19670A2F00785A49 /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KeychainItemWrapper.h; path = lib/KeychainItemWrapper.h; sourceTree = "<group>"; };
-		4EC750BB19670A2F00785A49 /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KeychainItemWrapper.m; path = lib/KeychainItemWrapper.m; sourceTree = "<group>"; };
+		4EC750B919670A2F00785A49 /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
+		4EC750BA19670A2F00785A49 /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
+		4EC750BB19670A2F00785A49 /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
 		4EC83854198BC72B00CC08F5 /* NavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavigationController.h; sourceTree = "<group>"; };
 		4EC83855198BC72B00CC08F5 /* NavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavigationController.m; sourceTree = "<group>"; };
 		4ECA382E1933EE560015C07C /* SecKeyWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SecKeyWrapper.h; path = lib/SecKeyWrapper.h; sourceTree = "<group>"; };
@@ -246,9 +246,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		143017C7245DA045007F369D /* core */ = {
+			isa = PBXGroup;
+			children = (
+				143017CA245DA0A9007F369D /* kdeconnectconfig.h */,
+				143017C8245DA087007F369D /* kdeconnectconfig.m */,
+			);
+			path = core;
+			sourceTree = "<group>";
+		};
 		1454C55E245C23EC00FD5074 /* utils */ = {
 			isa = PBXGroup;
 			children = (
+				4EC750B919670A2F00785A49 /* common.h */,
+				4EC750BA19670A2F00785A49 /* KeychainItemWrapper.h */,
+				4EC750BB19670A2F00785A49 /* KeychainItemWrapper.m */,
 				1454C563245C2F6700FD5074 /* CertificateUtils.swift */,
 				1454C562245C2F6700FD5074 /* Configuration.swift */,
 				1454C560245C2E1200FD5074 /* CertificateUtils.h */,
@@ -260,6 +272,7 @@
 		4E08A1DB1913CF850056EEF8 = {
 			isa = PBXGroup;
 			children = (
+				143017C7245DA045007F369D /* core */,
 				14566527245C4ADC0011392A /* rsaPrivate.p12 */,
 				1454C55E245C23EC00FD5074 /* utils */,
 				4E6A6221199C569D009FCCD9 /* InAppSettings.bundle */,
@@ -363,11 +376,6 @@
 		4E08A21F1913D0CF0056EEF8 /* lib */ = {
 			isa = PBXGroup;
 			children = (
-				1423432024575E9E00EF7AAB /* SCCSR.h */,
-				1423432124575E9F00EF7AAB /* SCCSR.m */,
-				4EC750B919670A2F00785A49 /* common.h */,
-				4EC750BA19670A2F00785A49 /* KeychainItemWrapper.h */,
-				4EC750BB19670A2F00785A49 /* KeychainItemWrapper.m */,
 				4E95A18F1949954600647948 /* SettingsStore.h */,
 				4E95A1901949954600647948 /* SettingsStore.m */,
 				4ECA382E1933EE560015C07C /* SecKeyWrapper.h */,
@@ -729,6 +737,7 @@
 				4E3038FC1940889900F28091 /* ClipBoard.m in Sources */,
 				4EC83856198BC72B00CC08F5 /* NavigationController.m in Sources */,
 				4E08A2011913CF850056EEF8 /* ViewController.m in Sources */,
+				143017C9245DA087007F369D /* kdeconnectconfig.m in Sources */,
 				4ECA38301933EE560015C07C /* SecKeyWrapper.m in Sources */,
 				4EC750BC19670A2F00785A49 /* KeychainItemWrapper.m in Sources */,
 				4E08A1F81913CF850056EEF8 /* AppDelegate.m in Sources */,
@@ -741,7 +750,6 @@
 				4E3871A61992355800752925 /* SplitViewController.m in Sources */,
 				4EC27548191FCECD0057AB0E /* Ping.m in Sources */,
 				4E1A82A619657FF400174217 /* MousePadViewController.m in Sources */,
-				1423432224575E9F00EF7AAB /* SCCSR.m in Sources */,
 				4E38A3AB196CEB44006AE419 /* Calendar.m in Sources */,
 				4E08A2371913D1780056EEF8 /* NetworkPackage.m in Sources */,
 				1454C52B2458D41900FD5074 /* CertificateHelper.swift in Sources */,

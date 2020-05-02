@@ -23,6 +23,9 @@
 
 #import <UserNotifications/UserNotifications.h>
 
+#import "SecKeyWrapper.h"
+#import "kdeconnectconfig.h"
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -31,7 +34,13 @@
     // Register the preference defaults early.
     
     [BackgroundService sharedInstance];
-    [[BackgroundService sharedInstance] startDiscovery];
+
+    NSLog(@"Private Key: %@", [[KDEConnectConfig sharedInstance] getPrivateKey]);
+    NSLog(@"Certificate: %@", [[KDEConnectConfig sharedInstance] getCertificate]);
+    NSLog(@"Identity: %@", [[KDEConnectConfig sharedInstance] getIdentity]);
+    // NSLog(@"%@", [[SecKeyWrapper sharedWrapper] getIdentity]);
+    return YES;
+    //[[BackgroundService sharedInstance] startDiscovery];
     __block UIBackgroundTaskIdentifier task = [application beginBackgroundTaskWithExpirationHandler:^{
         NSLog(@"System terminated background task");
         UILocalNotification* localNotification = [[UILocalNotification alloc] init];

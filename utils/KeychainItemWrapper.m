@@ -308,7 +308,7 @@ Keychain API expects as a validly constructed container class.
         result = SecItemAdd((CFDictionaryRef)[self dictionaryToSecItemFormat:keychainItemData], NULL);
         
         NSLog(@"Result %d", result);
-		// NSAssert( result == noErr, @"Couldn't add the Keychain Item." );
+		NSAssert( result == noErr, @"Couldn't add the Keychain Item." );
     }
 }
 

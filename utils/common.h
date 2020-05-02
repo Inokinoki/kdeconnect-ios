@@ -26,12 +26,7 @@
 
 // keychain related
 #define KEYCHAIN_ID     @"org.kde.kdeconnect-ios"
-#define KECHAIN_GROUP   @"34RXKJTKWE.org.kde.kdeconnect-ios"
-
-// constants used to find public, private, and symmetric keys.
-#define kPublicKeyTag			"org.kde.kdeconnect.publickey"
-#define kPrivateKeyTag			"org.kde.kdeconnect.privatekey"
-#define kSymmetricKeyTag		"org.kde.kdeconnect.symmetrickey"
+#define KECHAIN_GROUP   @"Q9HDHY97NW.org.kde.kdeconnect-ios"
 
 // file paths
 #define KDECONNECT_REMEMBERED_DEV_FILE_PATH    @"KDEConnectRememberedDevices"

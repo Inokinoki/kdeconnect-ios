@@ -50,11 +50,14 @@
 #import "SecKeyWrapper.h"
 #import <Security/Security.h>
 
-#include "X509CertificateHelper.h"
+#include <openssl/x509.h>
+#include <openssl/err.h>
+
+#import "kdeconnectconfig.h"
 
 @implementation SecKeyWrapper
 
-@synthesize publicTag, privateTag, symmetricTag, symmetricKeyRef;
+@synthesize publicTag, privateTag;
 
 #if DEBUG
 	#define LOGGING_FACILITY(X, Y)	\
@@ -74,32 +77,10 @@
 				}						
 #endif
 
+
+
 #if TARGET_IPHONE_SIMULATOR
-//#error This sample is designed to run on a device, not in the simulator. To run this sample, \
-choose Project > Set Active SDK > Device and connect a device. Then click Build and Go.
-// Dummy implementations for no-building simulator target (reduce compiler warnings)
 + (SecKeyWrapper *)sharedWrapper { return nil; }
-- (void)setObject:(id)inObject forKey:(id)key {}
-- (id)objectForKey:(id)key { return nil; }
-// Dummy implementations for my SecKeyWrapper class.
-- (void)generateKeyPair:(NSUInteger)keySize {}
-- (void)deleteAsymmetricKeys {}
-- (void)deleteSymmetricKey {}
-- (void)generateSymmetricKey {}
-- (NSData *)getSymmetricKeyBytes { return NULL; }
-- (SecKeyRef)addPeerPublicKey:(NSString *)peerName keyBits:(NSData *)publicKey { return NULL; }
-- (void)removePeerPublicKey:(NSString *)peerName {}
-- (NSData *)wrapSymmetricKey:(NSData *)symmetricKey keyRef:(SecKeyRef)publicKey { return nil; }
-- (NSData *)unwrapSymmetricKey:(NSData *)wrappedSymmetricKey { return nil; }
-- (NSData *)getSignatureBytes:(NSData *)plainText { return nil; }
-- (NSData *)getHashBytes:(NSData *)plainText { return nil; }
-- (BOOL)verifySignature:(NSData *)plainText secKeyRef:(SecKeyRef)publicKey signature:(NSData *)sig { return NO; }
-- (NSData *)doCipher:(NSData *)plainText key:(NSData *)symmetricKey context:(CCOperation)encryptOrDecrypt padding:(CCOptions *)pkcs7 { return nil; } 
-- (SecKeyRef)getPublicKeyRef { return nil; }
-- (NSData *)getPublicKeyBits { return nil; }
-- (SecKeyRef)getPrivateKeyRef { return nil; }
-- (CFTypeRef)getPersistentKeyRefWithKeyRef:(SecKeyRef)keyRef { return NULL; }
-- (SecKeyRef)getKeyRefWithPersistentKeyRef:(CFTypeRef)persistentRef { return NULL; }
 #else
 
 // (See cssmtype.h and cssmapple.h on the Mac OS X SDK.)
@@ -110,10 +91,9 @@ enum {
 	CSSM_ALGID_AES
 };
 
-// identifiers used to find public, private, and symmetric key.
-static const uint8_t publicKeyIdentifier[]		= kPublicKeyTag;
+// identifiers used to find certificate, private key.
+static const uint8_t certificateIdentifier[]	= kCertificateTag;
 static const uint8_t privateKeyIdentifier[]		= kPrivateKeyTag;
-static const uint8_t symmetricKeyIdentifier[]	= kSymmetricKeyTag;
 
 static SecKeyWrapper * __sharedKeyWrapper = nil;
 
@@ -158,14 +138,13 @@ static SecKeyWrapper * __sharedKeyWrapper = nil;
 }
 
 -(id)init {
-	 if (self = [super init])
-	 {
-		 // Tag data to search for keys.
-		 privateTag = [[NSData alloc] initWithBytes:privateKeyIdentifier length:sizeof(privateKeyIdentifier)];
-		 publicTag = [[NSData alloc] initWithBytes:publicKeyIdentifier length:sizeof(publicKeyIdentifier)];
-		 symmetricTag = [[NSData alloc] initWithBytes:symmetricKeyIdentifier length:sizeof(symmetricKeyIdentifier)];
-	 }
-	
+    if (self = [super init])
+    {
+     // Tag data to search for keys.
+     privateTag = [[NSData alloc] initWithBytes:privateKeyIdentifier length:sizeof(privateKeyIdentifier)];
+     // certificateTag = [[NSData alloc] initWithBytes:certificateIdentifier length:sizeof(certificateIdentifier)];
+    }
+
 	return self;
 }
 
@@ -196,24 +175,6 @@ static SecKeyWrapper * __sharedKeyWrapper = nil;
 	[queryPublicKey release];
 	if (publicKeyRef) CFRelease(publicKeyRef);
 	if (privateKeyRef) CFRelease(privateKeyRef);
-}
-
-- (void)deleteSymmetricKey {
-	OSStatus sanityCheck = noErr;
-	
-	NSMutableDictionary * querySymmetricKey = [[NSMutableDictionary alloc] init];
-	
-	// Set the symmetric key query dictionary.
-	[querySymmetricKey setObject:(id)kSecClassKey forKey:(id)kSecClass];
-	[querySymmetricKey setObject:symmetricTag forKey:(id)kSecAttrApplicationTag];
-	[querySymmetricKey setObject:[NSNumber numberWithUnsignedInt:CSSM_ALGID_AES] forKey:(id)kSecAttrKeyType];
-	
-	// Delete the symmetric key.
-	sanityCheck = SecItemDelete((CFDictionaryRef)querySymmetricKey);
-	LOGGING_FACILITY1( sanityCheck == noErr || sanityCheck == errSecItemNotFound, @"Error removing symmetric key, OSStatus == %d.", sanityCheck );
-	
-	[querySymmetricKey release];
-	[symmetricKeyRef release];
 }
 
 - (void)generateKeyPair:(NSUInteger)keySize {
@@ -256,52 +217,6 @@ static SecKeyWrapper * __sharedKeyWrapper = nil;
 	[privateKeyAttr release];
 	[publicKeyAttr release];
 	[keyPairAttr release];
-}
-
-- (void)generateSymmetricKey {
-	OSStatus sanityCheck = noErr;
-	uint8_t * symmetricKey = NULL;
-	
-	// First delete current symmetric key.
-	[self deleteSymmetricKey];
-	
-	// Container dictionary
-	NSMutableDictionary *symmetricKeyAttr = [[NSMutableDictionary alloc] init];
-	[symmetricKeyAttr setObject:(id)kSecClassKey forKey:(id)kSecClass];
-	[symmetricKeyAttr setObject:symmetricTag forKey:(id)kSecAttrApplicationTag];
-	[symmetricKeyAttr setObject:[NSNumber numberWithUnsignedInt:CSSM_ALGID_AES] forKey:(id)kSecAttrKeyType];
-	[symmetricKeyAttr setObject:[NSNumber numberWithUnsignedInt:(unsigned int)(kChosenCipherKeySize << 3)] forKey:(id)kSecAttrKeySizeInBits];
-	[symmetricKeyAttr setObject:[NSNumber numberWithUnsignedInt:(unsigned int)(kChosenCipherKeySize << 3)]	forKey:(id)kSecAttrEffectiveKeySize];
-	[symmetricKeyAttr setObject:(id)kCFBooleanTrue forKey:(id)kSecAttrCanEncrypt];
-	[symmetricKeyAttr setObject:(id)kCFBooleanTrue forKey:(id)kSecAttrCanDecrypt];
-	[symmetricKeyAttr setObject:(id)kCFBooleanFalse forKey:(id)kSecAttrCanDerive];
-	[symmetricKeyAttr setObject:(id)kCFBooleanFalse forKey:(id)kSecAttrCanSign];
-	[symmetricKeyAttr setObject:(id)kCFBooleanFalse forKey:(id)kSecAttrCanVerify];
-	[symmetricKeyAttr setObject:(id)kCFBooleanFalse forKey:(id)kSecAttrCanWrap];
-	[symmetricKeyAttr setObject:(id)kCFBooleanFalse forKey:(id)kSecAttrCanUnwrap];
-	
-	// Allocate some buffer space. I don't trust calloc.
-	symmetricKey = malloc( kChosenCipherKeySize * sizeof(uint8_t) );
-	
-	LOGGING_FACILITY( symmetricKey != NULL, @"Problem allocating buffer space for symmetric key generation." );
-	
-	memset((void *)symmetricKey, 0x0, kChosenCipherKeySize);
-	
-	sanityCheck = SecRandomCopyBytes(kSecRandomDefault, kChosenCipherKeySize, symmetricKey);
-	LOGGING_FACILITY1( sanityCheck == noErr, @"Problem generating the symmetric key, OSStatus == %d.", sanityCheck );
-	
-	self.symmetricKeyRef = [[NSData alloc] initWithBytes:(const void *)symmetricKey length:kChosenCipherKeySize];
-	
-	// Add the wrapped key data to the container dictionary.
-	[symmetricKeyAttr setObject:self.symmetricKeyRef
-					  forKey:(id)kSecValueData];
-	
-	// Add the symmetric key to the keychain.
-	sanityCheck = SecItemAdd((CFDictionaryRef) symmetricKeyAttr, NULL);
-	LOGGING_FACILITY1( sanityCheck == noErr || sanityCheck == errSecDuplicateItem, @"Problem storing the symmetric key in the keychain, OSStatus == %d.", sanityCheck );
-	
-	if (symmetricKey) free(symmetricKey);
-	[symmetricKeyAttr release];
 }
 
 - (SecCertificateRef)addPeerCertificate:(NSString *)peerName keyBits:(NSData *)certificate {
@@ -376,92 +291,6 @@ static SecKeyWrapper * __sharedKeyWrapper = nil;
 	
 	[peerTag release];
 	[peerCertificateAttr release];
-}
-
-- (NSData *)wrapSymmetricKey:(NSData *)symmetricKey keyRef:(SecKeyRef)publicKey {
-	OSStatus sanityCheck = noErr;
-	size_t cipherBufferSize = 0;
-	size_t keyBufferSize = 0;
-	
-	LOGGING_FACILITY( symmetricKey != nil, @"Symmetric key parameter is nil." );
-	LOGGING_FACILITY( publicKey != nil, @"Key parameter is nil." );
-	
-	NSData * cipher = nil;
-	uint8_t * cipherBuffer = NULL;
-	
-	// Calculate the buffer sizes.
-	cipherBufferSize = SecKeyGetBlockSize(publicKey);
-	keyBufferSize = [symmetricKey length];
-	
-	if (kTypeOfWrapPadding == kSecPaddingNone) {
-		LOGGING_FACILITY( keyBufferSize <= cipherBufferSize, @"Nonce integer is too large and falls outside multiplicative group." );
-	} else {
-		LOGGING_FACILITY( keyBufferSize <= (cipherBufferSize - 11), @"Nonce integer is too large and falls outside multiplicative group." );
-	}
-	
-	// Allocate some buffer space. I don't trust calloc.
-	cipherBuffer = malloc( cipherBufferSize * sizeof(uint8_t) );
-	memset((void *)cipherBuffer, 0x0, cipherBufferSize);
-	
-	// Encrypt using the public key.
-	sanityCheck = SecKeyEncrypt(	publicKey,
-									kTypeOfWrapPadding,
-									(const uint8_t *)[symmetricKey bytes],
-									keyBufferSize,
-									cipherBuffer,
-									&cipherBufferSize
-								);
-	
-	LOGGING_FACILITY1( sanityCheck == noErr, @"Error encrypting, OSStatus == %d.", sanityCheck );
-	
-	// Build up cipher text blob.
-	cipher = [NSData dataWithBytes:(const void *)cipherBuffer length:(NSUInteger)cipherBufferSize];
-	
-	if (cipherBuffer) free(cipherBuffer);
-	
-	return cipher;
-}
-
-- (NSData *)unwrapSymmetricKey:(NSData *)wrappedSymmetricKey {
-	OSStatus sanityCheck = noErr;
-	size_t cipherBufferSize = 0;
-	size_t keyBufferSize = 0;
-	
-	NSData * key = nil;
-	uint8_t * keyBuffer = NULL;
-	
-	SecKeyRef privateKey = NULL;
-	
-	privateKey = [self getPrivateKeyRef];
-	LOGGING_FACILITY( privateKey != NULL, @"No private key found in the keychain." );
-	
-	// Calculate the buffer sizes.
-	cipherBufferSize = SecKeyGetBlockSize(privateKey);
-	keyBufferSize = [wrappedSymmetricKey length];
-	
-	LOGGING_FACILITY( keyBufferSize <= cipherBufferSize, @"Encrypted nonce is too large and falls outside multiplicative group." );
-	
-	// Allocate some buffer space. I don't trust calloc.
-	keyBuffer = malloc( keyBufferSize * sizeof(uint8_t) );
-	memset((void *)keyBuffer, 0x0, keyBufferSize);
-	
-	// Decrypt using the private key.
-	sanityCheck = SecKeyDecrypt(	privateKey,
-									kTypeOfWrapPadding,
-									(const uint8_t *) [wrappedSymmetricKey bytes],
-									cipherBufferSize,
-									keyBuffer,
-									&keyBufferSize
-								);
-	
-	LOGGING_FACILITY1( sanityCheck == noErr, @"Error decrypting, OSStatus == %d.", sanityCheck );
-	
-	// Build up plain text blob.
-	key = [NSData dataWithBytes:(const void *)keyBuffer length:(NSUInteger)keyBufferSize];
-	
-	if (keyBuffer) free(keyBuffer);
-	
-	return key;
 }
 
 - (NSData *)getHashBytes:(NSData *)plainText {
@@ -870,36 +699,6 @@ static SecKeyWrapper * __sharedKeyWrapper = nil;
     return privateKeyBits;
 }
 
-- (NSData *)getSymmetricKeyBytes {
-	OSStatus sanityCheck = noErr;
-	NSData * symmetricKeyReturn = nil;
-	
-	if (self.symmetricKeyRef == nil) {
-		NSMutableDictionary * querySymmetricKey = [[NSMutableDictionary alloc] init];
-		
-		// Set the private key query dictionary.
-		[querySymmetricKey setObject:(id)kSecClassKey forKey:(id)kSecClass];
-		[querySymmetricKey setObject:symmetricTag forKey:(id)kSecAttrApplicationTag];
-		[querySymmetricKey setObject:[NSNumber numberWithUnsignedInt:CSSM_ALGID_AES] forKey:(id)kSecAttrKeyType];
-		[querySymmetricKey setObject:[NSNumber numberWithBool:YES] forKey:(id)kSecReturnData];
-		
-		// Get the key bits.
-		sanityCheck = SecItemCopyMatching((CFDictionaryRef)querySymmetricKey, (CFTypeRef *)&symmetricKeyReturn);
-		
-		if (sanityCheck == noErr && symmetricKeyReturn != nil) {
-			self.symmetricKeyRef = symmetricKeyReturn;
-		} else {
-			self.symmetricKeyRef = nil;
-		}
-		
-		[querySymmetricKey release];
-	} else {
-		symmetricKeyReturn = self.symmetricKeyRef;
-	}
-
-	return symmetricKeyReturn;
-}
-
 - (CFTypeRef)getPersistentKeyRefWithKeyRef:(SecKeyRef)keyRef {
 	OSStatus sanityCheck = noErr;
 	CFTypeRef persistentRef = NULL;
@@ -1012,8 +811,6 @@ size_t encodeLength(unsigned char * buf, size_t length) {
 - (void)dealloc {
     [privateTag release];
     [publicTag release];
-	[symmetricTag release];
-	[symmetricKeyRef release];
 	if (publicKeyRef) CFRelease(publicKeyRef);
 	if (privateKeyRef) CFRelease(privateKeyRef);
     [super dealloc];
@@ -1026,7 +823,7 @@ size_t encodeLength(unsigned char * buf, size_t length) {
     if (privateKeyRef == NULL) {
         NSDictionary * queryCert = @{
             (id)kSecClass:                  (id)kSecClassCertificate,
-            (id)kSecAttrLabel:              @CERT_TAG,
+//            (id)kSecAttrLabel:              @CERT_TAG,
             (id)kSecReturnRef:              [NSNumber numberWithBool:YES],
             (id)kSecReturnPersistentRef:    [NSNumber numberWithBool:YES]
         };
@@ -1047,102 +844,180 @@ size_t encodeLength(unsigned char * buf, size_t length) {
     return certificateReference;
 }
 
-- (BOOL)generateCertificate {
-    /*SCCSR * csr = [[SCCSR alloc] init];
+- (void)generateCertificate {
+/*    [self deleteX509Certificate];
+        
+    EVP_PKEY *pkey;
+    pkey = d2i_PrivateKey(EVP_PKEY_RSA, NULL, &privateKey, privateKeyLength);
     
-    csr.commonName = @"inokiphone";
-    csr.countryName = @"KDECnnectCountry";
-    csr.organizationName = @"KDE";
-    csr.organizationalUnitName = @"KDEConnect";
-    csr.subjectDER = nil;
-     */
-    
-    //certificate = [csr build:[self getPublicKeyBits] privateKey:[self getPrivateKeyRef]];
-    //NSLog(@"Certificate: %@", certificate);
-    
-    //NSString *pem = @"MIIDJDCCAgwCCQDXNZ5EcwJADzANBgkqhkiG9w0BAQsFADBUMQwwCgYDVQQKDANLREUxEzARBgNVBAsMCktERUNvbm5lY3QxLzAtBgNVBAMMJl9hMjBlNTc5YV9jMWQ1XzRkMDlfODQyYl80MjQ1ZTRkMTM3OGJfMB4XDTE5MDgyMjE3MjQwNloXDTI5MDgxOTE3MjQwNlowVDEMMAoGA1UECgwDS0RFMRMwEQYDVQQLDApLREVDb25uZWN0MS8wLQYDVQQDDCZfYTIwZTU3OWFfYzFkNV80ZDA5Xzg0MmJfNDI0NWU0ZDEzNzhiXzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOQYgkZ04F6kx6Tc1+4ZP3Rr0vPzvRnXY6WeYD9c1EkIjxl/9XkGBGQ2yTq5kzio0DtlTbAPR3l1FYED8qNMwC+WRLPCaS2UPQ9emuPFj07+Dg1qgFyOL3pT26RenQpTB4LjzeXz9KdDB8LLxpaJzNxKM7ls7UdkiDNU/bfwa+T9g62JhGUXtMJUiU0nVR4xEu6fh46QvpPvJ0CvBSbodv+NnnfNm2yzpDqBf0bIlFgUwN/RqoW3u/KsZXnfRMHwxcwYY+4z4cGkRZxjnjAk3j8xqaJi1FHXPw7ONddDuo82Qd/qEX1fU7ZVQWgC1aXte2W1xPU98nVw5cQO8a80yjkCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEA3IFP7ideKNwNIZipd3wtkGBqGyr3WHwYGwzXoO/MooNToVZHzAcRQTZknqj6NvBgj8OpwxNkqUQJd0BIjQTxqDS9QCYlQ1QqngVvrCnE9SetgtTBsREj7Ki5LL9uurJUDJhq6mwk7x/+LLTmYURCvrr7bAgdzy2tyr5GNQOdDNy9TZxOH3ZeZ0uRf54qFTalu+3wDKSxsNvca/cLZiIv1H3Kvv8eP48vCnXQXaTuBKwKIjsqgppuzUqvAz4B5EEmyueZhM+KyhRB8yvaZcZI+LlgIps5zyi/t21gW6ha7lrcTA5NYUshrXwjjb5z936nX+cGhbFaE+P3H99PmnHB5Q==";
-    
-    NSData *privateKeyBits = [self getPrivateKeyBits];
-    X509CertificateHelper *helper = [[X509CertificateHelper alloc] init];
-    [helper generateX509Certificate: [privateKeyBits bytes] length: [privateKeyBits length]];
-    [privateKeyBits release];
-    [helper release];
-    /*NSString *pem = @"MIICmDCCAYACAQAwUzEZMBcGA1UEBgwQS0RFQ25uZWN0Q291bnRyeTEMMAoGA1UECgwDS0RFMRMwEQYDVQQLDApLREVDb25uZWN0MRMwEQYDVQQDDAppbm9raXBob25lMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqIBtTdjLgqBJi2n2+tfFv0w6FT8OFyQ66mKBTv+Ah4HQB34MmjBTvoFUdGRavjELRqmqEPhmlxso5jMMp1eIVT6e/tP08bWTUzvMxQxVz3ELwLLOI2e0g8nb6qk+hiEX2SXdLosWw7Bn+WKUosltpfUIukJxz2RgLH+ygg7gqMzONI5yP/RyGRzC7Y0d2QiMkQ1rmYjOdAR5YS1wMDXiqIZ8ycs5LSyZAu2FEgotQbm8LLjoOn+t8mDPztvVwcE3h3m28eGFULKoLB8NaXqNI+kNwwSXsZe020FxwXpO6dwvbjCHQ1mqEpj/aQAYgJ2snh7yQ+M2POccxRaNbDdX1wIDAQABoAAwDQYJKoZIhvcNAQEFBQADggEBAD/MwPA3JN+iMJutweR7qR6PxrDnoPcA/gaIxXpysoaOPz1cQwG6DmfUxKa0cTARubC0o2DI65gafYaaeQ3qIWoc1JvcoJSsYNuz/oEzh1sN0ycasLaoc1hDxRZhmFIzAICcOPf12FP4h5Jz24i4rmfDeQ6U8izpa/Vb0kxV68upaVniiiugwi9xS8tZYktgpTL04V1ECh59ZqRpRIxwmWgtzltEUdJwjgxjZr6fEFRW7Do5XLcc8/tv6NEOrusPZPeLsadqj4FBAthnBe5U9fyjAM6ZIj73KOSLvDUEU9s6FQcqO7UfQzkl6931E3/vfN5njwZKOe2ffL8VeFXSItY=";
-
-    // remove header, footer and newlines from pem string
-
-    NSData *certData = [[NSData alloc] initWithBase64EncodedString: pem options: NSDataBase64DecodingIgnoreUnknownCharacters];
-    
-    NSLog(@"%@", certData);
-    
-    SecCertificateRef cert = SecCertificateCreateWithData(nil, (__bridge CFDataRef) certData);
-    if( cert != NULL ) {
-        CFStringRef certSummary = SecCertificateCopySubjectSummary(cert);
-        NSString* summaryString = [[NSString alloc] initWithString:(__bridge NSString*)certSummary];
-        NSLog(@"CERT SUMMARY: %@", summaryString);
-        CFRelease(certSummary);
+    if (pkey == NULL) {
+        unsigned long err = ERR_get_error();
+        NSLog(@"private key load failed %lu %s", err, ERR_error_string(err, NULL));
     } else {
-        NSLog(@"1111 *** ERROR *** trying to create the SSL certificate from data, but failed");
+        NSLog(@"private key load ok");
     }
+    /*
+    EVP_PKEY * pkey;
+    pkey = EVP_PKEY_new();
+
+    RSA * rsa;
+    rsa = RSA_generate_key(
+            2048,   /* number of bits for the key - 2048 is a sensible value */
+    /*        RSA_F4, /* exponent - RSA_F4 is defined as 0x10001L */
+    /*        NULL,   /* callback - can be NULL if we aren't displaying progress */
+    /*        NULL    /* callback argument - not needed in this case */
+    /*);
+
+    EVP_PKEY_assign_RSA(pkey, rsa);
+    */
+
+/*    X509 * x509;
+    x509 = X509_new();
+
+    ASN1_INTEGER_set(X509_get_serialNumber(x509), 1);
+
+    X509_gmtime_adj(X509_get_notBefore(x509), -60*60*24*365);
+    X509_gmtime_adj(X509_get_notAfter(x509), 60*60*24*365*10);
+
+    X509_set_pubkey(x509, pkey);
+
+    X509_NAME * name;
+    name = X509_get_subject_name(x509);
+
+    X509_NAME_add_entry_by_txt(name, "C",  MBSTRING_ASC,
+            (unsigned char *)"MyKDEConnectDevice", -1, -1, 0);
+    X509_NAME_add_entry_by_txt(name, "O",  MBSTRING_ASC,
+            (unsigned char *)"KDE", -1, -1, 0);
+    X509_NAME_add_entry_by_txt(name, "OU",  MBSTRING_ASC,
+            (unsigned char *)"Kde connect iOS", -1, -1, 0);
+
+    X509_set_issuer_name(x509, name);
     
-    NSDictionary *addquery = @{
-        (id)kSecValueRef:   (__bridge id)cert,
-        (id)kSecClass:      (id)kSecClassCertificate,
-        (id)kSecAttrLabel:  @"kdeconnect_cert"
+    X509_sign(x509, pkey, EVP_sha1());
+
+    unsigned char *certBytes = NULL;
+    int length = -1;
+    length = i2d_X509(x509, &certBytes);
+    
+    if (length < 0) {
+        NSLog(@"Error export X509");
+    } else {
+        NSLog(@"export X509 %d", length);
+        NSData *certData = [[NSData alloc] initWithBytes:certBytes length:length];
+        SecCertificateRef cert = SecCertificateCreateWithData(nil, (__bridge CFDataRef) certData);
+        if( cert != NULL ) {
+            CFStringRef certSummary = SecCertificateCopySubjectSummary(cert);
+            NSString* summaryString = [[NSString alloc] initWithString:(__bridge NSString*)certSummary];
+            NSLog(@"CERT SUMMARY: %@", summaryString);
+            CFRelease(certSummary);
+        } else {
+            NSLog(@"2222 *** ERROR *** trying to create the SSL certificate from data, but failed");
+        }
+        
+        NSDictionary *addquery = @{
+            (id)kSecValueRef:   (__bridge id)cert,
+            (id)kSecClass:      (id)kSecClassCertificate,
+            (id)kSecAttrLabel:  @CERT_TAG,
+            (id)kSecReturnAttributes: (id)kCFBooleanTrue
+        };
+        
+        CFDictionaryRef attrs = NULL;
+        OSStatus status = SecItemAdd((__bridge CFDictionaryRef)addquery, (CFTypeRef *) &attrs);
+        if (status != errSecSuccess) {
+            NSLog(@"Store not OK %d", status);
+        } else {
+            NSLog(@"Store OK");
+            
+            NSDictionary * certAttrs = (__bridge NSDictionary *)attrs;
+            NSData *issuer = [certAttrs objectForKey: (id)kSecAttrSerialNumber];
+            NSData *serialNumber = [certAttrs objectForKey: (id)kSecAttrSerialNumber];
+
+            NSLog(@"Identity finder: %@ - returned attributes were %@", issuer, serialNumber);
+            
+            NSDictionary *identityQuery = @{
+                (id)kSecClass:      (id)kSecClassIdentity,
+                //(id)kSecAttrIssuer: (id)issuer,
+                //(id)kSecAttrSerialNumber: (id)serialNumber,
+                (id)kSecReturnPersistentRef: (id)kCFBooleanTrue
+            };
+            
+            CFDataRef identity = NULL;
+            OSStatus copyStatus = SecItemCopyMatching((__bridge CFDictionaryRef)identityQuery, (CFTypeRef *) &identity);
+            
+            if (copyStatus != errSecSuccess) {
+                NSLog(@"Identity not found, error: %d - returned attributes were %@", copyStatus, identity);
+            } else {
+                NSLog(@"Identity %@", identity);
+            }
+        }
+        
+        /*
+         let issuer = certAttrs[kSecAttrIssuer] as! Data
+         let serialNumber = certAttrs[kSecAttrSerialNumber] as! Data
+
+         // Retrieve a persistent reference to the identity consisting of the client certificate and the pre-existing private key
+         let copyArgs: [NSString: Any] = [
+             kSecClass: kSecClassIdentity,
+             kSecAttrIssuer: issuer,
+             kSecAttrSerialNumber: serialNumber,
+             kSecReturnPersistentRef: true] // we need returnPersistentRef here or the keychain makes a temporary identity that doesn't stick around, even though we don't use the persistentRef
+
+         let copyStatus = SecItemCopyMatching(copyArgs as CFDictionary, &resultRef);
+         guard copyStatus == errSecSuccess, let _ = resultRef as? Data else {
+             log.error("Identity not found, error: \(copyStatus) - returned attributes were \(certAttrs)")
+             throw KeychainError.cannotCreateIdentityPersistentRef(addStatus)
+         }
+
+         // no CFRelease(identityRef) due to swift
+         */
+        
+//        CFRelease(cert);
+//    }
+}
+
+- (void) loadCertificate
+{
+    
+}
+
+- (SecIdentityRef) getIdentity
+{
+    NSDictionary *copyArgs = @{
+        (id)kSecClass:      (id)kSecClassIdentity,
+        (id)kSecAttrLabel:  @"kdeconnect-identity",
+        (id)kSecReturnRef:  (id)kCFBooleanTrue
     };
     
-    OSStatus status = SecItemAdd((__bridge CFDictionaryRef)addquery, NULL);
+    SecIdentityRef result;
+    OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef) copyArgs, (__bridge CFTypeRef *) &result);
+    
     if (status != errSecSuccess) {
-        NSLog(@"Store not OK");
-    } else {
-        NSLog(@"Store OK");
+        NSLog(@"Identity not found, error: %d", (int)status);
+        return nil;
     }
-    
-    NSMutableDictionary * certificateAttr = [[NSMutableDictionary alloc] init];
-    /*
-     attributes
-     A dictionary that describes the item to add. A typical attributes dictionary consists of:
-
-     The item's class. Different attributes and behaviors apply to different classes of items. You use the kSecClass key with a suitable value to tell keychain services whether the data you want to store represents a password, a certificate, a cryptographic key, or something else. See Item Class Keys and Values.
-
-     The data. Use the kSecValueData key to indicate the data you want to store. Keychain services takes care of encrypting this data if the item is secret, namely when it’s one of the password types or involves a private key.
-
-     Optional attributes. Include attribute keys that allow you to find the item later and that indicate how the data should be used or shared. You may add any number of attributes, although many are specific to a particular class of item. See Item Attribute Keys and Values for the complete list.
-
-     Optional return types. Include one or more return type keys to indicate what data, if any, you want returned upon successful completion. You often ignore the return data from a SecItemAdd call, in which case no return value key is needed. See Item Return Result Keys for more information.
-
-     result
-     On return, a reference to the newly added items. The exact type of the result is based on the values supplied in attributes, as discussed in Item Return Result Keys. Pass nil if you don’t need the result. Otherwise, your app becomes responsible for releasing the referenced object.
-     */
-    /*
-    OSStatus sanityCheck = noErr;
-    
-    
-    // https://en.it1352.com/article/24487823a1f24d32b75b08549abbc0df.html
-   /* SecCertificateRef _certificate = SecCertificateCreateWithData(kCFAllocatorMalloc, (__bridge CFDataRef)certificate);
-    //LOGGING_FACILITY1( _certificate!=NULL, @"Error create cert %@", _certificate);
-    if( _certificate != NULL ) {
-        CFStringRef certSummary = SecCertificateCopySubjectSummary(_certificate);
-        NSString* summaryString = [[NSString alloc] initWithString:(__bridge NSString*)certSummary];
-        NSLog(@"CERT SUMMARY: %@", summaryString);
-        CFRelease(certSummary);
-    } else {
-        NSLog(@" *** ERROR *** trying to create the SSL certificate from data, but failed");
-    }
-    */
-    /*[certificateAttr setObject:(id)kSecClassCertificate forKey:(id)kSecClass];
-    [certificateAttr setObject:(id)cert forKey:(id)kSecValueData];
-    [certificateAttr setObject:(id)kSecAttrAccessibleAlwaysThisDeviceOnly forKey:(id)kSecAttrAccessible];
-    [certificateAttr setObject:(id)@"kdeconnect_cert" forKey:(id)kSecAttrLabel];
-    
-    sanityCheck = SecItemAdd((CFDictionaryRef)certificateAttr, NULL);
-    */
-//LOGGING_FACILITY1( sanityCheck == noErr, @"Error adding certificate, OSStatus == %d.", sanityCheck );
-    //[certificateAttr release];
-    
-    //[csr release];
-    return YES;
+    return result;
 }
+/*
+static func getIdentity(label: String) -> SecIdentity? {
+    let copyArgs: [NSString: Any] = [
+        kSecClass: kSecClassIdentity,
+        kSecAttrLabel: label,
+        kSecReturnRef: true ]
+
+    var resultRef: AnyObject?
+    let copyStatus = SecItemCopyMatching(copyArgs as CFDictionary, &resultRef)
+    guard copyStatus == errSecSuccess else {
+        log.error("Identity not found, error: \(copyStatus)")
+        return nil
+    }
+
+    // back when this function was all ObjC we would __bridge_transfer into ARC, but swift can't do that
+    // It wants to manage CF types on it's own which is fine, except they release when we return them out
+    // back into ObjC code.
+    return (resultRef as! SecIdentity)
+}
+ */
+
 #endif
 
 @end

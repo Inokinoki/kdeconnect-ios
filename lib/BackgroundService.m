@@ -62,11 +62,11 @@
 {
     if ((self=[super init])) {
         
-        if (![[SecKeyWrapper sharedWrapper] getPublicKeyBits]) {
+        /*if (![[SecKeyWrapper sharedWrapper] getPublicKeyBits]) {
             NSLog(@"Generating keys\n");
             [[SecKeyWrapper sharedWrapper] generateKeyPair:2048];
             [[SecKeyWrapper sharedWrapper] generateCertificate];
-        }
+        }*/
         
         /*NSMutableDictionary *query = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                       (__bridge id)kCFBooleanTrue, (__bridge id)kSecReturnAttributes,
@@ -95,8 +95,8 @@
         //}
          */
         
-        NSLog(@"Pub Key: %@\n", [[SecKeyWrapper sharedWrapper] getPublicKeyBits]);
-        NSLog(@"Priv Key: %@\n", [[SecKeyWrapper sharedWrapper] getPrivateKeyRef]);
+        //NSLog(@"Pub Key: %@\n", [[SecKeyWrapper sharedWrapper] getPublicKeyBits]);
+        //NSLog(@"Priv Key: %@\n", [[SecKeyWrapper sharedWrapper] getPrivateKeyRef]);
         //[[SecKeyWrapper sharedWrapper] generateCertificate];
         //NSLog(@"Certificate: %@", [[SecKeyWrapper sharedWrapper] getCertificate]);
         
