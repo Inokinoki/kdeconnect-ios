@@ -22,7 +22,7 @@
 @class PluginInfo;
 @class Plugin;
 
-@interface Share : Plugin <UIImagePickerControllerDelegate,UINavigationControllerDelegate,UIActionSheetDelegate>
+@interface Share : Plugin <UIImagePickerControllerDelegate,UINavigationControllerDelegate>
 
 @property(nonatomic) Device* _device;
 @property(nonatomic) id _pluginDelegate;

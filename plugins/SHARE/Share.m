@@ -108,17 +108,9 @@
 - (void)photoSourceSelect:(id)sender
 {
     NSLog(@"Create photoSourceSelect view");
-    /*UIActionSheet *actionSheet = [[UIActionSheet alloc]
-                                  initWithTitle:NSLocalizedString(@"Photo Source",nil)
-                                  delegate:self
-                                  cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
-                                  destructiveButtonTitle:nil
-                                  otherButtonTitles:NSLocalizedString(@"Photo From Camera",nil),
-                                  NSLocalizedString(@"Photo From Library",nil),nil];
-    */
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Photo Source",nil)
                                    message:@""
-                                   preferredStyle:UIAlertControllerStyleAlert];
+                                   preferredStyle: isPad ? UIAlertControllerStyleAlert : UIAlertControllerStyleActionSheet];
     
     UIAlertAction* fromCameraAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Photo From Camera",nil)
                                     style:UIAlertActionStyleDefault
@@ -131,11 +123,9 @@
     [alert addAction:fromLibraryAction];
     
     UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",nil)
-                                    style:UIAlertActionStyleDefault
+                                    style:UIAlertActionStyleCancel
                                     handler:^(UIAlertAction * action) {}];
     [alert addAction:cancelAction];
-    
-    //actionSheet.actionSheetStyle = UIActionSheetStyleAutomatic;
     
     UIWindow *keyWindow;
     NSArray *windows = [[UIApplication sharedApplication]windows];
@@ -145,8 +135,6 @@
             break;
         }
     }
-    
-    // [actionSheet showInView: keyWindow];
     [[keyWindow rootViewController] presentViewController:alert animated:YES completion:nil];
 }
 

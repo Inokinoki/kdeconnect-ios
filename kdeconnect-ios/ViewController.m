@@ -181,14 +181,34 @@
         default:
             break;
     }
-    UIActionSheet *actionSheet = [[UIActionSheet alloc]
-                                  initWithTitle:NSLocalizedString(@"More Actions",nil)
-                                  delegate:self
-                                  cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
-                                  destructiveButtonTitle:nil
-                                  otherButtonTitles:NSLocalizedString(@"Unpair",nil),nil];
-    actionSheet.actionSheetStyle =UIActionSheetStyleAutomatic;
-    [actionSheet showInView:[UIApplication sharedApplication].keyWindow];
+
+    /* Display an alert to allow user unpair device */
+    //Device *connectedDevice = [_connectedDevices objectForKey: _moreActionDevice];
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"More Actions",nil)
+                                                  message:@"Do you want to unpair the device?"
+                                                  preferredStyle: isPad ? UIAlertControllerStyleAlert : UIAlertControllerStyleActionSheet];
+    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",nil)
+                                                 style:UIAlertActionStyleCancel
+                                                 handler:^(UIAlertAction * action) { _moreActionDevice=nil; }];
+    [alert addAction:cancelAction];
+    UIAlertAction* unpairAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Unpair",nil)
+                                                 style:UIAlertActionStyleDefault
+                                                 handler:^(UIAlertAction * action) {
+        [[BackgroundService sharedInstance] unpairDevice:_moreActionDevice];
+        [self onRefresh:nil];
+        _moreActionDevice=nil;
+    }];
+    [alert addAction:unpairAction];
+
+    UIWindow *keyWindow;
+    NSArray *windows = [[UIApplication sharedApplication]windows];
+    for (UIWindow *window in windows) {
+        if (window.isKeyWindow) {
+            keyWindow = window;
+            break;
+        }
+    }
+    [[keyWindow rootViewController] presentViewController:alert animated:YES completion:nil];
 }
 #pragma mark -
 #pragma mark Table View Data Source Methods
@@ -359,20 +379,4 @@
     [[BackgroundService sharedInstance] reloadAllPlugins];
 }
 
-#pragma mark -UIActionsheet delegate
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if ([[actionSheet title] isEqualToString:NSLocalizedString(@"More Actions",nil)]) {
-        switch (buttonIndex) {
-            case 0:
-                [[BackgroundService sharedInstance] unpairDevice:_moreActionDevice];
-                [self onRefresh:nil];
-                break;
-            case 1:
-            default:
-                break;
-        }
-    }
-    _moreActionDevice=nil;
-}
 @end
