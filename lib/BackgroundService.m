@@ -61,45 +61,6 @@
 - (id) init
 {
     if ((self=[super init])) {
-        
-        if (![[SecKeyWrapper sharedWrapper] getPublicKeyBits]) {
-            NSLog(@"Generating keys\n");
-            [[SecKeyWrapper sharedWrapper] generateKeyPair:2048];
-            [[SecKeyWrapper sharedWrapper] generateCertificate];
-        }
-        
-        /*NSMutableDictionary *query = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                      (__bridge id)kCFBooleanTrue, (__bridge id)kSecReturnAttributes,
-                                      (__bridge id)kSecMatchLimitAll, (__bridge id)kSecMatchLimit,
-                                      nil];
-        NSArray *secItemClasses = [NSArray arrayWithObjects:
-                                   (__bridge id)kSecClassGenericPassword,
-                                   (__bridge id)kSecClassInternetPassword,
-                                   (__bridge id)kSecClassCertificate,
-                                   (__bridge id)kSecClassKey,
-                                   (__bridge id)kSecClassIdentity,
-                                   nil];
-        for (id secItemClass in secItemClasses) {
-            [query setObject:secItemClass forKey:(__bridge id)kSecClass];
-            
-            CFTypeRef result = NULL;
-            SecItemCopyMatching((__bridge CFDictionaryRef)query, &result);
-            if (result != NULL) CFRelease(result);
-            
-            NSDictionary *spec = @{(__bridge id)kSecClass: secItemClass};
-            SecItemDelete((__bridge CFDictionaryRef)spec);
-        }
-        //if (![[SecKeyWrapper sharedWrapper] getCertificate]) {
-        //    NSLog(@"Generating certificates\n");
-        //    [[SecKeyWrapper sharedWrapper] generateCertificate];
-        //}
-         */
-        
-        NSLog(@"Pub Key: %@\n", [[SecKeyWrapper sharedWrapper] getPublicKeyBits]);
-        NSLog(@"Priv Key: %@\n", [[SecKeyWrapper sharedWrapper] getPrivateKeyRef]);
-        //[[SecKeyWrapper sharedWrapper] generateCertificate];
-        //NSLog(@"Certificate: %@", [[SecKeyWrapper sharedWrapper] getCertificate]);
-        
         _linkProviders=[NSMutableArray arrayWithCapacity:1];
         _devices=[NSMutableDictionary dictionaryWithCapacity:1];
         _visibleDevices=[NSMutableArray arrayWithCapacity:1];

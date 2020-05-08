@@ -72,7 +72,7 @@
     NSArray* viewlist=[[BackgroundService sharedInstance] getDevicePluginViews:_deviceId viewController:self];
     NSLog(@"View List %@", viewlist);
     
-    viewlist = [viewlist subarrayWithRange: NSMakeRange(1, 1)];
+    viewlist = [viewlist subarrayWithRange: NSMakeRange(4, 1)];
     CGRect preFrame=CGRectMake(0, 64, 0, 0);
     NSArray *subviews = [self.view subviews];
     for (int i=0; i<[subviews count]; i++)

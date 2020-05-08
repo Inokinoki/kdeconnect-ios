@@ -25,8 +25,6 @@
 #define PAYLOAD_PORT 1739
 #define PAYLOAD_SEND_DELAY 0 //ns
 
-#import "X509CertificateHelper.h"
-
 @interface LanLink()
 {
     uint16_t _payloadPort;

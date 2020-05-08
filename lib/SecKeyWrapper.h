@@ -51,7 +51,6 @@
 #import <Security/Security.h>
 #import <CommonCrypto/CommonDigest.h>
 #import <CommonCrypto/CommonCryptor.h>
-#import "SCCSR.h"   /* For CSR */
 
 /* Begin global declarations */
 
@@ -119,6 +118,4 @@
 - (NSArray*)encryptDataToArray:(NSData *)data withPublicKeyRef:(SecKeyRef)publickey;
 - (NSData*)decryptData:(NSData*)data;
 - (NSData*)decryptDataArray:(NSArray *)dataArray;
-- (SecCertificateRef)getCertificate;
-- (BOOL)generateCertificate;
 @end

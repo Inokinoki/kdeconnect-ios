@@ -24,9 +24,6 @@
 #import "NetworkPackage.h"
 #import "SecKeyWrapper.h"
 
-#import "X509CertificateHelper.h"
-#import "CertificateUtils.h"
-
 #import <Security/Security.h>
 #import <Security/SecItem.h>
 #import <Security/SecTrust.h>
@@ -34,8 +31,6 @@
 #import <Security/SecIdentity.h>
 #import <CommonCrypto/CommonDigest.h>
 #import <CommonCrypto/CommonCryptor.h>
-
-#import "Header.h"
 
 @interface LanLinkProvider()
 {
@@ -293,82 +288,18 @@
         [_linkProviderDelegate onConnectionReceived:np link:link];
     }
     [oldlink disconnect];
-    
-    /* Start TLS */
-    // NSMutableDictionary *settings = [[NSMutableDictionary alloc] init];
-    // [settings setObject:[NSNumber numberWithBool:YES]
-    //             forKey:GCDAsyncSocketManuallyEvaluateTrust];
-    // [settings setObject: (id)kCFBooleanFalse forKey: (__bridge NSString *)kCFStreamSSLValidatesCertificateChain];
-    // [sock startTLS: settings];
-    // NSLog(@"Start TLS");
-    
-    SecIdentityRef identityRef = nil;
-    CFArrayRef identityArray = NULL;
-    
-    // Retrieve a persistent reference to the identity consisting of the client certificate and the pre-existing private key
-    NSDictionary *queryIdentity = @{
-        (id)kSecClass: (id)kSecClassIdentity,
-        (id)kSecReturnRef:  [NSNumber numberWithBool:YES],
-        //(id)kSecReturnPersistentRef:  [NSNumber numberWithBool:YES],
-        (id)kSecAttrLabel: @CERT_TAG/*,
-        (id)kSecMatchLimit : (id)kSecMatchLimitAll*/
-    };
-    
-    OSStatus copyStatus = SecItemCopyMatching((CFDictionaryRef) queryIdentity, (CFTypeRef *) &identityRef);
-    //OSStatus copyStatus = SecItemCopyMatching((CFDictionaryRef) queryIdentity, (CFTypeRef *) &identityArray);
-    if (copyStatus != errSecSuccess) {
-        NSLog(@"Error get identity");
-    } else {
-        
-        // Count of available names in ArrayRef
-        /*CFIndex nameCount = CFArrayGetCount( identityArray );
 
-        //Iterate through the CFArrayRef and fill the vector
-        for( int i = 0; i < nameCount ; ++i  ) {
-            SecIdentityRef identity = (SecIdentityRef)CFArrayGetValueAtIndex( identityArray, i );*/
-            if (CFGetTypeID(identityRef) == SecIdentityGetTypeID()){
-                NSLog(@"Identity Match %lu %lu\n", CFGetTypeID(identityRef), SecIdentityGetTypeID());
-                //identityRef = identityRef;
-                //break;
-            } else {
-                NSLog(@"Identity not match %lu %lu\n", CFGetTypeID(identityRef), SecIdentityGetTypeID());
-            }
-        //}
-        
-        //NSLog(@"Identity %@ %lu", identityRef, CFGetTypeID(_certificate));
-    }
-    
-    SecCertificateRef cert2UseRef = NULL;
-    NSDictionary *queryCert = @{
-        (id)kSecClass: (id)kSecClassCertificate,
-        (id)kSecAttrLabel: @CERT_TAG,
-        (id)kSecReturnRef:  (id)kCFBooleanTrue
-    };
-    copyStatus = SecItemCopyMatching((CFDictionaryRef) queryCert, (CFTypeRef *) &cert2UseRef);
-    if (copyStatus != errSecSuccess) {
-        NSLog(@"Error get Certificate");
-    } else {
-        NSLog(@"Certificate OK, %@", cert2UseRef);
-        NSLog(@"parseIncomingCerts: bad cert array (6) %lu %lu\n", SecCertificateGetTypeID(), CFGetTypeID(cert2UseRef));
-    }
-    NSLog(@"Peer name %@", deviceId);
-
-    
-    
     np=[NetworkPackage createIdentityPackage];
     [sock writeData:[np serialize] withTimeout:-1 tag:PACKAGE_TAG_IDENTITY];
     NSLog(@"End Send my identity package");
     
     /* Test with cert file */
-    // NSURL *privateKeyFilePath = [[NSBundle mainBundle] URLForResource: @"privateKey" withExtension: @"pem"];
-    // NSURL *certificateFilePath = [[NSBundle mainBundle] URLForResource: @"privateKey" withExtension: @"pem"];
     NSString *resourcePath = [[NSBundle mainBundle] pathForResource:@"rsaPrivate" ofType:@"p12"];
     NSData *p12Data = [NSData dataWithContentsOfFile:resourcePath];
 
     NSMutableDictionary * options = [[NSMutableDictionary alloc] init];
 
     SecKeyRef privateKeyRef = NULL;
-
     //change to the actual password you used here
     [options setObject:@"" forKey:(id)kSecImportExportPassphrase];
 
@@ -376,15 +307,14 @@
 
     OSStatus securityError = SecPKCS12Import((CFDataRef) p12Data,
                                              (CFDictionaryRef)options, &items);
-    SecIdentityRef identityApp;
+    SecIdentityRef identityApp = nil;
     if (securityError == noErr && CFArrayGetCount(items) > 0) {
         CFDictionaryRef identityDict = CFArrayGetValueAtIndex(items, 0);
         identityApp =
-        (SecIdentityRef)CFDictionaryGetValue(identityDict,
+            (SecIdentityRef)CFDictionaryGetValue(identityDict,
                                              kSecImportItemIdentity);
 
         securityError = SecIdentityCopyPrivateKey(identityApp, &privateKeyRef);
-        NSLog(@"Read OK");
         if (securityError != noErr) {
             privateKeyRef = NULL;
         }
@@ -413,93 +343,6 @@
     nil];
     NSLog(@"Start Server TLS");
     [sock startTLS:tlsSettings];
-    
-    // Start TLS
-    /*
-    NSDictionary *tlsSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
-                                 (id)kCFStreamSocketSecurityLevelNegotiatedSSL, (id)kCFStreamSSLLevel,
-                                 (id)kCFBooleanFalse, (id)kCFStreamSSLAllowsExpiredCertificates,
-                                 (id)kCFBooleanFalse, (id)kCFStreamSSLAllowsExpiredRoots,
-                                 (id)kCFBooleanTrue, (id)kCFStreamSSLAllowsAnyRoot,
-                                 (id)kCFBooleanFalse, (id)kCFStreamSSLValidatesCertificateChain,
-                                 nil];
-    [sock startTLS: tlsSettings];
-    NSLog(@"Start Client TLS");
-     */
-    
-    // Declare any Carbon variables we may create
-    // We do this here so it's easier to compare to the bottom of this method where we release them all
-    /*
-     SecKeychainRef keychain = NULL;
-    SecIdentitySearchRef searchRef = NULL;
-    
-    NSMutableArray *certificates = [[NSMutableArray alloc] init];
-    
-    SecKeychainCopyDefault(&keychain);
-    SecIdentitySearchCreate(keychain, CSSM_KEYUSE_ANY, &searchRef);
-    
-    SecIdentityRef currentIdentityRef = NULL;
-    while (searchRef && (SecIdentitySearchCopyNext(searchRef, &currentIdentityRef) != errSecItemNotFound)) {
-        // Extract the private key from the identity, and examine it to see if it will work for us
-        SecKeyRef privateKeyRef = NULL;
-        SecIdentityCopyPrivateKey(currentIdentityRef, &privateKeyRef);
-        
-        if (privateKeyRef) {
-            SecItemAttr itemAttributes[] = {kSecKeyPrintName};
-            
-            SecExternalFormat externalFormats[] = {kSecFormatUnknown};
-            
-            int itemAttributesSize  = sizeof(itemAttributes) / sizeof(*itemAttributes);
-            int externalFormatsSize = sizeof(externalFormats) / sizeof(*externalFormats);
-            NSAssert(itemAttributesSize == externalFormatsSize, @"Arrays must have identical counts!");
-            
-            SecKeychainAttributeInfo info = {itemAttributesSize, (void *)&itemAttributes, (void *)&externalFormats};
-            
-            SecKeychainAttributeList *privateKeyAttributeList = NULL;
-            SecKeychainItemCopyAttributesAndData((SecKeychainItemRef)privateKeyRef,
-                                                 &info, NULL, &privateKeyAttributeList, NULL, NULL);
-            
-            if (privateKeyAttributeList) {
-//                SecKeychainAttribute nameAttribute = privateKeyAttributeList->attr[0];
-                
-//                NSString *name = [[[NSString alloc] initWithBytes:nameAttribute.data
-//                                                           length:(nameAttribute.length)
-//                                                         encoding:NSUTF8StringEncoding] autorelease];
-                
-                //                NSLog(@"name is %@", name);
-                
-                // Ugly Hack
-                // For some reason, name sometimes contains odd characters at the end of it
-                // I'm not sure why, and I don't know of a proper fix, thus the use of the hasPrefix: method
-//                if ([name hasPrefix:@"eVue"])
-//                {
-                    // It's possible for there to be more than one private key with the above prefix
-                    // But we're only allowed to have one identity, so we make sure to only add one to the array
-                    if ([certificates count] == 0) {
-                        [certificates addObject:(id)currentIdentityRef];
-                    }
-//                }
-                
-                SecKeychainItemFreeAttributesAndData(privateKeyAttributeList, NULL);
-            }
-            
-            CFRelease(privateKeyRef);
-        }
-        
-        CFRelease(currentIdentityRef);
-    }
-    
-    if(keychain)  CFRelease(keychain);
-    if(searchRef) CFRelease(searchRef);
-    
-    tls1 = [[NSDictionary alloc] initWithObjectsAndKeys:
-            (id)kCFStreamSocketSecurityLevelNegotiatedSSL, (id)kCFStreamSSLLevel,
-            certificates, (id)kCFStreamSSLCertificates,
-            (id)kCFBooleanTrue, (id)kCFStreamSSLIsServer,
-            nil];
-    
-    [certificates release];
-     */
 }
 
 /**
@@ -521,125 +364,8 @@
             return;
         }
         NSString* deviceId=[np objectForKey:@"deviceId"];
-        
-        /*
-         NSMutableDictionary *sslSettings = [[NSMutableDictionary alloc] init];
-         NSData *pkcs12data = [[NSData alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"client" ofType:@"bks"]];
-         CFDataRef inPKCS12Data = (CFDataRef)CFBridgingRetain(pkcs12data);
-         CFStringRef password = CFSTR("YOUR PASSWORD");
-         const void *keys[] = { kSecImportExportPassphrase };
-         const void *values[] = { password };
-         CFDictionaryRef options = CFDictionaryCreate(NULL, keys, values, 1, NULL, NULL);
 
-         CFArrayRef items = CFArrayCreate(NULL, 0, 0, NULL);
-
-         OSStatus securityError = SecPKCS12Import(inPKCS12Data, options, &items);
-         CFRelease(options);
-         CFRelease(password);
-
-         if(securityError == errSecSuccess)
-             NSLog(@"Success opening p12 certificate.");
-
-         CFDictionaryRef identityDict = CFArrayGetValueAtIndex(items, 0);
-         SecIdentityRef myIdent = (SecIdentityRef)CFDictionaryGetValue(identityDict,
-                                                                       kSecImportItemIdentity);
-
-         SecIdentityRef  certArray[1] = { myIdent };
-         CFArrayRef myCerts = CFArrayCreate(NULL, (void *)certArray, 1, NULL);
-
-         [sslSettings setObject:(id)CFBridgingRelease(myCerts) forKey:(NSString *)kCFStreamSSLCertificates];
-         [sslSettings setObject:NSStreamSocketSecurityLevelNegotiatedSSL forKey:(NSString *)kCFStreamSSLLevel];
-         [sslSettings setObject:(id)kCFBooleanTrue forKey:(NSString *)kCFStreamSSLAllowsAnyRoot];
-         [sslSettings setObject:@"CONNECTION ADDRESS" forKey:(NSString *)kCFStreamSSLPeerName];
-         [sock startTLS:sslSettings];
-         */
-        
-        //NSLog(@"PEM: %@", _certificateRequestPEM);
-        
-        //SecCertificateRef certificate = SecCertificateCreateWithData(kCFAllocatorMalloc, (__bridge CFDataRef)_certificate);
-        // if (status != errSecSuccess) { NSLog(@"Error when generate identity"); }
-        
-        /*SecIdentityRef identity = NULL;
-        //OSStatus copyStatus = SecIdentityCreateWithCertificate(NULL, certificate, &identity);
-        
-        NSMutableDictionary * identityAttr = [[NSMutableDictionary alloc] init];
-        [identityAttr setObject:(id)kSecClassIdentity forKey:(id)kSecClass];
-        OSStatus sanityCheck = SecItemCopyMatching((CFDictionaryRef) identityAttr, (CFTypeRef *)&identity);
-        NSLog(@"Sanity Checkout %@ %@", sanityCheck == errSecItemNotFound ? @"errSecItemNotFound":@"Other", identity);
-        
-        NSString *pem = @"MIIDJDCCAgwCCQDXNZ5EcwJADzANBgkqhkiG9w0BAQsFADBUMQwwCgYDVQQKDANLREUxEzARBgNVBAsMCktERUNvbm5lY3QxLzAtBgNVBAMMJl9hMjBlNTc5YV9jMWQ1XzRkMDlfODQyYl80MjQ1ZTRkMTM3OGJfMB4XDTE5MDgyMjE3MjQwNloXDTI5MDgxOTE3MjQwNlowVDEMMAoGA1UECgwDS0RFMRMwEQYDVQQLDApLREVDb25uZWN0MS8wLQYDVQQDDCZfYTIwZTU3OWFfYzFkNV80ZDA5Xzg0MmJfNDI0NWU0ZDEzNzhiXzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOQYgkZ04F6kx6Tc1+4ZP3Rr0vPzvRnXY6WeYD9c1EkIjxl/9XkGBGQ2yTq5kzio0DtlTbAPR3l1FYED8qNMwC+WRLPCaS2UPQ9emuPFj07+Dg1qgFyOL3pT26RenQpTB4LjzeXz9KdDB8LLxpaJzNxKM7ls7UdkiDNU/bfwa+T9g62JhGUXtMJUiU0nVR4xEu6fh46QvpPvJ0CvBSbodv+NnnfNm2yzpDqBf0bIlFgUwN/RqoW3u/KsZXnfRMHwxcwYY+4z4cGkRZxjnjAk3j8xqaJi1FHXPw7ONddDuo82Qd/qEX1fU7ZVQWgC1aXte2W1xPU98nVw5cQO8a80yjkCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEA3IFP7ideKNwNIZipd3wtkGBqGyr3WHwYGwzXoO/MooNToVZHzAcRQTZknqj6NvBgj8OpwxNkqUQJd0BIjQTxqDS9QCYlQ1QqngVvrCnE9SetgtTBsREj7Ki5LL9uurJUDJhq6mwk7x/+LLTmYURCvrr7bAgdzy2tyr5GNQOdDNy9TZxOH3ZeZ0uRf54qFTalu+3wDKSxsNvca/cLZiIv1H3Kvv8eP48vCnXQXaTuBKwKIjsqgppuzUqvAz4B5EEmyueZhM+KyhRB8yvaZcZI+LlgIps5zyi/t21gW6ha7lrcTA5NYUshrXwjjb5z936nX+cGhbFaE+P3H99PmnHB5Q==";
-
-        // remove header, footer and newlines from pem string
-
-        NSData *certData = [[NSData alloc] initWithBase64EncodedString: pem options: NSDataBase64DecodingIgnoreUnknownCharacters];
-        
-        NSLog(@"%@", certData);
-        
-        SecCertificateRef cert = SecCertificateCreateWithData(nil, (__bridge CFDataRef) certData);
-        if( cert != NULL ) {
-            CFStringRef certSummary = SecCertificateCopySubjectSummary(cert);
-            NSString* summaryString = [[NSString alloc] initWithString:(__bridge NSString*)certSummary];
-            NSLog(@"CERT SUMMARY: %@", summaryString);
-            CFRelease(certSummary);
-        } else {
-            NSLog(@"1111 *** ERROR *** trying to create the SSL certificate from data, but failed");
-        }*/
-        
-        //SecIdentityCreate(kCFAllocatorDefault, cert, [[SecKeyWrapper sharedWrapper] getPrivateKeyRef]);
-        /*SecIdentityRef identityRef = nil;
-        CFArrayRef identityArray = NULL;
-        
-        // Retrieve a persistent reference to the identity consisting of the client certificate and the pre-existing private key
-        NSDictionary *queryIdentity = @{
-            (id)kSecClass: (id)kSecClassIdentity,
-            (id)kSecReturnRef:  [NSNumber numberWithBool:YES],
-            //(id)kSecReturnPersistentRef:  [NSNumber numberWithBool:YES],
-            (id)kSecAttrLabel: @CERT_TAG/*,
-            (id)kSecMatchLimit : (id)kSecMatchLimitAll*/
-        /*};
-        
-        OSStatus copyStatus = SecItemCopyMatching((CFDictionaryRef) queryIdentity, (CFTypeRef *) &identityRef);
-        //OSStatus copyStatus = SecItemCopyMatching((CFDictionaryRef) queryIdentity, (CFTypeRef *) &identityArray);
-        if (copyStatus != errSecSuccess) {
-            NSLog(@"Error get identity");
-        } else {
-            
-            // Count of available names in ArrayRef
-            /*CFIndex nameCount = CFArrayGetCount( identityArray );
-
-            //Iterate through the CFArrayRef and fill the vector
-            for( int i = 0; i < nameCount ; ++i  ) {
-                SecIdentityRef identity = (SecIdentityRef)CFArrayGetValueAtIndex( identityArray, i );*/
-                /*if (CFGetTypeID(identityRef) == SecIdentityGetTypeID()){
-                    NSLog(@"Identity Match %lu %lu\n", CFGetTypeID(identityRef), SecIdentityGetTypeID());
-                    //identityRef = identityRef;
-                    //break;
-                } else {
-                    NSLog(@"Identity not match %lu %lu\n", CFGetTypeID(identityRef), SecIdentityGetTypeID());
-                }
-            //}
-            
-            //NSLog(@"Identity %@ %lu", identityRef, CFGetTypeID(_certificate));
-        }
-        
-        SecCertificateRef cert2UseRef = NULL;
-        NSDictionary *queryCert = @{
-            (id)kSecClass: (id)kSecClassCertificate,
-            (id)kSecAttrLabel: @CERT_TAG,
-            (id)kSecReturnRef:  (id)kCFBooleanTrue
-        };
-        copyStatus = SecItemCopyMatching((CFDictionaryRef) queryCert, (CFTypeRef *) &cert2UseRef);
-        if (copyStatus != errSecSuccess) {
-            NSLog(@"Error get Certificate");
-        } else {
-            NSLog(@"Certificate OK, %@", cert2UseRef);
-            NSLog(@"parseIncomingCerts: bad cert array (6) %lu %lu\n", SecCertificateGetTypeID(), CFGetTypeID(cert2UseRef));
-        }
-        NSLog(@"Peer name %@", deviceId);*/
-        
         /* Test with cert file */
-        // NSURL *privateKeyFilePath = [[NSBundle mainBundle] URLForResource: @"privateKey" withExtension: @"pem"];
-        // NSURL *certificateFilePath = [[NSBundle mainBundle] URLForResource: @"privateKey" withExtension: @"pem"];
         NSString *resourcePath = [[NSBundle mainBundle] pathForResource:@"rsaPrivate" ofType:@"p12"];
         NSData *p12Data = [NSData dataWithContentsOfFile:resourcePath];
 
@@ -667,10 +393,8 @@
                 privateKeyRef = NULL;
             }
         }
-        //CFRelease(items);
         /* Test with cert file */
-        
-        // NSData *identityData = generateIdentityWithPrivateKey(@"5A2ED80EFBB74D1387901C061B596153",[[SecKeyWrapper sharedWrapper] getPrivateKeyBits]);
+
         CFArrayRef cfItems;
         NSArray *myCerts = [[NSArray alloc] initWithObjects:(__bridge id)identityApp, /*(__bridge id)cert2UseRef,*/ nil];
         
@@ -680,7 +404,6 @@
                                   [[NSNumber alloc] initWithInt: TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384],
                                   [[NSNumber alloc] initWithInt: TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA],
                                   nil];
-        //NSArray *certs = [[NSArray alloc] initWithObjects:(__bridge id)identityRef, (__bridge id)caRef, nil];
         /* TLS */
         NSDictionary *tlsSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
              //(id)kCFStreamSocketSecurityLevelNegotiatedSSL, (id)kCFStreamSSLLevel,
@@ -697,42 +420,6 @@
              //(id)[NSNumber numberWithInt:kAlwaysAuthenticate], (id)GCDAsyncSocketSSLClientSideAuthenticate,
              (id)[NSNumber numberWithInt:1], (id)GCDAsyncSocketManuallyEvaluateTrust,
              nil];
-        /*CFArrayRef certs = (__bridge CFArrayRef) myCerts;
-        SecIdentityRef identity = (SecIdentityRef)CFArrayGetValueAtIndex(certs, 0);
-        if (identity == NULL) {
-            NSLog(@"parseIncomingCerts: bad cert array (1)\n");
-        }
-        if (CFGetTypeID(identity) != SecIdentityGetTypeID()) {
-            NSLog(@"parseIncomingCerts: bad cert array (2) %lu %lu %lu %lu\n", CFGetTypeID(identity), CFGetTypeID(_certificate), CFGetTypeID(identityRef), SecIdentityGetTypeID());
-        }
-        //SecCertificateRef leafCert = (SecCertificateRef)CFArrayGetValueAtIndex(certs, 1);
-        OSStatus ortn;// = SecIdentityCopyCertificate(identity, &leafCert);
-        /*if (ortn) {
-           NSLog(@"parseIncomingCerts: bad cert array (3)\n");
-        }*/
-
-        //SecKeyRef privKey = NULL;
-        /* Fetch private key from identity */
-        /*ortn = SecIdentityCopyPrivateKey(identity, &privKey);
-        if (ortn) {
-            NSLog(@"parseIncomingCerts: SecIdentityCopyPrivateKey err %d\n",
-                        (int)ortn);
-        }
-        
-        // SSLCopyBufferFromData(SecCertificateGetBytePtr(leafCert), SecCertificateGetLength(leafCert), &certChain[0].derCert);
-        /*for (int ix = 1; ix < 2; ++ix) {
-            SecCertificateRef intermediate =
-            (SecCertificateRef)CFArrayGetValueAtIndex(certs, ix);
-            if (intermediate == NULL) {
-                NSLog(@"parseIncomingCerts: bad cert array (5)\n");
-                ortn = errSecParam;
-            }
-            if (CFGetTypeID(intermediate) != SecCertificateGetTypeID()) {
-                NSLog(@"parseIncomingCerts: bad cert array (6) %lu %lu\n", SecCertificateGetTypeID(), CFGetTypeID(intermediate));
-                ortn = errSecParam;
-            }
-
-        }*/
         
         [sock startTLS: tlsSettings];
         NSLog(@"Start Client TLS");
