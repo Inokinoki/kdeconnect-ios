@@ -49,16 +49,38 @@
 - (BOOL) onDevicePackageReceived:(NetworkPackage *)np
 {
     if ([[np _Type] isEqualToString:PACKAGE_TYPE_SHARE]) {
-        //NSLog(@"share plugin receive a package");
+        NSLog(@"share plugin receive a package");
         UIImage* image=[UIImage imageWithData:[np _Payload]];
         UIImageWriteToSavedPhotosAlbum(image,nil,nil,nil);
+        /*
         UILocalNotification* localNotification = [[UILocalNotification alloc] init];
         localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:0];
         localNotification.alertBody = FORMAT(NSLocalizedString(@"received a photo from:%@",nil),[_device _name]);
         localNotification.timeZone = [NSTimeZone defaultTimeZone];
         localNotification.soundName= UILocalNotificationDefaultSoundName;
         [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+        */
         AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+        
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Received file",nil)
+                                       message:@""
+                                       preferredStyle: UIAlertControllerStyleAlert];
+        
+        UIAlertAction* okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                        style:UIAlertActionStyleCancel
+                                        handler:^(UIAlertAction * action) {}];
+        [alert addAction:okAction];
+        
+        UIWindow *keyWindow;
+        NSArray *windows = [[UIApplication sharedApplication]windows];
+        for (UIWindow *window in windows) {
+            if (window.isKeyWindow) {
+                keyWindow = window;
+                break;
+            }
+        }
+        [[keyWindow rootViewController] presentViewController:alert animated:YES completion:nil];
+        
         return true;
     }
     return false;

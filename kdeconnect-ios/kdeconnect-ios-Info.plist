@@ -30,6 +30,8 @@
 	<string>KDE Connect needs Camera permission to send a photo to the other device</string>
 	<key>NSContactsUsageDescription</key>
 	<string>Sharing Contacts</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Save picture to your Photo Library</string>
 	<key>NSRemindersUsageDescription</key>
 	<string>Find your phone</string>
 	<key>UIBackgroundModes</key>

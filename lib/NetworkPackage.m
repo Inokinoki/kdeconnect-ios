@@ -147,7 +147,7 @@ __strong static NSString* _UUID;
     NSMutableDictionary* info=[NSMutableDictionary dictionaryWithObjects:values forKeys:keys];
     if (_Payload) {
         [info setObject:[NSNumber numberWithLong:(_PayloadSize?_PayloadSize:-1)] forKey:@"payloadSize"];
-        [info setObject: _PayloadTransferInfo == nil ? @{} : _PayloadTransferInfo forKey:@"payloadTransferInfo"];
+        [info setObject: _PayloadTransferInfo forKey:@"payloadTransferInfo"];
     }
     NSError* err=nil;
     NSMutableData* jsonData=[[NSMutableData alloc] initWithData:[NSJSONSerialization dataWithJSONObject:info options:0 error:&err]];
