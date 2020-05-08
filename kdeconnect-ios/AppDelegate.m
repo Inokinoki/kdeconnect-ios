@@ -30,8 +30,8 @@
     // Override point for customization after application launch.
     // Register the preference defaults early.
     
-    [BackgroundService sharedInstance];
     [[BackgroundService sharedInstance] startDiscovery];
+    /*
     __block UIBackgroundTaskIdentifier task = [application beginBackgroundTaskWithExpirationHandler:^{
         NSLog(@"System terminated background task");
         UILocalNotification* localNotification = [[UILocalNotification alloc] init];
@@ -41,23 +41,24 @@
         [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
         [application endBackgroundTask:task];
     }];
-    
+    */
+    /*
     UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
     [center requestAuthorizationWithOptions: UNAuthorizationOptionAlert
                           completionHandler: ^(BOOL authorized, NSError * _Nullable __strong error) {
         if (authorized) {
-            /*
             UILocalNotification* localNotification = [[UILocalNotification alloc] init];
             localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:0];
             localNotification.alertBody = NSLocalizedString(@"System notification test",nil);
             localNotification.timeZone = [NSTimeZone defaultTimeZone];
             [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
-             */
             NSLog(@"Notification is allowed");
         }
     }];
+    */
     
     
+    /*
     // If the system refuses to allow the task return
     if (task == UIBackgroundTaskInvalid)    {
         //NSLog(@"System refuses to allow background task");
@@ -73,7 +74,7 @@
     
     UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier: @"KDEConnectTest" content:content trigger:[UNTimeIntervalNotificationTrigger triggerWithTimeInterval:20 repeats:NO]];
     [center addNotificationRequest:request withCompletionHandler:nil];
-    
+    */
     return YES;
 }
 
@@ -89,11 +90,13 @@
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     // Create a background task identifier
+    [[BackgroundService sharedInstance] stopDiscovery];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    [[BackgroundService sharedInstance] startDiscovery];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
