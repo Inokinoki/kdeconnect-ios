@@ -72,14 +72,7 @@
         _linkProviderDelegate=linkProviderDelegate;
         socketQueue=dispatch_queue_create("com.kde.org.kdeconnect.socketqueue", NULL);
     }
-    
-    //_certificate = [[SecKeyWrapper sharedWrapper] getCertificate];
-    /*
-     NSLog(@"Confirm Certificate: %@", _certificate);
-    NSString *certificateRequestB64 = [_certificate base64EncodedStringWithOptions: 0];
-    
-    _certificateRequestPEM = [NSString stringWithFormat:@"-----BEGIN CERTIFICATE REQUEST-----\\n%@\\n-----END CERTIFICATE REQUEST-----\\n", certificateRequestB64];
-     */
+
     return self;
 }
 
@@ -228,9 +221,9 @@
     }
     NSLog(@"connecting");
     
-    //NetworkPackage *inp = [NetworkPackage createIdentityPackage];
-    //NSData *inpData = [inp serialize];
-    //[socket writeData:inpData withTimeout:0 tag:PACKAGE_TAG_IDENTITY];
+    NetworkPackage *inp = [NetworkPackage createIdentityPackage];
+    NSData *inpData = [inp serialize];
+    [socket writeData:inpData withTimeout:0 tag:PACKAGE_TAG_IDENTITY];
     
     //add to pending connection list
     @synchronized(_pendingNps)
@@ -267,33 +260,19 @@
 
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port
 {
+    // Temporally disable
+    /*
     [sock setDelegate:nil];
     NSLog(@"tcp socket didConnectToHost %@", host);
-    
-    
+
     //create LanLink and inform the background
     NSUInteger index=[_pendingSockets indexOfObject:sock];
     NetworkPackage* np=[_pendingNps objectAtIndex:index];
     NSString* deviceId=[np objectForKey:@"deviceId"];
-    LanLink* oldlink;
-    if ([[_connectedLinks allKeys] containsObject:deviceId]) {
-        oldlink=[_connectedLinks objectForKey:deviceId];
-    }
-    
-    LanLink* link=[[LanLink alloc] init:sock deviceId:[np objectForKey:@"deviceId"] setDelegate:nil];
-    [_pendingSockets removeObject:sock];
-    [_pendingNps removeObject:np];
-    [_connectedLinks setObject:link forKey:[np objectForKey:@"deviceId"]];
-    if (_linkProviderDelegate) {
-        [_linkProviderDelegate onConnectionReceived:np link:link];
-    }
-    [oldlink disconnect];
-
-    np=[NetworkPackage createIdentityPackage];
-    [sock writeData:[np serialize] withTimeout:-1 tag:PACKAGE_TAG_IDENTITY];
-    NSLog(@"End Send my identity package");
+    */
     
     /* Test with cert file */
+    /*
     NSString *resourcePath = [[NSBundle mainBundle] pathForResource:@"rsaPrivate" ofType:@"p12"];
     NSData *p12Data = [NSData dataWithContentsOfFile:resourcePath];
 
@@ -319,30 +298,39 @@
             privateKeyRef = NULL;
         }
     }
-    //CFRelease(items);
+    */
     /* Test with cert file */
     
+    /*
     NSArray *myCipherSuite = [[NSArray alloc] initWithObjects:
-    [NSNumber numberWithInt: TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256],
-    [NSNumber numberWithInt: TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384],
-    [NSNumber numberWithInt: TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA],
+        [NSNumber numberWithInt: TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256],
+        [NSNumber numberWithInt: TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384],
+        [NSNumber numberWithInt: TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA],
     nil];
-    NSArray *myCerts = [[NSArray alloc] initWithObjects:/*(__bridge id)identityRef, (__bridge id)cert2UseRef,*/ (__bridge id)identityApp, nil];
+    NSArray *myCerts = [[NSArray alloc] initWithObjects: (__bridge id)identityApp, nil];
     NSDictionary *tlsSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
-        (id)GCDAsyncSocketSSLProtocolVersionMax, (id)[NSNumber numberWithInt: kTLSProtocol13],
-        //(id)kCFBooleanFalse,       (id)kCFStreamSSLAllowsExpiredCertificates,  /* Disallowed expired certificate   */
-        //(id)kCFBooleanFalse,       (id)kCFStreamSSLAllowsExpiredRoots,         /* Disallowed expired Roots CA      */
-        //(id)kCFBooleanTrue,        (id)kCFStreamSSLAllowsAnyRoot,              /* Allow any root CA                */
-        //(id)kCFBooleanFalse,       (id)kCFStreamSSLValidatesCertificateChain,  /* Do not validate all              */
-        //(id)deviceId,              (id)kCFStreamSSLPeerName,                   /* Set peer name to the one we received */
-        // (id)[[SecKeyWrapper sharedWrapper] getPrivateKeyRef], (id),
-         //(id)kCFBooleanTrue,        (id)GCDAsyncSocketManuallyEvaluateTrust,
-         (__bridge CFArrayRef) myCipherSuite, (id)GCDAsyncSocketSSLCipherSuites,
-        (__bridge CFArrayRef) myCerts, (id)kCFStreamSSLCertificates,
-        (id)[NSNumber numberWithInt:1],       (id)kCFStreamSSLIsServer,
+         (id)kCFBooleanTrue,                    (id)GCDAsyncSocketManuallyEvaluateTrust,
+         (__bridge CFArrayRef) myCipherSuite,   (id)GCDAsyncSocketSSLCipherSuites,
+         (__bridge CFArrayRef) myCerts,         (id)kCFStreamSSLCertificates,
+         (id)[NSNumber numberWithInt:1],        (id)kCFStreamSSLIsServer,
     nil];
     NSLog(@"Start Server TLS");
     [sock startTLS:tlsSettings];
+    
+    LanLink* oldlink;
+    if ([[_connectedLinks allKeys] containsObject:deviceId]) {
+        oldlink=[_connectedLinks objectForKey:deviceId];
+    }
+    
+    LanLink* link=[[LanLink alloc] init:sock deviceId:[np objectForKey:@"deviceId"] setDelegate:nil];
+    [_pendingSockets removeObject:sock];
+    [_pendingNps removeObject:np];
+    [_connectedLinks setObject:link forKey:[np objectForKey:@"deviceId"]];
+    if (_linkProviderDelegate) {
+        [_linkProviderDelegate onConnectionReceived:np link:link];
+    }
+    [oldlink disconnect];
+    */
 }
 
 /**
@@ -423,8 +411,6 @@
         
         [sock startTLS: tlsSettings];
         NSLog(@"Start Client TLS");
-        
-        //CFRelease(identityRef);
         
         [sock setDelegate:nil];
         [_pendingSockets removeObject:sock];
