@@ -41,7 +41,7 @@
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-    NSLog(@"Open Device View");
+    NSLog(@"Open Device View %@", nibNameOrNil);
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
@@ -72,20 +72,32 @@
     NSArray* viewlist=[[BackgroundService sharedInstance] getDevicePluginViews:_deviceId viewController:self];
     NSLog(@"View List %@", viewlist);
     
-    viewlist = [viewlist subarrayWithRange: NSMakeRange(4, 1)];
-    CGRect preFrame=CGRectMake(0, 64, 0, 0);
+    //viewlist = [viewlist subarrayWithRange: NSMakeRange(1, 1)];
+    CGRect preFrame = CGRectMake(0, 44, 0, 50);
     NSArray *subviews = [self.view subviews];
     for (int i=0; i<[subviews count]; i++)
     {
         [[subviews objectAtIndex:i] removeFromSuperview];
+        
+        NSArray *pluginViews = [[subviews objectAtIndex:i] subviews];
+        for (int i=0; i<[pluginViews count]; i++) {
+            [[pluginViews objectAtIndex:i] removeFromSuperview];
+        }
     }
+    UIStackView *stackView = [[UIStackView alloc] init];
+    [stackView setFrame: self.view.frame];
+    [stackView setBackgroundColor: [UIColor redColor]];
+    stackView.axis = UILayoutConstraintAxisVertical;
+    stackView.alignment = UIStackViewAlignmentFill;
+    
+    [self.view addSubview: stackView];
     for (UIView* view in viewlist) {
         NSLog(@"View List %@", view);
         CGRect viewFrame=view.frame;
-        viewFrame.origin.y+=(preFrame.origin.y+preFrame.size.height);
+        viewFrame.origin.y += (preFrame.origin.y+preFrame.size.height);
         preFrame=viewFrame;
         [view setFrame:viewFrame];
-        [self.view addSubview:view];
+        [stackView addArrangedSubview:view];
         if (isPad) {
             NSArray* constraints=[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[view]-10-|" options:0 metrics:nil views:@{@"view": view}];
             constraints=[constraints arrayByAddingObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:FORMAT(@"V:[view(%f)]",view.frame.size.height) options:0 metrics:nil views:@{@"view": view}]];
@@ -95,7 +107,7 @@
         if (isPhone) {
             NSArray* constraints=[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[view]-10-|" options:0 metrics:nil views:@{@"view": view}];
             constraints=[constraints arrayByAddingObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:FORMAT(@"V:[view(%f)]",view.frame.size.height) options:0 metrics:nil views:@{@"view": view}]];
-            view.translatesAutoresizingMaskIntoConstraints=NO;
+            view.translatesAutoresizingMaskIntoConstraints=YES;
             [self.view addConstraints:constraints];
         }
     }

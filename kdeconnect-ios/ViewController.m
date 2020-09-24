@@ -51,6 +51,7 @@
     [refreshControl addTarget:self action:@selector(onRefresh:) forControlEvents:UIControlEventValueChanged];
     [_tableView addSubview:refreshControl];
     [[BackgroundService sharedInstance] set_backgroundServiceDelegate:self];
+    [[BackgroundService sharedInstance] refreshVisibleDeviceList];
     NavigationController* navc=self.navigationController;
     [navc set_enableRotateMask:YES];
     UIBarButtonItem *buttonItemr = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
