@@ -41,6 +41,25 @@
 @synthesize _failedPlugins;
 @synthesize _supportedIncomingInterfaces;
 @synthesize _supportedOutgoingInterfaces;
+@synthesize _testDevice;
+
+- (Device*) initTest
+{
+    if ((self=[super init])) {
+        _id=@"test-purpose-device";
+        _name=@"TestiPhone";
+        _type=Phone;
+        _deviceDelegate=nil;
+        // [self loadSetting];
+        _links=[NSMutableArray arrayWithCapacity:1];
+        _plugins=[NSMutableDictionary dictionaryWithCapacity:1];
+        _failedPlugins=[NSMutableArray arrayWithCapacity:1];
+        
+        _testDevice = YES;
+        _pairStatus = Paired;
+    }
+    return self;
+}
 
 - (Device*) init:(NSString*)deviceId setDelegate:(id)deviceDelegate
 {
@@ -227,7 +246,7 @@
 
 - (BOOL) isReachable
 {
-    return [_links count]!=0;
+    return [_links count]!=0 || _testDevice;
 }
 
 - (void) loadSetting
@@ -257,7 +276,7 @@
 #pragma mark Pairing-related Functions
 - (BOOL) isPaired
 {
-    return _pairStatus==Paired;
+    return _pairStatus==Paired || _testDevice;
 }
 
 - (BOOL) isPaireRequested

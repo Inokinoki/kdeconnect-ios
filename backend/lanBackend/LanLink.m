@@ -83,6 +83,10 @@
         return false;
     }
     
+    if ([np _Payload] != nil && tag == PACKAGE_TAG_SHARE) {
+        
+    }
+    
     NSData* data=[np serialize];
     [_socket writeData:data withTimeout:-1 tag:tag];
     //TO-DO return true only when send successfully

@@ -68,6 +68,13 @@
         [self registerLinkProviders];
         [self loadRemenberedDevices];
         [PluginFactory sharedInstance];
+        
+        NSString* deviceId = @"test-purpose-device";
+        Device* device=[[Device alloc] initTest];
+        [_devices setObject:device forKey:deviceId];
+        // [_visibleDevices addObject:device];
+        
+        // [self refreshVisibleDeviceList];
     }
     return self;
 }
@@ -170,7 +177,7 @@
 
 - (void) refreshVisibleDeviceList
 {
-    //NSLog(@"bg on device refresh visible device list");
+    NSLog(@"bg on device refresh visible device list");
     BOOL updated=false;
     for (Device* device  in [_devices allValues]) {
         if ([device isReachable]) {

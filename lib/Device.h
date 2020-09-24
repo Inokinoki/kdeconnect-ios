@@ -54,7 +54,9 @@ typedef NS_ENUM(NSUInteger, DeviceType)
 @property(readonly,nonatomic) NSArray* _supportedIncomingInterfaces;
 @property(readonly,nonatomic) NSArray* _supportedOutgoingInterfaces;
 @property(nonatomic) id _deviceDelegate;
+@property(readonly,nonatomic) BOOL _testDevice;
 
+- (Device*) initTest;
 - (Device*) init:(NSString*)deviceId setDelegate:(id)deviceDelegate;
 - (Device*) init:(NetworkPackage*)np baselink:(BaseLink*)link setDelegate:(id)deviceDelegate;
 - (NSInteger) compareProtocolVersion;
