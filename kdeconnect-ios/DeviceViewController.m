@@ -67,6 +67,13 @@
     [self.view setNeedsDisplay];
 }
 
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id)coordinator {
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    
+    // When rotated, auto reload plugin views
+    [self reloadPluginsViews];
+}
+
 - (void) reloadPluginsViews
 {
     NSArray* viewlist=[[BackgroundService sharedInstance] getDevicePluginViews:_deviceId viewController:self];
