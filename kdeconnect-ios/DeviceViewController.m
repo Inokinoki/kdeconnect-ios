@@ -70,10 +70,7 @@
 - (void) reloadPluginsViews
 {
     NSArray* viewlist=[[BackgroundService sharedInstance] getDevicePluginViews:_deviceId viewController:self];
-    NSLog(@"View List %@", viewlist);
-    
-    //viewlist = [viewlist subarrayWithRange: NSMakeRange(1, 1)];
-    CGRect preFrame = CGRectMake(0, 44, 0, 50);
+
     NSArray *subviews = [self.view subviews];
     for (int i=0; i<[subviews count]; i++)
     {
@@ -94,17 +91,17 @@
         #undef STATUS_BAR_HEIGHT
     }
     [stackView setFrame: stackViewFrame];
-    [stackView setBackgroundColor: [UIColor redColor]];
     stackView.axis = UILayoutConstraintAxisVertical;
-    stackView.alignment = UIStackViewAlignmentFill;
+    stackView.alignment = UIStackViewAlignmentTop;
+    stackView.distribution = UIStackViewDistributionFillProportionally;
 
     [self.view addSubview: stackView];
+    stackViewFrame.size.height = 0;
     for (UIView* view in viewlist) {
-        NSLog(@"View List %@", view);
         CGRect viewFrame=view.frame;
-        viewFrame.origin.y += (preFrame.origin.y+preFrame.size.height);
-        preFrame=viewFrame;
-        [view setFrame:viewFrame];
+
+        // Augment the height of root StackView
+        stackViewFrame.size.height += viewFrame.size.height;
         [stackView addArrangedSubview:view];
         if (isPad) {
             NSArray* constraints=[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[view]-10-|" options:0 metrics:nil views:@{@"view": view}];
@@ -119,6 +116,7 @@
             [self.view addConstraints:constraints];
         }
     }
+    [stackView setFrame: stackViewFrame];
 }
 
 - (void) onDeviceLost

@@ -91,32 +91,35 @@
 - (UIView*) getView:(UIViewController*)vc
 {
     if ([_device isReachable]) {
-        NSLog(@"Create view");
-        _view=[[UIStackView alloc] initWithFrame:CGRectMake(0, 0, screen_width, 45)];
-        [_view setBackgroundColor:[UIColor grayColor]];
-        /*
-        UILabel* label=[[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 30)];
+        _view=[[UIStackView alloc] initWithFrame:CGRectMake(0, 0, screen_width, 60)];
+        UIStackView *stackView = (UIStackView *)_view;
+        stackView.axis = UILayoutConstraintAxisVertical;
+        stackView.alignment = UIStackViewAlignmentFill;
+
+        UILabel* label=[[UILabel alloc] init];
         [label setText:NSLocalizedString(@"Share",nil)];
-        */
+
         UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
         [button setTitle:NSLocalizedString(@"Share photo",nil) forState:UIControlStateNormal];
         button.layer.borderWidth = 1;
         button.layer.cornerRadius = 10.0;
         button.layer.borderColor = [[UIColor grayColor] CGColor];
         [button addTarget:self action:@selector(photoSourceSelect:) forControlEvents:UIControlEventTouchUpInside];
-        // [_view addSubview:label];
-        [_view addSubview:button];
+
+        stackView.distribution = UIStackViewDistributionFillProportionally;
+        [stackView addArrangedSubview:label];
+        [stackView addArrangedSubview:button];
         if (isPad) {
             NSArray* constraints=[NSLayoutConstraint constraintsWithVisualFormat:@"|-100-[button]-100-|" options:0 metrics:nil views:@{@"button": button}];
-            // constraints=[constraints arrayByAddingObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"|-50-[label]" options:0 metrics:nil views:@{@"label": label}]];
+            constraints=[constraints arrayByAddingObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"|-50-[label]" options:0 metrics:nil views:@{@"label": label}]];
             [_view addConstraints:constraints];
         }
         if (isPhone) {
             NSArray* constraints=[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[button]-10-|" options:0 metrics:nil views:@{@"button": button}];
-            //constraints=[constraints arrayByAddingObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"|-5-[label]" options:0 metrics:nil views:@{@"label": label}]];
+            constraints=[constraints arrayByAddingObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"|-5-[label]" options:0 metrics:nil views:@{@"label": label}]];
             [_view addConstraints:constraints];
         }
-        //label.translatesAutoresizingMaskIntoConstraints     = NO;
+        label.translatesAutoresizingMaskIntoConstraints     = NO;
         button.translatesAutoresizingMaskIntoConstraints    = NO;
     }
     else{
