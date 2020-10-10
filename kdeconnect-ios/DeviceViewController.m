@@ -85,11 +85,19 @@
         }
     }
     UIStackView *stackView = [[UIStackView alloc] init];
-    [stackView setFrame: self.view.frame];
+    CGRect stackViewFrame = self.view.frame;
+    if (isPad) {
+        // Add an offset <status bar height> to y
+        #define STATUS_BAR_HEIGHT 25
+        stackViewFrame.origin = CGPointMake(0, STATUS_BAR_HEIGHT);
+        stackViewFrame.size.height -= STATUS_BAR_HEIGHT;
+        #undef STATUS_BAR_HEIGHT
+    }
+    [stackView setFrame: stackViewFrame];
     [stackView setBackgroundColor: [UIColor redColor]];
     stackView.axis = UILayoutConstraintAxisVertical;
     stackView.alignment = UIStackViewAlignmentFill;
-    
+
     [self.view addSubview: stackView];
     for (UIView* view in viewlist) {
         NSLog(@"View List %@", view);
@@ -102,7 +110,7 @@
             NSArray* constraints=[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[view]-10-|" options:0 metrics:nil views:@{@"view": view}];
             constraints=[constraints arrayByAddingObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:FORMAT(@"V:[view(%f)]",view.frame.size.height) options:0 metrics:nil views:@{@"view": view}]];
             view.translatesAutoresizingMaskIntoConstraints=NO;
-            [self.view addConstraints:constraints];
+            [stackView addConstraints:constraints];
         }
         if (isPhone) {
             NSArray* constraints=[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[view]-10-|" options:0 metrics:nil views:@{@"view": view}];
