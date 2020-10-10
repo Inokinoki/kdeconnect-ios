@@ -261,7 +261,6 @@
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port
 {
     // Temporally disable
-    /*
     [sock setDelegate:nil];
     NSLog(@"tcp socket didConnectToHost %@", host);
 
@@ -269,10 +268,8 @@
     NSUInteger index=[_pendingSockets indexOfObject:sock];
     NetworkPackage* np=[_pendingNps objectAtIndex:index];
     NSString* deviceId=[np objectForKey:@"deviceId"];
-    */
     
     /* Test with cert file */
-    /*
     NSString *resourcePath = [[NSBundle mainBundle] pathForResource:@"rsaPrivate" ofType:@"p12"];
     NSData *p12Data = [NSData dataWithContentsOfFile:resourcePath];
 
@@ -298,10 +295,8 @@
             privateKeyRef = NULL;
         }
     }
-    */
     /* Test with cert file */
     
-    /*
     NSArray *myCipherSuite = [[NSArray alloc] initWithObjects:
         [NSNumber numberWithInt: TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256],
         [NSNumber numberWithInt: TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384],
@@ -309,11 +304,12 @@
     nil];
     NSArray *myCerts = [[NSArray alloc] initWithObjects: (__bridge id)identityApp, nil];
     NSDictionary *tlsSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
-         (id)kCFBooleanTrue,                    (id)GCDAsyncSocketManuallyEvaluateTrust,
+         (id)[NSNumber numberWithBool:YES],        (id)kCFStreamSSLIsServer,
          (__bridge CFArrayRef) myCipherSuite,   (id)GCDAsyncSocketSSLCipherSuites,
          (__bridge CFArrayRef) myCerts,         (id)kCFStreamSSLCertificates,
-         (id)[NSNumber numberWithInt:1],        (id)kCFStreamSSLIsServer,
     nil];
+    // (id)kCFBooleanTrue,                    (id)GCDAsyncSocketManuallyEvaluateTrust,
+
     NSLog(@"Start Server TLS");
     [sock startTLS:tlsSettings];
     
@@ -330,7 +326,6 @@
         [_linkProviderDelegate onConnectionReceived:np link:link];
     }
     [oldlink disconnect];
-    */
 }
 
 /**
@@ -343,6 +338,7 @@
     NSLog(@"%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
     NSString * jsonStr=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     NSArray* packageArray=[jsonStr componentsSeparatedByString:@"\n"];
+    return;
     for (NSString* dataStr in packageArray) {
         if ([dataStr length] <= 0) continue;
 
