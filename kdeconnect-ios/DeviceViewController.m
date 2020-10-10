@@ -83,40 +83,47 @@
     }
     UIStackView *stackView = [[UIStackView alloc] init];
     CGRect stackViewFrame = self.view.frame;
-    if (isPad) {
-        // Add an offset <status bar height> to y
-        #define STATUS_BAR_HEIGHT 25
-        stackViewFrame.origin = CGPointMake(0, STATUS_BAR_HEIGHT);
-        stackViewFrame.size.height -= STATUS_BAR_HEIGHT;
-        #undef STATUS_BAR_HEIGHT
+    CGFloat stackViewFrameUpEdge = 0.0;
+
+    // Skip StatusBar
+    if (@available(iOS 11.0, *)) {
+        stackViewFrameUpEdge += UIApplication.sharedApplication.windows[0].safeAreaInsets.top;
+    } else {
+        stackViewFrameUpEdge += 25.0;
+    }
+    // Skip NavigationBar
+    if (isPhone) {
+        if (self.navigationController != nil) {
+            stackViewFrameUpEdge += self.navigationController.navigationBar.frame.size.height;
+        }
+    }
+    stackViewFrame.origin = CGPointMake(0, stackViewFrameUpEdge);
+    
+    // Prepared StackView size
+    stackViewFrame.size.height = 0;
+    for (UIView* view in viewlist) {
+        // Augment the height of root StackView
+        stackViewFrame.size.height += view.frame.size.height;
     }
     [stackView setFrame: stackViewFrame];
+
     stackView.axis = UILayoutConstraintAxisVertical;
     stackView.alignment = UIStackViewAlignmentTop;
     stackView.distribution = UIStackViewDistributionFillProportionally;
 
-    [self.view addSubview: stackView];
-    stackViewFrame.size.height = 0;
     for (UIView* view in viewlist) {
-        CGRect viewFrame=view.frame;
-
-        // Augment the height of root StackView
-        stackViewFrame.size.height += viewFrame.size.height;
         [stackView addArrangedSubview:view];
         if (isPad) {
             NSArray* constraints=[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[view]-10-|" options:0 metrics:nil views:@{@"view": view}];
-            constraints=[constraints arrayByAddingObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:FORMAT(@"V:[view(%f)]",view.frame.size.height) options:0 metrics:nil views:@{@"view": view}]];
+            view.translatesAutoresizingMaskIntoConstraints=NO;
+            [stackView addConstraints:constraints];
+        } else if (isPhone) {
+            NSArray* constraints=[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[view]-10-|" options:0 metrics:nil views:@{@"view": view}];
             view.translatesAutoresizingMaskIntoConstraints=NO;
             [stackView addConstraints:constraints];
         }
-        if (isPhone) {
-            NSArray* constraints=[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[view]-10-|" options:0 metrics:nil views:@{@"view": view}];
-            constraints=[constraints arrayByAddingObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:FORMAT(@"V:[view(%f)]",view.frame.size.height) options:0 metrics:nil views:@{@"view": view}]];
-            view.translatesAutoresizingMaskIntoConstraints=YES;
-            [self.view addConstraints:constraints];
-        }
     }
-    [stackView setFrame: stackViewFrame];
+    [self.view addSubview: stackView];
 }
 
 - (void) onDeviceLost
