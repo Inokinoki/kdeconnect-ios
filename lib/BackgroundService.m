@@ -68,10 +68,12 @@
         [self registerLinkProviders];
         [self loadRemenberedDevices];
         [PluginFactory sharedInstance];
-        
+
+#ifdef DEBUG
         NSString* deviceId = @"test-purpose-device";
         Device* device=[[Device alloc] initTest];
         [_devices setObject:device forKey:deviceId];
+#endif
         // [_visibleDevices addObject:device];
         
         // [self refreshVisibleDeviceList];
