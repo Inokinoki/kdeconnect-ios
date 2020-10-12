@@ -124,6 +124,7 @@
         [_mousePadController setTitle:NSLocalizedString(@"Mouse Pad",nil)];
     }
     NavigationController *aNavController = [[NavigationController alloc] initWithRootViewController:_mousePadController];
+    aNavController.modalPresentationStyle = UIModalPresentationFullScreen;
     [_deviceViewController presentViewController:aNavController animated:YES completion:nil];
 }
 

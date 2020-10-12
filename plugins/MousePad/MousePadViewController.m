@@ -134,9 +134,11 @@
     //Add the introduction to your view
     [self.view addSubview:introductionView];
     
-    NavigationController* navc = self.navigationController;
-    [navc setNavigationBarHidden:YES animated:YES];
-    [navc set_enableRotateMask:NO];
+    if (self.navigationController) {
+        NavigationController* navc = (NavigationController *)self.navigationController;
+        [navc setNavigationBarHidden:YES animated:YES];
+        [navc set_enableRotateMask:NO];
+    }
 }
 
 #pragma mark - MYIntroduction Delegate
@@ -159,9 +161,11 @@
 
 -(void)introduction:(MYBlurIntroductionView *)introductionView didFinishWithType:(MYFinishType)finishType {
     //NSLog(@"Introduction did finish");
-    NavigationController* navc = self.navigationController;
-    [navc setNavigationBarHidden:NO animated:YES];
-    [navc set_enableRotateMask:YES];
+    if (self.navigationController) {
+        NavigationController* navc = (NavigationController *)self.navigationController;
+        [navc setNavigationBarHidden:NO animated:YES];
+        [navc set_enableRotateMask:YES];
+    }
 }
 
 
@@ -210,7 +214,7 @@
     
     NSArray* touchArray=[touches allObjects];
     CGPoint touchPoint1,touchPoint2,touchPoint3;
-    UIGestureRecognizerState state;
+    // UIGestureRecognizerState state;
     switch ([touches count]) {
         case 1:
             touchPoint1= [[touchArray objectAtIndex:0] locationInView:self.view];
@@ -269,8 +273,8 @@
 
 - (void)longPress:(UILongPressGestureRecognizer*) recognizer
 {
-    UIGestureRecognizerState stat=[recognizer state];
-    if ([recognizer state]==UIGestureRecognizerStateRecognized) {
+    // UIGestureRecognizerState stat = [recognizer state];
+    if ([recognizer state] == UIGestureRecognizerStateRecognized) {
         [_mousePadPlugin sendRightClick];
     }
 }

@@ -19,9 +19,12 @@
 //----------------------------------------------------------------------
 
 #import <UIKit/UIKit.h>
+#import "MYIntroductionPanel.h"
+#import "MYBlurIntroductionView.h"
+
 @class MousePad;
 
-@interface MousePadViewController : UIViewController<UIGestureRecognizerDelegate>
+@interface MousePadViewController : UIViewController<UIGestureRecognizerDelegate, MYIntroductionDelegate>
 
 - (void) setPlugin:(MousePad*)mousePadPlugin;
 
