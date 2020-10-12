@@ -56,6 +56,7 @@
 @synthesize _udpSocket;
 @synthesize _certificate;
 //@synthesize _certificateRequestPEM;
+@synthesize _identity;
 
 - (LanLinkProvider*) initWithDelegate:(id)linkProviderDelegate
 {
@@ -71,9 +72,69 @@
         _connectedLinks=[NSMutableDictionary dictionaryWithCapacity:1];
         _linkProviderDelegate=linkProviderDelegate;
         socketQueue=dispatch_queue_create("com.kde.org.kdeconnect.socketqueue", NULL);
+        
+        // Load private key and certificate
+        _identity = NULL;
+        [self loadSecIdentity];
     }
 
     return self;
+}
+
+- (void) loadSecIdentity
+{
+    BOOL needGenerateCertificate = NO;
+
+    NSString *resourcePath = NULL;
+#ifdef DEBUG
+    resourcePath = [[NSBundle mainBundle] pathForResource:@"rsaPrivate" ofType:@"p12"];
+#else
+    NSArray *documentDirectories = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    for (NSString *directory in documentDirectories) {
+        NSLog(@"Find %@", directory);
+        resourcePath = [directory stringByAppendingString:@"rsaPrivate.p12"];
+    }
+#endif
+
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if (resourcePath != NULL && [fileManager fileExistsAtPath:resourcePath]) {
+        NSData *p12Data = [NSData dataWithContentsOfFile:resourcePath];
+
+        NSMutableDictionary * options = [[NSMutableDictionary alloc] init];
+        [options setObject:@"" forKey:(id)kSecImportExportPassphrase];  // No password
+
+        CFArrayRef items = CFArrayCreate(NULL, 0, 0, NULL);
+        OSStatus securityError = SecPKCS12Import((CFDataRef) p12Data,
+                                                 (CFDictionaryRef)options, &items);
+        SecIdentityRef identityApp;
+        if (securityError == noErr && CFArrayGetCount(items) > 0) {
+            SecKeyRef privateKeyRef = NULL;
+            CFDictionaryRef identityDict = CFArrayGetValueAtIndex(items, 0);
+
+            identityApp = (SecIdentityRef)CFDictionaryGetValue(identityDict,
+                                                               kSecImportItemIdentity);
+
+            securityError = SecIdentityCopyPrivateKey(identityApp, &privateKeyRef);
+            if (securityError != noErr) {
+                // Fail to retrieve private key from the .p12 file
+                needGenerateCertificate = YES;
+            } else {
+                _identity = identityApp;
+                NSLog(@"Certificate loaded successfully from %@", resourcePath);
+            }
+        } else {
+            // Not valid component in the .p12 file
+            needGenerateCertificate = YES;
+        }
+    } else {
+        // No .p12 file
+        needGenerateCertificate = YES;
+    }
+    
+    if (needGenerateCertificate) {
+        // TODO: generate certificate
+        NSLog(@"Need generate certificate");
+    }
 }
 
 - (void)setupSocket
@@ -268,41 +329,14 @@
     NSUInteger index=[_pendingSockets indexOfObject:sock];
     NetworkPackage* np=[_pendingNps objectAtIndex:index];
     NSString* deviceId=[np objectForKey:@"deviceId"];
-    
+
     /* Test with cert file */
-    NSString *resourcePath = [[NSBundle mainBundle] pathForResource:@"rsaPrivate" ofType:@"p12"];
-    NSData *p12Data = [NSData dataWithContentsOfFile:resourcePath];
-
-    NSMutableDictionary * options = [[NSMutableDictionary alloc] init];
-
-    SecKeyRef privateKeyRef = NULL;
-    //change to the actual password you used here
-    [options setObject:@"" forKey:(id)kSecImportExportPassphrase];
-
-    CFArrayRef items = CFArrayCreate(NULL, 0, 0, NULL);
-
-    OSStatus securityError = SecPKCS12Import((CFDataRef) p12Data,
-                                             (CFDictionaryRef)options, &items);
-    SecIdentityRef identityApp = nil;
-    if (securityError == noErr && CFArrayGetCount(items) > 0) {
-        CFDictionaryRef identityDict = CFArrayGetValueAtIndex(items, 0);
-        identityApp =
-            (SecIdentityRef)CFDictionaryGetValue(identityDict,
-                                             kSecImportItemIdentity);
-
-        securityError = SecIdentityCopyPrivateKey(identityApp, &privateKeyRef);
-        if (securityError != noErr) {
-            privateKeyRef = NULL;
-        }
-    }
-    /* Test with cert file */
-    
     NSArray *myCipherSuite = [[NSArray alloc] initWithObjects:
         [NSNumber numberWithInt: TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256],
         [NSNumber numberWithInt: TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384],
         [NSNumber numberWithInt: TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA],
     nil];
-    NSArray *myCerts = [[NSArray alloc] initWithObjects: (__bridge id)identityApp, nil];
+    NSArray *myCerts = [[NSArray alloc] initWithObjects: (__bridge id)_identity, nil];
     NSDictionary *tlsSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
          (id)[NSNumber numberWithBool:YES],        (id)kCFStreamSSLIsServer,
          (__bridge CFArrayRef) myCipherSuite,   (id)GCDAsyncSocketSSLCipherSuites,
@@ -350,38 +384,8 @@
         NSString* deviceId=[np objectForKey:@"deviceId"];
 
         /* Test with cert file */
-        NSString *resourcePath = [[NSBundle mainBundle] pathForResource:@"rsaPrivate" ofType:@"p12"];
-        NSData *p12Data = [NSData dataWithContentsOfFile:resourcePath];
+        NSArray *myCerts = [[NSArray alloc] initWithObjects:(__bridge id)_identity, /*(__bridge id)cert2UseRef,*/ nil];
 
-        NSMutableDictionary * options = [[NSMutableDictionary alloc] init];
-
-        SecKeyRef privateKeyRef = NULL;
-
-        //change to the actual password you used here
-        [options setObject:@"" forKey:(id)kSecImportExportPassphrase];
-
-        CFArrayRef items = CFArrayCreate(NULL, 0, 0, NULL);
-
-        OSStatus securityError = SecPKCS12Import((CFDataRef) p12Data,
-                                                 (CFDictionaryRef)options, &items);
-        SecIdentityRef identityApp;
-        if (securityError == noErr && CFArrayGetCount(items) > 0) {
-            CFDictionaryRef identityDict = CFArrayGetValueAtIndex(items, 0);
-            identityApp =
-            (SecIdentityRef)CFDictionaryGetValue(identityDict,
-                                                 kSecImportItemIdentity);
-
-            securityError = SecIdentityCopyPrivateKey(identityApp, &privateKeyRef);
-            NSLog(@"Read OK");
-            if (securityError != noErr) {
-                privateKeyRef = NULL;
-            }
-        }
-        /* Test with cert file */
-
-        CFArrayRef cfItems;
-        NSArray *myCerts = [[NSArray alloc] initWithObjects:(__bridge id)identityApp, /*(__bridge id)cert2UseRef,*/ nil];
-        
         /*NSLog(@"%@", _certificate);*/
         NSArray *myCipherSuite = [[NSArray alloc] initWithObjects:
                                   [[NSNumber alloc] initWithInt: TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256],
