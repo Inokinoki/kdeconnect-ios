@@ -8,6 +8,6 @@ pod 'InAppSettingsKit', '~> 2.15'
 pod 'VTAcknowledgementsViewController'
 pod 'XbICalendar', :podspec => 'https://raw.githubusercontent.com/libical/XbICalendar/master/XbICalendar.podspec'
 pod 'MYBlurIntroductionView'
-pod 'OpenSSL-Universal'
+pod 'openssl-ios-bitcode'
 
 end

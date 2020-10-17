@@ -32,6 +32,10 @@
 #import <CommonCrypto/CommonDigest.h>
 #import <CommonCrypto/CommonCryptor.h>
 
+#include <openssl/pem.h>
+#include <openssl/err.h>
+#include <openssl/pkcs12.h>
+
 @interface LanLinkProvider()
 {
     uint16_t _tcpPort;
@@ -92,7 +96,7 @@
     NSArray *documentDirectories = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     for (NSString *directory in documentDirectories) {
         NSLog(@"Find %@", directory);
-        resourcePath = [directory stringByAppendingString:@"rsaPrivate.p12"];
+        resourcePath = [directory stringByAppendingString:@"/rsaPrivate.p12"];
     }
 #endif
 
@@ -132,9 +136,100 @@
     }
     
     if (needGenerateCertificate) {
-        // TODO: generate certificate
+        // generate certificate
         NSLog(@"Need generate certificate");
+        [self generateAndLoadSecIdentity];
     }
+}
+
+- (void) generateSecIdentity
+{
+    // generate private key
+    EVP_PKEY * pkey;
+    pkey = EVP_PKEY_new();
+
+    RSA * rsa;
+    rsa = RSA_generate_key(
+            2048,   /* number of bits for the key - 2048 is a sensible value */
+            RSA_F4, /* exponent - RSA_F4 is defined as 0x10001L */
+            NULL,   /* callback - can be NULL if we aren't displaying progress */
+            NULL    /* callback argument - not needed in this case */
+    );
+    EVP_PKEY_assign_RSA(pkey, rsa);
+
+    // generate cert
+    X509 *x509;
+    x509 = X509_new();
+
+    ASN1_INTEGER_set(X509_get_serialNumber(x509), 10);
+
+    X509_gmtime_adj(X509_get_notBefore(x509), 0);
+    X509_gmtime_adj(X509_get_notAfter(x509), 31536000L);
+
+    X509_set_pubkey(x509, pkey);
+
+    X509_NAME *name;
+    name = X509_get_subject_name(x509);
+
+    X509_NAME_add_entry_by_txt(name, "OU", MBSTRING_ASC,    // OU = organisational unit
+            (unsigned char *)"Kde connect", -1, -1, 0);
+    X509_NAME_add_entry_by_txt(name, "O",  MBSTRING_ASC,    // O = organization
+            (unsigned char *)"KDE", -1, -1, 0);
+    X509_NAME_add_entry_by_txt(name, "CN", MBSTRING_ASC,    // CN = common name, TODO: uuid
+            (unsigned char *)"2E9AE6EB8DE44CDC91D1102EEA96364A", -1, -1, 0);
+
+    X509_set_issuer_name(x509, name);
+    
+    if (!X509_sign(x509, pkey, EVP_md5())) {
+        @throw [[NSException alloc] initWithName:@"Fail sign cert" reason:@"Error" userInfo:nil];
+    }
+
+    if (!X509_check_private_key(x509, pkey)) {
+        @throw [[NSException alloc] initWithName:@"Fail validate cert" reason:@"Error" userInfo:nil];
+    }
+
+    // load algo and encryption components
+    SSLeay_add_all_algorithms();
+    ERR_load_crypto_strings();
+
+    // create p12 format data
+    PKCS12 *p12 = NULL;
+    p12 = PKCS12_create(/* password */ "", /* name */ "KDE Connect", pkey, x509,
+                        /* ca */ NULL, /* nid_key */ 0, /* nid_cert */ 0,
+                        /* iter */ 0, /* mac_iter */ PKCS12_DEFAULT_ITER, /* keytype */ 0);
+    if(!p12) {
+        @throw [[NSException alloc] initWithName:@"Fail getP12File" reason:@"Error creating PKCS#12 structure" userInfo:nil];
+    }
+
+    // write into `Documents/rsaPrivate.p12`
+    NSArray *documentDirectories = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *p12FilePath = NULL;
+    for (NSString *directory in documentDirectories) {
+        NSLog(@"Find %@", directory);
+        p12FilePath = [directory stringByAppendingString:@"/rsaPrivate.p12"];
+    }
+    if (![[NSFileManager defaultManager] createFileAtPath:p12FilePath contents:nil attributes:nil])
+    {
+        NSLog(@"Error creating file for P12");
+        @throw [[NSException alloc] initWithName:@"Fail getP12File" reason:@"Fail Error creating file for P12" userInfo:nil];
+    }
+
+    // get a FILE struct for the P12 file
+    NSFileHandle *outputFileHandle = [NSFileHandle fileHandleForWritingAtPath:p12FilePath];
+    FILE *p12File = fdopen([outputFileHandle fileDescriptor], "w");
+
+    i2d_PKCS12_fp(p12File, p12);
+    PKCS12_free(p12);
+    fclose(p12File);
+    [outputFileHandle closeFile];
+}
+
+- (void) generateAndLoadSecIdentity
+{
+    [self generateSecIdentity];
+
+    // Recall the method to load private key and certificate again
+    [self loadSecIdentity];
 }
 
 - (void)setupSocket
