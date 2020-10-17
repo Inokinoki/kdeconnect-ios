@@ -20,7 +20,6 @@
 
 #import "LanLink.h"
 
-#import "GCDAsyncSocket.h"
 #define PAYLOAD_PORT 1739
 #define PAYLOAD_SEND_DELAY 0 //ns
 
@@ -172,7 +171,7 @@
 
         OSStatus securityError = SecPKCS12Import((CFDataRef) p12Data,
                                                  (CFDictionaryRef)options, &items);
-        SecIdentityRef identityApp;
+        SecIdentityRef identityApp = NULL;
         if (securityError == noErr && CFArrayGetCount(items) > 0) {
             CFDictionaryRef identityDict = CFArrayGetValueAtIndex(items, 0);
             identityApp =
@@ -186,8 +185,6 @@
             }
         }
         /* Test with cert file */
-
-        CFArrayRef cfItems;
         NSArray *myCerts = [[NSArray alloc] initWithObjects:(__bridge id)identityApp, /*(__bridge id)cert2UseRef,*/ nil];
         
         NSDictionary *tlsSettings = [[NSDictionary alloc] initWithObjectsAndKeys:

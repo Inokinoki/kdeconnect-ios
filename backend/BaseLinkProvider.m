@@ -32,4 +32,29 @@
     return self;
 }
 
+- (void) onStart
+{
+    // do nothing
+}
+
+- (void) onRefresh
+{
+    // do nothing
+}
+
+- (void) onStop
+{
+    // do nothing
+}
+
+- (void) onNetworkChange
+{
+    // do nothing
+}
+
+- (void) onLinkDestroyed:(BaseLink*)link
+{
+    // do nothing
+}
+
 @end

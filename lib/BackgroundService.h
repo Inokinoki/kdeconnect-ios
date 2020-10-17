@@ -46,7 +46,6 @@
 
 - (void) startDiscovery;
 - (void) refreshDiscovery;
-- (void) pauseDiscovery;
 - (void) stopDiscovery;
 - (void) pairDevice:(NSString*)deviceId;
 - (void) unpairDevice:(NSString*)deviceId;

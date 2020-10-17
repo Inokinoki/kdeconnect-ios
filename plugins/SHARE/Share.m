@@ -259,4 +259,9 @@
     }
 }
 
+- (void) sentPercentage:(short)percentage tag:(long)tag
+{
+    // do nothing
+}
+
 @end

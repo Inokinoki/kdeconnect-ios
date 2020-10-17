@@ -50,11 +50,22 @@
 
 - (void) stop
 {
-    
+    // do nothing
 }
 
 - (UIView*) getView:(UIViewController*)vc
 {
     return nil;
 }
+
+- (void) sentPercentage:(short)percentage tag:(long)tag
+{
+    // do nothing
+}
+
++ (PluginInfo *) getPluginInfo
+{
+    return nil;
+}
+
 @end

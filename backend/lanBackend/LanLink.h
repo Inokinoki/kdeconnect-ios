@@ -21,17 +21,15 @@
 #import <Foundation/Foundation.h>
 #import "BaseLink.h"
 #import "LanLinkProvider.h"
+#import "GCDAsyncSocket.h"
 
-@class GCDAsyncSocket;
 @class LanLinkProvider;
 @class BaseLink;
 @class Device;
 
-@interface LanLink : BaseLink
+@interface LanLink : BaseLink <GCDAsyncSocketDelegate>
 
 - (LanLink*) init:(GCDAsyncSocket*)socket deviceId:(NSString*) deviceid setDelegate:(id)linkDelegate;
 - (BOOL) sendPackage:(NetworkPackage *)np tag:(long)tag;
 - (void) disconnect;
-- (void) loadCertificate;
-- (void) removeCertificate;
 @end

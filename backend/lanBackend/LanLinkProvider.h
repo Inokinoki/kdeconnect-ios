@@ -21,8 +21,10 @@
 #import <Foundation/Foundation.h>
 #import "LanLink.h"
 #import "BaseLinkProvider.h"
+#import "GCDAsyncUdpSocket.h"
+#import "GCDAsyncSocket.h"
 
-@interface LanLinkProvider : BaseLinkProvider <linkDelegate>
+@interface LanLinkProvider : BaseLinkProvider <linkDelegate, GCDAsyncSocketDelegate, GCDAsyncUdpSocketDelegate>
 
 - (LanLinkProvider*) initWithDelegate:(id)linkProviderDelegate;
 - (void) onStart;

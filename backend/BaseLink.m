@@ -35,4 +35,14 @@
     return self;
 }
 
+- (BOOL) sendPackage:(NetworkPackage*)np tag:(long)tag
+{
+    return NO;
+}
+
+- (void) disconnect
+{
+    // do nothing
+}
+
 @end
