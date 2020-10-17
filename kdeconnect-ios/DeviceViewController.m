@@ -180,7 +180,7 @@
 	if (!_AppSettingViewController) {
 		_AppSettingViewController = [[AppSettingViewController alloc] init];
 		_AppSettingViewController.delegate = self;
-        [_AppSettingViewController setSettingsReader:[[IASKSettingsReader alloc]init]];
+        [_AppSettingViewController setSettingsReader:[[IASKSettingsReader alloc] initWithFile:@"Plugins"]];
         [_AppSettingViewController setSettingsStore:[[SettingsStore alloc] initWithPath:_deviceId]];
 	}
 	return _AppSettingViewController;
