@@ -31,7 +31,6 @@
 
 @interface DeviceViewController ()
 @property (nonatomic, retain) AppSettingViewController *_AppSettingViewController;
-@property (nonatomic) UIPopoverController* _currentPopoverController;
 @end
 
 @implementation DeviceViewController
@@ -156,23 +155,11 @@
     [self presentViewController:aNavController animated:YES completion:nil];
 }
 
-- (void)showSettingsPopover:(id)sender {
-	if(self._currentPopoverController) {
-        [self dismissCurrentPopover];
-		return;
-	}
-    
-	self._AppSettingViewController.showDoneButton = NO;
-	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:self._AppSettingViewController];
-	UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:navController];
-	popover.delegate = self;
-	[popover presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionUp animated:NO];
-	self._currentPopoverController = popover;
-}
 
 - (void)awakeFromNib {
+    [super awakeFromNib];
 	if (isPad) {
-		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(showSettingsPopover:)];
+		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(showSettingsModal:)];
 	}
 }
 
@@ -184,19 +171,6 @@
         [_AppSettingViewController setSettingsStore:[[SettingsStore alloc] initWithPath:_deviceId]];
 	}
 	return _AppSettingViewController;
-}
-
-#pragma mark - View Lifecycle
-- (void)viewWillDisappear:(BOOL)animated {
-	[super viewWillDisappear:animated];
-	if(self._currentPopoverController) {
-		[self dismissCurrentPopover];
-	}
-}
-
-- (void) dismissCurrentPopover {
-	[self._currentPopoverController dismissPopoverAnimated:YES];
-	self._currentPopoverController = nil;
 }
 
 #pragma mark AppSettingViewControllerDelegate protocol
