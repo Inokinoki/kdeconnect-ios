@@ -19,7 +19,6 @@
 //---------------------------------------------------------------------
 
 #import "NetworkPackage.h"
-#import "SecKeyWrapper.h"
 #import "KeychainItemWrapper.h"
 #import "PluginFactory.h"
 

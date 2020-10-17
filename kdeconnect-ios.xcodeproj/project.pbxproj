@@ -56,7 +56,6 @@
 		4EC750B71967084800785A49 /* KeychainAccessGroups.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4EC750B61967084800785A49 /* KeychainAccessGroups.plist */; };
 		4EC750BC19670A2F00785A49 /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC750BB19670A2F00785A49 /* KeychainItemWrapper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		4EC83856198BC72B00CC08F5 /* NavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC83855198BC72B00CC08F5 /* NavigationController.m */; };
-		4ECA38301933EE560015C07C /* SecKeyWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ECA382F1933EE560015C07C /* SecKeyWrapper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		4ED8E711197B7D6500C4D01C /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4ED8E70F197B7D6500C4D01C /* AddressBook.framework */; };
 		4ED8E712197B7D6500C4D01C /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4ED8E710197B7D6500C4D01C /* AddressBookUI.framework */; };
 		4EDD98FA192DAAD700C6AB01 /* MPRISViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EDD98F9192DAAD700C6AB01 /* MPRISViewController.m */; };
@@ -180,8 +179,6 @@
 		4EC750BB19670A2F00785A49 /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KeychainItemWrapper.m; path = lib/KeychainItemWrapper.m; sourceTree = "<group>"; };
 		4EC83854198BC72B00CC08F5 /* NavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavigationController.h; sourceTree = "<group>"; };
 		4EC83855198BC72B00CC08F5 /* NavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavigationController.m; sourceTree = "<group>"; };
-		4ECA382E1933EE560015C07C /* SecKeyWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SecKeyWrapper.h; path = lib/SecKeyWrapper.h; sourceTree = "<group>"; };
-		4ECA382F1933EE560015C07C /* SecKeyWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SecKeyWrapper.m; path = lib/SecKeyWrapper.m; sourceTree = "<group>"; };
 		4ED8E70F197B7D6500C4D01C /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		4ED8E710197B7D6500C4D01C /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
 		4EDD98F8192DAAD700C6AB01 /* MPRISViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MPRISViewController.h; path = plugins/MPRIS/MPRISViewController.h; sourceTree = "<group>"; };
@@ -337,8 +334,6 @@
 				4EC750BB19670A2F00785A49 /* KeychainItemWrapper.m */,
 				4E95A18F1949954600647948 /* SettingsStore.h */,
 				4E95A1901949954600647948 /* SettingsStore.m */,
-				4ECA382E1933EE560015C07C /* SecKeyWrapper.h */,
-				4ECA382F1933EE560015C07C /* SecKeyWrapper.m */,
 				4E08A22F1913D1780056EEF8 /* BackgroundService.h */,
 				4E08A2301913D1780056EEF8 /* BackgroundService.m */,
 				4E08A2311913D1780056EEF8 /* Device.h */,
@@ -690,7 +685,6 @@
 				4E3038FC1940889900F28091 /* ClipBoard.m in Sources */,
 				4EC83856198BC72B00CC08F5 /* NavigationController.m in Sources */,
 				4E08A2011913CF850056EEF8 /* ViewController.m in Sources */,
-				4ECA38301933EE560015C07C /* SecKeyWrapper.m in Sources */,
 				4EC750BC19670A2F00785A49 /* KeychainItemWrapper.m in Sources */,
 				4E08A1F81913CF850056EEF8 /* AppDelegate.m in Sources */,
 				4EA77E08199092E3002787B8 /* MyStyleKit.m in Sources */,

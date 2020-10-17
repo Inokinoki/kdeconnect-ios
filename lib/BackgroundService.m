@@ -22,7 +22,6 @@
 #import "LanLinkProvider.h"
 #import "SettingsStore.h"
 #import "PluginFactory.h"
-#import "SecKeyWrapper.h"
 #import "KeychainItemWrapper.h"
 
 @interface BackgroundService()

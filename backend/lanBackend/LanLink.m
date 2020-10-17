@@ -21,7 +21,6 @@
 #import "LanLink.h"
 
 #import "GCDAsyncSocket.h"
-#import "SecKeyWrapper.h"
 #define PAYLOAD_PORT 1739
 #define PAYLOAD_SEND_DELAY 0 //ns
 
