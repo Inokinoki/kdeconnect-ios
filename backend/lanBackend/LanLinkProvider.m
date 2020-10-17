@@ -173,7 +173,7 @@
     X509_NAME_add_entry_by_txt(name, "O",  MBSTRING_ASC,    // O = organization
             (unsigned char *)"KDE", -1, -1, 0);
     X509_NAME_add_entry_by_txt(name, "CN", MBSTRING_ASC,    // CN = common name, TODO: uuid
-            (unsigned char *)"2E9AE6EB8DE44CDC91D1102EEA96364A", -1, -1, 0);
+            (unsigned char *)[[NetworkPackage getUUID] UTF8String], -1, -1, 0);
 
     X509_set_issuer_name(x509, name);
     

@@ -76,6 +76,7 @@
 - (NetworkPackage*) initWithType:(NSString*)type;
 + (NetworkPackage*) createIdentityPackage;
 + (NetworkPackage*) createPairPackage;
++ (NSString*) getUUID;
 
 - (BOOL) bodyHasKey:(NSString*)key;
 - (void)setBool:(BOOL)value      forKey:(NSString*)key;
