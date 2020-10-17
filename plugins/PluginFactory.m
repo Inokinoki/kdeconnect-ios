@@ -28,7 +28,6 @@
 #import "MousePad.h"
 #import "Battery.h"
 #import "Calendar.h"
-#import "Reminder.h"
 #import "Contact.h"
 
 @interface PluginFactory()
@@ -110,7 +109,6 @@
     [_availablePlugins setValue:[MousePad class] forKey:[[MousePad getPluginInfo] _pluginName]];
     [_availablePlugins setValue:[Battery class] forKeyPath:[[Battery getPluginInfo]_pluginName]];
     [_availablePlugins setValue:[Calendar class] forKeyPath:[[Calendar getPluginInfo] _pluginName]];
-    [_availablePlugins setValue:[Reminder class] forKey:[[Reminder getPluginInfo] _pluginName]];
     [_availablePlugins setValue:[Contact class] forKeyPath:[[Contact getPluginInfo]_pluginName]];
 }
 
@@ -119,7 +117,6 @@
     return @[PACKAGE_TYPE_CALENDAR,
              PACKAGE_TYPE_CLIPBOARD,
              PACKAGE_TYPE_PING,
-             PACKAGE_TYPE_REMINDER,
              PACKAGE_TYPE_SHARE,
              PACKAGE_TYPE_CONTACT];
 }
@@ -133,7 +130,6 @@
              PACKAGE_TYPE_MOUSEPAD,
              PACKAGE_TYPE_BATTERY,
              PACKAGE_TYPE_CALENDAR,
-             PACKAGE_TYPE_REMINDER,
              PACKAGE_TYPE_CONTACT];
 }
 

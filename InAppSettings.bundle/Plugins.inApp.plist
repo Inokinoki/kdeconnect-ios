@@ -84,16 +84,6 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
-			<string>Reminder</string>
-			<key>Key</key>
-			<string>Reminder</string>
-			<key>DefaultValue</key>
-			<true/>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
-			<key>Title</key>
 			<string>Contact</string>
 			<key>Key</key>
 			<string>Contact</string>

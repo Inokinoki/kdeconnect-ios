@@ -49,7 +49,6 @@
 		4E95A1911949954600647948 /* SettingsStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E95A1901949954600647948 /* SettingsStore.m */; };
 		4EA77E08199092E3002787B8 /* MyStyleKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EA77E07199092E3002787B8 /* MyStyleKit.m */; };
 		4EA77E0B199095BC002787B8 /* Buttons.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EA77E0A199095BC002787B8 /* Buttons.m */; };
-		4EBC812A19863B8B008FF5A1 /* XbICComponent+VTodo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EBC812919863B8B008FF5A1 /* XbICComponent+VTodo.m */; };
 		4EC27545191FCEAB0057AB0E /* Plugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC27544191FCEAB0057AB0E /* Plugin.m */; };
 		4EC27548191FCECD0057AB0E /* Ping.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC27547191FCECD0057AB0E /* Ping.m */; };
 		4EC2754B191FD5490057AB0E /* PluginFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC2754A191FD5490057AB0E /* PluginFactory.m */; };
@@ -60,7 +59,6 @@
 		4ED8E712197B7D6500C4D01C /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4ED8E710197B7D6500C4D01C /* AddressBookUI.framework */; };
 		4EDD98FA192DAAD700C6AB01 /* MPRISViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EDD98F9192DAAD700C6AB01 /* MPRISViewController.m */; };
 		4EDD98FD192DAAF800C6AB01 /* MPRIS.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EDD98FC192DAAF800C6AB01 /* MPRIS.m */; };
-		4EEB006F19736D4D000A1F69 /* Reminder.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EEB006E19736D4D000A1F69 /* Reminder.m */; };
 		4EF576E9194784D80046213D /* AppSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EF576E8194784D80046213D /* AppSettingViewController.m */; };
 		4FAC201D7DD2F6C895FA63EF /* libPods-kdeconnect-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D62E728E21D599443294128 /* libPods-kdeconnect-ios.a */; };
 /* End PBXBuildFile section */
@@ -165,8 +163,6 @@
 		4EA77E07199092E3002787B8 /* MyStyleKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyStyleKit.m; sourceTree = "<group>"; };
 		4EA77E09199095BC002787B8 /* Buttons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Buttons.h; path = plugins/MPRIS/Buttons.h; sourceTree = "<group>"; };
 		4EA77E0A199095BC002787B8 /* Buttons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Buttons.m; path = plugins/MPRIS/Buttons.m; sourceTree = "<group>"; };
-		4EBC812819863B8B008FF5A1 /* XbICComponent+VTodo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "XbICComponent+VTodo.h"; path = "plugins/Reminder/XbICComponent+VTodo.h"; sourceTree = "<group>"; };
-		4EBC812919863B8B008FF5A1 /* XbICComponent+VTodo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "XbICComponent+VTodo.m"; path = "plugins/Reminder/XbICComponent+VTodo.m"; sourceTree = "<group>"; };
 		4EC27543191FCEAB0057AB0E /* Plugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Plugin.h; path = plugins/Plugin.h; sourceTree = "<group>"; };
 		4EC27544191FCEAB0057AB0E /* Plugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Plugin.m; path = plugins/Plugin.m; sourceTree = "<group>"; };
 		4EC27546191FCECD0057AB0E /* Ping.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Ping.h; path = plugins/ping/Ping.h; sourceTree = "<group>"; };
@@ -185,8 +181,6 @@
 		4EDD98F9192DAAD700C6AB01 /* MPRISViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MPRISViewController.m; path = plugins/MPRIS/MPRISViewController.m; sourceTree = "<group>"; };
 		4EDD98FB192DAAF800C6AB01 /* MPRIS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MPRIS.h; path = plugins/MPRIS/MPRIS.h; sourceTree = "<group>"; };
 		4EDD98FC192DAAF800C6AB01 /* MPRIS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MPRIS.m; path = plugins/MPRIS/MPRIS.m; sourceTree = "<group>"; };
-		4EEB006D19736D4D000A1F69 /* Reminder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Reminder.h; path = plugins/Reminder/Reminder.h; sourceTree = "<group>"; };
-		4EEB006E19736D4D000A1F69 /* Reminder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Reminder.m; path = plugins/Reminder/Reminder.m; sourceTree = "<group>"; };
 		4EF576E7194784D80046213D /* AppSettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppSettingViewController.h; sourceTree = "<group>"; };
 		4EF576E8194784D80046213D /* AppSettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppSettingViewController.m; sourceTree = "<group>"; };
 		5B2C3C0E2C4C4FB78D606404 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
@@ -429,7 +423,6 @@
 			isa = PBXGroup;
 			children = (
 				4E0B0CED19772E0B00F1412B /* Contact */,
-				4EEB006C19736D2F000A1F69 /* Reminder */,
 				4E38A3A7196CEA90006AE419 /* Calendar */,
 				4E47115C19693B5A00EE5B1D /* Battery */,
 				4E1A82A019657D0800174217 /* MousePad */,
@@ -465,17 +458,6 @@
 				4EA77E0A199095BC002787B8 /* Buttons.m */,
 			);
 			name = MPRIS;
-			sourceTree = "<group>";
-		};
-		4EEB006C19736D2F000A1F69 /* Reminder */ = {
-			isa = PBXGroup;
-			children = (
-				4EEB006D19736D4D000A1F69 /* Reminder.h */,
-				4EEB006E19736D4D000A1F69 /* Reminder.m */,
-				4EBC812819863B8B008FF5A1 /* XbICComponent+VTodo.h */,
-				4EBC812919863B8B008FF5A1 /* XbICComponent+VTodo.m */,
-			);
-			name = Reminder;
 			sourceTree = "<group>";
 		};
 		A1ADB873CDCF2B56E1816F80 /* Pods */ = {
@@ -696,12 +678,10 @@
 				4E38A3AB196CEB44006AE419 /* Calendar.m in Sources */,
 				4E08A2371913D1780056EEF8 /* NetworkPackage.m in Sources */,
 				4E08A2361913D1780056EEF8 /* Device.m in Sources */,
-				4EBC812A19863B8B008FF5A1 /* XbICComponent+VTodo.m in Sources */,
 				4E47115F19693B7F00EE5B1D /* Battery.m in Sources */,
 				4E0B0CF019772E2300F1412B /* Contact.m in Sources */,
 				4E08A22D1913D1650056EEF8 /* LanLink.m in Sources */,
 				4E51BBED193FADA7007E74F4 /* Share.m in Sources */,
-				4EEB006F19736D4D000A1F69 /* Reminder.m in Sources */,
 				4E08A2281913D1550056EEF8 /* BaseLinkProvider.m in Sources */,
 				4E95A1911949954600647948 /* SettingsStore.m in Sources */,
 				4E1A82A319657DD700174217 /* MousePad.m in Sources */,

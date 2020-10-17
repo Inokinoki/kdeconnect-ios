@@ -38,7 +38,7 @@
 #define PACKAGE_TAG_MOUSEPAD    9
 #define PACKAGE_TAG_BATTERY     10
 #define PACKAGE_TAG_CALENDAR    11
-#define PACKAGE_TAG_REMINDER    12
+// #define PACKAGE_TAG_REMINDER    12
 #define PACKAGE_TAG_CONTACT     13 
 
 #define UDP_PORT                1716
@@ -57,7 +57,7 @@
 #define PACKAGE_TYPE_MOUSEPAD   @"kdeconnect.mousepad.request"
 #define PACKAGE_TYPE_BATTERY    @"kdeconnect.battery"
 #define PACKAGE_TYPE_CALENDAR   @"kdeconnect.calendar"
-#define PACKAGE_TYPE_REMINDER   @"kdeconnect.reminder"
+// #define PACKAGE_TYPE_REMINDER   @"kdeconnect.reminder"
 #define PACKAGE_TYPE_CONTACT    @"kdeconnect.contact"
 
 #define PACKAGE_TYPE_BATTERY_REQUEST    @"kdeconnect.battery.request"

@@ -68,14 +68,14 @@ __strong static NSString* _UUID;
 + (NSString*) getUUID
 {
     if (!_UUID) {
-        NSString* group=@"Q9HDHY97NW.org.kde.kdeconnect-ios";
-        KeychainItemWrapper* wrapper=[[KeychainItemWrapper alloc] initWithIdentifier:@"org.kde.kdeconnect-ios" accessGroup:group];
-        _UUID=[wrapper objectForKey:(__bridge id)(kSecValueData)];
+        NSString* group = @"Q9HDHY97NW.org.kde.kdeconnect-ios";
+        KeychainItemWrapper* wrapper = [[KeychainItemWrapper alloc] initWithIdentifier:@"org.kde.kdeconnect-ios" accessGroup:group];
+        _UUID = [wrapper objectForKey:(__bridge id)(kSecValueData)];
         if (!_UUID || [_UUID length] < 1) {
-            _UUID=[[[UIDevice currentDevice] identifierForVendor] UUIDString];
-            _UUID=[_UUID stringByReplacingOccurrencesOfString:@"-" withString:@""];
-            _UUID=[_UUID stringByReplacingOccurrencesOfString:@"_" withString:@""];
-            // [wrapper setObject:_UUID forKey:(__bridge id)(kSecValueData)];
+            _UUID = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+            _UUID = [_UUID stringByReplacingOccurrencesOfString:@"-" withString:@""];
+            _UUID = [_UUID stringByReplacingOccurrencesOfString:@"_" withString:@""];
+            [wrapper setObject:_UUID forKey:(__bridge id)(kSecValueData)];
         }
     }
     NSLog(@"Get UUID %@", _UUID);
