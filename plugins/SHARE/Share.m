@@ -91,7 +91,7 @@
 - (UIView*) getView:(UIViewController*)vc
 {
     if ([_device isReachable]) {
-        _view=[[UIStackView alloc] initWithFrame:CGRectMake(0, 0, screen_width, 60)];
+        _view=[[UIStackView alloc] initWithFrame:CGRectMake(0, 0, screen_width, 90)];
         UIStackView *stackView = (UIStackView *)_view;
         stackView.axis = UILayoutConstraintAxisVertical;
         stackView.alignment = UIStackViewAlignmentFill;
@@ -106,9 +106,21 @@
         button.layer.borderColor = [[UIColor grayColor] CGColor];
         [button addTarget:self action:@selector(photoSourceSelect:) forControlEvents:UIControlEventTouchUpInside];
 
+#ifdef DEBUG
+        UIButton *testUrlButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        [testUrlButton setTitle:NSLocalizedString(@"Share URL",nil) forState:UIControlStateNormal];
+        testUrlButton.layer.borderWidth = 1;
+        testUrlButton.layer.cornerRadius = 10.0;
+        testUrlButton.layer.borderColor = [[UIColor grayColor] CGColor];
+        [testUrlButton addTarget:self action:@selector(shareUrl:) forControlEvents:UIControlEventTouchUpInside];
+#endif
+        
         stackView.distribution = UIStackViewDistributionFillProportionally;
         [stackView addArrangedSubview:label];
         [stackView addArrangedSubview:button];
+#ifdef DEBUG
+        [stackView addArrangedSubview:testUrlButton];
+#endif
         if (isPad) {
             NSArray* constraints=[NSLayoutConstraint constraintsWithVisualFormat:@"|-100-[button]-100-|" options:0 metrics:nil views:@{@"button": button}];
             constraints=[constraints arrayByAddingObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"|-50-[label]" options:0 metrics:nil views:@{@"label": label}]];
@@ -165,6 +177,13 @@
         }
     }
     [[keyWindow rootViewController] presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)shareUrl:(id)sender
+{
+    NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_SHARE];
+    [np setObject:@"https://kdeconnect.kde.org" forKey:@"url"];
+    [_device sendPackage:np tag:PACKAGE_TAG_SHARE];
 }
 
 - (void)sharePhotoFromCamera
