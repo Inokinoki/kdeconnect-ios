@@ -87,15 +87,11 @@
     BOOL needGenerateCertificate = NO;
 
     NSString *resourcePath = NULL;
-#ifdef DEBUG
-    resourcePath = [[NSBundle mainBundle] pathForResource:@"rsaPrivate" ofType:@"p12"];
-#else
     NSArray *documentDirectories = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     for (NSString *directory in documentDirectories) {
         NSLog(@"Find %@", directory);
         resourcePath = [directory stringByAppendingString:@"/rsaPrivate.p12"];
     }
-#endif
 
     NSFileManager *fileManager = [NSFileManager defaultManager];
     if (resourcePath != NULL && [fileManager fileExistsAtPath:resourcePath]) {

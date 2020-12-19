@@ -35,6 +35,8 @@
 @property(nonatomic) NSMutableArray* _pendingLSockets;
 @property(nonatomic) NSMutableArray* _pendingPayloadNP;
 @property(nonatomic) NSMutableArray* _pendingPayloads;
+@property(nonatomic) SecIdentityRef _identity;
+@property(nonatomic) GCDAsyncSocket* _fileServerSocket;
 
 @end
 
@@ -48,6 +50,8 @@
 @synthesize _pendingPayloads;
 @synthesize _pendingRSockets;
 @synthesize _socket;
+@synthesize _identity;
+@synthesize _fileServerSocket;
 
 - (LanLink*) init:(GCDAsyncSocket*)socket deviceId:(NSString*) deviceid setDelegate:(id)linkdelegate
 {
@@ -69,8 +73,62 @@
         _pendingPayloads=[NSMutableArray arrayWithCapacity:1];
         _payloadPort=PAYLOAD_PORT;
         _socketQueue=dispatch_queue_create("com.kde.org.kdeconnect.payload_socketQueue", NULL);
+
+        [self loadSecIdentity];
     }
     return self;
+}
+
+- (void) loadSecIdentity
+{
+    BOOL needGenerateCertificate = NO;
+
+    NSString *resourcePath = NULL;
+    NSArray *documentDirectories = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    for (NSString *directory in documentDirectories) {
+        NSLog(@"Find %@", directory);
+        resourcePath = [directory stringByAppendingString:@"/rsaPrivate.p12"];
+    }
+
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if (resourcePath != NULL && [fileManager fileExistsAtPath:resourcePath]) {
+        NSData *p12Data = [NSData dataWithContentsOfFile:resourcePath];
+
+        NSMutableDictionary * options = [[NSMutableDictionary alloc] init];
+        [options setObject:@"" forKey:(id)kSecImportExportPassphrase];  // No password
+
+        CFArrayRef items = CFArrayCreate(NULL, 0, 0, NULL);
+        OSStatus securityError = SecPKCS12Import((CFDataRef) p12Data,
+                                                 (CFDictionaryRef)options, &items);
+        SecIdentityRef identityApp;
+        if (securityError == noErr && CFArrayGetCount(items) > 0) {
+            SecKeyRef privateKeyRef = NULL;
+            CFDictionaryRef identityDict = CFArrayGetValueAtIndex(items, 0);
+
+            identityApp = (SecIdentityRef)CFDictionaryGetValue(identityDict,
+                                                               kSecImportItemIdentity);
+
+            securityError = SecIdentityCopyPrivateKey(identityApp, &privateKeyRef);
+            if (securityError != noErr) {
+                // Fail to retrieve private key from the .p12 file
+                needGenerateCertificate = YES;
+            } else {
+                _identity = identityApp;
+                NSLog(@"Certificate loaded successfully from %@", resourcePath);
+            }
+        } else {
+            // Not valid component in the .p12 file
+            needGenerateCertificate = YES;
+        }
+    } else {
+        // No .p12 file
+        needGenerateCertificate = YES;
+    }
+
+    if (needGenerateCertificate) {
+        // generate certificate
+        NSLog(@"Need generate certificate");
+    }
 }
 
 - (BOOL) sendPackage:(NetworkPackage *)np tag:(long)tag
@@ -82,7 +140,19 @@
     }
     
     if ([np _Payload] != nil && tag == PACKAGE_TAG_SHARE) {
-        
+        NSError* err;
+        if (_fileServerSocket == nil) {
+            _fileServerSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:_socketQueue];
+            if (![_fileServerSocket isConnected]) {
+                if (![_fileServerSocket acceptOnPort:_payloadPort error:&err]) {
+                    NSLog(@"Error binding payload port");
+                } else {
+                    NSLog(@"Binding payload server ok");
+                }
+            }
+        }
+        [_pendingPayloadNP insertObject:np atIndex:0];
+        [_pendingPayloads insertObject: [np _Payload] atIndex:0];
     }
     
     NSData* data=[np serialize];
@@ -119,30 +189,24 @@
 - (void)socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket
 {
     NSLog(@"Lanlink: didAcceptNewSocket");
-    NSMutableArray* payloadArray;
-    @synchronized(_pendingLSockets){
-        //TO-DO should use a single sock for listing and send payload with newSocket
-        NSUInteger index=[_pendingLSockets indexOfObject:sock];
-        payloadArray=[_pendingPayloads objectAtIndex:index];
-    }
-    dispatch_time_t t = dispatch_time(DISPATCH_TIME_NOW,0);
-    NSData* chunk=[payloadArray firstObject];
-    if (!payloadArray|!chunk) {
-        @synchronized(_pendingLSockets){
-            NSUInteger index=[_pendingLSockets indexOfObject:sock];
-            payloadArray=[_pendingPayloads objectAtIndex:index];
-            [_pendingLSockets removeObject:sock];
-            [_pendingPayloads removeObjectAtIndex:index];
-        }
-        return;
-    }
-    //TO-DO send the data chunk one by one in order to get the proccess percentage
-    for (NSData* chunk in payloadArray) {
-        t=dispatch_time(t, PAYLOAD_SEND_DELAY*NSEC_PER_MSEC);
-        dispatch_after(t,_socketQueue, ^(void){
-            [newSocket writeData:chunk withTimeout:-1 tag:PACKAGE_TAG_PAYLOAD];
-        });
-    }
+
+    /* TLS Connection */
+    NSArray *myCerts = [[NSArray alloc] initWithObjects:(__bridge id)_identity, /*(__bridge id)cert2UseRef,*/ nil];
+    NSArray *myCipherSuite = [[NSArray alloc] initWithObjects:
+                              [[NSNumber alloc] initWithInt: TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256],
+                              [[NSNumber alloc] initWithInt: TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384],
+                              [[NSNumber alloc] initWithInt: TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA],
+                              nil];
+
+    NSDictionary *tlsSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
+         (id)[NSNumber numberWithInt:1],    (id)kCFStreamSSLIsServer,
+         (__bridge CFArrayRef) myCerts, (id)kCFStreamSSLCertificates,
+         (__bridge CFArrayRef) myCipherSuite, (id)GCDAsyncSocketSSLCipherSuites,
+    nil];
+
+    [newSocket startTLS: tlsSettings];
+    [_pendingLSockets insertObject:newSocket atIndex:0];
+    NSLog(@"Start Server TLS to send file");
 }
 
 
@@ -154,50 +218,24 @@
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port
 {
     NSLog(@"Lanlink did connect to payload host, begin recieving data from %@ %d", host, port);
-    @synchronized(_pendingRSockets){
-        NSUInteger index=[_pendingRSockets indexOfObject:sock];
-        NSLog(@"Reading from socket %@ %ld bytes", _pendingRSockets, [[_pendingPayloadNP objectAtIndex:index] _PayloadSize]);
-        /* Test with cert file */
-        NSString *resourcePath = [[NSBundle mainBundle] pathForResource:@"rsaPrivate" ofType:@"p12"];
-        NSData *p12Data = [NSData dataWithContentsOfFile:resourcePath];
 
-        NSMutableDictionary * options = [[NSMutableDictionary alloc] init];
+    /* TLS Connection */
+    NSArray *myCerts = [[NSArray alloc] initWithObjects:(__bridge id)_identity, /*(__bridge id)cert2UseRef,*/ nil];
+    NSArray *myCipherSuite = [[NSArray alloc] initWithObjects:
+                              [[NSNumber alloc] initWithInt: TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256],
+                              [[NSNumber alloc] initWithInt: TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384],
+                              [[NSNumber alloc] initWithInt: TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA],
+                              nil];
 
-        SecKeyRef privateKeyRef = NULL;
+    NSDictionary *tlsSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
+         (id)[NSNumber numberWithInt:0],    (id)kCFStreamSSLIsServer,
+         (id)[NSNumber numberWithInt:1],    (id)GCDAsyncSocketManuallyEvaluateTrust,
+         (__bridge CFArrayRef) myCerts, (id)kCFStreamSSLCertificates,
+         (__bridge CFArrayRef) myCipherSuite, (id)GCDAsyncSocketSSLCipherSuites,
+    nil];
 
-        //change to the actual password you used here
-        [options setObject:@"" forKey:(id)kSecImportExportPassphrase];
-        CFArrayRef items = CFArrayCreate(NULL, 0, 0, NULL);
-
-        OSStatus securityError = SecPKCS12Import((CFDataRef) p12Data,
-                                                 (CFDictionaryRef)options, &items);
-        SecIdentityRef identityApp = NULL;
-        if (securityError == noErr && CFArrayGetCount(items) > 0) {
-            CFDictionaryRef identityDict = CFArrayGetValueAtIndex(items, 0);
-            identityApp =
-            (SecIdentityRef)CFDictionaryGetValue(identityDict,
-                                                 kSecImportItemIdentity);
-
-            securityError = SecIdentityCopyPrivateKey(identityApp, &privateKeyRef);
-            NSLog(@"Read OK");
-            if (securityError != noErr) {
-                privateKeyRef = NULL;
-            }
-        }
-        /* Test with cert file */
-        NSArray *myCerts = [[NSArray alloc] initWithObjects:(__bridge id)identityApp, /*(__bridge id)cert2UseRef,*/ nil];
-        
-        NSDictionary *tlsSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
-             (id)[NSNumber numberWithInt:0],    (id)kCFStreamSSLIsServer,
-             (id)[NSNumber numberWithInt:1],    (id)GCDAsyncSocketManuallyEvaluateTrust,
-             (__bridge CFArrayRef) myCerts, (id)kCFStreamSSLCertificates,
-        nil];
-        
-        [sock startTLS: tlsSettings];
-        NSLog(@"Start Client TLS");
-        
-        [sock readDataToLength:[[_pendingPayloadNP objectAtIndex:index] _PayloadSize] withTimeout:-1 tag:PACKAGE_TAG_PAYLOAD];
-    }
+    [sock startTLS: tlsSettings];
+    NSLog(@"Start Client TLS to receive file");
 }
 
 /**
@@ -209,9 +247,9 @@
     if (tag==PACKAGE_TAG_PAYLOAD) {
         NetworkPackage* np;
         @synchronized(_pendingRSockets){
-        NSUInteger index=[_pendingRSockets indexOfObject:sock];
-        np=[_pendingPayloadNP objectAtIndex:index];
-        [np set_Payload:data];
+            NSUInteger index=[_pendingRSockets indexOfObject:sock];
+            np=[_pendingPayloadNP objectAtIndex:index];
+            [np set_Payload:data];
         }
         
         @synchronized(_pendingPayloadNP){
@@ -235,6 +273,7 @@
                 _pendingPairNP=np;
             }
             if ([np _PayloadTransferInfo]) {
+                // create a new socket to receive file
                 GCDAsyncSocket* socket=[[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:_socketQueue];
                 @synchronized(_pendingRSockets){
                     [_pendingRSockets addObject:socket];
@@ -354,6 +393,20 @@
 - (void)socketDidSecure:(GCDAsyncSocket *)sock
 {
     NSLog(@"Connection is secure");
+
+    @synchronized(_pendingLSockets){
+        if ([_pendingLSockets count] > 0) {
+            // I'm the server
+            [self sendPayloadWithSocket: sock];
+        }
+    }
+
+    @synchronized (_pendingRSockets) {
+        if ([_pendingRSockets count] > 0) {
+            // I'm the client
+            [self receivePayloadWithSocket: sock];
+        }
+    }
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didReceiveTrust:(SecTrustRef)trust completionHandler:(void (^)(BOOL shouldTrustPeer))completionHandler
@@ -361,6 +414,44 @@
     completionHandler(YES);
 
     NSLog(@"Receive Certificate, Trust it");
+}
+
+- (void)sendPayloadWithSocket:(GCDAsyncSocket *)sock
+{
+    //NSMutableArray* payloadArray;
+    NSUInteger index=[_pendingLSockets indexOfObject:sock];
+    // payloadArray=[_pendingPayloads objectAtIndex:index];
+    dispatch_time_t t = dispatch_time(DISPATCH_TIME_NOW,0);
+    NSData* chunk=[_pendingPayloads objectAtIndex:index];
+    /*if (!payloadArray|!chunk) {
+        @synchronized(_pendingLSockets){
+            NSUInteger index=[_pendingLSockets indexOfObject:sock];
+            payloadArray=[_pendingPayloads objectAtIndex:index];
+            [_pendingLSockets removeObject:sock];
+            [_pendingPayloads removeObjectAtIndex:index];
+        }
+        return;
+    }*/
+    //TO-DO send the data chunk one by one in order to get the proccess percentage
+    t=dispatch_time(t, PAYLOAD_SEND_DELAY*NSEC_PER_MSEC);
+    dispatch_after(t,_socketQueue, ^(void){
+        //[newSocket writeData:chunk withTimeout:-1 tag:PACKAGE_TAG_PAYLOAD];
+        [sock writeData:chunk withTimeout:-1 tag:PACKAGE_TAG_PAYLOAD];
+        [sock disconnectAfterWriting];
+    });
+}
+
+- (void)receivePayloadWithSocket:(GCDAsyncSocket *)sock
+{
+    @synchronized(_pendingRSockets){
+        NSUInteger index=[_pendingRSockets indexOfObject:sock];
+        NSLog(@"Reading from socket %@ %ld bytes", _pendingRSockets, [[_pendingPayloadNP objectAtIndex:index] _PayloadSize]);
+        [sock readDataToLength: [[_pendingPayloadNP objectAtIndex:index] _PayloadSize] withTimeout:-1 tag:PACKAGE_TAG_PAYLOAD];
+    }
+}
+
+- (void)dealloc {
+    NSLog(@"Lan Link destroyed");
 }
 
 @end
