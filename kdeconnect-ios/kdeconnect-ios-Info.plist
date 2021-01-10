@@ -17,11 +17,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.0</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCalendarsUsageDescription</key>
@@ -30,8 +30,10 @@
 	<string>KDE Connect needs Camera permission to send a photo to the other device</string>
 	<key>NSContactsUsageDescription</key>
 	<string>Sharing Contacts</string>
-	<key>NSPhotoLibraryUsageDescription</key>
+	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Save picture to your Photo Library</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Send picture from your Photo Library</string>
 	<key>NSRemindersUsageDescription</key>
 	<string>Find your phone</string>
 	<key>UIBackgroundModes</key>
@@ -46,7 +48,8 @@
 	<string>Main_iPad</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
-		<string>armv7</string>
+		<string>arm64</string>
+		<string>x86_64</string>
 	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
