@@ -60,7 +60,7 @@
 
         if (isPhone) {
             NSString* t=currentViewController.title;
-            if ([currentViewController.title isEqualToString:NSLocalizedString(@"Mouse Pad",nil)])
+            if ([t isEqualToString:NSLocalizedString(@"Mouse Pad",nil)])
                 return YES;
             else
                 return NO;

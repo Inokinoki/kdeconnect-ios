@@ -175,9 +175,9 @@
         }
     }
     else{
-        for (Plugin* plugin in [_plugins allValues]) {
+        /* for (Plugin* plugin in [_plugins allValues]) {
 //            [plugin sentPercentage:100 tag:tag];
-        }
+        } */
     }
 }
 
@@ -292,8 +292,8 @@
     if (_deviceDelegate) {
         [_deviceDelegate onDevicePairSuccess:self];
     }
-    for (BaseLink* link in _links) {
-    }
+    // for (BaseLink* link in _links) {
+    // }
 }
 
 - (void) requestPairing

@@ -596,14 +596,15 @@
     [sock setDelegate:nil];
     [_pendingSockets removeObject:sock];
     
-    LanLink* oldlink;
-    /*if ([[_connectedLinks allKeys] containsObject:deviceId]) {
-        oldlink=[_connectedLinks objectForKey:deviceId];
-    }*/
+    /* TODO: remove the old link */
+//    LanLink* oldlink;
+//    if ([[_connectedLinks allKeys] containsObject:deviceId]) {
+//        oldlink=[_connectedLinks objectForKey:deviceId];
+//    }
     //create LanLink and inform the background
     LanLink* link=[[LanLink alloc] init:sock deviceId:@"Test Object" setDelegate:nil];
     [_connectedLinks setObject:link forKey:@"Test Object"];
-    //[oldlink disconnect];
+//    [oldlink disconnect];
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didReceiveTrust:(SecTrustRef)trust completionHandler:(void (^)(BOOL shouldTrustPeer))completionHandler

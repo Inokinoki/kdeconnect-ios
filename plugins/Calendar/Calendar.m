@@ -228,7 +228,7 @@
         [np setObject:@"proccess" forKey:@"status"];
         [_device sendPackage:np tag:PACKAGE_TAG_CALENDAR];
     }
-    NetworkPackage* np2=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_CALENDAR];
+    // NetworkPackage* np2=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_CALENDAR];
     [np setObject:@"merge" forKey:@"op"];
     [np setObject:@"end" forKey:@"status"];
     [_device sendPackage:np tag:PACKAGE_TAG_CALENDAR];
@@ -270,7 +270,7 @@
     NSString* summary=xbicvevent.summary;
     NSDate* dt_s=xbicvevent.dateStart;
     NSDate* dt_e=xbicvevent.dateEnd;
-    NSDate* dt_created=xbicvevent.dateCreated;
+    // NSDate* dt_created=xbicvevent.dateCreated;
     NSDate* dt_modified=xbicvevent.dateLastModified;
     NSCalendar* calendar=[[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     [calendar setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
@@ -346,7 +346,7 @@
     [iCal appendFormat:@"UID:%@\n",[event eventIdentifier]];
     [iCal appendFormat:@"SUMMARY:%@\n",t];
     if (event.allDay) {
-        NSDateFormatter* df2=[[NSDateFormatter alloc] init];
+        // NSDateFormatter* df2=[[NSDateFormatter alloc] init];
         NSTimeZone *timeZone = [NSTimeZone localTimeZone];
         [df setTimeZone:timeZone];
         [df setDateFormat:@"yyyyMMdd"];
