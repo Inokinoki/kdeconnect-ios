@@ -21,6 +21,7 @@
 #import "Ping.h"
 #import "device.h"
 #import <AudioToolbox/AudioServices.h>
+#import <UserNotifications/UserNotifications.h>
 
 @interface Ping()
 @property(nonatomic) UIView* _view;
@@ -48,13 +49,16 @@
         //NSLog(@"ping plugin receive a package");
         
         // local notification
-        UILocalNotification* localNotification = [[UILocalNotification alloc] init];
-        localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:0];
-        localNotification.alertBody = FORMAT(NSLocalizedString(@"%@: Ping!",nil),[_device _name]);
-        localNotification.timeZone = [NSTimeZone defaultTimeZone];
-        localNotification.soundName=UILocalNotificationDefaultSoundName;
-        localNotification.applicationIconBadgeNumber+=1;
-        [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+        UNMutableNotificationContent *notificationContent = [[UNMutableNotificationContent alloc] init];
+        notificationContent.body = FORMAT(NSLocalizedString(@"%@: Ping!",nil),[_device _name]);
+        UNNotificationTrigger *notificationTigger;
+
+        UNNotificationRequest *notificationReuest = [UNNotificationRequest requestWithIdentifier:[[NSUUID alloc] init].UUIDString
+                                                                                         content:notificationContent
+                                                                                         trigger:notificationTigger];
+        UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+        [center addNotificationRequest:notificationReuest withCompletionHandler:^(NSError *error) {}];
+        
         AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
         return true;
     }
