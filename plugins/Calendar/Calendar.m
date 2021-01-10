@@ -146,11 +146,15 @@
         case EKAuthorizationStatusDenied:
         case EKAuthorizationStatusRestricted:
         {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Privacy Warning",nil) message:NSLocalizedString(@"Permission was not granted for Calendar",nil)
-                                                           delegate:nil
-                                                  cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                                  otherButtonTitles:nil];
-            [alert show];
+            UIAlertController* alert = [UIAlertController alertControllerWithTitle: NSLocalizedString(@"Privacy Warning",nil)
+                                                                           message: NSLocalizedString(@"Permission was not granted for Calendar",nil)
+                                                                    preferredStyle: UIAlertControllerStyleAlert];
+            UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                                   style:UIAlertActionStyleCancel
+                                                                 handler:^(UIAlertAction * action) {}];
+            [alert addAction:cancelAction];
+
+            [[[UIApplication sharedApplication].keyWindow rootViewController] presentViewController:alert animated:YES completion:nil];
         }
             break;
         default:

@@ -79,12 +79,28 @@
 {
     _pairingDevice=deviceID;
     dispatch_async(dispatch_get_main_queue(), ^{
-        [[[UIAlertView alloc]
-          initWithTitle:NSLocalizedString(@"Incoming Pair Request",nil)
-          message:FORMAT(NSLocalizedString(@"Incoming pair request from device: %@ ",nil),[_visibleDevices valueForKey:deviceID])
-          delegate:self
-          cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
-          otherButtonTitles:NSLocalizedString(@"Pair",nil),nil] show];
+        UIAlertController *alert =
+            [UIAlertController alertControllerWithTitle: NSLocalizedString(@"Incoming Pair Request",nil)
+                                                message: FORMAT(NSLocalizedString(@"Incoming pair request from device: %@ ",nil),[_visibleDevices valueForKey:deviceID])
+                                         preferredStyle: UIAlertControllerStyleAlert];
+
+        UIAlertAction *pairAction =
+            [UIAlertAction actionWithTitle: NSLocalizedString(@"Pair",nil)
+                                     style: UIAlertActionStyleDefault
+                                   handler: ^(UIAlertAction * action) {
+                [[BackgroundService sharedInstance] pairDevice:_pairingDevice];
+                [[MRProgressOverlayView showOverlayAddedTo:self.view animated:YES]
+                 setTitleLabelText:NSLocalizedString(@"Pairing",nil)];
+            }];
+        UIAlertAction *cancelAction =
+            [UIAlertAction actionWithTitle: NSLocalizedString(@"Cancel",nil)
+                                     style: UIAlertActionStyleDefault
+                                   handler: ^(UIAlertAction * action) {
+                _pairingDevice=nil;
+            }];
+        [alert addAction:pairAction];
+        [alert addAction:cancelAction];
+        [self presentViewController:alert animated:YES completion:nil];
     });
 }
 
@@ -301,7 +317,16 @@
 //selete a row
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UIAlertView* alertDialog;
+    UIAlertController* alert;
+    UIAlertAction* acceptPairAction = [UIAlertAction actionWithTitle: NSLocalizedString(@"Yes",nil)
+                                                               style: UIAlertActionStyleDefault
+                                                             handler: ^(UIAlertAction * action) {
+        [[BackgroundService sharedInstance] pairDevice:_pairingDevice];
+        [MRProgressOverlayView showOverlayAddedTo:self.view animated:NO];
+    }];
+    UIAlertAction* refusePairAction = [UIAlertAction actionWithTitle: NSLocalizedString(@"No",nil)
+                                                               style: UIAlertActionStyleDefault
+                                                             handler: ^(UIAlertAction * action) {}];
     DeviceViewController* vc;
     NSString* deviceId;
     switch (indexPath.section) {
@@ -327,50 +352,19 @@
             break;
         case 1:
             _pairingDevice=[[_visibleDevices allKeys]objectAtIndex:indexPath.row];
-            alertDialog=[[UIAlertView alloc]
-                         initWithTitle:NSLocalizedString(@"Pair Request",nil)
-                         message:FORMAT(NSLocalizedString(@"pair device: %@ ?",nil),[_visibleDevices valueForKey:_pairingDevice])
-                         delegate:self
-                         cancelButtonTitle:NSLocalizedString(@"No",nil)
-                         otherButtonTitles:NSLocalizedString(@"Yes",nil), nil];
-            [alertDialog show];
+            
+            alert = [UIAlertController alertControllerWithTitle: NSLocalizedString(@"Pair Request",nil)
+                                                        message: FORMAT(NSLocalizedString(@"pair device: %@ ?",nil),[_visibleDevices valueForKey:_pairingDevice])
+                                                 preferredStyle: UIAlertControllerStyleAlert];
+            
+            [alert addAction: acceptPairAction];
+            [alert addAction: refusePairAction];
+            [self presentViewController:alert animated:YES completion:nil];
             break;
         case 2:
         default:;
     }
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-}
-
-//alertedialog
-- (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if ([[alertView title] isEqualToString:NSLocalizedString(@"Pair Request",nil)]) {
-        switch (buttonIndex) {
-            case 0:
-                _pairingDevice=nil;
-                break;
-            case 1:
-                [[BackgroundService sharedInstance] pairDevice:_pairingDevice];
-                [[MRProgressOverlayView showOverlayAddedTo:self.view animated:YES]
-                 setTitleLabelText:NSLocalizedString(@"Pairing",nil)];
-                break;
-            default:
-                break;
-        }
-    }
-    else if ([[alertView title] isEqualToString:NSLocalizedString(@"Success",nil)]){
-    }
-    else if([[alertView title] isEqualToString:NSLocalizedString(@"Incoming Pair Request",nil)]){
-        switch (buttonIndex) {
-            case 0:
-                break;
-            case 1:
-                [[BackgroundService sharedInstance] pairDevice:_pairingDevice];
-                [MRProgressOverlayView showOverlayAddedTo:self.view animated:NO];
-                break;
-        }
-        _pairingDevice=nil;
-    }
 }
 
 

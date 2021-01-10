@@ -185,11 +185,15 @@ typedef NS_ENUM(NSInteger, DataClass)  {
         case kABAuthorizationStatusRestricted:
         case kABAuthorizationStatusDenied:
         {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Privacy Warning",nil) message:NSLocalizedString(@"Permission was not granted for addressbook",nil)
-                                                           delegate:nil
-                                                  cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                                  otherButtonTitles:nil];
-            [alert show];
+            UIAlertController* alert = [UIAlertController alertControllerWithTitle: NSLocalizedString(@"Privacy Warning",nil)
+                                                                           message: NSLocalizedString(@"Permission was not granted for addressbook",nil)
+                                                                    preferredStyle: UIAlertControllerStyleActionSheet];
+            UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                                   style:UIAlertActionStyleCancel
+                                                                 handler:^(UIAlertAction * action) {}];
+            [alert addAction:cancelAction];
+            
+            [[[UIApplication sharedApplication].keyWindow rootViewController] presentViewController:alert animated:YES completion:nil];
         }
             break;
         default:
@@ -242,16 +246,31 @@ void handleAddressBookChange(ABAddressBookRef addressBook, CFDictionaryRef info,
 
 - (void)contactSourceSelect:(id)sender
 {
-    UIActionSheet *actionSheet = [[UIActionSheet alloc]initWithTitle:NSLocalizedString(@"Send Contact",nil)
-                                                            delegate:self
-                                                   cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
-                                              destructiveButtonTitle:nil
-                                                   otherButtonTitles:NSLocalizedString(@"All local contacts",nil),
-                                  NSLocalizedString(@"Select local contact",nil),nil];
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle: NSLocalizedString(@"Send Contact",nil)
+                                                                   message: @""
+                                                            preferredStyle: UIAlertControllerStyleActionSheet];
+    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",nil)
+                                                           style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) {}];
+    UIAlertAction* localContactAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Select local contact",nil)
+                                                                 style:UIAlertActionStyleDefault
+                                                               handler:^(UIAlertAction * action) {
+        ABPeoplePickerNavigationController *picker =[[ABPeoplePickerNavigationController alloc] init];
+        picker.peoplePickerDelegate = self;
+        [_deviceViewController presentViewController:picker animated:YES completion:nil];
+    }];
+    UIAlertAction* allContactAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"All local contacts",nil)
+                                                               style:UIAlertActionStyleDefault
+                                                             handler:^(UIAlertAction * action) {
+        [self updateAddressBook];
+        [self sendAddressBook];
+    }];
     
-    actionSheet.actionSheetStyle =UIActionSheetStyleAutomatic;
-    
-    [actionSheet showInView:[UIApplication sharedApplication].keyWindow];
+     
+    [alert addAction:allContactAction];
+    [alert addAction:localContactAction];
+    [alert addAction:cancelAction];
+    [[[UIApplication sharedApplication].keyWindow rootViewController] presentViewController:alert animated:YES completion:nil];
 }
 
 - (void) dealloc
@@ -262,27 +281,6 @@ void handleAddressBookChange(ABAddressBookRef addressBook, CFDictionaryRef info,
     }
 }
 
-
-#pragma mark UIActionsheet delegate
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    ABPeoplePickerNavigationController *picker =[[ABPeoplePickerNavigationController alloc] init];
-    if([[actionSheet title] isEqualToString:NSLocalizedString(@"Send Contact",nil)]){
-        switch (buttonIndex) {
-            case 0:
-                [self updateAddressBook];
-                [self sendAddressBook];
-                break;
-            case 1:
-                picker.peoplePickerDelegate = self;
-                [_deviceViewController presentViewController:picker animated:YES completion:nil];
-                break;
-            default:
-                return;
-                break;
-        }
-    }
-}
 
 #pragma mark ABPeoplePickerNavigationController delegate
 

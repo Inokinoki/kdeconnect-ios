@@ -73,15 +73,7 @@
                                         handler:^(UIAlertAction * action) {}];
         [alert addAction:okAction];
         
-        UIWindow *keyWindow;
-        NSArray *windows = [[UIApplication sharedApplication]windows];
-        for (UIWindow *window in windows) {
-            if (window.isKeyWindow) {
-                keyWindow = window;
-                break;
-            }
-        }
-        [[keyWindow rootViewController] presentViewController:alert animated:YES completion:nil];
+        [[[UIApplication sharedApplication].keyWindow rootViewController] presentViewController:alert animated:YES completion:nil];
         
         return true;
     }
@@ -167,16 +159,8 @@
                                     style:UIAlertActionStyleCancel
                                     handler:^(UIAlertAction * action) {}];
     [alert addAction:cancelAction];
-    
-    UIWindow *keyWindow;
-    NSArray *windows = [[UIApplication sharedApplication]windows];
-    for (UIWindow *window in windows) {
-        if (window.isKeyWindow) {
-            keyWindow = window;
-            break;
-        }
-    }
-    [[keyWindow rootViewController] presentViewController:alert animated:YES completion:nil];
+
+    [[[UIApplication sharedApplication].keyWindow rootViewController] presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)shareUrl:(id)sender
@@ -215,16 +199,20 @@
     }
     else{
         //photo taken
-        UIActionSheet *actionSheet = [[UIActionSheet alloc]
-                                      initWithTitle:NSLocalizedString(@"Save",nil)
-                                      delegate:self
-                                      cancelButtonTitle:nil
-                                      destructiveButtonTitle:NSLocalizedString(@"Discard",nil)
-                                      otherButtonTitles:NSLocalizedString(@"Save",nil),nil];
-        
-        actionSheet.actionSheetStyle =UIActionSheetStyleAutomatic;
-        
-        [actionSheet showInView:[UIApplication sharedApplication].keyWindow];
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle: NSLocalizedString(@"Save",nil)
+                                                                       message: @""
+                                                                preferredStyle: UIAlertControllerStyleActionSheet];
+        UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Discard",nil)
+                                                               style:UIAlertActionStyleCancel
+                                                             handler:^(UIAlertAction * action) {}];
+        UIAlertAction* saveAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Save",nil)
+                                                             style:UIAlertActionStyleDefault
+                                                           handler:^(UIAlertAction * action) {
+            UIImageWriteToSavedPhotosAlbum(_image,nil,nil,nil);
+        }];
+        [alert addAction:saveAction];
+        [alert addAction:cancelAction];
+        [[[UIApplication sharedApplication].keyWindow rootViewController] presentViewController:alert animated:YES completion:nil];
     }
     NSData* imageData=UIImageJPEGRepresentation(_image, 1);
     NetworkPackage* np=[[NetworkPackage alloc] initWithType:PACKAGE_TYPE_SHARE];
@@ -245,38 +233,6 @@
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma mark UIActionsheet delegate
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if ([[actionSheet title] isEqualToString:NSLocalizedString(@"Save",nil)]) {
-        switch (buttonIndex) {
-            case 0:
-                
-                break;
-            case 1:
-                UIImageWriteToSavedPhotosAlbum(_image,nil,nil,nil);
-                break;
-                
-            default:
-                break;
-        }
-    }else if([[actionSheet title] isEqualToString:NSLocalizedString(@"Photo Source",nil)]){
-        switch (buttonIndex) {
-            case 0:
-                [self sharePhotoFromCamera];
-                break;
-            case 1:
-                [self sharePhotoFromLibrary];
-                break;
-            case 2:
-                break;
-            case 3:
-            default:
-                return;
-                break;
-        }
-    }
-}
 
 - (void) sentPercentage:(short)percentage tag:(long)tag
 {
