@@ -32,12 +32,10 @@
 		4E08A2351913D1780056EEF8 /* BackgroundService.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2301913D1780056EEF8 /* BackgroundService.m */; };
 		4E08A2361913D1780056EEF8 /* Device.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2321913D1780056EEF8 /* Device.m */; };
 		4E08A2371913D1780056EEF8 /* NetworkPackage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E08A2341913D1780056EEF8 /* NetworkPackage.m */; };
-		4E0B0CF019772E2300F1412B /* Contact.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E0B0CEF19772E2300F1412B /* Contact.m */; };
 		4E1A82A319657DD700174217 /* MousePad.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E1A82A219657DD700174217 /* MousePad.m */; };
 		4E1A82A619657FF400174217 /* MousePadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E1A82A519657FF400174217 /* MousePadViewController.m */; };
 		4E3038FC1940889900F28091 /* ClipBoard.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E3038FB1940889900F28091 /* ClipBoard.m */; };
 		4E3871A61992355800752925 /* SplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E3871A51992355800752925 /* SplitViewController.m */; };
-		4E38A3AB196CEB44006AE419 /* Calendar.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E38A3AA196CEB44006AE419 /* Calendar.m */; };
 		4E38A3B0196D2D36006AE419 /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E38A3AF196D2D36006AE419 /* EventKit.framework */; };
 		4E44F5E819920042002B1AAF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4E44F5EA19920042002B1AAF /* Localizable.strings */; };
 		4E47115F19693B7F00EE5B1D /* Battery.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E47115E19693B7F00EE5B1D /* Battery.m */; };
@@ -126,8 +124,6 @@
 		4E08A2321913D1780056EEF8 /* Device.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Device.m; path = lib/Device.m; sourceTree = "<group>"; };
 		4E08A2331913D1780056EEF8 /* NetworkPackage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NetworkPackage.h; path = lib/NetworkPackage.h; sourceTree = "<group>"; };
 		4E08A2341913D1780056EEF8 /* NetworkPackage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NetworkPackage.m; path = lib/NetworkPackage.m; sourceTree = "<group>"; };
-		4E0B0CEE19772E2300F1412B /* Contact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Contact.h; path = plugins/Contact/Contact.h; sourceTree = "<group>"; };
-		4E0B0CEF19772E2300F1412B /* Contact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Contact.m; path = plugins/Contact/Contact.m; sourceTree = "<group>"; };
 		4E1A82A119657DD700174217 /* MousePad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MousePad.h; path = plugins/MousePad/MousePad.h; sourceTree = "<group>"; };
 		4E1A82A219657DD700174217 /* MousePad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MousePad.m; path = plugins/MousePad/MousePad.m; sourceTree = "<group>"; };
 		4E1A82A419657FF400174217 /* MousePadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MousePadViewController.h; path = plugins/MousePad/MousePadViewController.h; sourceTree = "<group>"; };
@@ -137,8 +133,6 @@
 		4E3871A41992355800752925 /* SplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SplitViewController.h; sourceTree = "<group>"; };
 		4E3871A51992355800752925 /* SplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplitViewController.m; sourceTree = "<group>"; };
 		4E3871A719923FB000752925 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
-		4E38A3A9196CEB44006AE419 /* Calendar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Calendar.h; path = plugins/Calendar/Calendar.h; sourceTree = "<group>"; };
-		4E38A3AA196CEB44006AE419 /* Calendar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Calendar.m; path = plugins/Calendar/Calendar.m; sourceTree = "<group>"; };
 		4E38A3AF196D2D36006AE419 /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
 		4E44F5E919920042002B1AAF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4E44F5F019920A68002B1AAF /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -361,15 +355,6 @@
 			name = backend;
 			sourceTree = "<group>";
 		};
-		4E0B0CED19772E0B00F1412B /* Contact */ = {
-			isa = PBXGroup;
-			children = (
-				4E0B0CEE19772E2300F1412B /* Contact.h */,
-				4E0B0CEF19772E2300F1412B /* Contact.m */,
-			);
-			name = Contact;
-			sourceTree = "<group>";
-		};
 		4E1A82A019657D0800174217 /* MousePad */ = {
 			isa = PBXGroup;
 			children = (
@@ -390,15 +375,6 @@
 				4E3038FB1940889900F28091 /* ClipBoard.m */,
 			);
 			name = ClipBoard;
-			sourceTree = "<group>";
-		};
-		4E38A3A7196CEA90006AE419 /* Calendar */ = {
-			isa = PBXGroup;
-			children = (
-				4E38A3A9196CEB44006AE419 /* Calendar.h */,
-				4E38A3AA196CEB44006AE419 /* Calendar.m */,
-			);
-			name = Calendar;
 			sourceTree = "<group>";
 		};
 		4E47115C19693B5A00EE5B1D /* Battery */ = {
@@ -422,8 +398,6 @@
 		4EC27541191FCE910057AB0E /* plugins */ = {
 			isa = PBXGroup;
 			children = (
-				4E0B0CED19772E0B00F1412B /* Contact */,
-				4E38A3A7196CEA90006AE419 /* Calendar */,
 				4E47115C19693B5A00EE5B1D /* Battery */,
 				4E1A82A019657D0800174217 /* MousePad */,
 				4E3038F91940886800F28091 /* ClipBoard */,
@@ -675,11 +649,9 @@
 				4E3871A61992355800752925 /* SplitViewController.m in Sources */,
 				4EC27548191FCECD0057AB0E /* Ping.m in Sources */,
 				4E1A82A619657FF400174217 /* MousePadViewController.m in Sources */,
-				4E38A3AB196CEB44006AE419 /* Calendar.m in Sources */,
 				4E08A2371913D1780056EEF8 /* NetworkPackage.m in Sources */,
 				4E08A2361913D1780056EEF8 /* Device.m in Sources */,
 				4E47115F19693B7F00EE5B1D /* Battery.m in Sources */,
-				4E0B0CF019772E2300F1412B /* Contact.m in Sources */,
 				4E08A22D1913D1650056EEF8 /* LanLink.m in Sources */,
 				4E51BBED193FADA7007E74F4 /* Share.m in Sources */,
 				4E08A2281913D1550056EEF8 /* BaseLinkProvider.m in Sources */,
@@ -850,6 +822,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1.0;
 				DEVELOPMENT_TEAM = GMJNW6P6DV;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -857,6 +830,7 @@
 				INFOPLIST_FILE = "kdeconnect-ios/kdeconnect-ios-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.kde.connect;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -881,6 +855,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1.0;
 				DEVELOPMENT_TEAM = PLM89SJ3LJ;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -888,6 +863,7 @@
 				INFOPLIST_FILE = "kdeconnect-ios/kdeconnect-ios-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.kde.kdeconnect-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

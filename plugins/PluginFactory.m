@@ -27,8 +27,6 @@
 #import "ClipBoard.h"
 #import "MousePad.h"
 #import "Battery.h"
-#import "Calendar.h"
-#import "Contact.h"
 
 @interface PluginFactory()
 @property(nonatomic) NSMutableDictionary* _availablePlugins;
@@ -108,8 +106,6 @@
     [_availablePlugins setValue:[ClipBoard class] forKey:[[ClipBoard getPluginInfo] _pluginName]];
     [_availablePlugins setValue:[MousePad class] forKey:[[MousePad getPluginInfo] _pluginName]];
     [_availablePlugins setValue:[Battery class] forKeyPath:[[Battery getPluginInfo]_pluginName]];
-    [_availablePlugins setValue:[Calendar class] forKeyPath:[[Calendar getPluginInfo] _pluginName]];
-    [_availablePlugins setValue:[Contact class] forKeyPath:[[Contact getPluginInfo]_pluginName]];
 }
 
 - (NSArray*) getSupportedIncomingInterfaces
