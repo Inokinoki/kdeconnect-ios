@@ -231,6 +231,9 @@
     NSError* err;
     _tcpSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:socketQueue];
     _udpSocket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:socketQueue];
+    if (![_udpSocket enableReusePort:true error:&err]) {
+        NSLog(@"udp reuse port option error");
+    }
     if (![_udpSocket enableBroadcast:true error:&err]) {
         NSLog(@"udp listen broadcast error");
     }
