@@ -460,7 +460,6 @@
     NSLog(@"%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
     NSString * jsonStr=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     NSArray* packageArray=[jsonStr componentsSeparatedByString:@"\n"];
-    return;
     for (NSString* dataStr in packageArray) {
         if ([dataStr length] <= 0) continue;
 
