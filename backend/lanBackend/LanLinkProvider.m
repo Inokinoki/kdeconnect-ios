@@ -231,6 +231,9 @@
     NSError* err;
     _tcpSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:socketQueue];
     _udpSocket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:socketQueue];
+    if (![_udpSocket enableReusePort:true error:&err]) {
+        NSLog(@"udp reuse port option error");
+    }
     if (![_udpSocket enableBroadcast:true error:&err]) {
         NSLog(@"udp listen broadcast error");
     }
@@ -460,7 +463,6 @@
     NSLog(@"%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
     NSString * jsonStr=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     NSArray* packageArray=[jsonStr componentsSeparatedByString:@"\n"];
-    return;
     for (NSString* dataStr in packageArray) {
         if ([dataStr length] <= 0) continue;
 
