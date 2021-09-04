@@ -20,6 +20,7 @@
 
 #import "LanLinkProvider.h"
 #import "NetworkPackage.h"
+#import "KDE_Connect_Test-Swift.h"
 
 #import <Security/Security.h>
 #import <Security/SecItem.h>
@@ -191,8 +192,15 @@
     [np setInteger:_tcpPort forKey:@"tcpPort"]; // need to give JSON since need to modify tcpport
     NSData* data=[np serialize];
     
+    // Broadcast to every device first
     NSLog(@"sending:%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
 	[_udpSocket sendData:data  toHost:@"255.255.255.255" port:PORT withTimeout:-1 tag:UDPBROADCAST_TAG];
+    
+    // Then use direct IP in case broadcast is disabled on the router
+    NSArray* directIPs=[ConnectedDevicesViewModel getDirectIPList];
+    for (NSString* address in directIPs) {
+        [_udpSocket sendData:data  toHost:address port:PORT withTimeout:-1 tag:UDPBROADCAST_TAG];
+    }
 }
 
 - (void)onStop
@@ -229,6 +237,12 @@
         
         NSLog(@"sending:%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
         [_udpSocket sendData:data toHost:@"255.255.255.255" port:PORT withTimeout:-1 tag:UDPBROADCAST_TAG];
+        
+        // Then use direct IP in case broadcast is disabled on the router
+        NSArray* directIPs=[ConnectedDevicesViewModel getDirectIPList];
+        for (NSString* address in directIPs) {
+            [_udpSocket sendData:data  toHost:address port:PORT withTimeout:-1 tag:UDPBROADCAST_TAG];
+        }
     }
 }
 
@@ -300,6 +314,12 @@
         NSData* data=[np serialize];
         NSLog(@"%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
         [_udpSocket sendData:data toHost:@"255.255.255.255" port:PORT withTimeout:-1 tag:UDPBROADCAST_TAG];
+        
+        // Then use direct IP in case broadcast is disabled on the router
+        NSArray* directIPs=[ConnectedDevicesViewModel getDirectIPList];
+        for (NSString* address in directIPs) {
+            [_udpSocket sendData:data  toHost:address port:PORT withTimeout:-1 tag:UDPBROADCAST_TAG];
+        }
         return;
     }
     NSLog(@"connecting");
